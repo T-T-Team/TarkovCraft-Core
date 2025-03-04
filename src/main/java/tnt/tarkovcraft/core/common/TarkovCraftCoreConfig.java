@@ -9,5 +9,9 @@ public class TarkovCraftCoreConfig {
 
     @Configurable
     @Configurable.Synchronized
+    public boolean enableMailSystem = true;
+
+    @Configurable
+    @Configurable.Synchronized
     public boolean enableSkillSystem = true;
 }
