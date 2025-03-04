@@ -1,0 +1,21 @@
+Skill system
+ - skill system for other modules
+
+Attribute system
+ - attribute system for other modules to use
+
+Trade system
+ - conditional trades
+ - various trade listing providers - external sources, datapacks, and so on
+
+Quest system
+ - random quests, repeated random quests, storyline quests
+ - party system for quests?
+ - mail system for rewards and other stuff - probably should be separate component not explicitly tied to quests
+
+Level system
+ - leveling
+ - profile wipe support - figure out how to handle wipes effectively
+ - profile data and statistics
+
+Utilities library
