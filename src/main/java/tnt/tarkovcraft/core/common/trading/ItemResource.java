@@ -4,13 +4,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.init.BaseTradeResources;
-import tnt.tarkovcraft.core.common.init.filter.itemstack.ItemStackFilter;
-import tnt.tarkovcraft.core.common.init.filter.itemstack.ItemStackFilterType;
+import tnt.tarkovcraft.core.common.data.filter.ItemStackFilter;
+import tnt.tarkovcraft.core.common.data.filter.ItemStackFilterType;
 import tnt.tarkovcraft.core.util.PlayerHelper;
 
 import java.util.Collections;

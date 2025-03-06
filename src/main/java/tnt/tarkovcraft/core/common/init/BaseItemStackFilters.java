@@ -2,7 +2,7 @@ package tnt.tarkovcraft.core.common.init;
 
 import net.neoforged.neoforge.registries.DeferredRegister;
 import tnt.tarkovcraft.core.TarkovCraftCore;
-import tnt.tarkovcraft.core.common.init.filter.itemstack.ItemStackFilterType;
+import tnt.tarkovcraft.core.common.data.filter.ItemStackFilterType;
 
 public final class BaseItemStackFilters {
 

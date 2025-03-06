@@ -1,0 +1,46 @@
+package tnt.tarkovcraft.core.common.attribute.modifier;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.UUIDUtil;
+import tnt.tarkovcraft.core.common.init.BaseAttributeModifiers;
+
+import java.util.UUID;
+
+public class AddValueModifier extends AttributeModifier {
+
+    public static final MapCodec<AddValueModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            UUIDUtil.STRING_CODEC.fieldOf("id").forGetter(AttributeModifier::identifier),
+            Codec.DOUBLE.fieldOf("value").forGetter(t -> t.value),
+            Codec.INT.optionalFieldOf("order", ORDER_MATH_ADDITION).forGetter(t -> t.ordering)
+    ).apply(instance, AddValueModifier::new));
+
+    private final double value;
+    private final int ordering;
+
+    public AddValueModifier(UUID identifier, double value) {
+        this(identifier, value, ORDER_MATH_ADDITION);
+    }
+
+    public AddValueModifier(UUID identifier, double value, int ordering) {
+        super(identifier);
+        this.value = value;
+        this.ordering = ordering;
+    }
+
+    @Override
+    public double applyModifierOn(double value) {
+        return value + this.value;
+    }
+
+    @Override
+    public int ordering() {
+        return this.ordering;
+    }
+
+    @Override
+    public AttributeModifierType<?> getType() {
+        return BaseAttributeModifiers.ADD_VALUE.get();
+    }
+}

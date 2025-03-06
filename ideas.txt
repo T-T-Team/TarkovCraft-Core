@@ -13,5 +13,4 @@ Quest system
  - party system for quests?
  - mail system for rewards and other stuff - probably should be separate component not explicitly tied to quests
 
-Data wipe support
 Utilities library

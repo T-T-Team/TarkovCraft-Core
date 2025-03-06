@@ -6,14 +6,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import tnt.tarkovcraft.core.client.TarkovCraftCoreClient;
 import tnt.tarkovcraft.core.common.TarkovCraftCoreConfig;
-import tnt.tarkovcraft.core.common.init.BaseItemStackFilters;
-import tnt.tarkovcraft.core.common.init.BaseMailMessageAttachments;
-import tnt.tarkovcraft.core.common.init.BaseTradeResources;
-import tnt.tarkovcraft.core.common.init.TarkovCraftRegistries;
+import tnt.tarkovcraft.core.common.init.*;
 
 @Mod(TarkovCraftCore.MOD_ID)
 public class TarkovCraftCore {
@@ -28,9 +27,11 @@ public class TarkovCraftCore {
         config = Configuration.registerConfig(TarkovCraftCoreConfig.class, ConfigFormats.YAML).getConfigInstance();
 
         // Mod event listeners
+        modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::registerCustomRegistries);
 
         // Deferred registries
+        BaseAttributeModifiers.REGISTRY.register(modEventBus);
         BaseItemStackFilters.REGISTRY.register(modEventBus);
         BaseMailMessageAttachments.REGISTRY.register(modEventBus);
         BaseTradeResources.REGISTRY.register(modEventBus);
@@ -44,8 +45,14 @@ public class TarkovCraftCore {
         return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 
+    private void clientSetup(FMLClientSetupEvent event) {
+        TarkovCraftCoreClient.getClient().onSetup(event);
+    }
+
     private void registerCustomRegistries(NewRegistryEvent event) {
         // Utils
+        event.register(TarkovCraftRegistries.ATTRIBUTE);
+        event.register(TarkovCraftRegistries.ATTRIBUTE_MODIFIER);
         event.register(TarkovCraftRegistries.ITEMSTACK_FILTER);
 
         // Mail system

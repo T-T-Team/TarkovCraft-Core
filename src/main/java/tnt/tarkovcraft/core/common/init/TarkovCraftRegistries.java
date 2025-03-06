@@ -4,7 +4,9 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 import tnt.tarkovcraft.core.TarkovCraftCore;
-import tnt.tarkovcraft.core.common.init.filter.itemstack.ItemStackFilterType;
+import tnt.tarkovcraft.core.common.attribute.Attribute;
+import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifierType;
+import tnt.tarkovcraft.core.common.data.filter.ItemStackFilterType;
 import tnt.tarkovcraft.core.common.mail.MailMessageAttachmentType;
 import tnt.tarkovcraft.core.common.trading.TradeConditionType;
 import tnt.tarkovcraft.core.common.trading.TradeResourceType;
@@ -12,6 +14,8 @@ import tnt.tarkovcraft.core.common.trading.TradeResourceType;
 public class TarkovCraftRegistries {
 
     // Global utilities
+    public static final Registry<Attribute> ATTRIBUTE = new RegistryBuilder<>(Keys.ATTRIBUTE).create();
+    public static final Registry<AttributeModifierType<?>> ATTRIBUTE_MODIFIER = new RegistryBuilder<>(Keys.ATTRIBUTE_MODIFIER).create();
     public static final Registry<ItemStackFilterType<?>> ITEMSTACK_FILTER = new RegistryBuilder<>(Keys.ITEMSTACK_FILTER).create();
 
     // Mail system
@@ -23,6 +27,8 @@ public class TarkovCraftRegistries {
 
     public static final class Keys {
 
+        public static final ResourceKey<Registry<Attribute>> ATTRIBUTE = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("attribute"));
+        public static final ResourceKey<Registry<AttributeModifierType<?>>> ATTRIBUTE_MODIFIER = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("attribute_modifier"));
         public static final ResourceKey<Registry<ItemStackFilterType<?>>> ITEMSTACK_FILTER = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("itemstack_filter"));
         public static final ResourceKey<Registry<MailMessageAttachmentType<?>>> MAIL_MESSAGE_ATTACHMENT = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("mail_message_attachment"));
         public static final ResourceKey<Registry<TradeResourceType<?>>> TRADE_RESOURCE = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("trade_resource"));

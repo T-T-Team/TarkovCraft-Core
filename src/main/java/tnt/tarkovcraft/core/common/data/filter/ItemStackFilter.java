@@ -1,4 +1,4 @@
-package tnt.tarkovcraft.core.common.init.filter.itemstack;
+package tnt.tarkovcraft.core.common.data.filter;
 
 import net.minecraft.world.item.ItemStack;
 
