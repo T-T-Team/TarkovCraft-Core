@@ -6,18 +6,18 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import tnt.tarkovcraft.core.client.TarkovCraftCoreClient;
 import tnt.tarkovcraft.core.common.TarkovCraftCoreConfig;
 import tnt.tarkovcraft.core.common.init.*;
+import tnt.tarkovcraft.core.network.TarkovCraftCoreNetwork;
 
 @Mod(TarkovCraftCore.MOD_ID)
 public class TarkovCraftCore {
 
     public static final String MOD_ID = "tarkovcraft_core";
+    public static final String GLOBAL_CATEGORY_KEY = "category.tarkovcraft";
     public static final Logger LOGGER = LogManager.getLogger("TarkovCraftCore");
 
     private static TarkovCraftCoreConfig config;
@@ -27,14 +27,18 @@ public class TarkovCraftCore {
         config = Configuration.registerConfig(TarkovCraftCoreConfig.class, ConfigFormats.YAML).getConfigInstance();
 
         // Mod event listeners
-        modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::registerCustomRegistries);
+        modEventBus.addListener(TarkovCraftCoreNetwork::onRegistration);
 
         // Deferred registries
         BaseAttributeModifiers.REGISTRY.register(modEventBus);
         BaseItemStackFilters.REGISTRY.register(modEventBus);
         BaseMailMessageAttachments.REGISTRY.register(modEventBus);
         BaseTradeResources.REGISTRY.register(modEventBus);
+        BaseDataAttachments.REGISTRY.register(modEventBus);
+
+        // client-side init
+
     }
 
     public static TarkovCraftCoreConfig getConfig() {
@@ -43,10 +47,6 @@ public class TarkovCraftCore {
 
     public static ResourceLocation createResourceLocation(String path) {
         return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
-    }
-
-    private void clientSetup(FMLClientSetupEvent event) {
-        TarkovCraftCoreClient.getClient().onSetup(event);
     }
 
     private void registerCustomRegistries(NewRegistryEvent event) {

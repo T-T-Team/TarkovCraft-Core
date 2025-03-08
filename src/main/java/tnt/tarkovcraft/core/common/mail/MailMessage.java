@@ -10,7 +10,10 @@ import tnt.tarkovcraft.core.util.Codecs;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 
 public final class MailMessage {
@@ -27,6 +30,7 @@ public final class MailMessage {
                     LinkedHashMap::new,
                     Function.identity()
             ).forGetter(t -> (LinkedHashMap<UUID, MailMessageAttachment>) t.attachments),
+            Codecs.ZONED_DATE_TIME_CODEC.fieldOf("messageTs").forGetter(t -> t.messageTs),
             Codecs.ZONED_DATE_TIME_CODEC.optionalFieldOf("expiryDate").forGetter(t -> Optional.ofNullable(t.expiryDate))
     ).apply(instance, MailMessage::new));
 
@@ -34,13 +38,15 @@ public final class MailMessage {
     private final UUID sender;
     private final Component body;
     private final Map<UUID, MailMessageAttachment> attachments;
+    private final ZonedDateTime messageTs;
     private ZonedDateTime expiryDate;
 
-    private MailMessage(UUID messageId, UUID sender, Component body, LinkedHashMap<UUID, MailMessageAttachment> attachments, Optional<ZonedDateTime> expiryDate) {
+    private MailMessage(UUID messageId, UUID sender, Component body, LinkedHashMap<UUID, MailMessageAttachment> attachments, ZonedDateTime messageTs, Optional<ZonedDateTime> expiryDate) {
         this.messageId = messageId;
         this.sender = sender;
         this.body = body;
         this.attachments = attachments;
+        this.messageTs = messageTs;
         expiryDate.ifPresent(zdt -> this.expiryDate = zdt);
     }
 
@@ -49,6 +55,7 @@ public final class MailMessage {
         this.sender = sender;
         this.body = body;
         this.attachments = new LinkedHashMap<>();
+        this.messageTs = ZonedDateTime.now(ZoneOffset.UTC);
         this.expiryDate = ZonedDateTime.now(ZoneOffset.UTC).plusDays(3);
     }
 
@@ -105,5 +112,9 @@ public final class MailMessage {
 
     public UUID getSender() {
         return sender;
+    }
+
+    public ZonedDateTime getMessageReceptionTime() {
+        return messageTs;
     }
 }

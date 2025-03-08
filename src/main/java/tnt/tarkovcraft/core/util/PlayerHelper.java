@@ -7,6 +7,7 @@ import net.minecraft.world.phys.Vec3;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.mail.MailMessage;
 import tnt.tarkovcraft.core.common.mail.MailMessageItemAttachment;
+import tnt.tarkovcraft.core.common.mail.MailSource;
 import tnt.tarkovcraft.core.common.mail.MailSystem;
 
 public final class PlayerHelper {
@@ -49,7 +50,7 @@ public final class PlayerHelper {
 
         if (MailSystem.isEnabled() && receiveInMail) {
             // Sends item as mail attachment
-            MailSystem.sendMessage(player, MailMessage.system(CommonLabels.MESSAGE_ITEM_RECEIVED)
+            MailSystem.sendMessage(player, MailSource.SYSTEM, MailMessage.system(CommonLabels.MESSAGE_ITEM_RECEIVED)
                     .attachment(MailMessageItemAttachment.item(itemstack.copy()))
             );
         } else {
@@ -62,7 +63,7 @@ public final class PlayerHelper {
                 if (!player.level().addFreshEntity(itemEntity)) {
                     // Failed to spawn entity, try to send as mail if enabled
                     if (MailSystem.isEnabled() && storeInMailOnError) {
-                        MailSystem.sendMessage(player, MailMessage.system(CommonLabels.MESSAGE_ITEM_RECEIVED)
+                        MailSystem.sendMessage(player, MailSource.SYSTEM, MailMessage.system(CommonLabels.MESSAGE_ITEM_RECEIVED)
                                 .attachment(MailMessageItemAttachment.item(itemstack.copy()))
                         );
                         TarkovCraftCore.LOGGER.error("Failed to create item drop entity {} for player {}, sending as mail instead", itemEntity, player);

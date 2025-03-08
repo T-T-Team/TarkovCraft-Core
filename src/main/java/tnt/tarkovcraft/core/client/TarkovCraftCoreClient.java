@@ -1,31 +1,62 @@
 package tnt.tarkovcraft.core.client;
 
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModLoader;
-import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.settings.KeyConflictContext;
+import net.neoforged.neoforge.common.NeoForge;
+import org.lwjgl.glfw.GLFW;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.client.event.RegisterTradeResourceRendererEvent;
 import tnt.tarkovcraft.core.client.render.TradeResourceRenderManager;
+import tnt.tarkovcraft.core.client.screen.CharacterScreen;
 
-@EventBusSubscriber(modid = TarkovCraftCore.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+import static tnt.tarkovcraft.core.util.LocalizationHelper.createKeybindName;
+
+@Mod(value = TarkovCraftCore.MOD_ID, dist = Dist.CLIENT)
 public final class TarkovCraftCoreClient {
 
-    private static final TarkovCraftCoreClient INSTANCE = new TarkovCraftCoreClient();
+    public static final TradeResourceRenderManager RESOURCE_RENDER_MANAGER = new TradeResourceRenderManager();
 
-    public final TradeResourceRenderManager resourceRenderManager = new TradeResourceRenderManager();
+    public static final KeyMapping KEY_CHARACTER = new KeyMapping(createKeybindName(TarkovCraftCore.MOD_ID, "character"), KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_O, TarkovCraftCore.GLOBAL_CATEGORY_KEY);
 
-    private TarkovCraftCoreClient() {}
+    public TarkovCraftCoreClient(IEventBus modEventBus, ModContainer container) {
+        modEventBus.addListener(this::setup);
+        modEventBus.addListener(this::registerKeyBindings);
 
-    public void onSetup(FMLClientSetupEvent event) {
-        this.dispatchParallelRegistryEvents();
+        NeoForge.EVENT_BUS.addListener(this::onKeyboardInput);
     }
 
     private void dispatchParallelRegistryEvents() {
         ModLoader.postEvent(new RegisterTradeResourceRendererEvent());
     }
 
-    public static TarkovCraftCoreClient getClient() {
-        return INSTANCE;
+    private void setup(FMLClientSetupEvent event) {
+        this.dispatchParallelRegistryEvents();
+    }
+
+    private void registerKeyBindings(RegisterKeyMappingsEvent event) {
+        event.register(KEY_CHARACTER);
+    }
+
+    private void onKeyboardInput(InputEvent.Key event) {
+        Minecraft client = Minecraft.getInstance();
+        Player player = client.player;
+
+        // Game keybinds
+        if (player != null) {
+            if (KEY_CHARACTER.consumeClick()) {
+                client.setScreen(new CharacterScreen());
+            }
+        }
     }
 }

@@ -1,12 +1,9 @@
 package tnt.tarkovcraft.core.common.mail;
 
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import tnt.tarkovcraft.core.TarkovCraftCore;
-
-import java.util.UUID;
+import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
 
 public final class MailSystem {
 
@@ -14,7 +11,7 @@ public final class MailSystem {
         return TarkovCraftCore.getConfig().enableMailSystem;
     }
 
-    public static void sendMessage(Player player, MailMessage message) {
+    public static void sendMessage(Player player, MailSource source, MailMessage message) {
         Level level = player.level();
         if (level.isClientSide())
             return;
@@ -26,18 +23,6 @@ public final class MailSystem {
             TarkovCraftCore.LOGGER.warn("Attempted to send expired message to {}", player);
             return;
         }
-        // TODO actually send the message
-    }
-
-    public static void sendMessage(Level level, UUID target, MailMessage message) {
-        if (level.isClientSide())
-            return;
-        MinecraftServer server = level.getServer();
-        ServerPlayer player = server.getPlayerList().getPlayer(target);
-        if (player == null) {
-            TarkovCraftCore.LOGGER.warn("Attempted to send mail message to unknown playerId {}", target);
-            return;
-        }
-        sendMessage(player, message);
+        player.getData(BaseDataAttachments.MAIL_LIST).addMessage(source, message);
     }
 }

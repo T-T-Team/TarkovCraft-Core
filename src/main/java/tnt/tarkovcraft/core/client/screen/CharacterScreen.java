@@ -2,15 +2,20 @@ package tnt.tarkovcraft.core.client.screen;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import tnt.tarkovcraft.core.TarkovCraftCore;
+import tnt.tarkovcraft.core.client.screen.widget.LabelButton;
+import tnt.tarkovcraft.core.util.CommonLabels;
+import tnt.tarkovcraft.core.util.LocalizationHelper;
 
 import java.util.UUID;
 
 public final class CharacterScreen extends Screen implements DataScreen {
 
-    public static final Component TITLE = Component.translatable("screen.tarkovcraft_core.character.title");
+    public static final Component TITLE = LocalizationHelper.createScreenTitle(TarkovCraftCore.MOD_ID, "character");
 
     private final UUID characterProfileId;
     private boolean isMyProfile;
@@ -33,6 +38,11 @@ public final class CharacterScreen extends Screen implements DataScreen {
     @Override
     protected void init() {
         this.isMyProfile = this.minecraft.player.getUUID().equals(this.characterProfileId);
+
+        LabelButton messages = addRenderableWidget(new LabelButton(Button.builder(CommonLabels.MENU_MAIL, b -> this.minecraft.setScreen(new MailListScreen(this)))
+                .bounds(this.width - 55, 5, 50, 15)
+        ));
+
     }
 
     @Override
@@ -42,5 +52,10 @@ public final class CharacterScreen extends Screen implements DataScreen {
 
         // Top
         guiGraphics.fill(0, 0, this.width, 25, BaseColorPalette.BG_TRANSPARENT_WEAK); // will be combined with the default BG, making it darker
+    }
+
+    @Override
+    public boolean isPauseScreen() {
+        return false;
     }
 }

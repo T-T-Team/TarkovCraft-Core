@@ -1,4 +1,9 @@
 {
   "config.screen.tarkovcraft_core": "TarkovCraft",
-  "config.tarkovcraft_core.option.enableSkillSystem": "Enable skill system"
+  "config.tarkovcraft_core.option.enableSkillSystem": "Enable skill system",
+
+  "label.tarkovcraft_core.system": "System",
+
+  "category.tarkovcraft": "TarkovCraft",
+  "key.tarkovcraft_core.character": "Character info"
 }
