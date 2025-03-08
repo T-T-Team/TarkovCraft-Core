@@ -25,7 +25,7 @@ public final class MailList implements Comparable<MailList> {
 
     private MailList(MailSource source, List<MailMessage> messages, boolean pinned, int unreadMessages) {
         this.source = source;
-        this.messages = messages;
+        this.messages = new ArrayList<>(messages);
         this.pinned = pinned;
         this.unreadMessages = unreadMessages;
     }
@@ -50,9 +50,13 @@ public final class MailList implements Comparable<MailList> {
         return unreadMessages;
     }
 
+    public void receive(MailMessage message) {
+        this.send(message);
+        this.unreadMessages++;
+    }
+
     public void send(MailMessage message) {
         this.messages.add(message);
-        this.unreadMessages++;
     }
 
     public void delete(MailMessage message) {

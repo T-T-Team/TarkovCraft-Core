@@ -59,16 +59,16 @@ public final class MailMessage {
         this.expiryDate = ZonedDateTime.now(ZoneOffset.UTC).plusDays(3);
     }
 
-    public static MailMessage create(UUID sender, Component body) {
-        return new MailMessage(sender, body);
+    public static MailMessage create(MailSource sender, Component body) {
+        return new MailMessage(sender.getSourceId(), body);
     }
 
     public static MailMessage system(Component body) {
-        return create(SYSTEM_ID, body);
+        return create(MailSource.SYSTEM, body);
     }
 
-    public static MailMessage simpleChatMessage(UUID sender, String text) {
-        return new MailMessage(sender, Component.literal(text))
+    public static MailMessage simpleChatMessage(MailSource source, String text) {
+        return new MailMessage(source.getSourceId(), Component.literal(text))
                 .doNotExpire();
     }
 
@@ -108,6 +108,10 @@ public final class MailMessage {
 
     public UUID getMessageId() {
         return messageId;
+    }
+
+    public Component getContent() {
+        return this.body;
     }
 
     public UUID getSender() {

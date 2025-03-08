@@ -7,9 +7,9 @@ import net.minecraft.client.gui.components.Button;
 
 public class LabelButton extends Button {
 
-    private int color;
-    private int colorDisabled;
-    private int colorSelected;
+    private int color = 0xFFCCCCCC;
+    private int colorDisabled = 0xFF666666;
+    private int colorSelected = 0xFFFFFFFF;
 
     public LabelButton(Builder builder) {
         super(builder);

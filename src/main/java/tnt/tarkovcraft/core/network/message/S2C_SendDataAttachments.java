@@ -1,6 +1,9 @@
 package tnt.tarkovcraft.core.network.message;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -8,10 +11,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import tnt.tarkovcraft.core.TarkovCraftCore;
+import tnt.tarkovcraft.core.client.TarkovCraftCoreClient;
 import tnt.tarkovcraft.core.network.Synchronizable;
 
 import java.util.ArrayList;
@@ -59,6 +65,7 @@ public class S2C_SendDataAttachments implements CustomPacketPayload {
         this.data = buf.readNbt();
     }
 
+    @OnlyIn(Dist.CLIENT)
     public <T extends Synchronizable> void handleMessage(IPayloadContext ctx) {
         Player player = ctx.player();
         Level level = player.level();
@@ -72,6 +79,8 @@ public class S2C_SendDataAttachments implements CustomPacketPayload {
             Synchronizable value = (Synchronizable) entity.getData(type);
             CompoundTag attachmentData = this.data.getCompound(attachment.toString());
             value.deserialize(attachmentData);
+
+            TarkovCraftCoreClient.sendDataSyncEvent(entity, type, value);
         }
     }
 

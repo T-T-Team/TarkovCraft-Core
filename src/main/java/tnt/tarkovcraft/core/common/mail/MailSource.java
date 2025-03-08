@@ -6,6 +6,7 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.util.CommonLabels;
@@ -41,7 +42,15 @@ public class MailSource {
     }
 
     public static MailSource player(Player player) {
-        return new MailSource(player.getUUID(), Optional.empty(), player.getDisplayName(), false);
+        return new MailSource(player.getUUID(), Optional.empty(), Component.literal(player.getName().getString()), false);
+    }
+
+    public boolean is(UUID uuid) {
+        return this.sourceId.equals(uuid);
+    }
+
+    public boolean is(Entity entity) {
+        return entity != null && this.sourceId.equals(entity.getUUID());
     }
 
     public UUID getSourceId() {
@@ -61,7 +70,7 @@ public class MailSource {
     }
 
     public boolean isChatAllowed() {
-        return !this.systemChat; // TODO global config toggle
+        return !this.systemChat && TarkovCraftCore.getConfig().allowMailPlayerMessages;
     }
 
     @Override

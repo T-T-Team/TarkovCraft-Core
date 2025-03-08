@@ -13,9 +13,18 @@ public abstract class LayeredScreen extends Screen {
     }
 
     @Override
+    protected void init() {
+        this.parent.init(this.minecraft, this.width, this.height);
+    }
+
+    @Override
     public void onClose() {
         if (this.displayParentOnClose())
-            this.minecraft.setScreen(this.parent);
+            this.openParentScreen();
+    }
+
+    public void openParentScreen() {
+        this.minecraft.setScreen(this.parent);
     }
 
     public boolean displayParentOnClose() {

@@ -3,6 +3,8 @@ package tnt.tarkovcraft.core.client;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -10,6 +12,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModLoader;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
@@ -19,6 +22,8 @@ import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.client.event.RegisterTradeResourceRendererEvent;
 import tnt.tarkovcraft.core.client.render.TradeResourceRenderManager;
 import tnt.tarkovcraft.core.client.screen.CharacterScreen;
+import tnt.tarkovcraft.core.client.screen.DataScreen;
+import tnt.tarkovcraft.core.network.Synchronizable;
 
 import static tnt.tarkovcraft.core.util.LocalizationHelper.createKeybindName;
 
@@ -57,6 +62,14 @@ public final class TarkovCraftCoreClient {
             if (KEY_CHARACTER.consumeClick()) {
                 client.setScreen(new CharacterScreen());
             }
+        }
+    }
+
+    public static void sendDataSyncEvent(Entity entity, AttachmentType<?> type, Synchronizable data) {
+        Minecraft minecraft = Minecraft.getInstance();
+        Screen screen = minecraft.screen;
+        if (screen instanceof DataScreen dataScreen) {
+            dataScreen.onAttachmentDataReceived(entity, type, data);
         }
     }
 }

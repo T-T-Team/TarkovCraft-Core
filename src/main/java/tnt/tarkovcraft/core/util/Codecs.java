@@ -2,6 +2,9 @@ package tnt.tarkovcraft.core.util;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 
 import java.time.ZonedDateTime;
 
@@ -18,4 +21,17 @@ public final class Codecs {
             },
             ZonedDateTime::toString
     );
+
+    public static <T> CompoundTag serialize(Codec<T> codec, T obj) {
+        DataResult<Tag> result = codec.encodeStart(NbtOps.INSTANCE, obj);
+        CompoundTag tag = new CompoundTag();
+        tag.put("data", result.getOrThrow());
+        return tag;
+    }
+
+    public static <T> T deserialize(CompoundTag tag, Codec<T> codec) {
+        Tag data = tag.get("data");
+        DataResult<T> result = codec.parse(NbtOps.INSTANCE, data);
+        return result.getOrThrow();
+    }
 }

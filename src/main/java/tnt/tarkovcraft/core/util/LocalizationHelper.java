@@ -1,6 +1,7 @@
 package tnt.tarkovcraft.core.util;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class LocalizationHelper {
 
@@ -8,11 +9,11 @@ public class LocalizationHelper {
         return "key." + owner + "." + name;
     }
 
-    public static Component createScreenTitle(String owner, String screen) {
+    public static MutableComponent createScreenTitle(String owner, String screen) {
         return createScreenComponent(owner, screen, "title");
     }
 
-    public static Component createScreenComponent(String owner, String screen, String componentType) {
+    public static MutableComponent createScreenComponent(String owner, String screen, String componentType) {
         return Component.translatable("screen." + owner + "." + screen + "." + componentType);
     }
 }

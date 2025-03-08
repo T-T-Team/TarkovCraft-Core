@@ -1,4 +1,4 @@
-package tnt.tarkovcraft.core.common;
+package tnt.tarkovcraft.core.common.config;
 
 import dev.toma.configuration.config.Config;
 import dev.toma.configuration.config.Configurable;
@@ -9,9 +9,16 @@ public class TarkovCraftCoreConfig {
 
     @Configurable
     @Configurable.Synchronized
+    @Configurable.Comment(localize = true, value = "Enables mail system for reception of items and chat messages")
     public boolean enableMailSystem = true;
 
     @Configurable
     @Configurable.Synchronized
+    @Configurable.Comment(localize = true, value = "Allows messages to be sent between players as a chat")
+    public boolean allowMailPlayerMessages = true;
+
+    @Configurable
+    @Configurable.Synchronized
+    @Configurable.Comment(localize = true, value = "Enables skill system leveling and buffs")
     public boolean enableSkillSystem = true;
 }

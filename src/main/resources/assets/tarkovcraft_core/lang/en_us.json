@@ -1,8 +1,17 @@
 {
-  "config.screen.tarkovcraft_core": "TarkovCraft",
-  "config.tarkovcraft_core.option.enableSkillSystem": "Enable skill system",
+  "screen.tarkovcraft_core.character.title": "Character",
+  "screen.tarkovcraft_core.character.mail": "Messages",
+  "screen.tarkovcraft_core.mail.title": "Character",
+  "screen.tarkovcraft_core.mail.active_chat": "Active Chat",
+  "screen.tarkovcraft_core.mail.hint.send": "Write a new message, send by pressing Enter",
+  "screen.tarkovcraft_core.mail.hint.no_chat": "You cannot chat with this person",
 
   "label.tarkovcraft_core.system": "System",
+
+  "config.screen.tarkovcraft_core": "TarkovCraft",
+  "config.tarkovcraft_core.option.enableSkillSystem": "Enable skill system",
+  "config.tarkovcraft_core.option.enableMailSystem": "Enable mail system",
+  "config.tarkovcraft_core.option.allowMailPlayerMessages": "Allow player chat",
 
   "category.tarkovcraft": "TarkovCraft",
   "key.tarkovcraft_core.character": "Character info"

@@ -1,13 +1,10 @@
 package tnt.tarkovcraft.core.network;
 
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
-import net.neoforged.neoforge.network.handling.IPayloadHandler;
+import net.neoforged.neoforge.network.registration.HandlerThread;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
-
-import java.util.function.BiConsumer;
+import tnt.tarkovcraft.core.network.message.mail.C2S_MailSendMessage;
 
 public final class TarkovCraftCoreNetwork {
 
@@ -15,15 +12,12 @@ public final class TarkovCraftCoreNetwork {
     public static final String NETWORK_ID = "TarkovCraftCoreNetwork@" + VERSION;
 
     public static void onRegistration(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registry = event.registrar(NETWORK_ID);
+        PayloadRegistrar registry = event.registrar(NETWORK_ID).executesOn(HandlerThread.MAIN);
 
         // c2s
+        registry.playToServer(C2S_MailSendMessage.TYPE, C2S_MailSendMessage.CODEC, C2S_MailSendMessage::handleMessage);
 
         // s2c
-        registry.playToClient(S2C_SendDataAttachments.TYPE, S2C_SendDataAttachments.CODEC, handleMainThread(S2C_SendDataAttachments::handleMessage));
-    }
-
-    public static <T extends CustomPacketPayload> IPayloadHandler<T> handleMainThread(BiConsumer<T, IPayloadContext> ctxConsumer) {
-        return (payload, context) -> context.enqueueWork(() -> ctxConsumer.accept(payload, context));
+        registry.playToClient(S2C_SendDataAttachments.TYPE, S2C_SendDataAttachments.CODEC, S2C_SendDataAttachments::handleMessage);
     }
 }
