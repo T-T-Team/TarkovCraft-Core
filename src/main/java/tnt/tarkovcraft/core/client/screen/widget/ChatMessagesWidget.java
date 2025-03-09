@@ -76,7 +76,10 @@ public class ChatMessagesWidget extends AbstractWidget {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        int messageCount = this.chat.listMessages().size() - 1;
+        List<MailMessage> messages = this.chat.listMessages();
+        if (messages.isEmpty())
+            return false;
+        int messageCount = messages.size() - 1;
         this.scrollAmount = Math.clamp(this.scrollAmount + scrollY, 0.0, messageCount * 10);
         if (this.scrollChangeListener != null) {
             this.scrollChangeListener.onScrollChange(scrollX, this.scrollAmount);

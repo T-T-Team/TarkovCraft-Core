@@ -15,19 +15,19 @@ public final class MailList implements Comparable<MailList> {
             MailSource.CODEC.fieldOf("src").forGetter(t -> t.source),
             MailMessage.CODEC.listOf().fieldOf("msg").forGetter(t -> t.messages),
             Codec.BOOL.fieldOf("pin").forGetter(t -> t.pinned),
-            Codec.INT.fieldOf("count").forGetter(t -> t.unreadMessages)
+            Codec.INT.fieldOf("count").forGetter(t -> t.messageCount)
     ).apply(instance, MailList::new));
 
     private final MailSource source;
     private final List<MailMessage> messages;
     private boolean pinned;
-    private int unreadMessages;
+    private int messageCount;
 
-    private MailList(MailSource source, List<MailMessage> messages, boolean pinned, int unreadMessages) {
+    private MailList(MailSource source, List<MailMessage> messages, boolean pinned, int messageCount) {
         this.source = source;
         this.messages = new ArrayList<>(messages);
         this.pinned = pinned;
-        this.unreadMessages = unreadMessages;
+        this.messageCount = messageCount;
     }
 
     public MailList(MailSource source) {
@@ -43,16 +43,16 @@ public final class MailList implements Comparable<MailList> {
     }
 
     public void markAsRead() {
-        this.unreadMessages = 0;
+        this.messageCount = 0;
     }
 
-    public int getUnreadMessages() {
-        return unreadMessages;
+    public String getMessageCount() {
+        return this.messageCount > 99 ? "[99+]" : String.format("[%d]", this.messageCount);
     }
 
     public void receive(MailMessage message) {
         this.send(message);
-        this.unreadMessages++;
+        this.messageCount++;
     }
 
     public void send(MailMessage message) {

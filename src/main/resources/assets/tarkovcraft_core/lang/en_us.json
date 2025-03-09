@@ -3,10 +3,17 @@
   "screen.tarkovcraft_core.character.mail": "Messages",
   "screen.tarkovcraft_core.mail.title": "Character",
   "screen.tarkovcraft_core.mail.active_chat": "Active Chat",
+  "screen.tarkovcraft_core.mail.new_chat": "Start new chat",
   "screen.tarkovcraft_core.mail.hint.send": "Write a new message, send by pressing Enter",
   "screen.tarkovcraft_core.mail.hint.no_chat": "You cannot chat with this person",
 
+  "label.tarkovcraft_core.message.item_received": "You have received new item",
   "label.tarkovcraft_core.system": "System",
+  "label.tarkovcraft_core.form.player_name": "Player name",
+  "label.tarkovcraft_core.hint.player_name": "Enter player name",
+  "label.tarkovcraft_core.validation.null": "Value cannot be empty",
+  "label.tarkovcraft_core.validation.unknown_player": "Unknown player",
+  "label.tarkovcraft_core.validation.player_self": "You cannot use your player",
 
   "config.screen.tarkovcraft_core": "TarkovCraft",
   "config.tarkovcraft_core.option.enableSkillSystem": "Enable skill system",

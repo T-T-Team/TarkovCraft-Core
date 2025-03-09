@@ -26,7 +26,7 @@ import java.util.List;
 
 public class S2C_SendDataAttachments implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = TarkovCraftCore.createResourceLocation("send_data_attachment");
+    public static final ResourceLocation ID = TarkovCraftCore.createResourceLocation("sync/data_attachments");
     public static final Type<S2C_SendDataAttachments> TYPE = new Type<>(ID);
     public static final StreamCodec<FriendlyByteBuf, S2C_SendDataAttachments> CODEC = StreamCodec.of(
             S2C_SendDataAttachments::encode,

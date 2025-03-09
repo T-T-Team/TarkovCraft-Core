@@ -18,7 +18,7 @@ import java.util.UUID;
 
 public record C2S_MailSendMessage(UUID target, MailMessage message) implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = TarkovCraftCore.createResourceLocation("mail_send_message");
+    public static final ResourceLocation ID = TarkovCraftCore.createResourceLocation("mail/message/send");
     public static final Type<C2S_MailSendMessage> TYPE = new Type<>(ID);
     public static final StreamCodec<FriendlyByteBuf, C2S_MailSendMessage> CODEC = StreamCodec.of(C2S_MailSendMessage::encode, C2S_MailSendMessage::decode);
 

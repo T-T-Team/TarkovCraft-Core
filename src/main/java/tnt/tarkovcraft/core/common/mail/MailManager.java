@@ -51,6 +51,10 @@ public final class MailManager implements Synchronizable {
         return this.messages.computeIfAbsent(source, MailList::new);
     }
 
+    public boolean hasChat(MailSource source) {
+        return this.messages.containsKey(source);
+    }
+
     @Override
     public CompoundTag serialize() {
         return Codecs.serialize(CODEC, this);
