@@ -10,7 +10,7 @@ import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.init.BaseTradeResources;
 import tnt.tarkovcraft.core.common.data.filter.ItemStackFilter;
 import tnt.tarkovcraft.core.common.data.filter.ItemStackFilterType;
-import tnt.tarkovcraft.core.util.PlayerHelper;
+import tnt.tarkovcraft.core.util.helper.PlayerHelper;
 
 import java.util.Collections;
 import java.util.List;

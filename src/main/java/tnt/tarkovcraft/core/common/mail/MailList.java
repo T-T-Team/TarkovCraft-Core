@@ -14,24 +14,21 @@ public final class MailList implements Comparable<MailList> {
     public static final Codec<MailList> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             MailSource.CODEC.fieldOf("src").forGetter(t -> t.source),
             MailMessage.CODEC.listOf().fieldOf("msg").forGetter(t -> t.messages),
-            Codec.BOOL.fieldOf("pin").forGetter(t -> t.pinned),
-            Codec.INT.fieldOf("count").forGetter(t -> t.messageCount)
+            Codec.BOOL.fieldOf("pin").forGetter(t -> t.pinned)
     ).apply(instance, MailList::new));
 
     private final MailSource source;
     private final List<MailMessage> messages;
     private boolean pinned;
-    private int messageCount;
 
-    private MailList(MailSource source, List<MailMessage> messages, boolean pinned, int messageCount) {
+    private MailList(MailSource source, List<MailMessage> messages, boolean pinned) {
         this.source = source;
         this.messages = new ArrayList<>(messages);
         this.pinned = pinned;
-        this.messageCount = messageCount;
     }
 
     public MailList(MailSource source) {
-        this(source, new ArrayList<>(), false, 0);
+        this(source, new ArrayList<>(), false);
     }
 
     public void setPinned(boolean pinned) {
@@ -42,17 +39,12 @@ public final class MailList implements Comparable<MailList> {
         return pinned;
     }
 
-    public void markAsRead() {
-        this.messageCount = 0;
-    }
-
     public String getMessageCount() {
-        return this.messageCount > 99 ? "[99+]" : String.format("[%d]", this.messageCount);
+        return this.messages.size() > 99 ? "[99+]" : String.format("[%d]", this.messages.size());
     }
 
     public void receive(MailMessage message) {
         this.send(message);
-        this.messageCount++;
     }
 
     public void send(MailMessage message) {

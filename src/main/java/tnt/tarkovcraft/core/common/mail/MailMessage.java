@@ -121,4 +121,8 @@ public final class MailMessage {
     public ZonedDateTime getMessageReceptionTime() {
         return messageTs;
     }
+
+    public boolean isBlank() {
+        return this.body.getString().isBlank();
+    }
 }

@@ -24,7 +24,7 @@ public class MailSource {
             ComponentSerialization.CODEC.fieldOf("name").forGetter(t -> t.name),
             Codec.BOOL.fieldOf("systemChat").forGetter(t -> t.systemChat)
     ).apply(instance, MailSource::new));
-    public static final MailSource SYSTEM = createSystem(MailMessage.SYSTEM_ID, TarkovCraftCore.createResourceLocation("textures/mail/system.png"));
+    public static final MailSource SYSTEM = createSystem(MailMessage.SYSTEM_ID, TarkovCraftCore.createResourceLocation("textures/icons/mail/system.png"));
     private final UUID sourceId;
     private final Component name;
     private final ResourceLocation icon;

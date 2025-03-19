@@ -116,11 +116,12 @@ public class FormScreen extends DialogScreen {
         }
 
         public <T> boolean validate(String id) {
-            FormElementValidator<T> validator = (FormElementValidator<T>) this.formValidators.get(id);
+            FormElementValidator<T> validator = this.getValidator(id);
             if (validator == null) {
                 return true;
             }
-            IValidationResult result = validator.validate(this.getValue(id));
+            T value = this.getValue(id);
+            IValidationResult result = validator.validate(value);
             FormElement<?, ?> formElement = this.element.get(id);
             formElement.setValidatorResult(result);
             return result.severity().isValid();

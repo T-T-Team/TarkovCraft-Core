@@ -1,4 +1,4 @@
-package tnt.tarkovcraft.core.util;
+package tnt.tarkovcraft.core.util.helper;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;

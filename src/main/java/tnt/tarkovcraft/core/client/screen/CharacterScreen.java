@@ -10,7 +10,7 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.client.screen.widget.LabelButton;
 import tnt.tarkovcraft.core.network.Synchronizable;
-import tnt.tarkovcraft.core.util.LocalizationHelper;
+import tnt.tarkovcraft.core.util.helper.LocalizationHelper;
 
 import java.util.UUID;
 

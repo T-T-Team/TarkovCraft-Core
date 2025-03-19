@@ -1,4 +1,4 @@
-package tnt.tarkovcraft.core.util;
+package tnt.tarkovcraft.core.util.helper;
 
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -9,6 +9,7 @@ import tnt.tarkovcraft.core.common.mail.MailMessage;
 import tnt.tarkovcraft.core.common.mail.MailMessageItemAttachment;
 import tnt.tarkovcraft.core.common.mail.MailSource;
 import tnt.tarkovcraft.core.common.mail.MailSystem;
+import tnt.tarkovcraft.core.util.CommonLabels;
 
 public final class PlayerHelper {
 

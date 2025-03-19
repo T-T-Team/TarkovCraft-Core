@@ -26,7 +26,7 @@ public final class MailSystem {
 
     public static void sendMessage(Player target, MailSource source, MailMessage message) {
         Level level = target.level();
-        if (level.isClientSide())
+        if (level.isClientSide() || message.isBlank())
             return;
         if (!isEnabled()) {
             TarkovCraftCore.LOGGER.warn("Attempted to send mail to player {} while having disabled mail system! No message will be sent", target);
@@ -56,7 +56,10 @@ public final class MailSystem {
             PacketDistributor.sendToPlayer(sender, new S2C_SendDataAttachments(sender, BaseDataAttachments.MAIL_MANAGER.get()));
         }
         // and send the message to the target
-        target.getData(BaseDataAttachments.MAIL_MANAGER).receiveMessage(source, message);
-        PacketDistributor.sendToPlayer((ServerPlayer) target, new S2C_SendDataAttachments(target, BaseDataAttachments.MAIL_MANAGER.get()));
+        MailManager targetManager = target.getData(BaseDataAttachments.MAIL_MANAGER);
+        if (!targetManager.isBlocked(source)) {
+            targetManager.receiveMessage(source, message);
+            PacketDistributor.sendToPlayer((ServerPlayer) target, new S2C_SendDataAttachments(target, BaseDataAttachments.MAIL_MANAGER.get()));
+        }
     }
 }

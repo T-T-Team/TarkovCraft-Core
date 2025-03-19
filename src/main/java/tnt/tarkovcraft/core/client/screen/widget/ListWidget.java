@@ -5,7 +5,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.CommonComponents;
 import tnt.tarkovcraft.core.client.screen.listener.ScrollChangeListener;
-import tnt.tarkovcraft.core.util.MathHelper;
+import tnt.tarkovcraft.core.util.helper.MathHelper;
 
 import java.util.ArrayList;
 import java.util.List;

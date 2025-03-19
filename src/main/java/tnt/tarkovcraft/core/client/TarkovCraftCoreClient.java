@@ -25,7 +25,7 @@ import tnt.tarkovcraft.core.client.screen.CharacterScreen;
 import tnt.tarkovcraft.core.client.screen.DataScreen;
 import tnt.tarkovcraft.core.network.Synchronizable;
 
-import static tnt.tarkovcraft.core.util.LocalizationHelper.createKeybindName;
+import static tnt.tarkovcraft.core.util.helper.LocalizationHelper.createKeybindName;
 
 @Mod(value = TarkovCraftCore.MOD_ID, dist = Dist.CLIENT)
 public final class TarkovCraftCoreClient {

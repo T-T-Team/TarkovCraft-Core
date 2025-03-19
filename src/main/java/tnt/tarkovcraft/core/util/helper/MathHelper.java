@@ -1,4 +1,4 @@
-package tnt.tarkovcraft.core.util;
+package tnt.tarkovcraft.core.util.helper;
 
 public final class MathHelper {
 
