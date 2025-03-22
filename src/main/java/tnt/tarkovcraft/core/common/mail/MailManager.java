@@ -87,6 +87,14 @@ public final class MailManager implements Synchronizable {
         return this.messages.containsKey(source);
     }
 
+    public boolean hasAttachments(MailSource source) {
+        if (!this.messages.containsKey(source)) {
+            return false;
+        }
+        MailList chat = this.getChat(source);
+        return chat.hasAttachments();
+    }
+
     @Override
     public CompoundTag serialize() {
         return Codecs.serialize(CODEC, this);

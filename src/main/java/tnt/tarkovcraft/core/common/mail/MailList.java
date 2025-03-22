@@ -71,6 +71,10 @@ public final class MailList implements Comparable<MailList> {
         return this.messages.isEmpty() ? null : this.messages.getLast().getMessageReceptionTime();
     }
 
+    public boolean hasAttachments() {
+        return this.messages.stream().anyMatch(MailMessage::hasAttachments);
+    }
+
     @Override
     public int compareTo(@NotNull MailList o) {
         if (this.pinned != o.pinned) {

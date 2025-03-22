@@ -5,7 +5,9 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.PlayerHeadItem;
 import tnt.tarkovcraft.core.common.init.BaseMailMessageAttachments;
+import tnt.tarkovcraft.core.util.helper.PlayerHelper;
 
 import java.util.UUID;
 
@@ -29,13 +31,23 @@ public class MailMessageItemAttachment implements MailMessageAttachment {
     }
 
     @Override
-    public boolean canOpen(MailMessage message, UUID attachmentId, Player player) {
+    public boolean isClaimable(MailMessage message, UUID attachmentId, Player player) {
         return !this.claimed && !this.itemStack.isEmpty();
     }
 
     @Override
-    public void open(MailMessage message, UUID attachmentId, Player player) {
-        // TODO open claim menu
+    public boolean claim(MailMessage message, UUID attachmentId, Player player) {
+        if (this.claimed) {
+            return false;
+        }
+        PlayerHelper.giveItem(this.itemStack.copy(), player);
+        this.claimed = true;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return this.getType().identifier() + "[item=" + this.itemStack + ", claimed=" + this.claimed + "]";
     }
 
     @Override

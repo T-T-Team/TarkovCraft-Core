@@ -8,7 +8,15 @@ public interface MailMessageAttachment {
 
     MailMessageAttachmentType<?> getType();
 
-    boolean canOpen(MailMessage message, UUID attachmentId, Player player);
+    boolean isClaimable(MailMessage message, UUID attachmentId, Player player);
 
-    void open(MailMessage message, UUID attachmentId, Player player);
+    /**
+     * Called when user claims the attachment
+     * @param message Message to which this attachment is attached to
+     * @param attachmentId Unique ID of this attachment
+     * @param player Player who claims this attachment
+     * @return Whether this attachment was claimed successfully. Returning {@code false} stops all following
+     * attachments from being claimed
+     */
+    boolean claim(MailMessage message, UUID attachmentId, Player player);
 }

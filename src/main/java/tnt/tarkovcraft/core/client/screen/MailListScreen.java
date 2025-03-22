@@ -34,10 +34,7 @@ import tnt.tarkovcraft.core.common.mail.MailManager;
 import tnt.tarkovcraft.core.common.mail.MailMessage;
 import tnt.tarkovcraft.core.common.mail.MailSource;
 import tnt.tarkovcraft.core.network.Synchronizable;
-import tnt.tarkovcraft.core.network.message.mail.C2S_MailBlockUser;
-import tnt.tarkovcraft.core.network.message.mail.C2S_MailCreateChat;
-import tnt.tarkovcraft.core.network.message.mail.C2S_MailDeleteChat;
-import tnt.tarkovcraft.core.network.message.mail.C2S_MailSendMessage;
+import tnt.tarkovcraft.core.network.message.mail.*;
 import tnt.tarkovcraft.core.util.CommonLabels;
 import tnt.tarkovcraft.core.util.helper.LocalizationHelper;
 
@@ -56,9 +53,11 @@ public class MailListScreen extends LayeredScreen implements DataScreen {
     public static final Component DELETE_CHAT = LocalizationHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "hint.delete_chat");
     public static final Component BLOCK_USER = LocalizationHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "hint.block_user");
     public static final Component UNBLOCK_USER = LocalizationHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "hint.unblock_user");
+    public static final Component CLAIM_ATTACHMENTS = LocalizationHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "hint.claim_attachments");
 
     public static final ResourceLocation ICON_DELETE_CHAT = TarkovCraftCore.createResourceLocation("textures/icons/mail/delete.png");
     public static final ResourceLocation ICON_BLOCK_USER = TarkovCraftCore.createResourceLocation("textures/icons/mail/block.png");
+    public static final ResourceLocation ICON_CLAIM_ATTACHMENTS = TarkovCraftCore.createResourceLocation("textures/icons/mail/claim_attachments.png");
 
     private MailManager userMailManager;
     private MailSource selectedChat;
@@ -146,19 +145,29 @@ public class MailListScreen extends LayeredScreen implements DataScreen {
             } else {
                 this.addRenderableOnly(new AbstractTextRenderable.ScrollingComponent(left + 5, this.height - 20, this.width - left - 10, 15, ColorPalette.TEXT_COLOR_ERROR, this.font, CANNOT_CHAT));
             }
+            int controlButtonLeft = this.width - 76;
             // Delete chat button
-            IconButton deleteChatButton = this.addRenderableWidget(new IconButton(this.width - 76, 5, 16, 16, ICON_DELETE_CHAT, this::deleteChat));
+            IconButton deleteChatButton = this.addRenderableWidget(new IconButton(controlButtonLeft, 5, 16, 16, ICON_DELETE_CHAT, this::deleteChat));
             deleteChatButton.setTooltip(Tooltip.create(DELETE_CHAT));
             deleteChatButton.setTooltipDelay(Duration.ofMillis(500));
             deleteChatButton.setTint(ColorPalette.RED);
+            controlButtonLeft -= 21;
             if (!this.selectedChat.isSystemChat()) {
                 // Block user button
                 boolean isUserBlocked = this.userMailManager.isBlocked(this.selectedChat);
-                IconButton userControlButton = this.addRenderableWidget(new IconButton(this.width - 97, 5, 16, 16, this::blockOrUnblockUser));
+                IconButton userControlButton = this.addRenderableWidget(new IconButton(controlButtonLeft, 5, 16, 16, this::blockOrUnblockUser));
                 userControlButton.setTooltip(Tooltip.create(isUserBlocked ? UNBLOCK_USER : BLOCK_USER));
                 userControlButton.setTooltipDelay(Duration.ofMillis(500));
                 userControlButton.setIcon(ICON_BLOCK_USER);
                 userControlButton.setTint(isUserBlocked ? ColorPalette.GREEN : ColorPalette.RED);
+                controlButtonLeft -= 21;
+            }
+            // Attachments button
+            if (this.userMailManager.hasAttachments(this.selectedChat)) {
+                IconButton claimAttachmentsButton = this.addRenderableWidget(new IconButton(controlButtonLeft, 5, 16, 16, ICON_CLAIM_ATTACHMENTS, this::claimAttachments));
+                claimAttachmentsButton.setTooltip(Tooltip.create(CLAIM_ATTACHMENTS));
+                claimAttachmentsButton.setTooltipDelay(Duration.ofMillis(500));
+                claimAttachmentsButton.setTint(ColorPalette.YELLOW);
             }
         }
     }
@@ -245,6 +254,12 @@ public class MailListScreen extends LayeredScreen implements DataScreen {
         UUID target = this.selectedChat.getSourceId();
         boolean isBlocked = this.userMailManager.isBlocked(this.selectedChat);
         PacketDistributor.sendToServer(new C2S_MailBlockUser(target, !isBlocked));
+        this.init(this.minecraft, this.width, this.height);
+    }
+
+    private void claimAttachments() {
+        UUID target = this.selectedChat.getSourceId();
+        PacketDistributor.sendToServer(new C2S_MailClaimAttachments(target));
         this.init(this.minecraft, this.width, this.height);
     }
 

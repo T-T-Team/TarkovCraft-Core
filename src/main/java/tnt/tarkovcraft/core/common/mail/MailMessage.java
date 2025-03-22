@@ -6,6 +6,7 @@ import net.minecraft.Util;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
+import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.util.Codecs;
 
 import java.time.ZoneOffset;
@@ -84,6 +85,10 @@ public final class MailMessage {
         return Optional.ofNullable(this.attachments.get(uuid));
     }
 
+    public void removeAttachment(UUID uuid) {
+        this.attachments.remove(uuid);
+    }
+
     public MailMessage setExpiryDate(ZonedDateTime expiryDate) {
         this.expiryDate = expiryDate;
         return this;
@@ -95,6 +100,7 @@ public final class MailMessage {
 
     public MailMessage attachment(MailMessageAttachment attachment) {
         UUID attachmentId = UUID.randomUUID();
+        TarkovCraftCore.LOGGER.debug(MailSystem.MARKER, "Adding attachment {} to message {}. Content {}", attachmentId, this.messageId, attachment);
         this.attachments.put(attachmentId, attachment);
         return this;
     }

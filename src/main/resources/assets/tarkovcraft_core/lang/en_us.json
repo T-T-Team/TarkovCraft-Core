@@ -9,6 +9,7 @@
   "screen.tarkovcraft_core.mail.hint.delete_chat": "Delete chat",
   "screen.tarkovcraft_core.mail.hint.block_user": "Block user",
   "screen.tarkovcraft_core.mail.hint.unblock_user": "Unblock user",
+  "screen.tarkovcraft_core.mail.hint.claim_attachments": "Claim attachments",
 
   "label.tarkovcraft_core.message.item_received": "You have received new item",
   "label.tarkovcraft_core.system": "System",
