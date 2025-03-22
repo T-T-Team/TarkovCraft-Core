@@ -11,6 +11,7 @@ import tnt.tarkovcraft.core.network.message.mail.C2S_MailBlockUser;
 import tnt.tarkovcraft.core.network.message.mail.C2S_MailCreateChat;
 import tnt.tarkovcraft.core.network.message.mail.C2S_MailDeleteChat;
 import tnt.tarkovcraft.core.network.message.mail.C2S_MailSendMessage;
+import tnt.tarkovcraft.core.network.message.notification.S2C_SendNotification;
 
 import java.util.Locale;
 
@@ -29,6 +30,10 @@ public final class TarkovCraftCoreNetwork {
 
         registerMailHandlers(registry);
 
+        // notification
+        registry.playToClient(S2C_SendNotification.TYPE, S2C_SendNotification.CODEC, S2C_SendNotification::handleMessage);
+
+        // synchronization
         registry.playToClient(S2C_SendDataAttachments.TYPE, S2C_SendDataAttachments.CODEC, S2C_SendDataAttachments::handleMessage);
     }
 

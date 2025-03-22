@@ -54,7 +54,7 @@ public class ItemResource implements TradeResource {
             ItemStack itemStack = this.findItem(context);
             int count = itemStack.getCount();
             if (itemStack.isEmpty()) {
-                TarkovCraftCore.LOGGER.error("Attempted to consume an empty item resource for {} while requiring remaining amount of {} from total {}", context, remainingAmount, this.count);
+                TarkovCraftCore.LOGGER.error(TarkovCraftCore.MARKER, "Attempted to consume an empty item resource for {} while requiring remaining amount of {} from total {}", context, remainingAmount, this.count);
                 break;
             }
             int toRemove = Math.min(remainingAmount, count);

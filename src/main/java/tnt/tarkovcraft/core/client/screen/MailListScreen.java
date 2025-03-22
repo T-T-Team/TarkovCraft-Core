@@ -23,7 +23,10 @@ import org.lwjgl.glfw.GLFW;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.client.screen.form.FormScreen;
 import tnt.tarkovcraft.core.client.screen.form.StringFormElement;
+import tnt.tarkovcraft.core.client.screen.renderable.AbstractTextRenderable;
 import tnt.tarkovcraft.core.client.screen.renderable.HorizontalLineRenderable;
+import tnt.tarkovcraft.core.client.screen.renderable.ShapeRenderable;
+import tnt.tarkovcraft.core.client.screen.renderable.VerticalLineRenderable;
 import tnt.tarkovcraft.core.client.screen.widget.*;
 import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
 import tnt.tarkovcraft.core.common.mail.MailList;
@@ -43,7 +46,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-public class MailListScreen extends OverlayScreen implements DataScreen {
+public class MailListScreen extends LayeredScreen implements DataScreen {
 
     public static final Component TITLE = LocalizationHelper.createScreenTitle(TarkovCraftCore.MOD_ID, "mail");
     public static final Component ACTIVE_CHAT = LocalizationHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "active_chat");
@@ -87,45 +90,67 @@ public class MailListScreen extends OverlayScreen implements DataScreen {
                 .sorted()
                 .toList();
 
+        // bg
+        this.addRenderableOnly(new VerticalLineRenderable(this.width / 3, -1, this.height, ColorPalette.WHITE));
+
+        // chat header
+        int left = this.width / 3 + 1;
+        Component chatName = ACTIVE_CHAT;
+        this.addRenderableOnly(new ShapeRenderable(left, 0, this.width - left, 25, ColorPalette.BG_TRANSPARENT_NORMAL));
+        this.addRenderableOnly(new HorizontalLineRenderable(left, this.width, 25, ColorPalette.WHITE));
+        if (this.selectedChat != null) {
+            chatName = this.selectedChat.getName();
+            this.addRenderableOnly(new HorizontalLineRenderable(left, this.width, this.height - 26, ColorPalette.WHITE));
+        }
+        this.addRenderableOnly(new AbstractTextRenderable.ScrollingComponent(left + 5, 5, this.width - left - 10, 15, ColorPalette.TEXT_COLOR, this.font, chatName));
+
         // back button
         this.addRenderableWidget(new LabelButton(Button.builder(CommonComponents.GUI_BACK, t -> this.openParentScreen())
                 .bounds(this.width - 55, 5, 50, 16)
         ));
 
-        // Chat selection
         int chatHeight = 20;
         int maxChatCount = (this.height - 30) / chatHeight;
         int listHeight = maxChatCount * chatHeight;
         int diff = this.height - listHeight; // for a new chat button
         int chatSelectionWidth = this.width / 3 - 4;
+        // Sidebar bg
+        this.addRenderableOnly(new ShapeRenderable(0, 0, chatSelectionWidth + 4, this.height, ColorPalette.BG_TRANSPARENT_NORMAL));
+        // Chat selection
         ListWidget<ChatWidget> chatList = this.addRenderableWidget(new ListWidget<>(0, 0, chatSelectionWidth, listHeight, chats, (chat, index) -> new ChatWidget(0, index * chatHeight, chatSelectionWidth, chatHeight, chat, this.font)));
         chatList.setScroll(this.chatSelectScroll);
         chatList.setScrollListener((x, y) -> this.chatSelectScroll = y);
         // Chat selection scrollbar
-        ScrollbarWidget scrollbar = this.addRenderableWidget(new ScrollbarWidget(chatSelectionWidth, 0, 4, listHeight, chatList));
+        ScrollbarWidget scrollbar = this.addRenderableWidget(new ScrollbarWidget(chatSelectionWidth, 0, 4, listHeight + 1, chatList));
         scrollbar.setAlwaysVisible(true);
         // Horizontal line separator between chat selection and NewChat button
-        this.addRenderableOnly(new HorizontalLineRenderable(-1, chatSelectionWidth + 4, this.height - diff + 1, 0xFFFFFFFF));
+        this.addRenderableOnly(new HorizontalLineRenderable(-1, chatSelectionWidth + 4, this.height - diff + 1, ColorPalette.WHITE));
         // New chat button
-        this.addRenderableWidget(new LabelButton(Button.builder(NEW_CHAT, this::showNewChatDialog).bounds(5, this.height - 25, this.width / 3 - 10, 20)));
+        LabelButton newChatButton = this.addRenderableWidget(new LabelButton(Button.builder(NEW_CHAT, this::showNewChatDialog).bounds(0, listHeight + 2, this.width / 3, this.height - listHeight - 2)));
+        newChatButton.setBackgroundHoverColor(ColorPalette.BG_HOVER_LIGHT);
         // Chat window
         if (this.selectedChat != null) {
-            int left = this.width / 3 + 1;
+            // bg
+            this.addRenderableOnly(new ShapeRenderable(left, this.height - 25, this.width - left, 25, ColorPalette.BG_TRANSPARENT_NORMAL));
+            // chat
             MailList chat = this.userMailManager.getChat(this.selectedChat);
             this.messages = this.addRenderableWidget(new ChatMessagesWidget(left, 26, this.width - left, this.height - 52, player.getUUID(), this.font, chat));
+            this.messages.setBackgroundColor(ColorPalette.BG_TRANSPARENT_WEAK);
             this.messages.setScrollAmount(this.chatMessageScroll);
             this.messages.setScrollChangeListener((x, y) -> this.chatMessageScroll = y);
             // Send message box
-            if (this.selectedChat.isChatAllowed() && this.isOnline(this.selectedChat) && !this.userMailManager.isBlocked(this.selectedChat)) {
+            if (this.canSendChatMessages()) {
                 this.messageBox = this.addRenderableWidget(new EditBox(this.font, left + 5, this.height - 20, this.width - left - 10, 15, CommonComponents.EMPTY));
                 this.messageBox.setMaxLength(256);
                 this.messageBox.setHint(SEND_MESSAGE_HINT);
+            } else {
+                this.addRenderableOnly(new AbstractTextRenderable.ScrollingComponent(left + 5, this.height - 20, this.width - left - 10, 15, ColorPalette.TEXT_COLOR_ERROR, this.font, CANNOT_CHAT));
             }
             // Delete chat button
             IconButton deleteChatButton = this.addRenderableWidget(new IconButton(this.width - 76, 5, 16, 16, ICON_DELETE_CHAT, this::deleteChat));
             deleteChatButton.setTooltip(Tooltip.create(DELETE_CHAT));
             deleteChatButton.setTooltipDelay(Duration.ofMillis(500));
-            deleteChatButton.setTint(0xFFFF0000);
+            deleteChatButton.setTint(ColorPalette.RED);
             if (!this.selectedChat.isSystemChat()) {
                 // Block user button
                 boolean isUserBlocked = this.userMailManager.isBlocked(this.selectedChat);
@@ -133,31 +158,18 @@ public class MailListScreen extends OverlayScreen implements DataScreen {
                 userControlButton.setTooltip(Tooltip.create(isUserBlocked ? UNBLOCK_USER : BLOCK_USER));
                 userControlButton.setTooltipDelay(Duration.ofMillis(500));
                 userControlButton.setIcon(ICON_BLOCK_USER);
-                userControlButton.setTint(isUserBlocked ? 0xFF00FF00 : 0xFFFF0000);
+                userControlButton.setTint(isUserBlocked ? ColorPalette.GREEN : ColorPalette.RED);
             }
         }
     }
 
+    protected boolean canSendChatMessages() {
+        return this.selectedChat != null && this.selectedChat.isChatAllowed() && this.isOnline(this.selectedChat) && !this.userMailManager.isBlocked(this.selectedChat);
+    }
+
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         this.renderBlurredBackground();
-        guiGraphics.fill(0, 0, this.width, this.height, ColorPalette.BG_TRANSPARENT_VERY_DARK);
-        guiGraphics.vLine(this.width / 3, -1, this.height, 0xFFFFFFFF);
-
-        int left = this.width / 3 + 1;
-        guiGraphics.fill(left, 0, this.width, 25, 0xFF << 24);
-        guiGraphics.hLine(left, this.width, 25, 0xFFFFFFFF);
-        Component chatName = ACTIVE_CHAT;
-        if (this.selectedChat != null) {
-            guiGraphics.fill(left, this.height - 25, this.width, this.height, 0xFF << 24);
-            guiGraphics.hLine(left, this.width, this.height - 26, 0xFFFFFFFF);
-            chatName = this.selectedChat.getName();
-            if (!this.selectedChat.isChatAllowed()) {
-                guiGraphics.drawScrollingString(this.font, CANNOT_CHAT, left + 5, this.width - 5, this.height - 25 + (25 - this.font.lineHeight) / 2, ColorPalette.TEXT_COLOR_ERROR);
-            }
-        }
-        guiGraphics.drawScrollingString(this.font, chatName, left + 5, this.width - 5, (25 - this.font.lineHeight) / 2, ColorPalette.TEXT_COLOR);
     }
 
     @Override

@@ -99,7 +99,7 @@ public class DialogScreen extends OverlayScreen {
 
     protected void addTitle() {
         int margin = this.getButtonMargin();
-        this.addRenderableOnly(new AbstractTextRenderable.ComponentRenderable(this.left + margin, this.top + 2, this.windowWidth - 2 * margin, 10, 0xFFFFFF, false, this.font, this.title));
+        this.addRenderableOnly(new AbstractTextRenderable.Component(this.left + margin, this.top + 2, this.windowWidth - 2 * margin, 10, 0xFFFFFF, false, this.font, this.title));
     }
 
     protected void addBody() {
@@ -109,7 +109,7 @@ public class DialogScreen extends OverlayScreen {
                 .toList();
         int index = 0;
         for (FormattedCharSequence text : formattedText) {
-            this.addRenderableOnly(new AbstractTextRenderable.FormattedSequenceRenderable(this.left + margin, this.top + 15 + index++ * 10, this.windowWidth - 2 * margin, 10, 0xFFFFFF, false, this.font, text));
+            this.addRenderableOnly(new AbstractTextRenderable.FormattedSequence(this.left + margin, this.top + 15 + index++ * 10, this.windowWidth - 2 * margin, 10, 0xFFFFFF, false, this.font, text));
         }
     }
 

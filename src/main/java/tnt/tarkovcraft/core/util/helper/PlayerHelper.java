@@ -67,10 +67,10 @@ public final class PlayerHelper {
                         MailSystem.sendMessage(player, MailSource.SYSTEM, MailMessage.system(CommonLabels.MESSAGE_ITEM_RECEIVED)
                                 .attachment(MailMessageItemAttachment.item(itemstack.copy()))
                         );
-                        TarkovCraftCore.LOGGER.error("Failed to create item drop entity {} for player {}, sending as mail instead", itemEntity, player);
+                        TarkovCraftCore.LOGGER.error(TarkovCraftCore.MARKER, "Failed to create item drop entity {} for player {}, sending as mail instead", itemEntity, player);
                         return;
                     }
-                    TarkovCraftCore.LOGGER.error("Failed to create item drop entity {} for player {}", itemEntity, player);
+                    TarkovCraftCore.LOGGER.error(TarkovCraftCore.MARKER, "Failed to create item drop entity {} for player {}", itemEntity, player);
                 }
             }
         }

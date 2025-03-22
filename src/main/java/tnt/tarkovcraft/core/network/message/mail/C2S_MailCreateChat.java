@@ -14,6 +14,7 @@ import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
 import tnt.tarkovcraft.core.common.mail.MailManager;
 import tnt.tarkovcraft.core.common.mail.MailSource;
+import tnt.tarkovcraft.core.common.mail.MailSystem;
 import tnt.tarkovcraft.core.network.TarkovCraftCoreNetwork;
 import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 
@@ -35,7 +36,7 @@ public record C2S_MailCreateChat(UUID target) implements CustomPacketPayload {
         MinecraftServer server = player.getServer();
         ServerPlayer targetPlayer = server.getPlayerList().getPlayer(this.target());
         if (targetPlayer == null) {
-            TarkovCraftCore.LOGGER.warn("Player {} is not online, cannot open new chat", this.target());
+            TarkovCraftCore.LOGGER.warn(MailSystem.MARKER, "Player {} is not online, cannot open new chat", this.target());
             return;
         }
         MailSource source = MailSource.player(targetPlayer);

@@ -18,6 +18,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 import tnt.tarkovcraft.core.common.TarkovCraftCommand;
 import tnt.tarkovcraft.core.common.config.TarkovCraftCoreConfig;
 import tnt.tarkovcraft.core.common.init.*;
@@ -32,6 +34,7 @@ public class TarkovCraftCore {
     public static final String MOD_ID = "tarkovcraft_core";
     public static final String GLOBAL_CATEGORY_KEY = "category.tarkovcraft";
     public static final Logger LOGGER = LogManager.getLogger("TarkovCraftCore");
+    public static final Marker MARKER = MarkerManager.getMarker("Core");
 
     private static TarkovCraftCoreConfig config;
 

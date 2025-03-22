@@ -3,10 +3,7 @@ package tnt.tarkovcraft.core.client.screen.renderable;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
-
-import java.util.function.Consumer;
 
 public abstract class AbstractTextRenderable<T> implements Renderable {
 
@@ -39,9 +36,9 @@ public abstract class AbstractTextRenderable<T> implements Renderable {
         guiGraphics.disableScissor();
     }
 
-    public static class StringRenderable extends AbstractTextRenderable<String> {
+    public static class String extends AbstractTextRenderable<java.lang.String> {
 
-        public StringRenderable(int x, int y, int width, int height, int color, boolean shadow, Font font, String text) {
+        public String(int x, int y, int width, int height, int color, boolean shadow, Font font, java.lang.String text) {
             super(x, y, width, height, color, shadow, font, text);
         }
 
@@ -51,9 +48,9 @@ public abstract class AbstractTextRenderable<T> implements Renderable {
         }
     }
 
-    public static class CenteredStringRenderable extends AbstractTextRenderable<String> {
+    public static class CenteredString extends AbstractTextRenderable<java.lang.String> {
 
-        public CenteredStringRenderable(int x, int y, int width, int height, int color, boolean shadow, Font font, String text) {
+        public CenteredString(int x, int y, int width, int height, int color, boolean shadow, Font font, java.lang.String text) {
             super(x, y, width, height, color, shadow, font, text);
         }
 
@@ -65,13 +62,13 @@ public abstract class AbstractTextRenderable<T> implements Renderable {
         }
     }
 
-    public static class ScrollingStringRenderable extends AbstractTextRenderable<String> {
+    public static class ScrollingComponent extends AbstractTextRenderable<net.minecraft.network.chat.Component> {
 
-        private final Component textComponent;
+        private final net.minecraft.network.chat.Component textComponent;
 
-        public ScrollingStringRenderable(int x, int y, int width, int height, int color, boolean shadow, Font font, String text) {
-            super(x, y, width, height, color, shadow, font, text);
-            this.textComponent = Component.literal(text);
+        public ScrollingComponent(int x, int y, int width, int height, int color, Font font, net.minecraft.network.chat.Component text) {
+            super(x, y, width, height, color, false, font, text);
+            this.textComponent = text;
         }
 
         @Override
@@ -81,9 +78,25 @@ public abstract class AbstractTextRenderable<T> implements Renderable {
         }
     }
 
-    public static class FormattedSequenceRenderable extends AbstractTextRenderable<FormattedCharSequence> {
+    public static class ScrollingString extends AbstractTextRenderable<java.lang.String> {
 
-        public FormattedSequenceRenderable(int x, int y, int width, int height, int color, boolean shadow, Font font, FormattedCharSequence text) {
+        private final net.minecraft.network.chat.Component textComponent;
+
+        public ScrollingString(int x, int y, int width, int height, int color, Font font, java.lang.String text) {
+            super(x, y, width, height, color, false, font, text);
+            this.textComponent = net.minecraft.network.chat.Component.literal(text);
+        }
+
+        @Override
+        public void renderText(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+            int top = this.y + (this.height - this.font.lineHeight) / 2;
+            graphics.drawScrollingString(this.font, this.textComponent, this.x, this.x + this.width, top, this.color);
+        }
+    }
+
+    public static class FormattedSequence extends AbstractTextRenderable<FormattedCharSequence> {
+
+        public FormattedSequence(int x, int y, int width, int height, int color, boolean shadow, Font font, FormattedCharSequence text) {
             super(x, y, width, height, color, shadow, font, text);
         }
 
@@ -93,9 +106,9 @@ public abstract class AbstractTextRenderable<T> implements Renderable {
         }
     }
 
-    public static class ComponentRenderable extends AbstractTextRenderable<Component> {
+    public static class Component extends AbstractTextRenderable<net.minecraft.network.chat.Component> {
 
-        public ComponentRenderable(int x, int y, int width, int height, int color, boolean shadow, Font font, Component text) {
+        public Component(int x, int y, int width, int height, int color, boolean shadow, Font font, net.minecraft.network.chat.Component text) {
             super(x, y, width, height, color, shadow, font, text);
         }
 

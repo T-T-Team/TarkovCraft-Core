@@ -14,4 +14,8 @@ public final class ColorPalette {
     public static final int TEXT_COLOR_INFO = 0x0066AA;
     public static final int TEXT_COLOR_WARNING = 0xAAAA00;
     public static final int TEXT_COLOR_ERROR = 0xAA0000;
+
+    public static final int WHITE = 0xFFFFFFFF;
+    public static final int RED = 0xFFFF0000;
+    public static final int GREEN = 0xFF00FF00;
 }

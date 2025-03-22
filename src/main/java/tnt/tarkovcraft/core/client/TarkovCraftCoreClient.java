@@ -14,12 +14,15 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
 import org.lwjgl.glfw.GLFW;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.client.event.RegisterTradeResourceRendererEvent;
+import tnt.tarkovcraft.core.client.notification.NotificationChannel;
+import tnt.tarkovcraft.core.client.notification.NotificationLayer;
 import tnt.tarkovcraft.core.client.render.TradeResourceRenderManager;
 import tnt.tarkovcraft.core.client.screen.CharacterScreen;
 import tnt.tarkovcraft.core.client.screen.DataScreen;
@@ -37,8 +40,10 @@ public final class TarkovCraftCoreClient {
     public TarkovCraftCoreClient(IEventBus modEventBus, ModContainer container) {
         modEventBus.addListener(this::setup);
         modEventBus.addListener(this::registerKeyBindings);
+        modEventBus.addListener(this::registerCustomGuiLayers);
 
         NeoForge.EVENT_BUS.addListener(this::onKeyboardInput);
+        NeoForge.EVENT_BUS.register(new TarkovCraftCoreClientEventHandler());
     }
 
     private void dispatchParallelRegistryEvents() {
@@ -63,6 +68,10 @@ public final class TarkovCraftCoreClient {
                 client.setScreen(new CharacterScreen());
             }
         }
+    }
+
+    private void registerCustomGuiLayers(RegisterGuiLayersEvent event) {
+        event.registerAboveAll(NotificationLayer.LAYER_ID, new NotificationLayer(NotificationChannel.MAIN));
     }
 
     public static void sendDataSyncEvent(Entity entity, AttachmentType<?> type, Synchronizable data) {

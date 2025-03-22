@@ -14,6 +14,7 @@ import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
 import tnt.tarkovcraft.core.common.mail.MailList;
 import tnt.tarkovcraft.core.common.mail.MailManager;
 import tnt.tarkovcraft.core.common.mail.MailSource;
+import tnt.tarkovcraft.core.common.mail.MailSystem;
 import tnt.tarkovcraft.core.network.TarkovCraftCoreNetwork;
 import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 
@@ -33,7 +34,7 @@ public record C2S_MailDeleteChat(UUID id) implements CustomPacketPayload {
         MailManager mailManager = player.getData(BaseDataAttachments.MAIL_MANAGER);
         MailSource source = mailManager.getSender(this.id());
         if (source == null) {
-            TarkovCraftCore.LOGGER.error("Couldn't find chat for ID {}", this.id());
+            TarkovCraftCore.LOGGER.error(MailSystem.MARKER, "Couldn't find chat for ID {}", this.id());
             return;
         }
         MailList chat = mailManager.deleteChat(source);

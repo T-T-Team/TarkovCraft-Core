@@ -1,16 +1,22 @@
 package tnt.tarkovcraft.core.common.mail;
 
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.config.TarkovCraftCoreConfig;
 import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
 import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 
 public final class MailSystem {
+
+    public static final Marker MARKER = MarkerManager.getMarker("MailSystem");
+    public static final Component FAILED_TO_SEND_MESSAGE = Component.translatable("label.tarkovcraft_core.mail.failed_to_send_message");
 
     public static boolean isEnabled() {
         return TarkovCraftCore.getConfig().enableMailSystem;
@@ -29,26 +35,26 @@ public final class MailSystem {
         if (level.isClientSide() || message.isBlank())
             return;
         if (!isEnabled()) {
-            TarkovCraftCore.LOGGER.warn("Attempted to send mail to player {} while having disabled mail system! No message will be sent", target);
+            TarkovCraftCore.LOGGER.warn(MARKER, "Attempted to send mail to player {} while having disabled mail system! No message will be sent", target);
             return;
         }
         if (!TarkovCraftCore.getConfig().allowMailPlayerMessages && !source.isSystemChat()) {
-            TarkovCraftCore.LOGGER.warn("Player {} tried to send chat message to {} while chat messages were disabled!", source.getName().getString(), target.getDisplayName().getString());
+            TarkovCraftCore.LOGGER.warn(MARKER, "Player {} tried to send chat message to {} while chat messages were disabled!", source.getName().getString(), target.getDisplayName().getString());
             return;
         }
         if (message.isExpired()) {
-            TarkovCraftCore.LOGGER.warn("Attempted to send expired message to {}", target);
+            TarkovCraftCore.LOGGER.warn(MARKER, "Attempted to send expired message to {}", target);
             return;
         }
         if (source.is(target)) {
-            TarkovCraftCore.LOGGER.warn("Player {} attempted to send message to themselves. Ignoring request", target);
+            TarkovCraftCore.LOGGER.warn(MARKER, "Player {} attempted to send message to themselves. Ignoring request", target);
             return;
         }
         // add the message to the source player
         if (!source.isSystemChat()) {
             ServerPlayer sender = level.getServer().getPlayerList().getPlayer(source.getSourceId());
             if (sender == null) {
-                TarkovCraftCore.LOGGER.error("Failed to send message due to missing sender playerID {}", source.getSourceId());
+                TarkovCraftCore.LOGGER.error(MARKER, "Failed to send message due to missing sender playerID {}", source.getSourceId());
                 return;
             }
             MailSource targetChat = MailSource.player(target);

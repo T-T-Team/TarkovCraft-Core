@@ -48,7 +48,7 @@ public class FormScreen extends DialogScreen {
 
         Component label = element.getLabel();
         // Field name
-        this.addRenderableOnly(new AbstractTextRenderable.ComponentRenderable(left, top, width, 10, 0xFFFFFF, false, this.font, label));
+        this.addRenderableOnly(new AbstractTextRenderable.Component(left, top, width, 10, 0xFFFFFF, false, this.font, label));
         // Field
         this.addRenderableWidget(element.init(left, top + 10, width, 15, this.context));
         // Error field

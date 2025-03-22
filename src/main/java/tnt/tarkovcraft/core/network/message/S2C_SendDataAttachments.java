@@ -69,7 +69,7 @@ public class S2C_SendDataAttachments implements CustomPacketPayload {
         Level level = player.level();
         Entity entity = level.getEntity(this.entityId);
         if (entity == null) {
-            TarkovCraftCore.LOGGER.warn("Entity not found in level by ID: {}", this.entityId);
+            TarkovCraftCore.LOGGER.warn(TarkovCraftCore.MARKER, "Entity not found in level by ID: {}", this.entityId);
             return;
         }
         for (ResourceLocation attachment : this.attachments) {

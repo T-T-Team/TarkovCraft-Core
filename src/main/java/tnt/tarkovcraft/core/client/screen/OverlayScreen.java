@@ -14,9 +14,4 @@ public abstract class OverlayScreen extends LayeredScreen {
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         this.parent.render(guiGraphics, -1, -1, partialTick);
     }
-
-    @Override
-    public boolean isPauseScreen() {
-        return false;
-    }
 }

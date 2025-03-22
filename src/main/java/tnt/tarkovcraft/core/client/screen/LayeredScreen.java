@@ -2,8 +2,9 @@ package tnt.tarkovcraft.core.client.screen;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import tnt.tarkovcraft.core.client.screen.renderable.NotificationScreen;
 
-public abstract class LayeredScreen extends Screen {
+public abstract class LayeredScreen extends NotificationScreen {
 
     protected final Screen parent;
 
@@ -14,6 +15,7 @@ public abstract class LayeredScreen extends Screen {
 
     @Override
     protected void init() {
+        super.init();
         this.parent.init(this.minecraft, this.width, this.height);
     }
 
@@ -30,4 +32,6 @@ public abstract class LayeredScreen extends Screen {
     public boolean displayParentOnClose() {
         return true;
     }
+
+
 }

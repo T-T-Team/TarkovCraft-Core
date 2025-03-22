@@ -7,7 +7,6 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.util.Mth;
 import tnt.tarkovcraft.core.client.screen.ColorPalette;
 import tnt.tarkovcraft.core.client.screen.listener.ScrollChangeListener;
 import tnt.tarkovcraft.core.common.mail.MailList;
@@ -25,6 +24,7 @@ public class ChatMessagesWidget extends AbstractWidget {
     private final MailList chat;
     private final List<Message> compiledMessages = new ArrayList<>();
 
+    private int backgroundColor;
     private ScrollChangeListener scrollChangeListener;
     private double scrollAmount;
 
@@ -45,6 +45,10 @@ public class ChatMessagesWidget extends AbstractWidget {
         }
     }
 
+    public void setBackgroundColor(int backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
     public void setScrollAmount(double scrollAmount) {
         this.scrollAmount = scrollAmount;
     }
@@ -57,6 +61,7 @@ public class ChatMessagesWidget extends AbstractWidget {
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         int index = (int) (this.scrollAmount / 10.0);
         guiGraphics.enableScissor(this.getX(), this.getY(), this.getRight(), this.getBottom());
+        guiGraphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), this.backgroundColor);
         float y = this.getBottom() - 10 + (float) (this.scrollAmount - index * 10.0F);
         for (int i = index; i < this.compiledMessages.size(); i++) {
             Message message = this.compiledMessages.get(i);

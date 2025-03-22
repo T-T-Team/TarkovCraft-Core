@@ -1,6 +1,7 @@
 package tnt.tarkovcraft.core.network.message.mail;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
@@ -9,6 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import tnt.tarkovcraft.core.TarkovCraftCore;
+import tnt.tarkovcraft.core.common.Notification;
 import tnt.tarkovcraft.core.common.mail.MailMessage;
 import tnt.tarkovcraft.core.common.mail.MailSource;
 import tnt.tarkovcraft.core.common.mail.MailSystem;
@@ -28,10 +30,15 @@ public record C2S_MailSendMessage(UUID target, MailMessage message) implements C
         MinecraftServer server = sender.getServer();
         ServerPlayer target = server.getPlayerList().getPlayer(this.target());
         if (target == null) {
-            TarkovCraftCore.LOGGER.warn("Received invalid message recipient from player {}", sender);
+            Notification notification = Notification.error(MailSystem.FAILED_TO_SEND_MESSAGE);
+            notification.send((ServerPlayer) sender);
+            TarkovCraftCore.LOGGER.warn(MailSystem.MARKER, "Received invalid message recipient from player {}", sender);
             return;
         }
         MailSystem.sendMessage(target, MailSource.player(sender), this.message());
+        // TODO remove
+        Notification notification = Notification.warn(Component.literal("Test"));
+        notification.send((ServerPlayer) sender);
     }
 
     @Override

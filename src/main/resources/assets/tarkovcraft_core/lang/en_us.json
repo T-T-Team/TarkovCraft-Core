@@ -17,6 +17,7 @@
   "label.tarkovcraft_core.validation.null": "Value cannot be empty",
   "label.tarkovcraft_core.validation.unknown_player": "Unknown player",
   "label.tarkovcraft_core.validation.player_self": "You cannot use your player",
+  "label.tarkovcraft_core.mail.failed_to_send_message": "Failed to send message",
 
   "config.screen.tarkovcraft_core": "TarkovCraft",
   "config.tarkovcraft_core.option.enableSkillSystem": "Enable skill system",
