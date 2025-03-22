@@ -37,6 +37,14 @@ public final class MailManager implements Synchronizable {
         this.getChat(source).send(message);
     }
 
+    public void block(UUID id) {
+        this.blockedIds.add(id);
+    }
+
+    public void unblock(UUID id) {
+        this.blockedIds.remove(id);
+    }
+
     public boolean isBlocked(MailSource source) {
         return !source.isSystemChat() && this.blockedIds.contains(source.getSourceId());
     }
@@ -62,6 +70,19 @@ public final class MailManager implements Synchronizable {
         return this.messages.computeIfAbsent(source, MailList::new);
     }
 
+    public MailList deleteChat(MailSource source) {
+        return this.messages.remove(source);
+    }
+
+    public MailSource getSender(UUID id) {
+        for (MailSource src : this.messages.keySet()) {
+            if (src.getSourceId().equals(id)) {
+                return src;
+            }
+        }
+        return null;
+    }
+
     public boolean hasChat(MailSource source) {
         return this.messages.containsKey(source);
     }
@@ -75,6 +96,8 @@ public final class MailManager implements Synchronizable {
     public void deserialize(CompoundTag tag) {
         MailManager resolved = Codecs.deserialize(tag, CODEC);
         this.messages.clear();
+        this.blockedIds.clear();
         this.messages.putAll(resolved.messages);
+        this.blockedIds.addAll(resolved.blockedIds);
     }
 }

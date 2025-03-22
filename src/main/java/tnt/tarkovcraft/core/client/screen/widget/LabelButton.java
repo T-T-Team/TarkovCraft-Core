@@ -4,9 +4,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import tnt.tarkovcraft.core.client.screen.ColorPalette;
 
 public class LabelButton extends Button {
 
+    private int backgroundHoverColor = ColorPalette.BG_HOVER_LIGHT;
     private int color = 0xFFCCCCCC;
     private int colorDisabled = 0xFF666666;
     private int colorSelected = 0xFFFFFFFF;
@@ -27,9 +29,15 @@ public class LabelButton extends Button {
         this.colorSelected = colorSelected;
     }
 
+    public void setBackgroundHoverColor(int backgroundHoverColor) {
+        this.backgroundHoverColor = backgroundHoverColor;
+    }
+
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float renderTick) {
         Font font = Minecraft.getInstance().font;
+        if (this.isHoveredOrFocused())
+            guiGraphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), this.backgroundHoverColor);
         int color = this.isActive() ? this.isHoveredOrFocused() ? this.colorSelected : this.color : this.colorDisabled;
         guiGraphics.drawString(
                 font,

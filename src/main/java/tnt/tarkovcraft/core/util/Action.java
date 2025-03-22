@@ -3,6 +3,7 @@ package tnt.tarkovcraft.core.util;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+@Deprecated
 public class Action extends ActionResult<Void> {
 
     protected Action(ActionRunnable runnable) {

@@ -12,13 +12,14 @@ import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.mail.MailMessage;
 import tnt.tarkovcraft.core.common.mail.MailSource;
 import tnt.tarkovcraft.core.common.mail.MailSystem;
+import tnt.tarkovcraft.core.network.TarkovCraftCoreNetwork;
 import tnt.tarkovcraft.core.util.Codecs;
 
 import java.util.UUID;
 
 public record C2S_MailSendMessage(UUID target, MailMessage message) implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = TarkovCraftCore.createResourceLocation("mail/message/send");
+    public static final ResourceLocation ID = TarkovCraftCoreNetwork.createId(C2S_MailSendMessage.class);
     public static final Type<C2S_MailSendMessage> TYPE = new Type<>(ID);
     public static final StreamCodec<FriendlyByteBuf, C2S_MailSendMessage> CODEC = StreamCodec.of(C2S_MailSendMessage::encode, C2S_MailSendMessage::decode);
 

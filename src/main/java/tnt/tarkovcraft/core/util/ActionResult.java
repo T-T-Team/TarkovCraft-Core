@@ -6,6 +6,7 @@ import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+@Deprecated
 public class ActionResult<R> {
 
     private final Callable<R> action;
@@ -50,5 +51,9 @@ public class ActionResult<R> {
 
     public R orHandleError(Logger logger) {
         return this.orHandleError(null, logger);
+    }
+
+    public void handleResult(Consumer<R> handler) {
+
     }
 }

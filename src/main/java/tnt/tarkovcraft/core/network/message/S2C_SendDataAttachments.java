@@ -1,9 +1,6 @@
 package tnt.tarkovcraft.core.network.message;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -19,6 +16,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.client.TarkovCraftCoreClient;
 import tnt.tarkovcraft.core.network.Synchronizable;
+import tnt.tarkovcraft.core.network.TarkovCraftCoreNetwork;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,7 +24,7 @@ import java.util.List;
 
 public class S2C_SendDataAttachments implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = TarkovCraftCore.createResourceLocation("sync/data_attachments");
+    public static final ResourceLocation ID = TarkovCraftCoreNetwork.createId(S2C_SendDataAttachments.class);
     public static final Type<S2C_SendDataAttachments> TYPE = new Type<>(ID);
     public static final StreamCodec<FriendlyByteBuf, S2C_SendDataAttachments> CODEC = StreamCodec.of(
             S2C_SendDataAttachments::encode,

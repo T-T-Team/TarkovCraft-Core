@@ -6,6 +6,9 @@
   "screen.tarkovcraft_core.mail.new_chat": "Start new chat",
   "screen.tarkovcraft_core.mail.hint.send": "Write a new message, send by pressing Enter",
   "screen.tarkovcraft_core.mail.hint.no_chat": "You cannot chat with this person",
+  "screen.tarkovcraft_core.mail.hint.delete_chat": "Delete chat",
+  "screen.tarkovcraft_core.mail.hint.block_user": "Block user",
+  "screen.tarkovcraft_core.mail.hint.unblock_user": "Unblock user",
 
   "label.tarkovcraft_core.message.item_received": "You have received new item",
   "label.tarkovcraft_core.system": "System",

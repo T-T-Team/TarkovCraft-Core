@@ -31,7 +31,9 @@ import tnt.tarkovcraft.core.common.mail.MailManager;
 import tnt.tarkovcraft.core.common.mail.MailMessage;
 import tnt.tarkovcraft.core.common.mail.MailSource;
 import tnt.tarkovcraft.core.network.Synchronizable;
+import tnt.tarkovcraft.core.network.message.mail.C2S_MailBlockUser;
 import tnt.tarkovcraft.core.network.message.mail.C2S_MailCreateChat;
+import tnt.tarkovcraft.core.network.message.mail.C2S_MailDeleteChat;
 import tnt.tarkovcraft.core.network.message.mail.C2S_MailSendMessage;
 import tnt.tarkovcraft.core.util.CommonLabels;
 import tnt.tarkovcraft.core.util.helper.LocalizationHelper;
@@ -48,13 +50,12 @@ public class MailListScreen extends OverlayScreen implements DataScreen {
     public static final Component NEW_CHAT = LocalizationHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "new_chat");
     public static final Component SEND_MESSAGE_HINT = LocalizationHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "hint.send").withStyle(ChatFormatting.ITALIC).withColor(ColorPalette.TEXT_COLOR_DISABLED);
     public static final Component CANNOT_CHAT = LocalizationHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "hint.no_chat").withStyle(ChatFormatting.ITALIC);
-    public static final Component DELETE_CHAT = LocalizationHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "delete_chat");
-    public static final Component BLOCK_USER = LocalizationHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "block_user");
-    public static final Component UNBLOCK_USER = LocalizationHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "unblock_user");
+    public static final Component DELETE_CHAT = LocalizationHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "hint.delete_chat");
+    public static final Component BLOCK_USER = LocalizationHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "hint.block_user");
+    public static final Component UNBLOCK_USER = LocalizationHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "hint.unblock_user");
 
     public static final ResourceLocation ICON_DELETE_CHAT = TarkovCraftCore.createResourceLocation("textures/icons/mail/delete.png");
-    public static final ResourceLocation ICON_BLOCK_USER = TarkovCraftCore.createResourceLocation("textures/icons/mail/block_user.png");
-    public static final ResourceLocation ICON_UNBLOCK_USER = TarkovCraftCore.createResourceLocation("textures/icons/mail/unblock_user.png");
+    public static final ResourceLocation ICON_BLOCK_USER = TarkovCraftCore.createResourceLocation("textures/icons/mail/block.png");
 
     private MailManager userMailManager;
     private MailSource selectedChat;
@@ -88,7 +89,7 @@ public class MailListScreen extends OverlayScreen implements DataScreen {
 
         // back button
         this.addRenderableWidget(new LabelButton(Button.builder(CommonComponents.GUI_BACK, t -> this.openParentScreen())
-                .bounds(this.width - 55, 0, 50, 25)
+                .bounds(this.width - 55, 5, 50, 16)
         ));
 
         // Chat selection
@@ -115,22 +116,24 @@ public class MailListScreen extends OverlayScreen implements DataScreen {
             this.messages.setScrollAmount(this.chatMessageScroll);
             this.messages.setScrollChangeListener((x, y) -> this.chatMessageScroll = y);
             // Send message box
-            if (this.selectedChat.isChatAllowed() && this.isOnline(this.selectedChat)) {
+            if (this.selectedChat.isChatAllowed() && this.isOnline(this.selectedChat) && !this.userMailManager.isBlocked(this.selectedChat)) {
                 this.messageBox = this.addRenderableWidget(new EditBox(this.font, left + 5, this.height - 20, this.width - left - 10, 15, CommonComponents.EMPTY));
                 this.messageBox.setMaxLength(256);
                 this.messageBox.setHint(SEND_MESSAGE_HINT);
             }
-            // TODO delete chat button
-            //IconButton deleteChatButton = this.addRenderableWidget(new IconButton(0, 0, 0, 0, ICON_DELETE_CHAT, this::deleteChat, ));
-            //deleteChatButton.setTooltip(Tooltip.create(DELETE_CHAT));
-            //deleteChatButton.setTooltipDelay(Duration.ofMillis(500));
-            // TODO block/unblock user button
+            // Delete chat button
+            IconButton deleteChatButton = this.addRenderableWidget(new IconButton(this.width - 76, 5, 16, 16, ICON_DELETE_CHAT, this::deleteChat));
+            deleteChatButton.setTooltip(Tooltip.create(DELETE_CHAT));
+            deleteChatButton.setTooltipDelay(Duration.ofMillis(500));
+            deleteChatButton.setTint(0xFFFF0000);
             if (!this.selectedChat.isSystemChat()) {
+                // Block user button
                 boolean isUserBlocked = this.userMailManager.isBlocked(this.selectedChat);
-                //IconButton userControlButton = this.addRenderableWidget(new IconButton());
-                //userControlButton.setTooltip(Tooltip.create(isUserBlocked ? UNBLOCK_USER : BLOCK_USER));
-                //userControlButton.setTooltipDelay(Duration.ofMillis(500));
-                //userControlButton.setIcon(isUserBlocked ? ICON_UNBLOCK_USER : ICON_BLOCK_USER);
+                IconButton userControlButton = this.addRenderableWidget(new IconButton(this.width - 97, 5, 16, 16, this::blockOrUnblockUser));
+                userControlButton.setTooltip(Tooltip.create(isUserBlocked ? UNBLOCK_USER : BLOCK_USER));
+                userControlButton.setTooltipDelay(Duration.ofMillis(500));
+                userControlButton.setIcon(ICON_BLOCK_USER);
+                userControlButton.setTint(isUserBlocked ? 0xFF00FF00 : 0xFFFF0000);
             }
         }
     }
@@ -220,11 +223,17 @@ public class MailListScreen extends OverlayScreen implements DataScreen {
     }
 
     private void deleteChat() {
-
+        UUID chatId = this.selectedChat.getSourceId();
+        this.selectedChat = null;
+        PacketDistributor.sendToServer(new C2S_MailDeleteChat(chatId));
+        this.init(this.minecraft, this.width, this.height);
     }
 
     private void blockOrUnblockUser() {
-
+        UUID target = this.selectedChat.getSourceId();
+        boolean isBlocked = this.userMailManager.isBlocked(this.selectedChat);
+        PacketDistributor.sendToServer(new C2S_MailBlockUser(target, !isBlocked));
+        this.init(this.minecraft, this.width, this.height);
     }
 
     private PlayerInfo getPlayer(String name) {

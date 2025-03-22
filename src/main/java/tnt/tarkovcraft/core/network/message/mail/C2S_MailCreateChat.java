@@ -14,13 +14,14 @@ import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
 import tnt.tarkovcraft.core.common.mail.MailManager;
 import tnt.tarkovcraft.core.common.mail.MailSource;
+import tnt.tarkovcraft.core.network.TarkovCraftCoreNetwork;
 import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 
 import java.util.UUID;
 
 public record C2S_MailCreateChat(UUID target) implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = TarkovCraftCore.createResourceLocation("mail/chat/create");
+    public static final ResourceLocation ID = TarkovCraftCoreNetwork.createId(C2S_MailCreateChat.class);
     public static final Type<C2S_MailCreateChat> TYPE = new Type<>(ID);
     public static final StreamCodec<FriendlyByteBuf, C2S_MailCreateChat> CODEC = StreamCodec.composite(
             UUIDUtil.STREAM_CODEC,
@@ -37,9 +38,9 @@ public record C2S_MailCreateChat(UUID target) implements CustomPacketPayload {
             TarkovCraftCore.LOGGER.warn("Player {} is not online, cannot open new chat", this.target());
             return;
         }
-        // TODO check if this player is not blocked by target player
         MailSource source = MailSource.player(targetPlayer);
-        if (!mailManager.hasChat(source)) {
+        MailManager targetMailManager = targetPlayer.getData(BaseDataAttachments.MAIL_MANAGER);
+        if (!targetMailManager.isBlocked(source) && !mailManager.hasChat(source)) {
             mailManager.getChat(source);
             PacketDistributor.sendToPlayer((ServerPlayer) player, new S2C_SendDataAttachments(player, BaseDataAttachments.MAIL_MANAGER.get()));
         }
