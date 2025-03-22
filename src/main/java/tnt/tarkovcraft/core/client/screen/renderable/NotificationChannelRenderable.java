@@ -14,7 +14,7 @@ public class NotificationChannelRenderable implements Renderable {
     private final int windowWidth;
     private final int windowHeight;
     private final NotificationChannel channel;
-    private IntUnaryOperator maxWidth = windowWidth -> windowWidth / 3;
+    private IntUnaryOperator maxWidth = NotificationLayer.DEFAULT_NOTIFICATION_WIDTH;
 
     public NotificationChannelRenderable(Font font, int windowWidth, int windowHeight, NotificationChannel channel) {
         this.font = font;

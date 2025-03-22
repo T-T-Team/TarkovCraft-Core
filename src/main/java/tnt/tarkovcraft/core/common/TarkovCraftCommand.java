@@ -1,6 +1,7 @@
 package tnt.tarkovcraft.core.common;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -8,6 +9,7 @@ import dev.toma.configuration.config.validate.IValidationResult;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.TimeArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.server.command.EnumArgument;
@@ -43,6 +45,10 @@ public final class TarkovCraftCommand {
                                                                         .then(
                                                                                 Commands.argument("content", StringArgumentType.string())
                                                                                         .executes(TarkovCraftCommand::sendNotification)
+                                                                                        .then(
+                                                                                                Commands.argument("lifetime", TimeArgument.time(20))
+                                                                                                        .executes(TarkovCraftCommand::sendNotificationWithLifetime)
+                                                                                        )
                                                                         )
                                                         )
                                         )
@@ -54,10 +60,16 @@ public final class TarkovCraftCommand {
         Collection<ServerPlayer> targets = EntityArgument.getPlayers(ctx, "target");
         IValidationResult.Severity severity = ctx.getArgument("severity", IValidationResult.Severity.class);
         String content = StringArgumentType.getString(ctx, "content");
-        Notification notification = Notification.of(severity, Component.literal(content));
-        for (ServerPlayer player : targets) {
-            notification.send(player);
-        }
+        createNotificationAndSend(targets, severity, content, Notification.DEFAULT_LIFETIME);
+        return 0;
+    }
+
+    private static int sendNotificationWithLifetime(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        Collection<ServerPlayer> targets = EntityArgument.getPlayers(ctx, "target");
+        IValidationResult.Severity severity = ctx.getArgument("severity", IValidationResult.Severity.class);
+        String content = StringArgumentType.getString(ctx, "content");
+        int lifetime = ctx.getArgument("lifetime", Integer.class);
+        createNotificationAndSend(targets, severity, content, lifetime);
         return 0;
     }
 
@@ -69,5 +81,10 @@ public final class TarkovCraftCommand {
         String message = StringArgumentType.getString(context, "content");
         MailSystem.sendMessage(target, source, MailMessage.simpleChatMessage(source, message));
         return 0;
+    }
+
+    private static void createNotificationAndSend(Collection<ServerPlayer> players, IValidationResult.Severity severity, String content, int lifetime) {
+        Notification notification = Notification.of(severity, Component.literal(content), lifetime);
+        players.forEach(notification::send);
     }
 }

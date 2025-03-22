@@ -23,4 +23,8 @@ public class NotificationChannel {
     public Deque<ClientNotification> getNotifications() {
         return this.notifications;
     }
+
+    public void clearAllNotifications() {
+        this.notifications.clear();
+    }
 }

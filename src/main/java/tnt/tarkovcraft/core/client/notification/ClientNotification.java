@@ -7,10 +7,11 @@ import tnt.tarkovcraft.core.common.Notification;
 public class ClientNotification {
 
     private final Notification notification;
-    private int lifetime = 100;
+    private int lifetime;
 
     public ClientNotification(Notification notification) {
         this.notification = notification;
+        this.lifetime = notification.getLifetime();
     }
 
     public IValidationResult.Severity severity() {

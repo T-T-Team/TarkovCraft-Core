@@ -7,17 +7,20 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Mth;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.client.screen.ColorPalette;
 
 import java.util.Deque;
-import java.util.List;
+import java.util.function.IntUnaryOperator;
 
 public class NotificationLayer implements LayeredDraw.Layer {
 
     public static final ResourceLocation LAYER_ID = TarkovCraftCore.createResourceLocation("layer/notification");
+    public static final int NOTIFICATION_Z_LAYER = 1000;
+    public static final IntUnaryOperator DEFAULT_NOTIFICATION_WIDTH = w -> Mth.ceil(w / 2.5F);
     private final NotificationChannel channel;
 
     public NotificationLayer(NotificationChannel channel) {
@@ -30,30 +33,27 @@ public class NotificationLayer implements LayeredDraw.Layer {
         Window window = minecraft.getWindow();
         Font font = minecraft.font;
         int windowWidth = window.getGuiScaledWidth();
-        drawNotifications(guiGraphics, font, windowWidth, window.getGuiScaledHeight(), this.channel, windowWidth / 3);
+        drawNotifications(guiGraphics, font, windowWidth, window.getGuiScaledHeight(), this.channel, DEFAULT_NOTIFICATION_WIDTH.applyAsInt(windowWidth));
     }
 
-    public static void drawNotifications(GuiGraphics graphics, Font font, int windowWith, int windowHeight, NotificationChannel channel, int maxWidth) {
+    public static void drawNotifications(GuiGraphics graphics, Font font, int windowWidth, int windowHeight, NotificationChannel channel, int maxWidth) {
         Deque<ClientNotification> notifications = channel.getNotifications();
         if (notifications.isEmpty()) {
             return;
         }
-        int y = windowHeight - 10;
-        int maxTextWidth = maxWidth - 12;
-        int left = windowWith - maxWidth;
+        int y = windowHeight - 11;
+        int left = windowWidth - maxWidth;
+        graphics.pose().pushPose();
+        graphics.pose().translate(0, 0, NOTIFICATION_Z_LAYER);
         for (ClientNotification notification : notifications) {
-            graphics.fill(left, y, windowWith, y + 10, ColorPalette.BG_TRANSPARENT_NORMAL);
+            graphics.fill(left, y, windowWidth, y + 10, ColorPalette.BG_TRANSPARENT_NORMAL);
             IValidationResult.Severity severity = notification.severity();
             if (severity.isWarningOrError()) {
-                // TODO icon render
+                graphics.blit(RenderType::guiTextured, severity.iconPath, left + 1, y + 1, 0.0F, 0.0F, 8, 8, 16, 16, 16, 16);
             }
-
-            List<FormattedCharSequence> split = font.split(notification.label(), maxTextWidth);
-            if (!split.isEmpty()) {
-                FormattedCharSequence text = split.getFirst();
-                graphics.drawString(font, text, left + 12, y + 1, severity.textColor, false);
-            }
-            y -= 10;
+            graphics.drawScrollingString(font, notification.label(), left + 12, windowWidth, y + 1, severity.textColor);
+            y -= 11;
         }
+        graphics.pose().popPose();
     }
 }

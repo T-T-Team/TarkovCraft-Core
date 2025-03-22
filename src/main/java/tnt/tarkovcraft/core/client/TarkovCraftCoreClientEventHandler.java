@@ -3,6 +3,7 @@ package tnt.tarkovcraft.core.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import tnt.tarkovcraft.core.client.notification.NotificationChannel;
 
@@ -17,5 +18,10 @@ public class TarkovCraftCoreClientEventHandler {
         if (screen == null) {
             NotificationChannel.MAIN.update();
         }
+    }
+
+    @SubscribeEvent
+    public void onClientLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
+        NotificationChannel.MAIN.clearAllNotifications();
     }
 }
