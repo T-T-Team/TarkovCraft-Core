@@ -3,6 +3,7 @@ package tnt.tarkovcraft.core;
 import com.mojang.brigadier.CommandDispatcher;
 import dev.toma.configuration.Configuration;
 import dev.toma.configuration.config.format.ConfigFormats;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -50,6 +51,7 @@ public class TarkovCraftCore {
         NeoForge.EVENT_BUS.register(this);
 
         // Deferred registries
+        BaseAttributes.REGISTRY.register(modEventBus);
         BaseAttributeModifiers.REGISTRY.register(modEventBus);
         BaseItemStackFilters.REGISTRY.register(modEventBus);
         BaseMailMessageAttachments.REGISTRY.register(modEventBus);
@@ -82,7 +84,8 @@ public class TarkovCraftCore {
     @SubscribeEvent
     private void registerCommands(RegisterCommandsEvent event) {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
-        TarkovCraftCommand.create(dispatcher);
+        CommandBuildContext context = event.getBuildContext();
+        TarkovCraftCommand.create(dispatcher, context);
     }
 
     @SubscribeEvent

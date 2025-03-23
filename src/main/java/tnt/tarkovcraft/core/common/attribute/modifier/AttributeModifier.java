@@ -1,11 +1,15 @@
 package tnt.tarkovcraft.core.common.attribute.modifier;
 
+import com.mojang.serialization.Codec;
+import tnt.tarkovcraft.core.common.init.TarkovCraftRegistries;
 import tnt.tarkovcraft.core.util.context.OperationContext;
 
 import java.util.Objects;
 import java.util.UUID;
 
 public abstract class AttributeModifier {
+
+    public static final Codec<AttributeModifier> CODEC = TarkovCraftRegistries.ATTRIBUTE_MODIFIER.byNameCodec().dispatch(AttributeModifier::getType, AttributeModifierType::codec);
 
     public static final int ORDER_MATH_PARENTHESES = 100;
     public static final int ORDER_MATH_EXP = 200;
