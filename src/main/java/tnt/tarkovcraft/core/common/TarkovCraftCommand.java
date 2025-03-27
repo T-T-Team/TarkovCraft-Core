@@ -1,12 +1,14 @@
 package tnt.tarkovcraft.core.common;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import dev.toma.configuration.config.validate.IValidationResult;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -18,19 +20,23 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.server.command.EnumArgument;
 import tnt.tarkovcraft.core.common.attribute.Attribute;
-import tnt.tarkovcraft.core.common.attribute.AttributeData;
 import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
+import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
+import tnt.tarkovcraft.core.common.attribute.modifier.SetValueAttributeModifier;
 import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
 import tnt.tarkovcraft.core.common.init.TarkovCraftRegistries;
 import tnt.tarkovcraft.core.common.mail.MailMessage;
 import tnt.tarkovcraft.core.common.mail.MailSource;
 import tnt.tarkovcraft.core.common.mail.MailSystem;
+import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.UUID;
 
 public final class TarkovCraftCommand {
 
@@ -73,17 +79,51 @@ public final class TarkovCraftCommand {
                                         .requires(src -> src.hasPermission(2))
                                         .then(
                                                 Commands.argument("attributeId", ResourceArgument.resource(context, TarkovCraftRegistries.Keys.ATTRIBUTE))
-                                                        .executes(ctx -> getAttributeInfo(ctx, null))
+                                                        .executes(ctx -> getAttributeInfo(ctx, null, false))
                                                         .then(
                                                                 Commands.argument("target", EntityArgument.entity())
-                                                                        .executes(ctx -> getAttributeInfo(ctx, EntityArgument.getEntity(ctx, "target")))
+                                                                        .executes(ctx -> getAttributeInfo(ctx, EntityArgument.getEntity(ctx, "target"), false))
+                                                                        .then(
+                                                                                Commands.literal("force")
+                                                                                        .executes(ctx -> getAttributeInfo(ctx, EntityArgument.getEntity(ctx, "target"), true))
+                                                                        )
+                                                                        .then(
+                                                                                Commands.literal("addModifier")
+                                                                                        .then(
+                                                                                                Commands.argument("setValue", DoubleArgumentType.doubleArg())
+                                                                                                        .executes(ctx -> updateAttributeModifier(ctx, false))
+                                                                                        )
+                                                                        )
+                                                                        .then(
+                                                                                Commands.literal("removeModifier")
+                                                                                        .executes(ctx -> updateAttributeModifier(ctx, true))
+                                                                        )
                                                         )
                                         )
                         )
         );
     }
 
-    private static int getAttributeInfo(CommandContext<CommandSourceStack> ctx, @Nullable Entity entity) throws CommandSyntaxException {
+    private static int updateAttributeModifier(CommandContext<CommandSourceStack> ctx, boolean remove) throws CommandSyntaxException {
+        Entity entity = EntityArgument.getEntity(ctx, "target");
+        Holder.Reference<Attribute> reference = ResourceArgument.getResource(ctx, "attributeId", TarkovCraftRegistries.Keys.ATTRIBUTE);
+        Attribute attribute = reference.value();
+        UUID systemModifierId = Util.NIL_UUID;
+        EntityAttributeData attributeData = entity.getData(BaseDataAttachments.ENTITY_ATTRIBUTES);
+        AttributeInstance instance = attributeData.getAttribute(attribute);
+        instance.removeModifier(systemModifierId);
+        if (!remove) {
+            double value = DoubleArgumentType.getDouble(ctx, "setValue");
+            AttributeModifier modifier = new SetValueAttributeModifier(systemModifierId, value, -1);
+            instance.addModifier(modifier);
+        }
+        if (entity instanceof ServerPlayer serverPlayer) {
+            PacketDistributor.sendToPlayer(serverPlayer, new S2C_SendDataAttachments(serverPlayer, BaseDataAttachments.ENTITY_ATTRIBUTES.get()));
+        }
+        return 0;
+    }
+
+    private static int getAttributeInfo(CommandContext<CommandSourceStack> ctx, @Nullable Entity entity, boolean forceInit) throws CommandSyntaxException {
         if (entity == null) {
             entity = ctx.getSource().getEntity();
         }
@@ -96,14 +136,14 @@ public final class TarkovCraftCommand {
         }
         Holder.Reference<Attribute> reference = ResourceArgument.getResource(ctx, "attributeId", TarkovCraftRegistries.Keys.ATTRIBUTE);
         Attribute attribute = reference.value();
-        if (!attachmentHolder.hasData(BaseDataAttachments.ATTRIBUTES)) {
-            return printAttributeInfo(entity.getDisplayName(), ctx.getSource(), attribute.createInstance());
+        if (!forceInit && !attachmentHolder.hasData(BaseDataAttachments.ENTITY_ATTRIBUTES)) {
+            return printAttributeInfo(entity.getDisplayName(), ctx.getSource(), attribute.createInstance((Entity) attachmentHolder));
         }
-        AttributeData attributeData = attachmentHolder.getData(BaseDataAttachments.ATTRIBUTES);
-        if (!attributeData.hasAttribute(attribute)) { // avoid unnecessary creation of attribute instance in entity data
-            return printAttributeInfo(entity.getDisplayName(), ctx.getSource(), attribute.createInstance());
+        EntityAttributeData entityAttributeData = attachmentHolder.getData(BaseDataAttachments.ENTITY_ATTRIBUTES);
+        if (!forceInit && !entityAttributeData.hasAttribute(attribute)) { // avoid unnecessary creation of attribute instance in entity data
+            return printAttributeInfo(entity.getDisplayName(), ctx.getSource(), attribute.createInstance((Entity) attachmentHolder));
         }
-        return printAttributeInfo(entity.getDisplayName(), ctx.getSource(), attributeData.getAttribute(attribute));
+        return printAttributeInfo(entity.getDisplayName(), ctx.getSource(), entityAttributeData.getAttribute(attribute));
     }
 
     private static int sendNotification(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {

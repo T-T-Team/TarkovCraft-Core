@@ -2,6 +2,7 @@ package tnt.tarkovcraft.core.common.attribute;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 
 import java.util.Objects;
 
@@ -15,8 +16,8 @@ public final class Attribute {
         this.baseValue = baseValue;
     }
 
-    public AttributeInstance createInstance() {
-        return new AttributeInstance(this);
+    public AttributeInstance createInstance(Entity holder) {
+        return new AttributeInstance(this, holder);
     }
 
     public static Attribute create(ResourceLocation identifier, double baseValue) {

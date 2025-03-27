@@ -4,15 +4,11 @@ import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
 
 public interface AttributeListener {
 
-    default void onAttributeSetChanged(Attribute attribute) {}
+    default void onAttributeSetChanged(AttributeInstance attribute) {}
 
-    default void onAttributeValueChanged(Attribute attribute, double oldValue) {}
+    default void onAttributeValueChanged(AttributeInstance attribute, double oldValue) {}
 
-    default void onAttributeModifierAdded(Attribute attribute, AttributeModifier modifier) {}
+    default void onAttributeModifierAdded(AttributeInstance attribute, AttributeModifier modifier) {}
 
-    default void onAttributeModifierRemoved(Attribute attribute, AttributeModifier modifier) {}
-
-    default void onAttributeAdded(Attribute attribute) {}
-
-    default void onAttributeRemoved(Attribute attribute) {}
+    default void onAttributeModifierRemoved(AttributeInstance attribute, AttributeModifier modifier) {}
 }

@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.world.entity.Entity;
 import tnt.tarkovcraft.core.common.init.BaseAttributeModifiers;
 
 import java.util.UUID;
@@ -30,7 +31,7 @@ public class MultiplyValueAttributeModifier extends AttributeModifier {
     }
 
     @Override
-    public double applyModifierOn(double value) {
+    public double applyModifierOn(double value, Entity holder) {
         return value * this.value;
     }
 
@@ -42,5 +43,10 @@ public class MultiplyValueAttributeModifier extends AttributeModifier {
     @Override
     public AttributeModifierType<?> getType() {
         return BaseAttributeModifiers.MUL_VALUE.get();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("MultiplyValue=[value=%f]", this.value);
     }
 }

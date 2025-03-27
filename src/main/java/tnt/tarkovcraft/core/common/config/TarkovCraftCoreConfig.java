@@ -2,6 +2,7 @@ package tnt.tarkovcraft.core.common.config;
 
 import dev.toma.configuration.config.Config;
 import dev.toma.configuration.config.Configurable;
+import dev.toma.configuration.config.UpdateRestrictions;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 
 @Config(id = TarkovCraftCore.MOD_ID, filename = "tarkovCraftCore", group = TarkovCraftCore.MOD_ID)
@@ -18,7 +19,7 @@ public class TarkovCraftCoreConfig {
     public boolean allowMailPlayerMessages = true;
 
     @Configurable
-    @Configurable.Synchronized
-    @Configurable.Comment(localize = true, value = "Enables skill system leveling and buffs")
-    public boolean enableSkillSystem = true;
+    @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
+    @Configurable.Comment(localize = true, value = "Skill system configuration")
+    public SkillSystemConfig skillSystemConfig = new SkillSystemConfig();
 }

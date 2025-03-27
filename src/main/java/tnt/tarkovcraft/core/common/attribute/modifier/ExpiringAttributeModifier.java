@@ -4,8 +4,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.world.entity.Entity;
 import tnt.tarkovcraft.core.common.init.BaseAttributeModifiers;
-import tnt.tarkovcraft.core.util.context.OperationContext;
 
 import java.util.UUID;
 
@@ -34,8 +34,8 @@ public class ExpiringAttributeModifier extends AttributeModifier {
     }
 
     @Override
-    public double applyModifierOn(double value) {
-        return this.value.applyModifierOn(value);
+    public double applyModifierOn(double value, Entity holder) {
+        return this.value.applyModifierOn(value, holder);
     }
 
     @Override
@@ -44,13 +44,18 @@ public class ExpiringAttributeModifier extends AttributeModifier {
     }
 
     @Override
-    public boolean onCancellationTick(OperationContext context) {
-        boolean cancel = this.value.onCancellationTick(context);
+    public boolean onCancellationTick(Entity holder) {
+        boolean cancel = this.value.onCancellationTick(holder);
         return cancel || this.lifetime++ >= this.maxLifetime;
     }
 
     @Override
     public AttributeModifierType<?> getType() {
         return BaseAttributeModifiers.EXPIRING.get();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Expiring[lifetime=%d,maxLifetime=%d,value=%s]", this.lifetime, this.maxLifetime, this.value);
     }
 }

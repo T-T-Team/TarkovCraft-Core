@@ -5,7 +5,20 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.resources.ResourceLocation;
 import tnt.tarkovcraft.core.common.init.TarkovCraftRegistries;
 
+import java.util.Objects;
+
 public record AttributeModifierType<A extends AttributeModifier>(ResourceLocation identifier, MapCodec<A> codec) {
 
     public static final Codec<AttributeModifier> ID_CODEC = TarkovCraftRegistries.ATTRIBUTE_MODIFIER.byNameCodec().dispatch(AttributeModifier::getType, AttributeModifierType::codec);
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof AttributeModifierType<?> that)) return false;
+        return Objects.equals(identifier, that.identifier);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(identifier);
+    }
 }

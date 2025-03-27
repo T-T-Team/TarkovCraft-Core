@@ -3,9 +3,9 @@ package tnt.tarkovcraft.core.common.attribute;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.world.entity.Entity;
 import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
 import tnt.tarkovcraft.core.common.init.TarkovCraftRegistries;
-import tnt.tarkovcraft.core.util.context.OperationContext;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -20,14 +20,16 @@ public final class AttributeInstance {
             ).fieldOf("modifiers").forGetter(t -> t.modifiers)
     ).apply(instance, AttributeInstance::new));
 
+    private Entity holder;
     private final Attribute attribute;
     private final Map<UUID, AttributeModifier> modifiers;
     private final List<AttributeListener> listeners;
     private double value;
     private boolean changed;
 
-    AttributeInstance(Attribute attribute) {
+    AttributeInstance(Attribute attribute, Entity holder) {
         this.attribute = attribute;
+        this.holder = holder;
         this.modifiers = new HashMap<>();
         this.listeners = new ArrayList<>();
         this.value = this.attribute.getBaseValue();
@@ -42,14 +44,18 @@ public final class AttributeInstance {
         this.changed = true;
     }
 
-    public void update(OperationContext context) {
+    public void setHolder(Entity holder) {
+        this.holder = holder;
+    }
+
+    public void update() {
         Iterator<AttributeModifier> iterator = this.modifiers.values().iterator();
         while (iterator.hasNext()) {
             AttributeModifier modifier = iterator.next();
-            boolean shouldRemoveModifier = modifier.onCancellationTick(context);
+            boolean shouldRemoveModifier = modifier.onCancellationTick(this.holder);
             if (shouldRemoveModifier) {
                 iterator.remove();
-                this.invokeEvent(t -> t.onAttributeModifierRemoved(this.attribute, modifier));
+                this.invokeEvent(t -> t.onAttributeModifierRemoved(this, modifier));
                 this.setChanged();
             }
         }
@@ -57,7 +63,7 @@ public final class AttributeInstance {
 
     public void addModifier(AttributeModifier modifier) {
         this.modifiers.put(modifier.identifier(), modifier);
-        this.invokeEvent(t -> t.onAttributeModifierAdded(this.attribute, modifier));
+        this.invokeEvent(t -> t.onAttributeModifierAdded(this, modifier));
         this.setChanged();
     }
 
@@ -68,7 +74,7 @@ public final class AttributeInstance {
     public void removeModifier(UUID identifier) {
         AttributeModifier modifier = this.modifiers.remove(identifier);
         if (modifier != null) {
-            this.invokeEvent(t -> t.onAttributeModifierRemoved(this.attribute, modifier));
+            this.invokeEvent(t -> t.onAttributeModifierRemoved(this, modifier));
             this.setChanged();
         }
     }
@@ -76,7 +82,7 @@ public final class AttributeInstance {
     public void removeModifiers() {
         List<AttributeModifier> modifiers = new ArrayList<>(this.modifiers.values());
         this.modifiers.clear();
-        modifiers.forEach(mod -> this.invokeEvent(t -> t.onAttributeModifierRemoved(this.attribute, mod)));
+        modifiers.forEach(mod -> this.invokeEvent(t -> t.onAttributeModifierRemoved(this, mod)));
         this.setChanged();
     }
 
@@ -127,7 +133,7 @@ public final class AttributeInstance {
     public void setChanged() {
         if (!this.changed) {
             this.changed = true;
-            this.invokeEvent(t -> t.onAttributeSetChanged(this.attribute));
+            this.invokeEvent(t -> t.onAttributeSetChanged(this));
         }
     }
 
@@ -144,12 +150,12 @@ public final class AttributeInstance {
         List<AttributeModifier> modifierList = new ArrayList<>(this.modifiers.values());
         modifierList.sort(Comparator.comparingInt(AttributeModifier::ordering));
         for (AttributeModifier modifier : modifierList) {
-            result = modifier.applyModifierOn(result);
+            result = modifier.applyModifierOn(result, this.holder);
         }
         if (this.value != result) {
             double oldValue = this.value;
             this.value = result;
-            this.invokeEvent(t -> t.onAttributeValueChanged(this.attribute, oldValue));
+            this.invokeEvent(t -> t.onAttributeValueChanged(this, oldValue));
         }
     }
 }

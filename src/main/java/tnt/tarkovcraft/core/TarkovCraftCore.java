@@ -71,6 +71,7 @@ public class TarkovCraftCore {
         // Utils
         event.register(TarkovCraftRegistries.ATTRIBUTE);
         event.register(TarkovCraftRegistries.ATTRIBUTE_MODIFIER);
+        event.register(TarkovCraftRegistries.SKILL);
         event.register(TarkovCraftRegistries.ITEMSTACK_FILTER);
 
         // Mail system
@@ -94,7 +95,8 @@ public class TarkovCraftCore {
         if (player.level().isClientSide())
             return;
         S2C_SendDataAttachments payload = new S2C_SendDataAttachments(player, Arrays.asList(
-                BaseDataAttachments.MAIL_MANAGER.get()
+                BaseDataAttachments.MAIL_MANAGER.get(),
+                BaseDataAttachments.ENTITY_ATTRIBUTES.get()
         ));
         PacketDistributor.sendToPlayer((ServerPlayer) player, payload);
     }
