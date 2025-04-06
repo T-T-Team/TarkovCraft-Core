@@ -6,6 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
+import tnt.tarkovcraft.core.common.config.SkillSystemConfig;
 import tnt.tarkovcraft.core.common.init.BaseAttributes;
 import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
 import tnt.tarkovcraft.core.network.Synchronizable;
@@ -29,7 +30,8 @@ public class EnergyData implements Synchronizable {
     }
 
     public static boolean isEnabled() {
-        return TarkovCraftCore.getConfig().skillSystemConfig.skillSystemEnabled;
+        SkillSystemConfig config = TarkovCraftCore.getConfig().skillSystemConfig;
+        return config.skillSystemEnabled && config.staminaEnabled;
     }
 
     private EnergyData(Energy armEnergy, Energy legEnergy) {

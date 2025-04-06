@@ -10,5 +10,9 @@ public class SkillSystemConfig {
 
     @Configurable
     @Configurable.Synchronized
+    public boolean staminaEnabled = true;
+
+    @Configurable
+    @Configurable.Synchronized
     public boolean enableSkillLoss = true;
 }
