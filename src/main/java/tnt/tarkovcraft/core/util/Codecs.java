@@ -29,7 +29,7 @@ public final class Codecs {
         return tag;
     }
 
-    public static <T> T deserialize(CompoundTag tag, Codec<T> codec) {
+    public static <T> T deserialize(Codec<T> codec, CompoundTag tag) {
         Tag data = tag.get("data");
         DataResult<T> result = codec.parse(NbtOps.INSTANCE, data);
         return result.getOrThrow();

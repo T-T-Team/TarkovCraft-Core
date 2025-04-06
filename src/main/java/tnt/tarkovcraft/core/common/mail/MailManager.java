@@ -102,7 +102,7 @@ public final class MailManager implements Synchronizable {
 
     @Override
     public void deserialize(CompoundTag tag) {
-        MailManager resolved = Codecs.deserialize(tag, CODEC);
+        MailManager resolved = Codecs.deserialize(CODEC, tag);
         this.messages.clear();
         this.blockedIds.clear();
         this.messages.putAll(resolved.messages);

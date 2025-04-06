@@ -1,33 +1,21 @@
 package tnt.tarkovcraft.core;
 
-import com.mojang.brigadier.CommandDispatcher;
 import dev.toma.configuration.Configuration;
 import dev.toma.configuration.config.format.ConfigFormats;
-import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import tnt.tarkovcraft.core.common.TarkovCraftCommand;
+import tnt.tarkovcraft.core.common.TarkovCraftCoreEventHandler;
 import tnt.tarkovcraft.core.common.config.TarkovCraftCoreConfig;
 import tnt.tarkovcraft.core.common.init.*;
 import tnt.tarkovcraft.core.network.TarkovCraftCoreNetwork;
-import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
-
-import java.util.Arrays;
 
 @Mod(TarkovCraftCore.MOD_ID)
 public class TarkovCraftCore {
@@ -48,7 +36,7 @@ public class TarkovCraftCore {
         modEventBus.addListener(TarkovCraftCoreNetwork::onRegistration);
 
         // Neoforge event listeners
-        NeoForge.EVENT_BUS.register(this);
+        NeoForge.EVENT_BUS.register(new TarkovCraftCoreEventHandler());
 
         // Deferred registries
         BaseAttributes.REGISTRY.register(modEventBus);
@@ -74,24 +62,5 @@ public class TarkovCraftCore {
 
         // Mail system
         event.register(TarkovCraftRegistries.MAIL_MESSAGE_ATTACHMENT);
-    }
-
-    @SubscribeEvent
-    private void registerCommands(RegisterCommandsEvent event) {
-        CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
-        CommandBuildContext context = event.getBuildContext();
-        TarkovCraftCommand.create(dispatcher, context);
-    }
-
-    @SubscribeEvent
-    private void onPlayerLoggingIn(PlayerEvent.PlayerLoggedInEvent event) {
-        Player player = event.getEntity();
-        if (player.level().isClientSide())
-            return;
-        S2C_SendDataAttachments payload = new S2C_SendDataAttachments(player, Arrays.asList(
-                BaseDataAttachments.MAIL_MANAGER.get(),
-                BaseDataAttachments.ENTITY_ATTRIBUTES.get()
-        ));
-        PacketDistributor.sendToPlayer((ServerPlayer) player, payload);
     }
 }

@@ -12,6 +12,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
+import tnt.tarkovcraft.core.common.energy.EnergyData;
+import tnt.tarkovcraft.core.common.energy.EnergyType;
 import tnt.tarkovcraft.core.common.init.BaseAttributes;
 import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
 
@@ -28,10 +30,19 @@ public abstract class LivingEntityMixin extends Entity implements Attackable, IL
             cancellable = true
     )
     private void tarkovCraftCore$setSprinting(boolean sprinting, CallbackInfo ci) {
+        if (!sprinting) {
+            return; // we do not care when entity is transitioning from sprinting state
+        }
         if (hasData(BaseDataAttachments.ENTITY_ATTRIBUTES)) {
             EntityAttributeData entityAttributeData = getData(BaseDataAttachments.ENTITY_ATTRIBUTES);
             AttributeInstance instance = entityAttributeData.getAttribute(BaseAttributes.SPRINT);
-            if (sprinting && !instance.booleanValue()) {
+            if (!instance.booleanValue()) {
+                ci.cancel();
+            }
+        }
+        if (hasData(BaseDataAttachments.ENERGY)) {
+            EnergyData energyData = getData(BaseDataAttachments.ENERGY);
+            if (!energyData.hasEnergy(EnergyType.LEG_STAMINA, EnergyData.SPRINT_STAMINA_CONSUMPTION)) {
                 ci.cancel();
             }
         }
@@ -42,8 +53,12 @@ public abstract class LivingEntityMixin extends Entity implements Attackable, IL
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;tickEffects()V")
     )
     private void tarkovCraftCore$tick(CallbackInfo ci) {
+        LivingEntity livingEntity = (LivingEntity) (Object) this;
         if (hasData(BaseDataAttachments.ENTITY_ATTRIBUTES)) {
             getData(BaseDataAttachments.ENTITY_ATTRIBUTES).tick();
+        }
+        if (hasData(BaseDataAttachments.ENERGY)) {
+            getData(BaseDataAttachments.ENERGY).update(livingEntity);
         }
     }
 }

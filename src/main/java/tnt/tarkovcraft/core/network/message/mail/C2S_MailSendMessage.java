@@ -53,7 +53,7 @@ public record C2S_MailSendMessage(UUID target, MailMessage message) implements C
 
     private static C2S_MailSendMessage decode(FriendlyByteBuf buf) {
         UUID target = buf.readUUID();
-        MailMessage msg = Codecs.deserialize(buf.readNbt(), MailMessage.CODEC);
+        MailMessage msg = Codecs.deserialize(MailMessage.CODEC, buf.readNbt());
         return new C2S_MailSendMessage(target, msg);
     }
 }

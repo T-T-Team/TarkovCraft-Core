@@ -1,6 +1,7 @@
 package tnt.tarkovcraft.core.common.attribute;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -44,6 +45,10 @@ public final class EntityAttributeData implements Synchronizable {
         return this.attributeMap.computeIfAbsent(attribute, this::createInstance);
     }
 
+    public AttributeInstance getAttribute(Holder<Attribute> reference) {
+        return this.getAttribute(reference.value());
+    }
+
     public AttributeInstance getAttribute(Supplier<Attribute> attribute) {
         return this.getAttribute(attribute.get());
     }
@@ -65,7 +70,7 @@ public final class EntityAttributeData implements Synchronizable {
 
     @Override
     public void deserialize(CompoundTag tag) {
-        EntityAttributeData data = Codecs.deserialize(tag, CODEC);
+        EntityAttributeData data = Codecs.deserialize(CODEC, tag);
         this.attributeMap.clear();
         this.attributeMap.putAll(data.attributeMap);
         this.attributeMap.values().forEach(value -> value.setHolder(this.holder));
@@ -76,7 +81,7 @@ public final class EntityAttributeData implements Synchronizable {
         if (this.holder instanceof ServerPlayer serverPlayer) {
             instance.addListener(new SynchronizationAttributeListener(serverPlayer));
         }
-        if (attribute.equals(BaseAttributes.SPRINT.get())) {
+        if (BaseAttributes.SPRINT.is(attribute.identifier())) {
             instance.addListener(new SprintAttributeListener(instance));
         }
         // TODO event
