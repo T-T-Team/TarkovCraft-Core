@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
-import net.minecraft.world.entity.Entity;
+import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
 import tnt.tarkovcraft.core.common.init.BaseAttributeModifiers;
 
 import java.util.UUID;
@@ -31,7 +31,7 @@ public class AddValueModifier extends AttributeModifier {
     }
 
     @Override
-    public double applyModifierOn(double value, Entity holder) {
+    public double calculateValue(AttributeInstance source, double value) {
         return value + this.value;
     }
 

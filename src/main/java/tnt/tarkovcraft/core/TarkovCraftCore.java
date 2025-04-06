@@ -70,7 +70,6 @@ public class TarkovCraftCore {
         // Utils
         event.register(TarkovCraftRegistries.ATTRIBUTE);
         event.register(TarkovCraftRegistries.ATTRIBUTE_MODIFIER);
-        event.register(TarkovCraftRegistries.SKILL);
         event.register(TarkovCraftRegistries.ITEMSTACK_FILTER);
 
         // Mail system

@@ -17,5 +17,4 @@ public final class BaseAttributeModifiers {
 
     // Extension types
     public static final Supplier<AttributeModifierType<ExpiringAttributeModifier>> EXPIRING = REGISTRY.register("expiring", k -> new AttributeModifierType<>(k, ExpiringAttributeModifier.CODEC));
-    public static final Supplier<AttributeModifierType<SkillLevelAttributeModifier>> SKILL = REGISTRY.register("skill", k -> new AttributeModifierType<>(k, SkillLevelAttributeModifier.CODEC));
 }

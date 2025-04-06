@@ -1,7 +1,7 @@
 package tnt.tarkovcraft.core.common.attribute.modifier;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.world.entity.Entity;
+import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
 import tnt.tarkovcraft.core.common.init.TarkovCraftRegistries;
 
 import java.util.Objects;
@@ -22,13 +22,13 @@ public abstract class AttributeModifier {
         this.identifier = identifier;
     }
 
-    public abstract double applyModifierOn(double value, Entity holder);
+    public abstract double calculateValue(AttributeInstance source, double value);
 
     public abstract int ordering();
 
     public abstract AttributeModifierType<?> getType();
 
-    public boolean onCancellationTick(Entity holder) {
+    public boolean onCancellationTick(AttributeInstance source) {
         return false;
     }
 

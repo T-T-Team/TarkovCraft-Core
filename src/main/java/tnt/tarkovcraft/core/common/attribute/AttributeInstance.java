@@ -48,11 +48,15 @@ public final class AttributeInstance {
         this.holder = holder;
     }
 
+    public Entity getHolder() {
+        return holder;
+    }
+
     public void update() {
         Iterator<AttributeModifier> iterator = this.modifiers.values().iterator();
         while (iterator.hasNext()) {
             AttributeModifier modifier = iterator.next();
-            boolean shouldRemoveModifier = modifier.onCancellationTick(this.holder);
+            boolean shouldRemoveModifier = modifier.onCancellationTick(this);
             if (shouldRemoveModifier) {
                 iterator.remove();
                 this.invokeEvent(t -> t.onAttributeModifierRemoved(this, modifier));
@@ -150,7 +154,7 @@ public final class AttributeInstance {
         List<AttributeModifier> modifierList = new ArrayList<>(this.modifiers.values());
         modifierList.sort(Comparator.comparingInt(AttributeModifier::ordering));
         for (AttributeModifier modifier : modifierList) {
-            result = modifier.applyModifierOn(result, this.holder);
+            result = modifier.calculateValue(this, result);
         }
         if (this.value != result) {
             double oldValue = this.value;
