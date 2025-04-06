@@ -42,6 +42,7 @@ public class TarkovCraftCore {
         BaseAttributes.REGISTRY.register(modEventBus);
         BaseAttributeModifiers.REGISTRY.register(modEventBus);
         BaseItemStackFilters.REGISTRY.register(modEventBus);
+        NumberProviders.REGISTRY.register(modEventBus);
         BaseMailMessageAttachments.REGISTRY.register(modEventBus);
         BaseDataAttachments.REGISTRY.register(modEventBus);
     }
@@ -59,6 +60,7 @@ public class TarkovCraftCore {
         event.register(TarkovCraftRegistries.ATTRIBUTE);
         event.register(TarkovCraftRegistries.ATTRIBUTE_MODIFIER);
         event.register(TarkovCraftRegistries.ITEMSTACK_FILTER);
+        event.register(TarkovCraftRegistries.NUMBER_PROVIDER);
 
         // Mail system
         event.register(TarkovCraftRegistries.MAIL_MESSAGE_ATTACHMENT);
