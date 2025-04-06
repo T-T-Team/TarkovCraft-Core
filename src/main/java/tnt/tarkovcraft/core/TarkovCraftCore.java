@@ -55,7 +55,6 @@ public class TarkovCraftCore {
         BaseAttributeModifiers.REGISTRY.register(modEventBus);
         BaseItemStackFilters.REGISTRY.register(modEventBus);
         BaseMailMessageAttachments.REGISTRY.register(modEventBus);
-        BaseTradeResources.REGISTRY.register(modEventBus);
         BaseDataAttachments.REGISTRY.register(modEventBus);
     }
 
@@ -76,10 +75,6 @@ public class TarkovCraftCore {
 
         // Mail system
         event.register(TarkovCraftRegistries.MAIL_MESSAGE_ATTACHMENT);
-
-        // Trading
-        event.register(TarkovCraftRegistries.TRADE_RESOURCE);
-        event.register(TarkovCraftRegistries.TRADE_CONDITION);
     }
 
     @SubscribeEvent

@@ -9,8 +9,6 @@ import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifierType;
 import tnt.tarkovcraft.core.common.data.filter.ItemStackFilterType;
 import tnt.tarkovcraft.core.common.mail.MailMessageAttachmentType;
 import tnt.tarkovcraft.core.common.skill.SkillType;
-import tnt.tarkovcraft.core.common.trading.TradeConditionType;
-import tnt.tarkovcraft.core.common.trading.TradeResourceType;
 
 public class TarkovCraftRegistries {
 
@@ -23,10 +21,6 @@ public class TarkovCraftRegistries {
     // Mail system
     public static final Registry<MailMessageAttachmentType<?>> MAIL_MESSAGE_ATTACHMENT = new RegistryBuilder<>(Keys.MAIL_MESSAGE_ATTACHMENT).create();
 
-    // Trade system
-    public static final Registry<TradeResourceType<?>> TRADE_RESOURCE = new RegistryBuilder<>(Keys.TRADE_RESOURCE).create();
-    public static final Registry<TradeConditionType<?>> TRADE_CONDITION = new RegistryBuilder<>(Keys.TRADE_CONDITION).create();
-
     public static final class Keys {
 
         public static final ResourceKey<Registry<Attribute>> ATTRIBUTE = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("attribute"));
@@ -34,7 +28,5 @@ public class TarkovCraftRegistries {
         public static final ResourceKey<Registry<SkillType<?>>> SKILL = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill"));
         public static final ResourceKey<Registry<ItemStackFilterType<?>>> ITEMSTACK_FILTER = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("itemstack_filter"));
         public static final ResourceKey<Registry<MailMessageAttachmentType<?>>> MAIL_MESSAGE_ATTACHMENT = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("mail_message_attachment"));
-        public static final ResourceKey<Registry<TradeResourceType<?>>> TRADE_RESOURCE = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("trade_resource"));
-        public static final ResourceKey<Registry<TradeConditionType<?>>> TRADE_CONDITION = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("trade_condition"));
     }
 }

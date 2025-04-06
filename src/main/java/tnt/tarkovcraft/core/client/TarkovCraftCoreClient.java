@@ -9,7 +9,6 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModLoader;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -20,10 +19,8 @@ import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
 import org.lwjgl.glfw.GLFW;
 import tnt.tarkovcraft.core.TarkovCraftCore;
-import tnt.tarkovcraft.core.client.event.RegisterTradeResourceRendererEvent;
 import tnt.tarkovcraft.core.client.notification.NotificationChannel;
 import tnt.tarkovcraft.core.client.notification.NotificationLayer;
-import tnt.tarkovcraft.core.client.render.TradeResourceRenderManager;
 import tnt.tarkovcraft.core.client.screen.CharacterScreen;
 import tnt.tarkovcraft.core.client.screen.DataScreen;
 import tnt.tarkovcraft.core.network.Synchronizable;
@@ -32,8 +29,6 @@ import static tnt.tarkovcraft.core.util.helper.LocalizationHelper.createKeybindN
 
 @Mod(value = TarkovCraftCore.MOD_ID, dist = Dist.CLIENT)
 public final class TarkovCraftCoreClient {
-
-    public static final TradeResourceRenderManager RESOURCE_RENDER_MANAGER = new TradeResourceRenderManager();
 
     public static final KeyMapping KEY_CHARACTER = new KeyMapping(createKeybindName(TarkovCraftCore.MOD_ID, "character"), KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_O, TarkovCraftCore.GLOBAL_CATEGORY_KEY);
 
@@ -47,7 +42,6 @@ public final class TarkovCraftCoreClient {
     }
 
     private void dispatchParallelRegistryEvents() {
-        ModLoader.postEvent(new RegisterTradeResourceRendererEvent());
     }
 
     private void setup(FMLClientSetupEvent event) {
