@@ -57,18 +57,26 @@ public class Energy {
     public void recover(EntityAttributeData data) {
         float max = this.getMaxEnergy(data);
         if (this.energy < max) {
-            float recoveryAmount = Math.abs(this.value(data, this.recoveryAttribute));
-            this.energy = Math.max(max, this.energy + recoveryAmount);
+            float recoveryAmount = Math.abs(this.getRecoveryAmount(data));
+            this.energy = Math.min(max, this.energy + recoveryAmount);
         }
     }
 
     public void consume(EntityAttributeData data, float amount) {
-        float consumptionMultiplier = Math.abs(this.value(data, this.consumptionAttribute));
+        float consumptionMultiplier = Math.abs(this.getConsumptionMultiplier(data));
         this.set(data, this.energy - amount * consumptionMultiplier);
     }
 
     public float getMaxEnergy(EntityAttributeData data) {
         return this.value(data, this.maxLevelAttribute);
+    }
+
+    public float getRecoveryAmount(EntityAttributeData data) {
+        return this.value(data, this.recoveryAttribute);
+    }
+
+    public float getConsumptionMultiplier(EntityAttributeData data) {
+        return this.value(data, this.consumptionAttribute);
     }
 
     private float value(EntityAttributeData data, Holder<Attribute> ref) {

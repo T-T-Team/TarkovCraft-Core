@@ -40,9 +40,10 @@ public abstract class LivingEntityMixin extends Entity implements Attackable, IL
                 ci.cancel();
             }
         }
-        if (hasData(BaseDataAttachments.ENERGY)) {
+        if (EnergyData.isEnabled() && hasData(BaseDataAttachments.ENERGY)) {
             EnergyData energyData = getData(BaseDataAttachments.ENERGY);
-            if (!energyData.hasEnergy(EnergyType.LEG_STAMINA, EnergyData.SPRINT_STAMINA_CONSUMPTION)) {
+            float requiredForSprintStart = EnergyData.SPRINT_STAMINA_CONSUMPTION * 40; // 2s of sprint
+            if (!energyData.hasEnergy(EnergyType.LEG_STAMINA, requiredForSprintStart)) {
                 ci.cancel();
             }
         }
@@ -57,7 +58,7 @@ public abstract class LivingEntityMixin extends Entity implements Attackable, IL
         if (hasData(BaseDataAttachments.ENTITY_ATTRIBUTES)) {
             getData(BaseDataAttachments.ENTITY_ATTRIBUTES).tick();
         }
-        if (hasData(BaseDataAttachments.ENERGY)) {
+        if (EnergyData.isEnabled() && hasData(BaseDataAttachments.ENERGY)) {
             getData(BaseDataAttachments.ENERGY).update(livingEntity);
         }
     }

@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
+import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.init.BaseAttributes;
 import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
@@ -25,6 +26,10 @@ public class EnergyData implements Synchronizable {
     public EnergyData() {
         this.armEnergy = new Energy(BaseAttributes.ARM_ENERGY_MAX, BaseAttributes.ARM_ENERGY_CONSUMPTION, BaseAttributes.ARM_ENERGY_RECOVERY, 100.0F);
         this.legEnergy = new Energy(BaseAttributes.LEG_ENERGY_MAX, BaseAttributes.LEG_ENERGY_CONSUMPTION, BaseAttributes.LEG_ENERGY_RECOVERY, 100.0F);
+    }
+
+    public static boolean isEnabled() {
+        return TarkovCraftCore.getConfig().skillSystemConfig.skillSystemEnabled;
     }
 
     private EnergyData(Energy armEnergy, Energy legEnergy) {
