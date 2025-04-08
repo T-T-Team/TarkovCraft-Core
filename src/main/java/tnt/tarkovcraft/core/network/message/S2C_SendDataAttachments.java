@@ -47,7 +47,7 @@ public class S2C_SendDataAttachments implements CustomPacketPayload {
             ResourceLocation key = NeoForgeRegistries.ATTACHMENT_TYPES.getKey(type);
             this.attachments.add(key);
             Synchronizable attachment = entity.getData(type);
-            CompoundTag attachmentData = attachment.serialize();
+            CompoundTag attachmentData = attachment.serialize(entity.registryAccess());
             this.data.put(key.toString(), attachmentData);
         });
     }
@@ -76,7 +76,7 @@ public class S2C_SendDataAttachments implements CustomPacketPayload {
             AttachmentType<?> type = NeoForgeRegistries.ATTACHMENT_TYPES.getValue(attachment);
             Synchronizable value = (Synchronizable) entity.getData(type);
             CompoundTag attachmentData = this.data.getCompoundOrEmpty(attachment.toString());
-            value.deserialize(attachmentData);
+            value.deserialize(attachmentData, player.registryAccess());
 
             TarkovCraftCoreClient.sendDataSyncEvent(entity, type, value);
         }

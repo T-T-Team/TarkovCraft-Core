@@ -2,6 +2,7 @@ package tnt.tarkovcraft.core.common.attribute;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -64,12 +65,12 @@ public final class EntityAttributeData implements Synchronizable {
     }
 
     @Override
-    public CompoundTag serialize() {
+    public CompoundTag serialize(HolderLookup.Provider provider) {
         return Codecs.serialize(CODEC, this);
     }
 
     @Override
-    public void deserialize(CompoundTag tag) {
+    public void deserialize(CompoundTag tag, HolderLookup.Provider provider) {
         EntityAttributeData data = Codecs.deserialize(CODEC, tag);
         this.attributeMap.clear();
         this.attributeMap.putAll(data.attributeMap);

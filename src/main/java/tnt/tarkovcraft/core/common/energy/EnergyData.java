@@ -2,6 +2,7 @@ package tnt.tarkovcraft.core.common.energy;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import tnt.tarkovcraft.core.TarkovCraftCore;
@@ -64,12 +65,12 @@ public class EnergyData implements Synchronizable {
     }
 
     @Override
-    public CompoundTag serialize() {
+    public CompoundTag serialize(HolderLookup.Provider provider) {
         return Codecs.serialize(CODEC, this);
     }
 
     @Override
-    public void deserialize(CompoundTag tag) {
+    public void deserialize(CompoundTag tag, HolderLookup.Provider provider) {
         EnergyData resolved = Codecs.deserialize(CODEC, tag);
         this.armEnergy.setInternal(resolved.armEnergy.getEnergy());
         this.legEnergy.setInternal(resolved.legEnergy.getEnergy());
