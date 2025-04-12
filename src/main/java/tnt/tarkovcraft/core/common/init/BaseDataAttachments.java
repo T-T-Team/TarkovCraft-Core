@@ -5,8 +5,10 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
+import tnt.tarkovcraft.core.common.data.PartialAttachmentTypeSerializer;
 import tnt.tarkovcraft.core.common.energy.EnergyData;
 import tnt.tarkovcraft.core.common.mail.MailManager;
+import tnt.tarkovcraft.core.common.skill.SkillData;
 
 import java.util.function.Supplier;
 
@@ -20,12 +22,17 @@ public final class BaseDataAttachments {
             .build()
     );
     public static final Supplier<AttachmentType<EntityAttributeData>> ENTITY_ATTRIBUTES = REGISTRY.register("entity_attributes", () -> AttachmentType.builder(EntityAttributeData::new)
-            .serialize(EntityAttributeData.CODEC)
+            .serialize(PartialAttachmentTypeSerializer.withCodec(EntityAttributeData.CODEC))
             .copyOnDeath()
             .build()
     );
     public static final Supplier<AttachmentType<EnergyData>> ENERGY = REGISTRY.register("energy", () -> AttachmentType.builder(EnergyData::new)
             .serialize(EnergyData.CODEC)
+            .build()
+    );
+    public static final Supplier<AttachmentType<SkillData>> SKILL = REGISTRY.register("skill", () -> AttachmentType.builder(SkillData::new)
+            .serialize(PartialAttachmentTypeSerializer.withCodec(SkillData.CODEC))
+            .copyOnDeath()
             .build()
     );
 }

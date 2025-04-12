@@ -7,6 +7,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,6 +16,7 @@ import org.apache.logging.log4j.MarkerManager;
 import tnt.tarkovcraft.core.common.TarkovCraftCoreEventHandler;
 import tnt.tarkovcraft.core.common.config.TarkovCraftCoreConfig;
 import tnt.tarkovcraft.core.common.init.*;
+import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 import tnt.tarkovcraft.core.network.TarkovCraftCoreNetwork;
 
 @Mod(TarkovCraftCore.MOD_ID)
@@ -33,6 +35,7 @@ public class TarkovCraftCore {
 
         // Mod event listeners
         modEventBus.addListener(this::registerCustomRegistries);
+        modEventBus.addListener(this::registerCustomDatapackRegistries);
         modEventBus.addListener(TarkovCraftCoreNetwork::onRegistration);
 
         // Neoforge event listeners
@@ -45,6 +48,8 @@ public class TarkovCraftCore {
         NumberProviders.REGISTRY.register(modEventBus);
         BaseMailMessageAttachments.REGISTRY.register(modEventBus);
         BaseDataAttachments.REGISTRY.register(modEventBus);
+        CoreSkillTriggerEvents.REGISTRY.register(modEventBus);
+        CoreSkillTrackers.REGISTRY.register(modEventBus);
     }
 
     public static TarkovCraftCoreConfig getConfig() {
@@ -64,5 +69,13 @@ public class TarkovCraftCore {
 
         // Mail system
         event.register(TarkovCraftRegistries.MAIL_MESSAGE_ATTACHMENT);
+
+        // Skill system
+        event.register(TarkovCraftRegistries.SKILL_TRIGGER_EVENT);
+        event.register(TarkovCraftRegistries.SKILL_TRIGGER_TYPE);
+    }
+
+    private void registerCustomDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
+        event.dataPackRegistry(TarkovCraftRegistries.DatapackKeys.SKILL_DEFINITION, SkillDefinition.DIRECT_CODEC, SkillDefinition.DIRECT_CODEC);
     }
 }

@@ -31,7 +31,7 @@ public final class CharacterScreen extends NotificationScreen implements DataScr
     }
 
     @Override
-    public void onAttachmentDataReceived(Entity entity, AttachmentType<?> attachmentType, Synchronizable data) {
+    public void onAttachmentDataReceived(Entity entity, AttachmentType<?> attachmentType, Synchronizable<?> data) {
         if (entity.getUUID().equals(this.characterProfileId)) {
             this.init(this.minecraft, this.width, this.height); // reload data if applicable
         }

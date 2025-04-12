@@ -20,6 +20,6 @@ public class TarkovCraftCoreConfig {
 
     @Configurable
     @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
-    @Configurable.Comment(localize = true, value = "Skill system configuration")
+    @Configurable.Comment(localize = true, value = "Skill system tracker")
     public SkillSystemConfig skillSystemConfig = new SkillSystemConfig();
 }

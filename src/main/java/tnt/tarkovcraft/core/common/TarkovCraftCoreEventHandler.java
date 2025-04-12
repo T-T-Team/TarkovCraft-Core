@@ -3,9 +3,13 @@ package tnt.tarkovcraft.core.common;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -13,9 +17,11 @@ import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.energy.EnergyData;
 import tnt.tarkovcraft.core.common.energy.EnergyType;
 import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
+import tnt.tarkovcraft.core.common.skill.SkillSystem;
 import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 public final class TarkovCraftCoreEventHandler {
 
@@ -40,8 +46,21 @@ public final class TarkovCraftCoreEventHandler {
         S2C_SendDataAttachments payload = new S2C_SendDataAttachments(player, Arrays.asList(
                 BaseDataAttachments.MAIL_MANAGER.get(),
                 BaseDataAttachments.ENTITY_ATTRIBUTES.get(),
-                BaseDataAttachments.ENERGY.get()
+                BaseDataAttachments.ENERGY.get(),
+                BaseDataAttachments.SKILL.get()
         ));
         PacketDistributor.sendToPlayer((ServerPlayer) player, payload);
+    }
+
+    @SubscribeEvent
+    private void onDatapackSync(OnDatapackSyncEvent event) {
+        ServerPlayer player = event.getPlayer();
+        if (player == null) {
+            PlayerList playerList = event.getPlayerList();
+            MinecraftServer server = playerList.getServer();
+            RegistryAccess access = server.registryAccess();
+
+            SkillSystem.reloadCache(access);
+        }
     }
 }

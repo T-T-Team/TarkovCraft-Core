@@ -2,15 +2,12 @@ package tnt.tarkovcraft.core.common.mail;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
-import net.minecraft.nbt.CompoundTag;
 import tnt.tarkovcraft.core.network.Synchronizable;
-import tnt.tarkovcraft.core.util.Codecs;
 
 import java.util.*;
 
-public final class MailManager implements Synchronizable {
+public final class MailManager implements Synchronizable<MailManager> {
 
     public static final Codec<MailManager> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             MailList.CODEC.listOf().fieldOf("chat").forGetter(t -> new ArrayList<>(t.messages.values())),
@@ -97,16 +94,7 @@ public final class MailManager implements Synchronizable {
     }
 
     @Override
-    public CompoundTag serialize(HolderLookup.Provider provider) {
-        return Codecs.serialize(CODEC, this);
-    }
-
-    @Override
-    public void deserialize(CompoundTag tag, HolderLookup.Provider provider) {
-        MailManager resolved = Codecs.deserialize(CODEC, tag);
-        this.messages.clear();
-        this.blockedIds.clear();
-        this.messages.putAll(resolved.messages);
-        this.blockedIds.addAll(resolved.blockedIds);
+    public Codec<MailManager> networkCodec() {
+        return CODEC;
     }
 }

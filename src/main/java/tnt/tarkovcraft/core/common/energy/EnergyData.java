@@ -2,8 +2,6 @@ package tnt.tarkovcraft.core.common.energy;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
@@ -11,9 +9,8 @@ import tnt.tarkovcraft.core.common.config.SkillSystemConfig;
 import tnt.tarkovcraft.core.common.init.BaseAttributes;
 import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
 import tnt.tarkovcraft.core.network.Synchronizable;
-import tnt.tarkovcraft.core.util.Codecs;
 
-public class EnergyData implements Synchronizable {
+public class EnergyData implements Synchronizable<EnergyData> {
 
     public static final Codec<EnergyData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Energy.CODEC.fieldOf("arm").forGetter(t -> t.armEnergy),
@@ -65,14 +62,7 @@ public class EnergyData implements Synchronizable {
     }
 
     @Override
-    public CompoundTag serialize(HolderLookup.Provider provider) {
-        return Codecs.serialize(CODEC, this);
-    }
-
-    @Override
-    public void deserialize(CompoundTag tag, HolderLookup.Provider provider) {
-        EnergyData resolved = Codecs.deserialize(CODEC, tag);
-        this.armEnergy.setInternal(resolved.armEnergy.getEnergy());
-        this.legEnergy.setInternal(resolved.legEnergy.getEnergy());
+    public Codec<EnergyData> networkCodec() {
+        return CODEC;
     }
 }

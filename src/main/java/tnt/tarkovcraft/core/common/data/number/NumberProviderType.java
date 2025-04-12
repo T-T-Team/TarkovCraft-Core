@@ -15,12 +15,12 @@ public record NumberProviderType<N extends NumberProvider>(ResourceLocation iden
     public static final Codec<NumberProvider> ID_CODEC = TarkovCraftRegistries.NUMBER_PROVIDER.byNameCodec().dispatch(NumberProvider::getType, NumberProviderType::codec);
 
     // resolve either simple number, duration string or custom number provider
-    public static <N extends Number> NumberProvider resolve(Either<N, Either<Duration, NumberProvider>> either) {
+    public static <N extends Number> NumberProvider resolve(Either<NumberProvider, Either<Duration, N>> either) {
         return either.map(
-                num -> new ConstantNumberProvider(num.doubleValue()),
+                Function.identity(),
                 nested -> nested.map(
                         DurationNumberProvider::new,
-                        Function.identity()
+                        num -> new ConstantNumberProvider(num.doubleValue())
                 )
         );
     }
@@ -31,8 +31,8 @@ public record NumberProviderType<N extends NumberProvider>(ResourceLocation iden
      * @return Constructed codec using the custom number codec
      * @param <N> Number type
      */
-    public static <N extends Number> Codec<Either<N, Either<Duration, NumberProvider>>> complexCodec(Codec<N> numberCodec) {
-        return Codec.either(numberCodec, Codec.either(Duration.STRING_CODEC, ID_CODEC));
+    public static <N extends Number> Codec<Either<NumberProvider, Either<Duration, N>>> complexCodec(Codec<N> numberCodec) {
+        return Codec.either(ID_CODEC, Codec.either(Duration.STRING_CODEC, numberCodec));
     }
 
     @Override

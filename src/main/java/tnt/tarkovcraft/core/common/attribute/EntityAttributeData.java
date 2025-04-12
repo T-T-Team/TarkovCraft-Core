@@ -2,8 +2,6 @@ package tnt.tarkovcraft.core.common.attribute;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
@@ -11,13 +9,12 @@ import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
 import tnt.tarkovcraft.core.common.init.BaseAttributes;
 import tnt.tarkovcraft.core.common.init.TarkovCraftRegistries;
 import tnt.tarkovcraft.core.network.Synchronizable;
-import tnt.tarkovcraft.core.util.Codecs;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public final class EntityAttributeData implements Synchronizable {
+public final class EntityAttributeData implements Synchronizable<EntityAttributeData> {
 
     public static final Codec<EntityAttributeData> CODEC = Codec.unboundedMap(
             TarkovCraftRegistries.ATTRIBUTE.byNameCodec(),
@@ -65,16 +62,8 @@ public final class EntityAttributeData implements Synchronizable {
     }
 
     @Override
-    public CompoundTag serialize(HolderLookup.Provider provider) {
-        return Codecs.serialize(CODEC, this);
-    }
-
-    @Override
-    public void deserialize(CompoundTag tag, HolderLookup.Provider provider) {
-        EntityAttributeData data = Codecs.deserialize(CODEC, tag);
-        this.attributeMap.clear();
-        this.attributeMap.putAll(data.attributeMap);
-        this.attributeMap.values().forEach(value -> value.setHolder(this.holder));
+    public Codec<EntityAttributeData> networkCodec() {
+        return CODEC;
     }
 
     private AttributeInstance createInstance(Attribute attribute) {

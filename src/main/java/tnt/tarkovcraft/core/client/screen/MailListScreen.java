@@ -72,7 +72,7 @@ public class MailListScreen extends LayeredScreen implements DataScreen {
     }
 
     @Override
-    public void onAttachmentDataReceived(Entity entity, AttachmentType<?> attachmentType, Synchronizable data) {
+    public void onAttachmentDataReceived(Entity entity, AttachmentType<?> attachmentType, Synchronizable<?> data) {
         if (!entity.getUUID().equals(Minecraft.getInstance().player.getUUID()))
             return;
         if (attachmentType == BaseDataAttachments.MAIL_MANAGER.get()) {

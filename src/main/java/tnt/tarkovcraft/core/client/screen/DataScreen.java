@@ -6,5 +6,5 @@ import tnt.tarkovcraft.core.network.Synchronizable;
 
 public interface DataScreen {
 
-    default void onAttachmentDataReceived(Entity entity, AttachmentType<?> attachmentType, Synchronizable data) {}
+    default void onAttachmentDataReceived(Entity entity, AttachmentType<?> attachmentType, Synchronizable<?> data) {}
 }

@@ -1,9 +1,14 @@
 package tnt.tarkovcraft.core.network.message;
 
+import com.mojang.serialization.Codec;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -22,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class S2C_SendDataAttachments implements CustomPacketPayload {
 
     public static final ResourceLocation ID = TarkovCraftCoreNetwork.createId(S2C_SendDataAttachments.class);
@@ -35,21 +41,26 @@ public class S2C_SendDataAttachments implements CustomPacketPayload {
     private final List<ResourceLocation> attachments;
     private final CompoundTag data;
 
-    public S2C_SendDataAttachments(Entity entity, AttachmentType<? extends Synchronizable> type) {
+    public S2C_SendDataAttachments(Entity entity, AttachmentType<? extends Synchronizable<?>> type) {
         this(entity, Collections.singletonList(type));
     }
 
-    public S2C_SendDataAttachments(Entity entity, List<AttachmentType<? extends Synchronizable>> types) {
+    public <T extends Synchronizable<T>> S2C_SendDataAttachments(Entity entity, List<AttachmentType<? extends Synchronizable<?>>> types) {
         this.entityId = entity.getId();
         this.attachments = new ArrayList<>(types.size());
         this.data = new CompoundTag();
-        types.stream().distinct().forEach(type -> {
-            ResourceLocation key = NeoForgeRegistries.ATTACHMENT_TYPES.getKey(type);
-            this.attachments.add(key);
-            Synchronizable attachment = entity.getData(type);
-            CompoundTag attachmentData = attachment.serialize(entity.registryAccess());
-            this.data.put(key.toString(), attachmentData);
-        });
+
+        RegistryAccess access = entity.registryAccess();
+        RegistryOps<Tag> ops = access.createSerializationContext(NbtOps.INSTANCE);
+        for (AttachmentType<?> type : types) {
+            ResourceLocation typeIdentifier = NeoForgeRegistries.ATTACHMENT_TYPES.getKey(type);
+            T serializable = (T) entity.getData(type);
+            Codec<T> networkCodec = serializable.networkCodec();
+            Tag tag = networkCodec.encodeStart(ops, serializable).getOrThrow();
+
+            this.attachments.add(typeIdentifier);
+            this.data.put(typeIdentifier.toString(), tag);
+        }
     }
 
     private S2C_SendDataAttachments(FriendlyByteBuf buf) {
@@ -64,7 +75,8 @@ public class S2C_SendDataAttachments implements CustomPacketPayload {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public <T extends Synchronizable> void handleMessage(IPayloadContext ctx) {
+    @SuppressWarnings("unchecked")
+    public <T extends Synchronizable<T>> void handleMessage(IPayloadContext ctx) {
         Player player = ctx.player();
         Level level = player.level();
         Entity entity = level.getEntity(this.entityId);
@@ -72,13 +84,14 @@ public class S2C_SendDataAttachments implements CustomPacketPayload {
             TarkovCraftCore.LOGGER.warn(TarkovCraftCore.MARKER, "Entity not found in level by ID: {}", this.entityId);
             return;
         }
+        RegistryOps<Tag> ops = entity.registryAccess().createSerializationContext(NbtOps.INSTANCE);
         for (ResourceLocation attachment : this.attachments) {
-            AttachmentType<?> type = NeoForgeRegistries.ATTACHMENT_TYPES.getValue(attachment);
-            Synchronizable value = (Synchronizable) entity.getData(type);
-            CompoundTag attachmentData = this.data.getCompoundOrEmpty(attachment.toString());
-            value.deserialize(attachmentData, player.registryAccess());
-
-            TarkovCraftCoreClient.sendDataSyncEvent(entity, type, value);
+            AttachmentType<T> type = (AttachmentType<T>) NeoForgeRegistries.ATTACHMENT_TYPES.getValue(attachment);
+            T value = entity.getData(type);
+            Codec<T> codec = value.networkCodec();
+            T data = codec.parse(ops, this.data.getCompoundOrEmpty(attachment.toString())).getPartialOrThrow();
+            entity.setData(type, data);
+            TarkovCraftCoreClient.sendDataSyncEvent(entity, type, data);
         }
     }
 

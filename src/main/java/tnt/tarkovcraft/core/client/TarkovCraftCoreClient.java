@@ -82,7 +82,7 @@ public final class TarkovCraftCoreClient {
         event.registerAboveAll(NotificationLayer.LAYER_ID, new NotificationLayer(NotificationChannel.MAIN));
     }
 
-    public static void sendDataSyncEvent(Entity entity, AttachmentType<?> type, Synchronizable data) {
+    public static void sendDataSyncEvent(Entity entity, AttachmentType<?> type, Synchronizable<?> data) {
         Minecraft minecraft = Minecraft.getInstance();
         Screen screen = minecraft.screen;
         if (screen instanceof DataScreen dataScreen) {
