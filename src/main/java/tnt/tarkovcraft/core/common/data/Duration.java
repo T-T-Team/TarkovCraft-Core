@@ -30,7 +30,7 @@ public record Duration(DurationUnit unit, double value) implements TickValue {
             return DataResult.error(() -> "Invalid duration unit: " + e);
         }
         return DataResult.success(new Duration(durationUnit, intValue));
-    }, Duration::toDurationString);
+    }, duration -> duration.tickValue() + DurationUnit.TICK.sign());
 
     public static Duration ticks(int ticks) {
         return new Duration(DurationUnit.TICK, ticks);

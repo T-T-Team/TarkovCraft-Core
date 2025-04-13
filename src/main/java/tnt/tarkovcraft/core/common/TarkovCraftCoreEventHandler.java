@@ -12,16 +12,17 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.energy.EnergyData;
 import tnt.tarkovcraft.core.common.energy.EnergyType;
 import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
+import tnt.tarkovcraft.core.common.init.CoreSkillTriggerEvents;
 import tnt.tarkovcraft.core.common.skill.SkillSystem;
 import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 public final class TarkovCraftCoreEventHandler {
 
@@ -62,5 +63,11 @@ public final class TarkovCraftCoreEventHandler {
 
             SkillSystem.reloadCache(access);
         }
+    }
+
+    @SubscribeEvent
+    private void onPlayerTickPost(PlayerTickEvent.Post event) {
+        Player player = event.getEntity();
+        SkillSystem.trigger(CoreSkillTriggerEvents.PLAYER_TICK, player);
     }
 }

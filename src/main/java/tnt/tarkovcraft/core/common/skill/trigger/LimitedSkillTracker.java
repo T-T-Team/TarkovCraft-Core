@@ -4,6 +4,8 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
@@ -12,17 +14,16 @@ import tnt.tarkovcraft.core.common.data.number.NumberProvider;
 import tnt.tarkovcraft.core.common.data.number.NumberProviderType;
 import tnt.tarkovcraft.core.common.init.CoreSkillTrackers;
 import tnt.tarkovcraft.core.common.skill.SkillContextKeys;
-import tnt.tarkovcraft.core.util.context.ContextKeys;
+import tnt.tarkovcraft.core.util.Codecs;
 import tnt.tarkovcraft.core.util.context.Context;
+import tnt.tarkovcraft.core.util.context.ContextKeys;
 
 public class LimitedSkillTracker implements SkillTracker {
 
     public static final MapCodec<LimitedSkillTracker> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             NumberProviderType.complexCodecNoDuration(ExtraCodecs.POSITIVE_FLOAT).fieldOf("value").forGetter(t -> Either.left(t.value)),
             NumberProviderType.complexCodecNoDuration(ExtraCodecs.POSITIVE_FLOAT).fieldOf("limit").forGetter(t -> Either.left(t.maxValue)),
-            NumberProviderType.complexCodec(ExtraCodecs.POSITIVE_INT).fieldOf("cooldown").forGetter(t -> Either.left(t.cooldown)),
-            Codec.FLOAT.optionalFieldOf("accumulated", 0.0F).forGetter(t -> t.accumulatedValue),
-            Codec.LONG.optionalFieldOf("cooldownUntil", 0L).forGetter(t -> t.cooldownUntil)
+            NumberProviderType.complexCodec(ExtraCodecs.POSITIVE_INT).fieldOf("cooldown").forGetter(t -> Either.left(t.cooldown))
     ).apply(instance, LimitedSkillTracker::new));
 
     private final NumberProvider value;
@@ -31,12 +32,10 @@ public class LimitedSkillTracker implements SkillTracker {
     private float accumulatedValue;
     private long cooldownUntil;
 
-    private LimitedSkillTracker(Either<NumberProvider, Float> value, Either<NumberProvider, Float> maxValue, Either<NumberProvider, Either<Duration, Integer>> cooldown, float accumulatedValue, long cooldownUntil) {
+    private LimitedSkillTracker(Either<NumberProvider, Float> value, Either<NumberProvider, Float> maxValue, Either<NumberProvider, Either<Duration, Integer>> cooldown) {
         this.value = NumberProviderType.resolveNoDuration(value);
         this.maxValue = NumberProviderType.resolveNoDuration(maxValue);
         this.cooldown = NumberProviderType.resolve(cooldown);
-        this.accumulatedValue = accumulatedValue;
-        this.cooldownUntil = cooldownUntil;
     }
 
     @Override
@@ -51,7 +50,7 @@ public class LimitedSkillTracker implements SkillTracker {
         float limit = this.maxValue.map(Double::floatValue);
         float multiplier = context.getOrDefault(SkillContextKeys.SKILL_GAIN_MULTIPLIER, 1.0F);
         float fullTriggerAmount = this.value.map(Double::floatValue) * multiplier;
-        float triggerAmount = Math.max(fullTriggerAmount, limit - this.accumulatedValue);
+        float triggerAmount = Math.min(fullTriggerAmount, limit - this.accumulatedValue);
         this.accumulatedValue += triggerAmount;
         if (this.accumulatedValue >= limit) {
             this.accumulatedValue = 0.0F;
@@ -63,7 +62,27 @@ public class LimitedSkillTracker implements SkillTracker {
     }
 
     @Override
+    public Tag getSaveData() {
+        return Codecs.serialize(NbtOps.INSTANCE, SaveData.CODEC, new SaveData(this.accumulatedValue, this.cooldownUntil));
+    }
+
+    @Override
+    public void loadSaveData(Tag tag) {
+        SaveData data = Codecs.deserialize(NbtOps.INSTANCE, SaveData.CODEC, tag);
+        this.accumulatedValue = data.accumulated;
+        this.cooldownUntil = data.cooldownUntil;
+    }
+
+    @Override
     public SkillTrackerType<?> getType() {
         return CoreSkillTrackers.LIMITED.get();
+    }
+
+    private record SaveData(float accumulated, long cooldownUntil) {
+
+        private static final Codec<SaveData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.FLOAT.fieldOf("accumulated").forGetter(SaveData::accumulated),
+                Codec.LONG.fieldOf("cooldownUntil").forGetter(SaveData::cooldownUntil)
+        ).apply(instance, SaveData::new));
     }
 }

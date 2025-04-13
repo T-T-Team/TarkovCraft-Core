@@ -3,6 +3,8 @@ package tnt.tarkovcraft.core.common.skill;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
@@ -32,13 +34,15 @@ public class SkillDefinition {
         this.trackers = trackers;
     }
 
-    public Skill instance() {
+    public Skill instance(RegistryAccess access) {
+        Registry<SkillDefinition> registry = access.lookupOrThrow(TarkovCraftRegistries.DatapackKeys.SKILL_DEFINITION);
+        Holder<SkillDefinition> reference = registry.wrapAsHolder(this);
         List<Skill.SkillTrackerData> trackerDataList = new ArrayList<>();
         for (Map.Entry<UUID, SkillTrackerDefinition> entry : this.trackers.entrySet()) {
             trackerDataList.add(new Skill.SkillTrackerData(entry.getKey(), entry.getValue().tracker()));
         }
         return new Skill(
-                Holder.direct(this),
+                reference,
                 trackerDataList
         );
     }

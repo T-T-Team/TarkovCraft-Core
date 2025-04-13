@@ -1,9 +1,11 @@
 package tnt.tarkovcraft.core.common.skill;
 
-import com.mojang.serialization.Codec;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.UUIDUtil;
+import tnt.tarkovcraft.core.common.skill.trigger.SkillSaveData;
 import tnt.tarkovcraft.core.common.skill.trigger.SkillTracker;
 import tnt.tarkovcraft.core.common.skill.trigger.SkillTrackerType;
 import tnt.tarkovcraft.core.common.skill.trigger.condition.SkillTriggerCondition;
@@ -22,6 +24,7 @@ public final class Skill {
 
     private final Holder<SkillDefinition> definition;
     private final List<SkillTrackerData> trackers;
+    private final SkillSaveData skillSaveData;
     private int level;
     private float experience;
     private float requiredExperience;
@@ -29,6 +32,22 @@ public final class Skill {
     Skill(Holder<SkillDefinition> definition, List<SkillTrackerData> trackers) {
         this.definition = definition;
         this.trackers = trackers;
+        this.skillSaveData = new SkillSaveData();
+    }
+
+    private <T> DataResult<T> encode(DynamicOps<T> ops, T prefix) {
+        RecordBuilder<T> builder = ops.mapBuilder();
+        builder.add("definition", ops.withEncoder(SkillDefinition.CODEC).apply(this.definition));
+        builder.add("trackers", ops.withEncoder(SkillTrackerData.CODEC.listOf()).apply(this.trackers));
+        builder.add("saveData", this.skillSaveData.encode(ops, prefix, this.trackers));
+        return builder.build(prefix);
+    }
+
+    private static <T, R> DataResult<Pair<R, T>> decode(DynamicOps<T> ops, T input) {
+        MapLike<T> map = ops.getMap(input).getOrThrow();
+        var definition = SkillDefinition.CODEC.parse(ops, map.get("definition"));
+        var trackers = SkillTrackerData.CODEC.listOf().parse(ops, map.get("trackers"));
+        return DataResult.success(Pair.of(null, input));
     }
 
     public float trigger(Context context) {

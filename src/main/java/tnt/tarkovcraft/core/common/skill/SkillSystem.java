@@ -4,6 +4,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.Marker;
@@ -13,8 +14,8 @@ import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
 import tnt.tarkovcraft.core.common.init.TarkovCraftRegistries;
 import tnt.tarkovcraft.core.common.skill.trigger.SkillTrackerDefinition;
 import tnt.tarkovcraft.core.common.skill.trigger.SkillTriggerEvent;
-import tnt.tarkovcraft.core.util.context.ContextImpl;
 import tnt.tarkovcraft.core.util.context.Context;
+import tnt.tarkovcraft.core.util.context.ContextImpl;
 
 import java.util.Collection;
 import java.util.function.Supplier;
@@ -29,6 +30,8 @@ public final class SkillSystem {
     }
 
     public static boolean trigger(SkillTriggerEvent event, Entity entity, float multiplier, Context context) {
+        if (entity.level().isClientSide())
+            return false;
         if (!isSkillSystemEnabled())
             return false;
         SkillData data = entity.getData(BaseDataAttachments.SKILL);
@@ -48,6 +51,14 @@ public final class SkillSystem {
         return trigger(event, entity, multiplier, ContextImpl.empty());
     }
 
+    public static boolean trigger(SkillTriggerEvent event, Entity entity) {
+        return trigger(event, entity, 1.0F);
+    }
+
+    public static boolean trigger(Supplier<SkillTriggerEvent> event, Entity entity) {
+        return trigger(event, entity, 1.0F);
+    }
+
     public static void reloadCache(HolderLookup.Provider provider) {
         TarkovCraftCore.LOGGER.debug(MARKER, "Reloading skill system cache");
         TRIGGER_EVENT_CACHE.clear();
@@ -64,8 +75,20 @@ public final class SkillSystem {
     }
 
     public static Collection<SkillDefinition> getTriggerables(RegistryAccess access, SkillTriggerEvent event) {
-        if (TRIGGER_EVENT_CACHE.isEmpty())
-            reloadCache(access);
-        return TRIGGER_EVENT_CACHE.get(event);
+        Registry<SkillDefinition> registry = access.lookupOrThrow(TarkovCraftRegistries.DatapackKeys.SKILL_DEFINITION);
+        return registry.listElements()
+                .map(Holder.Reference::value)
+                .filter(definition -> {
+                    for (SkillTrackerDefinition trackerDefinition : definition.getTrackers()) {
+                        if (trackerDefinition.event().equals(event)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                })
+                .toList();
+        //if (TRIGGER_EVENT_CACHE.isEmpty())
+        //    reloadCache(access);
+        //return TRIGGER_EVENT_CACHE.get(event);
     }
 }

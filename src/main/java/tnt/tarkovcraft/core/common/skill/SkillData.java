@@ -27,14 +27,18 @@ public final class SkillData implements Synchronizable<SkillData> {
     private final Map<SkillDefinition, Skill> skillMap;
 
     public SkillData(IAttachmentHolder holder) {
-        if (!(holder instanceof Entity entity))
-            throw new IllegalArgumentException("Holder must be an instance of Entity");
-        this.holder = entity;
+        this.setHolder(holder);
         this.skillMap = new HashMap<>();
     }
 
     private SkillData(Map<SkillDefinition, Skill> map) {
         this.skillMap = new HashMap<>(map);
+    }
+
+    public void setHolder(IAttachmentHolder holder) {
+        if (!(holder instanceof Entity entity))
+            throw new IllegalArgumentException("Holder must be an instance of Entity");
+        this.holder = entity;
     }
 
     public boolean trigger(SkillTriggerEvent event, SkillDefinition definition, float multiplier, Context reader) {
@@ -66,7 +70,7 @@ public final class SkillData implements Synchronizable<SkillData> {
     }
 
     private Skill createInstance(SkillDefinition definition) {
-        return definition.instance(); // TODO apply stats
+        return definition.instance(this.holder.registryAccess()); // TODO apply stats
     }
 
     private static Map<SkillDefinition, Skill> asSkillMap(List<Skill> list) {

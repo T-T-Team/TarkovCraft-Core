@@ -17,12 +17,12 @@ public final class BaseDataAttachments {
     public static final DeferredRegister<AttachmentType<?>> REGISTRY = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, TarkovCraftCore.MOD_ID);
 
     public static final Supplier<AttachmentType<MailManager>> MAIL_MANAGER = REGISTRY.register("mail_list", () -> AttachmentType.builder(MailManager::new)
-            .serialize(MailManager.CODEC)
+            .serialize(PartialAttachmentTypeSerializer.withCodec(MailManager.CODEC))
             .copyOnDeath()
             .build()
     );
     public static final Supplier<AttachmentType<EntityAttributeData>> ENTITY_ATTRIBUTES = REGISTRY.register("entity_attributes", () -> AttachmentType.builder(EntityAttributeData::new)
-            .serialize(PartialAttachmentTypeSerializer.withCodec(EntityAttributeData.CODEC))
+            .serialize(PartialAttachmentTypeSerializer.withCodecAndHolder(EntityAttributeData.CODEC, EntityAttributeData::setHolder))
             .copyOnDeath()
             .build()
     );
@@ -31,7 +31,7 @@ public final class BaseDataAttachments {
             .build()
     );
     public static final Supplier<AttachmentType<SkillData>> SKILL = REGISTRY.register("skill", () -> AttachmentType.builder(SkillData::new)
-            .serialize(PartialAttachmentTypeSerializer.withCodec(SkillData.CODEC))
+            .serialize(PartialAttachmentTypeSerializer.withCodecAndHolder(SkillData.CODEC, SkillData::setHolder))
             .copyOnDeath()
             .build()
     );

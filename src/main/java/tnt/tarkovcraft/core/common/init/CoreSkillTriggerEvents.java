@@ -10,5 +10,5 @@ public final class CoreSkillTriggerEvents {
 
     public static final DeferredRegister<SkillTriggerEvent> REGISTRY = DeferredRegister.create(TarkovCraftRegistries.SKILL_TRIGGER_EVENT, TarkovCraftCore.MOD_ID);
 
-    public static final Supplier<SkillTriggerEvent> SPRINT = REGISTRY.register("sprint", SkillTriggerEvent::new);
+    public static final Supplier<SkillTriggerEvent> PLAYER_TICK = REGISTRY.register("player_tick", SkillTriggerEvent::new);
 }

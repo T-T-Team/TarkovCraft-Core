@@ -48,12 +48,12 @@ public record C2S_MailSendMessage(UUID target, MailMessage message) implements C
 
     private static void encode(FriendlyByteBuf buf, C2S_MailSendMessage msg) {
         buf.writeUUID(msg.target);
-        buf.writeNbt(Codecs.serialize(MailMessage.CODEC, msg.message));
+        buf.writeNbt(Codecs.serializeNbtCompound(MailMessage.CODEC, msg.message));
     }
 
     private static C2S_MailSendMessage decode(FriendlyByteBuf buf) {
         UUID target = buf.readUUID();
-        MailMessage msg = Codecs.deserialize(MailMessage.CODEC, buf.readNbt());
+        MailMessage msg = Codecs.deserializeNbtCompound(MailMessage.CODEC, buf.readNbt());
         return new C2S_MailSendMessage(target, msg);
     }
 }

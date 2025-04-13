@@ -27,11 +27,7 @@ public final class EntityAttributeData implements Synchronizable<EntityAttribute
     private final Map<Attribute, AttributeInstance> attributeMap;
 
     public EntityAttributeData(IAttachmentHolder holder) {
-        if (holder instanceof Entity) {
-            this.holder = (Entity) holder;
-        } else {
-            throw new IllegalArgumentException("Holder must be an instance of Entity");
-        }
+        this.setHolder(holder);
         this.attributeMap = new HashMap<>();
     }
 
@@ -58,6 +54,14 @@ public final class EntityAttributeData implements Synchronizable<EntityAttribute
     public void tick() {
         for (AttributeInstance value : this.attributeMap.values()) {
             value.update();
+        }
+    }
+
+    public void setHolder(IAttachmentHolder holder) {
+        if (holder instanceof Entity) {
+            this.holder = (Entity) holder;
+        } else {
+            throw new IllegalArgumentException("Holder must be an instance of Entity");
         }
     }
 

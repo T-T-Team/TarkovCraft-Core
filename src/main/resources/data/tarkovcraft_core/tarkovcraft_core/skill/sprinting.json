@@ -1,5 +1,5 @@
 {
-  "name": {
+  "description": {
     "translate": "skill.tarkovcraft_core.sprinting"
   },
   "trackers": {
@@ -11,10 +11,8 @@
         }
       ],
       "tracker": {
-        "type": "tarkovcraft_core:limited",
-        "value": 0.01,
-        "limit": 2,
-        "cooldown": "30m"
+        "type": "tarkovcraft_core:unrestricted",
+        "value": 0.01
       }
     }
   }
