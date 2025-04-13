@@ -1,9 +1,6 @@
 package tnt.tarkovcraft.core.common.skill;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.entity.Entity;
@@ -23,7 +20,6 @@ import java.util.function.Supplier;
 public final class SkillSystem {
 
     public static final Marker MARKER = MarkerManager.getMarker("SkillSystem");
-    private static final Multimap<SkillTriggerEvent, SkillDefinition> TRIGGER_EVENT_CACHE = ArrayListMultimap.create();
 
     public static boolean isSkillSystemEnabled() {
         return TarkovCraftCore.getConfig().skillSystemConfig.skillSystemEnabled;
@@ -57,21 +53,6 @@ public final class SkillSystem {
         return trigger(event, entity, 1.0F);
     }
 
-    public static void reloadCache(HolderLookup.Provider provider) {
-        TarkovCraftCore.LOGGER.debug(MARKER, "Reloading skill system cache");
-        TRIGGER_EVENT_CACHE.clear();
-        provider.lookup(TarkovCraftRegistries.DatapackKeys.SKILL_DEFINITION).ifPresent(registryLookup -> {
-            registryLookup.listElements().map(Holder.Reference::value).forEach(value -> {
-                Collection<SkillTrackerDefinition> trackers = value.getTrackers();
-                for (SkillTrackerDefinition tracker : trackers) {
-                    SkillTriggerEvent event = tracker.event();
-                    TRIGGER_EVENT_CACHE.put(event, value);
-                }
-            });
-            TarkovCraftCore.LOGGER.debug(MARKER, "Reloaded skill system cache, contains {} events and total {} items", TRIGGER_EVENT_CACHE.keySet().size(), TRIGGER_EVENT_CACHE.size());
-        });
-    }
-
     public static Collection<SkillDefinition> getTriggerables(RegistryAccess access, SkillTriggerEvent event) {
         Registry<SkillDefinition> registry = access.lookupOrThrow(TarkovCraftRegistries.DatapackKeys.SKILL_DEFINITION);
         return registry.listElements()
@@ -85,8 +66,5 @@ public final class SkillSystem {
                     return false;
                 })
                 .toList();
-        //if (TRIGGER_EVENT_CACHE.isEmpty())
-        //    reloadCache(access);
-        //return TRIGGER_EVENT_CACHE.get(event);
     }
 }
