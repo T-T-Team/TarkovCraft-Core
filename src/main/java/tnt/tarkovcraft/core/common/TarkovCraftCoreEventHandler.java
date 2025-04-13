@@ -3,13 +3,9 @@ package tnt.tarkovcraft.core.common;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -51,18 +47,6 @@ public final class TarkovCraftCoreEventHandler {
                 BaseDataAttachments.SKILL.get()
         ));
         PacketDistributor.sendToPlayer((ServerPlayer) player, payload);
-    }
-
-    @SubscribeEvent
-    private void onDatapackSync(OnDatapackSyncEvent event) {
-        ServerPlayer player = event.getPlayer();
-        if (player == null) {
-            PlayerList playerList = event.getPlayerList();
-            MinecraftServer server = playerList.getServer();
-            RegistryAccess access = server.registryAccess();
-
-            SkillSystem.reloadCache(access);
-        }
     }
 
     @SubscribeEvent
