@@ -53,7 +53,7 @@ public final class Skill {
     }
 
     public void addExperience(float experience, Runnable levelChangeCallback) {
-        if (this.isMaxLevel())
+        if (this.isMaxLevel() || !this.definition.value().isEnabled())
             return;
         if ((this.experience += experience) >= this.requiredExperience) {
             this.experience = this.experience - this.requiredExperience;

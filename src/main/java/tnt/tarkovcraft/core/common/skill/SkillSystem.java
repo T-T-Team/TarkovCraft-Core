@@ -30,6 +30,7 @@ public final class SkillSystem {
             return false;
         SkillData data = entity.getData(BaseDataAttachments.SKILL);
         return getTriggerables(entity.registryAccess(), event).stream()
+                .filter(SkillDefinition::isEnabled)
                 .anyMatch(definition -> data.trigger(event, definition, multiplier, entity, context));
     }
 
