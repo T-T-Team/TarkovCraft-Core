@@ -1,4 +1,6 @@
 {
+  "skill.tarkovcraft_core.sprinting": "Sprinting",
+
   "screen.tarkovcraft_core.character.title": "Character",
   "screen.tarkovcraft_core.character.mail": "Messages",
   "screen.tarkovcraft_core.mail.title": "Character",
@@ -19,6 +21,7 @@
   "label.tarkovcraft_core.validation.unknown_player": "Unknown player",
   "label.tarkovcraft_core.validation.player_self": "You cannot use your player",
   "label.tarkovcraft_core.mail.failed_to_send_message": "Failed to send message",
+  "label.tarkovcraft_core.skill.level_up": "%s skill level increased to %s",
 
   "config.screen.tarkovcraft_core": "TarkovCraft",
   "config.tarkovcraft_core.option.enableSkillSystem": "Enable skill system",

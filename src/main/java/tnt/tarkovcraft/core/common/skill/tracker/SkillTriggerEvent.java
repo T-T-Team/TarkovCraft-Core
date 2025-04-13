@@ -1,4 +1,4 @@
-package tnt.tarkovcraft.core.common.skill.trigger;
+package tnt.tarkovcraft.core.common.skill.tracker;
 
 import net.minecraft.resources.ResourceLocation;
 

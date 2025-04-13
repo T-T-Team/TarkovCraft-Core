@@ -2,8 +2,15 @@
   "description": {
     "translate": "skill.tarkovcraft_core.sprinting"
   },
-  "trackers": {
-    "AF080394-316F-4D5F-8016-0EECB40D04C4": {
+  "leveling": {
+    "maxLevel": 100,
+    "baseExperience": 10.0,
+    "additionalExperience": 15.0,
+    "maxStack": 20
+  },
+  "trackers": [
+    {
+      "id": "af080394-316f-4d5f-8016-0eecb40d04c4",
       "event": "tarkovcraft_core:player_tick",
       "conditions": [
         {
@@ -11,9 +18,11 @@
         }
       ],
       "tracker": {
-        "type": "tarkovcraft_core:unrestricted",
-        "value": 0.01
+        "type": "tarkovcraft_core:limited",
+        "value": 5,
+        "limit": 5000.0,
+        "cooldown": "3s"
       }
     }
-  }
+  ]
 }

@@ -2,7 +2,7 @@ package tnt.tarkovcraft.core.common.skill;
 
 import net.minecraft.util.context.ContextKey;
 import tnt.tarkovcraft.core.TarkovCraftCore;
-import tnt.tarkovcraft.core.common.skill.trigger.SkillTriggerEvent;
+import tnt.tarkovcraft.core.common.skill.tracker.SkillTriggerEvent;
 
 public final class SkillContextKeys {
 

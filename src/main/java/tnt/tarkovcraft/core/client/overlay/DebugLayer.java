@@ -5,6 +5,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
+import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import tnt.tarkovcraft.core.TarkovCraftCore;
@@ -16,6 +19,10 @@ import tnt.tarkovcraft.core.common.energy.EnergyData;
 import tnt.tarkovcraft.core.common.energy.EnergyType;
 import tnt.tarkovcraft.core.common.init.BaseAttributes;
 import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
+import tnt.tarkovcraft.core.common.init.TarkovCraftRegistries;
+import tnt.tarkovcraft.core.common.skill.Skill;
+import tnt.tarkovcraft.core.common.skill.SkillData;
+import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 
 import java.util.Locale;
 
@@ -38,6 +45,9 @@ public class DebugLayer implements LayeredDraw.Layer {
         renderEnergyStats(font, guiGraphics, attributeData, energyData);
 
         renderCoreAttributeData(font, guiGraphics, attributeData);
+
+        SkillData skillData = player.getData(BaseDataAttachments.SKILL);
+        renderSkillData(font, client.getConnection().registryAccess(), guiGraphics, skillData);
     }
 
     private void renderEnergyStats(Font font, GuiGraphics graphics, EntityAttributeData attributeData, EnergyData energyData) {
@@ -62,6 +72,18 @@ public class DebugLayer implements LayeredDraw.Layer {
         float consumption = energy.getConsumptionMultiplier(attributeData);
         String value = String.format(Locale.ROOT, "%s: %.2f/%.2f | R %.3f | C %.3f", name, current, max, recovery, consumption);
         graphics.drawString(font, value, 5, y(), 0xFFFFFF);
+    }
+
+    private void renderSkillData(Font font, RegistryAccess access, GuiGraphics graphics, SkillData data) {
+        ResourceKey<SkillDefinition> rk = ResourceKey.create(TarkovCraftRegistries.DatapackKeys.SKILL_DEFINITION, TarkovCraftCore.createResourceLocation("sprinting"));
+        Holder<SkillDefinition> holder = access.holderOrThrow(rk);
+        SkillDefinition definition = holder.value();
+
+        Skill skill = data.getSkill(definition);
+        String info = String.format(Locale.ROOT, "%s: L%d | %.3f/%.1f", definition.getName().getString(), skill.getLevel(), skill.getExperience(), skill.getRequiredExperience());
+        graphics.drawString(font, info, 5, y(), 0xFFFFFF);
+
+        ++line;
     }
 
     private int y() {

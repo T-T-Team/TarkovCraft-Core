@@ -2,7 +2,7 @@ package tnt.tarkovcraft.core.common.init;
 
 import net.neoforged.neoforge.registries.DeferredRegister;
 import tnt.tarkovcraft.core.TarkovCraftCore;
-import tnt.tarkovcraft.core.common.skill.trigger.SkillTriggerEvent;
+import tnt.tarkovcraft.core.common.skill.tracker.SkillTriggerEvent;
 
 import java.util.function.Supplier;
 

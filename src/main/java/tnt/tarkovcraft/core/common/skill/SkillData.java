@@ -2,10 +2,20 @@ package tnt.tarkovcraft.core.common.skill;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import tnt.tarkovcraft.core.common.skill.trigger.SkillTriggerEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
+import tnt.tarkovcraft.core.common.Notification;
+import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
+import tnt.tarkovcraft.core.common.skill.tracker.SkillTriggerEvent;
 import tnt.tarkovcraft.core.network.Synchronizable;
+import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 import tnt.tarkovcraft.core.util.context.Context;
 import tnt.tarkovcraft.core.util.context.ContextImpl;
 import tnt.tarkovcraft.core.util.context.ContextKeys;
@@ -39,25 +49,44 @@ public final class SkillData implements Synchronizable<SkillData> {
         if (!(holder instanceof Entity entity))
             throw new IllegalArgumentException("Holder must be an instance of Entity");
         this.holder = entity;
+        // TODO reapply stats
     }
 
-    public boolean trigger(SkillTriggerEvent event, SkillDefinition definition, float multiplier, Context reader) {
+    public boolean trigger(SkillTriggerEvent event, SkillDefinition definition, float multiplier, Entity triggerSource, Context reader) {
         Skill instance = this.getSkill(definition);
         Context ctx = ContextImpl.builder()
                 .addProperty(SkillContextKeys.EVENT, event)
                 .addProperty(SkillContextKeys.DEFINITION, definition)
                 .addProperty(SkillContextKeys.SKILL, instance)
                 .addProperty(SkillContextKeys.SKILL_GAIN_MULTIPLIER, multiplier)
-                .addProperty(ContextKeys.ENTITY, this.holder)
-                .addProperty(ContextKeys.LEVEL, this.holder.level())
+                .addProperty(ContextKeys.ENTITY, triggerSource)
+                .addProperty(ContextKeys.LEVEL, triggerSource.level())
                 .addMissingFromSource(reader)
                 .build();
         float triggerAmount = instance.trigger(ctx);
         if (triggerAmount > 0) {
-            instance.addExperience(triggerAmount, () -> {}); // TODO trigger stat reload
+            this.addExperience(instance, triggerAmount);
             return true;
         }
         return false;
+    }
+
+    public void addExperience(SkillDefinition definition, float experience) {
+        Skill instance = this.getSkill(definition);
+        this.addExperience(instance, experience);
+    }
+
+    public void addExperience(Skill instance, float experience) {
+        instance.addExperience(experience, () -> {
+            if (this.holder instanceof ServerPlayer player) {
+                SkillDefinition definition = instance.getDefinition().value();
+                Notification notification = Notification.info(Component.translatable("label.tarkovcraft_core.skill.level_up", definition.getName(), instance.getLevel()));
+                notification.send(player);
+                // TODO reapply stats
+
+                PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, BaseDataAttachments.SKILL.get()));
+            }
+        });
     }
 
     public Skill getSkill(SkillDefinition skill) {
@@ -70,10 +99,23 @@ public final class SkillData implements Synchronizable<SkillData> {
     }
 
     private Skill createInstance(SkillDefinition definition) {
-        return definition.instance(this.holder.registryAccess()); // TODO apply stats
+        return definition.instance(this.getRegistryAccess()); // TODO apply stats
     }
 
     private static Map<SkillDefinition, Skill> asSkillMap(List<Skill> list) {
         return list.stream().collect(Collectors.toMap(skill -> skill.getDefinition().value(), Function.identity()));
+    }
+
+    private RegistryAccess getRegistryAccess() {
+        if (this.holder == null || this.holder.level().isClientSide()) {
+            return getClientRegistryAccess();
+        } else {
+            return this.holder.registryAccess();
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static RegistryAccess getClientRegistryAccess() {
+        return Minecraft.getInstance().getConnection().registryAccess();
     }
 }

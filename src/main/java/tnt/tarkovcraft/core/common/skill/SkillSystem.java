@@ -12,8 +12,8 @@ import org.apache.logging.log4j.MarkerManager;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
 import tnt.tarkovcraft.core.common.init.TarkovCraftRegistries;
-import tnt.tarkovcraft.core.common.skill.trigger.SkillTrackerDefinition;
-import tnt.tarkovcraft.core.common.skill.trigger.SkillTriggerEvent;
+import tnt.tarkovcraft.core.common.skill.tracker.SkillTrackerDefinition;
+import tnt.tarkovcraft.core.common.skill.tracker.SkillTriggerEvent;
 import tnt.tarkovcraft.core.util.context.Context;
 import tnt.tarkovcraft.core.util.context.ContextImpl;
 
@@ -30,13 +30,11 @@ public final class SkillSystem {
     }
 
     public static boolean trigger(SkillTriggerEvent event, Entity entity, float multiplier, Context context) {
-        if (entity.level().isClientSide())
-            return false;
         if (!isSkillSystemEnabled())
             return false;
         SkillData data = entity.getData(BaseDataAttachments.SKILL);
         return getTriggerables(entity.registryAccess(), event).stream()
-                .anyMatch(definition -> data.trigger(event, definition, multiplier, context));
+                .anyMatch(definition -> data.trigger(event, definition, multiplier, entity, context));
     }
 
     public static boolean trigger(Supplier<SkillTriggerEvent> event, Entity entity, float multiplier, Context context) {

@@ -1,4 +1,4 @@
-package tnt.tarkovcraft.core.common.skill.trigger.condition;
+package tnt.tarkovcraft.core.common.skill.tracker.condition;
 
 import tnt.tarkovcraft.core.util.context.Context;
 

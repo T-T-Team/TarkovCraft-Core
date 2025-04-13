@@ -2,8 +2,8 @@ package tnt.tarkovcraft.core.common.init;
 
 import net.neoforged.neoforge.registries.DeferredRegister;
 import tnt.tarkovcraft.core.TarkovCraftCore;
-import tnt.tarkovcraft.core.common.skill.trigger.condition.IsSprintingSkillTriggerCondition;
-import tnt.tarkovcraft.core.common.skill.trigger.condition.SkillTriggerConditionType;
+import tnt.tarkovcraft.core.common.skill.tracker.condition.IsSprintingSkillTriggerCondition;
+import tnt.tarkovcraft.core.common.skill.tracker.condition.SkillTriggerConditionType;
 
 import java.util.function.Supplier;
 

@@ -10,6 +10,14 @@ public interface NumberProvider extends Supplier<Double>, DoubleSupplier {
 
     double getNumber();
 
+    default int intValue() {
+        return map(Double::intValue);
+    }
+
+    default float floatValue() {
+        return map(Double::floatValue);
+    }
+
     @Override
     default Double get() {
         return getNumber();
