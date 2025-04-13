@@ -25,6 +25,13 @@ public record NumberProviderType<N extends NumberProvider>(ResourceLocation iden
         );
     }
 
+    public static <N extends Number> NumberProvider resolveNoDuration(Either<NumberProvider, N> either) {
+        return either.map(
+                Function.identity(),
+                num -> new ConstantNumberProvider(num.doubleValue())
+        );
+    }
+
     /**
      * Creates codec which supports definition of number provider as number / duration / custom number provider
      * @param numberCodec Number codec to be used for numbers
@@ -33,6 +40,10 @@ public record NumberProviderType<N extends NumberProvider>(ResourceLocation iden
      */
     public static <N extends Number> Codec<Either<NumberProvider, Either<Duration, N>>> complexCodec(Codec<N> numberCodec) {
         return Codec.either(ID_CODEC, Codec.either(Duration.STRING_CODEC, numberCodec));
+    }
+
+    public static <N extends Number> Codec<Either<NumberProvider, N>> complexCodecNoDuration(Codec<N> numberCodec) {
+        return Codec.either(ID_CODEC, numberCodec);
     }
 
     @Override

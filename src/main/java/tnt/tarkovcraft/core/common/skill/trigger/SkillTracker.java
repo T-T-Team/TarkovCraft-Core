@@ -1,12 +1,12 @@
 package tnt.tarkovcraft.core.common.skill.trigger;
 
-import net.minecraft.world.entity.Entity;
+import tnt.tarkovcraft.core.util.context.Context;
 
 public interface SkillTracker {
 
-    boolean isTriggerable(SkillTriggerEvent event, Entity entity);
+    boolean isTriggerable(Context context);
 
-    float trigger(SkillTriggerEvent event, Entity entity);
+    float trigger(Context context);
 
     SkillTrackerType<?> getType();
 }

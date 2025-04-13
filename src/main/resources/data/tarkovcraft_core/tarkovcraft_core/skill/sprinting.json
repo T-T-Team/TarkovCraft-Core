@@ -1,0 +1,21 @@
+{
+  "name": {
+    "translate": "skill.tarkovcraft_core.sprinting"
+  },
+  "trackers": {
+    "AF080394-316F-4D5F-8016-0EECB40D04C4": {
+      "event": "tarkovcraft_core:player_tick",
+      "conditions": [
+        {
+          "type": "tarkovcraft_core:sprinting"
+        }
+      ],
+      "tracker": {
+        "type": "tarkovcraft_core:limited",
+        "value": 0.01,
+        "limit": 2,
+        "cooldown": "30m"
+      }
+    }
+  }
+}

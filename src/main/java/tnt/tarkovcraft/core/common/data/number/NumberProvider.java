@@ -1,6 +1,7 @@
 package tnt.tarkovcraft.core.common.data.number;
 
 import java.util.function.DoubleSupplier;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public interface NumberProvider extends Supplier<Double>, DoubleSupplier {
@@ -17,5 +18,9 @@ public interface NumberProvider extends Supplier<Double>, DoubleSupplier {
     @Override
     default double getAsDouble() {
         return getNumber();
+    }
+
+    default <N extends Number> N map(Function<Double, N> mapper) {
+        return mapper.apply(this.getNumber());
     }
 }
