@@ -20,7 +20,7 @@ public class MovementStamina implements Synchronizable<MovementStamina> {
             CoreRegistries.ATTRIBUTE.holderByNameCodec().fieldOf("recovery").forGetter(t -> t.recoveryAttribute),
             CoreRegistries.ATTRIBUTE.holderByNameCodec().fieldOf("recoveryDelay").forGetter(t -> t.recoveryDelayAttribute),
             Codec.FLOAT.fieldOf("stamina").forGetter(t -> t.stamina),
-            Codec.INT.fieldOf("recoveryDelay").forGetter(t -> t.recoveryDelay)
+            Codec.INT.fieldOf("recoveryTime").forGetter(t -> t.recoveryDelay)
     ).apply(instance, MovementStamina::new));
 
     public static final int DEFAULT_STAMINA_VALUE = 100;
@@ -57,7 +57,7 @@ public class MovementStamina implements Synchronizable<MovementStamina> {
 
     public boolean canSprint(LivingEntity entity) {
         EntityAttributeData data = entity.getData(CoreDataAttachments.ENTITY_ATTRIBUTES);
-        return data.getAttribute(CoreAttributes.SPRINT).booleanValue() && this.hasStamina(SPRINT_STAMINA_CONSUMPTION);
+        return data.getAttribute(CoreAttributes.SPRINT).booleanValue() && this.hasStamina(ENERGY_LOW_VALUE);
     }
 
     public boolean canJump(LivingEntity entity) {
@@ -75,7 +75,6 @@ public class MovementStamina implements Synchronizable<MovementStamina> {
     public void update(LivingEntity entity) {
         if (this.recoveryDelay > 0) {
             --this.recoveryDelay;
-            return;
         }
         if (entity.isSprinting()) {
             this.onSprint(entity);
@@ -128,6 +127,9 @@ public class MovementStamina implements Synchronizable<MovementStamina> {
         float consumptionMultiplier = Math.abs(this.getConsumptionMultiplier(data));
         this.setStamina(data, this.stamina - amount * consumptionMultiplier);
         int delay = Mth.ceil(recoveryDelay * data.getAttribute(this.recoveryDelayAttribute).floatValue());
+        if (!this.hasAnyStamina()) {
+            delay *= 2;
+        }
         this.setRecoveryDelay(Math.max(delay, this.recoveryDelay));
     }
 

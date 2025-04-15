@@ -5,7 +5,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import tnt.tarkovcraft.core.common.data.Duration;
 import tnt.tarkovcraft.core.common.data.number.NumberProvider;
