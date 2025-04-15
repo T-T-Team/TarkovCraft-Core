@@ -29,6 +29,7 @@ public class SynchronizationAttributeListener implements AttributeListener {
         this.synchronize();
     }
 
+    @SuppressWarnings("ConstantValue") // IDEA, get your shit together
     public void synchronize() {
         if (this.holder != null && this.holder.connection != null) {
             PacketDistributor.sendToPlayer(this.holder, new S2C_SendDataAttachments(this.holder, CoreDataAttachments.ENTITY_ATTRIBUTES.get()));

@@ -5,8 +5,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
-import tnt.tarkovcraft.core.common.init.CoreAttributes;
+import net.neoforged.neoforge.common.NeoForge;
+import tnt.tarkovcraft.core.common.event.EntityAttributeEvent;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.network.Synchronizable;
 
@@ -68,6 +68,10 @@ public final class EntityAttributeData implements Synchronizable<EntityAttribute
         }
     }
 
+    public Entity getHolder() {
+        return this.holder;
+    }
+
     @Override
     public Codec<EntityAttributeData> networkCodec() {
         return CODEC;
@@ -89,26 +93,6 @@ public final class EntityAttributeData implements Synchronizable<EntityAttribute
         if (this.holder instanceof ServerPlayer serverPlayer) {
             instance.addListener(new SynchronizationAttributeListener(serverPlayer));
         }
-        if (CoreAttributes.SPRINT.is(instance.getAttribute().identifier())) {
-            instance.addListener(new SprintAttributeListener(instance));
-        }
-        // TODO event
-    }
-
-    private final class SprintAttributeListener implements AttributeListener {
-
-        private final AttributeInstance instance;
-
-        public SprintAttributeListener(AttributeInstance instance) {
-            this.instance = instance;
-        }
-
-        @Override
-        public void onAttributeModifierAdded(AttributeInstance attribute, AttributeModifier modifier) {
-            boolean value = this.instance.booleanValue();
-            if (!value) {
-                EntityAttributeData.this.holder.setSprinting(false);
-            }
-        }
+        NeoForge.EVENT_BUS.post(new EntityAttributeEvent.AttributeInstanceConstructing(this, instance.getAttribute(), instance));
     }
 }
