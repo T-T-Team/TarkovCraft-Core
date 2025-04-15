@@ -14,8 +14,8 @@ import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.client.TarkovCraftCoreClient;
 import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
-import tnt.tarkovcraft.core.common.energy.Energy;
-import tnt.tarkovcraft.core.common.energy.EnergyData;
+import tnt.tarkovcraft.core.common.energy.MovementStamina;
+import tnt.tarkovcraft.core.common.energy.EnergySystem;
 import tnt.tarkovcraft.core.common.energy.EnergyType;
 import tnt.tarkovcraft.core.common.init.BaseAttributes;
 import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
@@ -41,8 +41,7 @@ public class DebugLayer implements LayeredDraw.Layer {
         Player player = client.player;
 
         EntityAttributeData attributeData = player.getData(BaseDataAttachments.ENTITY_ATTRIBUTES);
-        EnergyData energyData = player.getData(BaseDataAttachments.ENERGY);
-        renderEnergyStats(font, guiGraphics, attributeData, energyData);
+        renderEnergyStats(font, guiGraphics, player, attributeData);
 
         renderCoreAttributeData(font, guiGraphics, attributeData);
 
@@ -50,10 +49,10 @@ public class DebugLayer implements LayeredDraw.Layer {
         renderSkillData(font, client.getConnection().registryAccess(), guiGraphics, skillData);
     }
 
-    private void renderEnergyStats(Font font, GuiGraphics graphics, EntityAttributeData attributeData, EnergyData energyData) {
+    private void renderEnergyStats(Font font, GuiGraphics graphics, Player player, EntityAttributeData attributeData) {
+        MovementStamina stamina = player.getData(BaseDataAttachments.STAMINA);
         graphics.drawString(font, "Energy", 5, y(), 0xFFFFFF);
-        renderEnergyStat(font, graphics, attributeData, energyData.getEnergyValue(EnergyType.LEG_STAMINA), "Leg");
-        renderEnergyStat(font, graphics, attributeData, energyData.getEnergyValue(EnergyType.ARM_STAMINA), "Arm");
+        renderStaminaInfo(font, graphics, attributeData, stamina);
         ++line;
     }
 
@@ -65,12 +64,12 @@ public class DebugLayer implements LayeredDraw.Layer {
         ++line;
     }
 
-    private void renderEnergyStat(Font font, GuiGraphics graphics, EntityAttributeData attributeData, Energy energy, String name) {
+    private void renderStaminaInfo(Font font, GuiGraphics graphics, EntityAttributeData attributeData, MovementStamina energy) {
         float current = energy.getEnergy();
         float max = energy.getMaxEnergy(attributeData);
         float recovery = energy.getRecoveryAmount(attributeData);
         float consumption = energy.getConsumptionMultiplier(attributeData);
-        String value = String.format(Locale.ROOT, "%s: %.2f/%.2f | R %.3f | C %.3f", name, current, max, recovery, consumption);
+        String value = String.format(Locale.ROOT, "%s: %.2f/%.2f | R %.3f | C %.3f", "Move Stamina", current, max, recovery, consumption);
         graphics.drawString(font, value, 5, y(), 0xFFFFFF);
     }
 

@@ -53,7 +53,7 @@ public final class EntityAttributeData implements Synchronizable<EntityAttribute
         return this.attributeMap.containsKey(attribute);
     }
 
-    public void tick() {
+    public void update() {
         for (AttributeInstance value : this.attributeMap.values()) {
             value.update();
         }

@@ -2,6 +2,7 @@ package tnt.tarkovcraft.core.common;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -32,6 +33,9 @@ import tnt.tarkovcraft.core.common.init.TarkovCraftRegistries;
 import tnt.tarkovcraft.core.common.mail.MailMessage;
 import tnt.tarkovcraft.core.common.mail.MailSource;
 import tnt.tarkovcraft.core.common.mail.MailSystem;
+import tnt.tarkovcraft.core.common.skill.Skill;
+import tnt.tarkovcraft.core.common.skill.SkillData;
+import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 
 import javax.annotation.Nullable;
@@ -97,6 +101,23 @@ public final class TarkovCraftCommand {
                                                                         .then(
                                                                                 Commands.literal("removeModifier")
                                                                                         .executes(ctx -> updateAttributeModifier(ctx, true))
+                                                                        )
+                                                        )
+                                        )
+                        )
+                        .then(
+                                Commands.literal("skill")
+                                        .requires(src -> src.hasPermission(2))
+                                        .then(
+                                                Commands.argument("skillId", ResourceArgument.resource(context, TarkovCraftRegistries.DatapackKeys.SKILL_DEFINITION))
+                                                        .then(
+                                                                Commands.argument("target", EntityArgument.entity())
+                                                                        .then(
+                                                                                Commands.literal("level")
+                                                                                        .then(
+                                                                                                Commands.argument("levelValue", IntegerArgumentType.integer(0))
+                                                                                                        .executes(TarkovCraftCommand::setSkillLevel)
+                                                                                        )
                                                                         )
                                                         )
                                         )
@@ -193,6 +214,22 @@ public final class TarkovCraftCommand {
             stack.sendSystemMessage(Component.literal(" - ").withStyle(ChatFormatting.GRAY).append(Component.literal(modifier.toString()).withStyle(ChatFormatting.YELLOW)));
         }
         stack.sendSystemMessage(separator);
+        return 0;
+    }
+
+    private static int setSkillLevel(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        Entity target = EntityArgument.getEntity(ctx, "target");
+        SkillDefinition skillDefinition = ResourceArgument.getResource(ctx, "skillId", TarkovCraftRegistries.DatapackKeys.SKILL_DEFINITION).value();
+        int level = IntegerArgumentType.getInteger(ctx, "levelValue");
+        int maxLevel = skillDefinition.getLevelDefinition().getMaxLevel();
+        int setLevel = Math.min(maxLevel, level);
+        SkillData skillData = target.getData(BaseDataAttachments.SKILL);
+        Skill instance = skillData.getSkill(skillDefinition);
+        instance.forceSetLevel(setLevel);
+        skillData.reloadStats();
+        if (target instanceof ServerPlayer player) {
+            PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, BaseDataAttachments.SKILL.get()));
+        }
         return 0;
     }
 }

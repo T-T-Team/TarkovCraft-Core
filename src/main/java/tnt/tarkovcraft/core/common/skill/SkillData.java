@@ -105,6 +105,22 @@ public final class SkillData implements Synchronizable<SkillData> {
         this.applyStats();
     }
 
+    public void reloadStats() {
+        for (Map.Entry<SkillDefinition, Skill> entry : this.skillMap.entrySet()) {
+            SkillDefinition definition = entry.getKey();
+            Skill instance = entry.getValue();
+            List<SkillStatDefinition> stats = definition.getStats();
+            Context context = ContextImpl.of(
+                    ContextKeys.LEVEL, this.holder.level(),
+                    ContextKeys.ENTITY, this.holder,
+                    SkillContextKeys.DEFINITION, definition,
+                    SkillContextKeys.SKILL, instance
+            );
+            stats.forEach(statDef -> statDef.stat().clear(context));
+            applyStats(definition, instance);
+        }
+    }
+
     private void applyStats() {
         for (Map.Entry<SkillDefinition, Skill> entry : this.skillMap.entrySet()) {
             SkillDefinition definition = entry.getKey();

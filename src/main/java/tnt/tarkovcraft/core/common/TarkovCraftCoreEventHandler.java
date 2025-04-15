@@ -11,8 +11,9 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
-import tnt.tarkovcraft.core.common.energy.EnergyData;
+import tnt.tarkovcraft.core.common.energy.EnergySystem;
 import tnt.tarkovcraft.core.common.energy.EnergyType;
+import tnt.tarkovcraft.core.common.energy.MovementStamina;
 import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreSkillTriggerEvents;
 import tnt.tarkovcraft.core.common.skill.SkillSystem;
@@ -36,14 +37,13 @@ public final class TarkovCraftCoreEventHandler {
             return;
         // Reset states
         EntityAttributeData attributeData = player.getData(BaseDataAttachments.ENTITY_ATTRIBUTES);
-        EnergyData energyData = player.getData(BaseDataAttachments.ENERGY);
-        energyData.getEnergyValue(EnergyType.ARM_STAMINA).set(attributeData, Integer.MAX_VALUE);
-        energyData.getEnergyValue(EnergyType.LEG_STAMINA).set(attributeData, Integer.MAX_VALUE);
+        MovementStamina stamina = player.getData(BaseDataAttachments.STAMINA);
+        stamina.set(attributeData, Integer.MAX_VALUE);
         // Sync payload
         S2C_SendDataAttachments payload = new S2C_SendDataAttachments(player, Arrays.asList(
                 BaseDataAttachments.MAIL_MANAGER.get(),
                 BaseDataAttachments.ENTITY_ATTRIBUTES.get(),
-                BaseDataAttachments.ENERGY.get(),
+                BaseDataAttachments.STAMINA.get(),
                 BaseDataAttachments.SKILL.get()
         ));
         PacketDistributor.sendToPlayer((ServerPlayer) player, payload);
@@ -52,6 +52,8 @@ public final class TarkovCraftCoreEventHandler {
     @SubscribeEvent
     private void onPlayerTickPost(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
+        player.getData(BaseDataAttachments.STAMINA).update(player);
+        player.getData(BaseDataAttachments.ENTITY_ATTRIBUTES).update();
         SkillSystem.trigger(CoreSkillTriggerEvents.PLAYER_TICK, player);
     }
 }

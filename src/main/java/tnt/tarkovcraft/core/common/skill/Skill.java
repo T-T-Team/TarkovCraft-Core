@@ -64,6 +64,12 @@ public final class Skill {
         }
     }
 
+    public void forceSetLevel(int level) {
+        this.level = level;
+        this.experience = 0;
+        this.requiredExperience = this.definition.value().getLevelDefinition().getRequiredExperience(this.level);
+    }
+
     public int getLevel() {
         return level;
     }

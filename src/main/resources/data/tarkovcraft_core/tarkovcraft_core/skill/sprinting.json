@@ -5,8 +5,7 @@
   "leveling": {
     "maxLevel": 100,
     "baseExperience": 10.0,
-    "additionalExperience": 15.0,
-    "maxStack": 20
+    "additionalExperience": 5.0
   },
   "trackers": [
     {
@@ -19,9 +18,9 @@
       ],
       "tracker": {
         "type": "tarkovcraft_core:limited",
-        "value": 5,
-        "limit": 5000.0,
-        "cooldown": "3s"
+        "value": 0.0001,
+        "limit": 0.2,
+        "cooldown": "5m"
       }
     }
   ],
@@ -57,9 +56,9 @@
       "badgeIcon": "tarkovcraft_core:textures/icons/skill/less_stamina_consumption.png",
       "apply": {
         "type": "tarkovcraft_core:add_attribute_modifier",
-        "attribute": "tarkovcraft_core:leg_energy_consumption",
+        "attribute": "tarkovcraft_core:leg_energy_consumption_multiplier",
         "id": "0f38e4cd-3877-4175-a573-d14424ae0e69",
-        "levelValue": -0.05
+        "levelValue": -0.005
       }
     }
   ]

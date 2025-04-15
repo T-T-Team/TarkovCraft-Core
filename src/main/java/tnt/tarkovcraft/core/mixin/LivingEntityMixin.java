@@ -10,11 +10,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
-import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
-import tnt.tarkovcraft.core.common.energy.EnergyData;
-import tnt.tarkovcraft.core.common.energy.EnergyType;
-import tnt.tarkovcraft.core.common.init.BaseAttributes;
+import tnt.tarkovcraft.core.common.energy.EnergySystem;
+import tnt.tarkovcraft.core.common.energy.MovementStamina;
 import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
 
 @Mixin(LivingEntity.class)
@@ -33,33 +30,29 @@ public abstract class LivingEntityMixin extends Entity implements Attackable, IL
         if (!sprinting) {
             return; // we do not care when entity is transitioning from sprinting state
         }
-        if (hasData(BaseDataAttachments.ENTITY_ATTRIBUTES)) {
-            EntityAttributeData entityAttributeData = getData(BaseDataAttachments.ENTITY_ATTRIBUTES);
-            AttributeInstance instance = entityAttributeData.getAttribute(BaseAttributes.SPRINT);
-            if (!instance.booleanValue()) {
-                ci.cancel();
-            }
-        }
-        if (EnergyData.isEnabled() && hasData(BaseDataAttachments.ENERGY)) {
-            EnergyData energyData = getData(BaseDataAttachments.ENERGY);
-            float requiredForSprintStart = EnergyData.SPRINT_STAMINA_CONSUMPTION * 40; // 2s of sprint
-            if (!energyData.hasEnergy(EnergyType.LEG_STAMINA, requiredForSprintStart)) {
+        LivingEntity entity = (LivingEntity) (Object) this;
+        if (EnergySystem.isEnabled() && hasData(BaseDataAttachments.STAMINA)) {
+            MovementStamina movementStamina = getData(BaseDataAttachments.STAMINA);
+            if (!movementStamina.canSprint(entity)) {
                 ci.cancel();
             }
         }
     }
 
     @Inject(
-            method = "baseTick",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;tickEffects()V")
+            method = "jumpFromGround",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getDeltaMovement()Lnet/minecraft/world/phys/Vec3;"),
+            cancellable = true
     )
-    private void tarkovCraftCore$tick(CallbackInfo ci) {
-        LivingEntity livingEntity = (LivingEntity) (Object) this;
-        if (hasData(BaseDataAttachments.ENTITY_ATTRIBUTES)) {
-            getData(BaseDataAttachments.ENTITY_ATTRIBUTES).tick();
-        }
-        if (EnergyData.isEnabled() && hasData(BaseDataAttachments.ENERGY)) {
-            getData(BaseDataAttachments.ENERGY).update(livingEntity);
+    private void tarkovCraftCore$jumpFromGround(CallbackInfo ci) {
+        if (EnergySystem.isEnabled() && hasData(BaseDataAttachments.STAMINA)) {
+            LivingEntity livingEntity = (LivingEntity) (Object) this;
+            MovementStamina movementStamina = getData(BaseDataAttachments.STAMINA);
+            if (!movementStamina.canJump(livingEntity)) {
+                ci.cancel();
+            } else {
+                movementStamina.onJump(livingEntity);
+            }
         }
     }
 }
