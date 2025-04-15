@@ -13,6 +13,9 @@ import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import tnt.tarkovcraft.core.common.Notification;
 import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
+import tnt.tarkovcraft.core.common.skill.stat.SkillStat;
+import tnt.tarkovcraft.core.common.skill.stat.SkillStatDefinition;
+import tnt.tarkovcraft.core.common.skill.stat.condition.SkillStatCondition;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTriggerEvent;
 import tnt.tarkovcraft.core.network.Synchronizable;
 import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
@@ -37,8 +40,8 @@ public final class SkillData implements Synchronizable<SkillData> {
     private final Map<SkillDefinition, Skill> skillMap;
 
     public SkillData(IAttachmentHolder holder) {
-        this.setHolder(holder);
         this.skillMap = new HashMap<>();
+        this.setHolder(holder);
     }
 
     private SkillData(Map<SkillDefinition, Skill> map) {
@@ -49,7 +52,6 @@ public final class SkillData implements Synchronizable<SkillData> {
         if (!(holder instanceof Entity entity))
             throw new IllegalArgumentException("Holder must be an instance of Entity");
         this.holder = entity;
-        // TODO reapply stats
     }
 
     public boolean trigger(SkillTriggerEvent event, SkillDefinition definition, float multiplier, Entity triggerSource, Context reader) {
@@ -82,7 +84,7 @@ public final class SkillData implements Synchronizable<SkillData> {
                 SkillDefinition definition = instance.getDefinition().value();
                 Notification notification = Notification.info(Component.translatable("label.tarkovcraft_core.skill.level_up", definition.getName(), instance.getLevel()));
                 notification.send(player);
-                // TODO reapply stats
+                this.applyStats();
 
                 PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, BaseDataAttachments.SKILL.get()));
             }
@@ -98,8 +100,41 @@ public final class SkillData implements Synchronizable<SkillData> {
         return CODEC;
     }
 
+    @Override
+    public void preSyncPrepare() {
+        this.applyStats();
+    }
+
+    private void applyStats() {
+        for (Map.Entry<SkillDefinition, Skill> entry : this.skillMap.entrySet()) {
+            SkillDefinition definition = entry.getKey();
+            Skill instance = entry.getValue();
+            this.applyStats(definition, instance);
+        }
+    }
+
+    private void applyStats(SkillDefinition definition, Skill skill) {
+        Context context = ContextImpl.of(
+                ContextKeys.LEVEL, this.holder.level(),
+                ContextKeys.ENTITY, this.holder,
+                SkillContextKeys.DEFINITION, definition,
+                SkillContextKeys.SKILL, skill
+        );
+        for (SkillStatDefinition statDefinition : definition.getStats()) {
+            List<SkillStatCondition> conditions = statDefinition.conditions();
+            if (conditions.stream().allMatch(condition -> condition.canApply(context))) {
+                SkillStat stat = statDefinition.stat();
+                stat.apply(context);
+            }
+        }
+    }
+
     private Skill createInstance(SkillDefinition definition) {
-        return definition.instance(this.getRegistryAccess()); // TODO apply stats
+        Skill instance = definition.instance(this.getRegistryAccess());
+        if (this.holder != null) {
+            this.applyStats(definition, instance);
+        }
+        return instance;
     }
 
     private static Map<SkillDefinition, Skill> asSkillMap(List<Skill> list) {

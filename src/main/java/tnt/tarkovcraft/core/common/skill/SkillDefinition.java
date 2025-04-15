@@ -9,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.RegistryFixedCodec;
 import tnt.tarkovcraft.core.common.init.TarkovCraftRegistries;
+import tnt.tarkovcraft.core.common.skill.stat.SkillStatDefinition;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTrackerDefinition;
 
 import java.util.Collection;
@@ -20,7 +21,8 @@ public class SkillDefinition {
             Codec.BOOL.optionalFieldOf("enabled", true).forGetter(t -> t.enabled),
             ComponentSerialization.CODEC.fieldOf("description").forGetter(t -> t.name),
             SkillLevelDefinition.CODEC.optionalFieldOf("leveling", SkillLevelDefinition.DEFAULT).forGetter(t -> t.levelDefinition),
-            SkillTrackerDefinition.CODEC.listOf().fieldOf("trackers").forGetter(t -> t.trackers)
+            SkillTrackerDefinition.CODEC.listOf().fieldOf("trackers").forGetter(t -> t.trackers),
+            SkillStatDefinition.CODEC.listOf().fieldOf("stats").forGetter(t -> t.stats)
     ).apply(instance, SkillDefinition::new));
     public static final Codec<Holder<SkillDefinition>> CODEC = RegistryFixedCodec.create(TarkovCraftRegistries.DatapackKeys.SKILL_DEFINITION);
 
@@ -28,12 +30,14 @@ public class SkillDefinition {
     private final Component name;
     private final SkillLevelDefinition levelDefinition;
     private final List<SkillTrackerDefinition> trackers;
+    private final List<SkillStatDefinition> stats;
 
-    public SkillDefinition(boolean enabled, Component name, SkillLevelDefinition levelDefinition, List<SkillTrackerDefinition> trackers) {
+    public SkillDefinition(boolean enabled, Component name, SkillLevelDefinition levelDefinition, List<SkillTrackerDefinition> trackers, List<SkillStatDefinition> stats) {
         this.enabled = enabled;
         this.name = name;
         this.levelDefinition = levelDefinition;
         this.trackers = trackers;
+        this.stats = stats;
     }
 
     public Skill instance(RegistryAccess access) {
@@ -52,6 +56,10 @@ public class SkillDefinition {
 
     public Collection<SkillTrackerDefinition> getTrackers() {
         return this.trackers;
+    }
+
+    public List<SkillStatDefinition> getStats() {
+        return stats;
     }
 
     public Component getName() {

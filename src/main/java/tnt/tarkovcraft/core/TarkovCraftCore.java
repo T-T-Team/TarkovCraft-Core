@@ -51,6 +51,8 @@ public class TarkovCraftCore {
         CoreSkillTriggerEvents.REGISTRY.register(modEventBus);
         CoreSkillTrackers.REGISTRY.register(modEventBus);
         CoreSkillTriggerConditions.REGISTRY.register(modEventBus);
+        CoreSkillStatConditions.REGISTRY.register(modEventBus);
+        CoreSkillStats.REGISTRY.register(modEventBus);
     }
 
     public static TarkovCraftCoreConfig getConfig() {
@@ -75,6 +77,8 @@ public class TarkovCraftCore {
         event.register(TarkovCraftRegistries.SKILL_TRIGGER_EVENT);
         event.register(TarkovCraftRegistries.SKILL_TRIGGER_TYPE);
         event.register(TarkovCraftRegistries.SKILL_TRIGGER_CONDITION_TYPE);
+        event.register(TarkovCraftRegistries.SKILL_STAT_CONDITION_TYPE);
+        event.register(TarkovCraftRegistries.SKILL_STAT);
     }
 
     private void registerCustomDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {

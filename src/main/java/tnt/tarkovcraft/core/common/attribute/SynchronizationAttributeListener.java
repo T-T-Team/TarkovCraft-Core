@@ -30,6 +30,8 @@ public class SynchronizationAttributeListener implements AttributeListener {
     }
 
     public void synchronize() {
-        PacketDistributor.sendToPlayer(this.holder, new S2C_SendDataAttachments(this.holder, BaseDataAttachments.ENTITY_ATTRIBUTES.get()));
+        if (this.holder != null && this.holder.connection != null) {
+            PacketDistributor.sendToPlayer(this.holder, new S2C_SendDataAttachments(this.holder, BaseDataAttachments.ENTITY_ATTRIBUTES.get()));
+        }
     }
 }

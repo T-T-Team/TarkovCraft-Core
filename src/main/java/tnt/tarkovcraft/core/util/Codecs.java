@@ -5,6 +5,7 @@ import com.mojang.serialization.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.util.ExtraCodecs;
 
 import java.time.ZonedDateTime;
 
@@ -21,6 +22,15 @@ public final class Codecs {
             },
             ZonedDateTime::toString
     );
+    public static final Codec<Integer> HEX_RGB_COLOR_CODEC = Codec.STRING.comapFlatMap(string -> {
+        try {
+            int value = Integer.decode(string);
+            return DataResult.success(value & 0xFFFFFF);
+        } catch (NumberFormatException e) {
+            return DataResult.error(() -> "Failed to parse hex color due to error " + e.getMessage());
+        }
+    }, Integer::toHexString);
+    public static final Codec<Integer> RGB_COLOR = Codec.withAlternative(ExtraCodecs.RGB_COLOR_CODEC, HEX_RGB_COLOR_CODEC);
 
     public static <R, T> R serialize(DynamicOps<R> ops, Codec<T> codec, T data) {
         DataResult<R> result = codec.encodeStart(ops, data);

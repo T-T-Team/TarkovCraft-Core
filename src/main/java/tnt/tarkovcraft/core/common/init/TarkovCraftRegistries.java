@@ -10,6 +10,8 @@ import tnt.tarkovcraft.core.common.data.filter.ItemStackFilterType;
 import tnt.tarkovcraft.core.common.data.number.NumberProviderType;
 import tnt.tarkovcraft.core.common.mail.MailMessageAttachmentType;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
+import tnt.tarkovcraft.core.common.skill.stat.SkillStatType;
+import tnt.tarkovcraft.core.common.skill.stat.condition.SkillStatConditionType;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTrackerType;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTriggerEvent;
 import tnt.tarkovcraft.core.common.skill.tracker.condition.SkillTriggerConditionType;
@@ -29,6 +31,8 @@ public class TarkovCraftRegistries {
     public static final Registry<SkillTriggerEvent> SKILL_TRIGGER_EVENT = new RegistryBuilder<>(Keys.SKILL_TRIGGER_EVENT).create();
     public static final Registry<SkillTrackerType<?, ?>> SKILL_TRIGGER_TYPE = new RegistryBuilder<>(Keys.SKILL_TRIGGER_TYPE).create();
     public static final Registry<SkillTriggerConditionType<?>> SKILL_TRIGGER_CONDITION_TYPE = new RegistryBuilder<>(Keys.SKILL_TRIGGER_CONDITION_TYPE).create();
+    public static final Registry<SkillStatConditionType<?>> SKILL_STAT_CONDITION_TYPE = new RegistryBuilder<>(Keys.SKILL_STAT_CONDITION_TYPE).create();
+    public static final Registry<SkillStatType<?>> SKILL_STAT = new RegistryBuilder<>(Keys.SKILL_STAT).create();
 
     public static final class Keys {
 
@@ -40,6 +44,8 @@ public class TarkovCraftRegistries {
         public static final ResourceKey<Registry<SkillTriggerEvent>> SKILL_TRIGGER_EVENT = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/trigger_event"));
         public static final ResourceKey<Registry<SkillTrackerType<?, ?>>> SKILL_TRIGGER_TYPE = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/trigger_type"));
         public static final ResourceKey<Registry<SkillTriggerConditionType<?>>> SKILL_TRIGGER_CONDITION_TYPE = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/trigger_condition"));
+        public static final ResourceKey<Registry<SkillStatConditionType<?>>> SKILL_STAT_CONDITION_TYPE = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/stat_condition"));
+        public static final ResourceKey<Registry<SkillStatType<?>>> SKILL_STAT = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/stat"));
     }
 
     public static final class DatapackKeys {

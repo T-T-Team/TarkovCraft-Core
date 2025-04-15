@@ -24,5 +24,43 @@
         "cooldown": "3s"
       }
     }
+  ],
+  "stats": [
+    {
+      "badgeColor": "#FFFF00",
+      "badgeIcon": "tarkovcraft_core:textures/icons/skill/stamina_boost.png",
+      "conditions": [
+        {
+          "type": "tarkovcraft_core:is_max_skill_level"
+        }
+      ],
+      "apply": {
+        "type": "tarkovcraft_core:add_attribute_modifier",
+        "attribute": "tarkovcraft_core:leg_energy_recovery",
+        "id": "7839d035-85ee-42a4-b2b8-b6f61dd70e0f",
+        "levelValue": 0.5,
+        "constant": true
+      }
+    },
+    {
+      "badgeColor": "#FFFFFF",
+      "badgeIcon": "tarkovcraft_core:textures/icons/skill/extra_stamina.png",
+      "apply": {
+        "type": "tarkovcraft_core:add_attribute_modifier",
+        "attribute": "tarkovcraft_core:leg_energy_max",
+        "id": "8c944806-fd54-4f60-a4d7-da8b01e15000",
+        "levelValue": 2
+      }
+    },
+    {
+      "badgeColor": "#FFFFFF",
+      "badgeIcon": "tarkovcraft_core:textures/icons/skill/less_stamina_consumption.png",
+      "apply": {
+        "type": "tarkovcraft_core:add_attribute_modifier",
+        "attribute": "tarkovcraft_core:leg_energy_consumption",
+        "id": "0f38e4cd-3877-4175-a573-d14424ae0e69",
+        "levelValue": -0.05
+      }
+    }
   ]
 }

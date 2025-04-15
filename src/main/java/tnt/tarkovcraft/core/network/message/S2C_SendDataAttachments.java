@@ -52,14 +52,22 @@ public class S2C_SendDataAttachments implements CustomPacketPayload {
 
         RegistryAccess access = entity.registryAccess();
         RegistryOps<Tag> ops = access.createSerializationContext(NbtOps.INSTANCE);
+        List<SerializableHolder<T>> serializables = new ArrayList<>();
+        // pre sync prepare to update dependencies and so on
         for (AttachmentType<?> type : types) {
             ResourceLocation typeIdentifier = NeoForgeRegistries.ATTACHMENT_TYPES.getKey(type);
+            this.attachments.add(typeIdentifier);
             T serializable = (T) entity.getData(type);
+            serializable.preSyncPrepare();
+            serializables.add(new SerializableHolder<>(typeIdentifier, serializable));
+        }
+        // serialize saved data
+        for (SerializableHolder<T> holder : serializables) {
+            T serializable = holder.serializable();
             Codec<T> networkCodec = serializable.networkCodec();
             Tag tag = networkCodec.encodeStart(ops, serializable).getOrThrow();
-
-            this.attachments.add(typeIdentifier);
-            this.data.put(typeIdentifier.toString(), tag);
+            ResourceLocation identifier = holder.id();
+            this.data.put(identifier.toString(), tag);
         }
     }
 
@@ -105,5 +113,8 @@ public class S2C_SendDataAttachments implements CustomPacketPayload {
         buffer.writeInt(message.attachments.size());
         message.attachments.forEach(buffer::writeResourceLocation);
         buffer.writeNbt(message.data);
+    }
+
+    private record SerializableHolder<T>(ResourceLocation id, T serializable) {
     }
 }

@@ -114,7 +114,7 @@ public final class TarkovCraftCommand {
         instance.removeModifier(systemModifierId);
         if (!remove) {
             double value = DoubleArgumentType.getDouble(ctx, "setValue");
-            AttributeModifier modifier = new SetValueAttributeModifier(systemModifierId, value, -1);
+            AttributeModifier modifier = new SetValueAttributeModifier(systemModifierId, value, Integer.MAX_VALUE);
             instance.addModifier(modifier);
         }
         if (entity instanceof ServerPlayer serverPlayer) {

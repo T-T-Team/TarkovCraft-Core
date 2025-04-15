@@ -10,6 +10,7 @@ import tnt.tarkovcraft.core.common.init.BaseAttributes;
 import tnt.tarkovcraft.core.common.init.TarkovCraftRegistries;
 import tnt.tarkovcraft.core.network.Synchronizable;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -27,12 +28,13 @@ public final class EntityAttributeData implements Synchronizable<EntityAttribute
     private final Map<Attribute, AttributeInstance> attributeMap;
 
     public EntityAttributeData(IAttachmentHolder holder) {
-        this.setHolder(holder);
         this.attributeMap = new HashMap<>();
+        this.setHolder(holder);
     }
 
     private EntityAttributeData(Map<Attribute, AttributeInstance> attributeMap) {
         this.attributeMap = new HashMap<>(attributeMap);
+        this.attributeMap.values().forEach(this::addAttributeListeners);
     }
 
     public AttributeInstance getAttribute(Attribute attribute) {
@@ -60,6 +62,7 @@ public final class EntityAttributeData implements Synchronizable<EntityAttribute
     public void setHolder(IAttachmentHolder holder) {
         if (holder instanceof Entity) {
             this.holder = (Entity) holder;
+            this.addAttributeListeners(this.attributeMap.values());
         } else {
             throw new IllegalArgumentException("Holder must be an instance of Entity");
         }
@@ -72,14 +75,24 @@ public final class EntityAttributeData implements Synchronizable<EntityAttribute
 
     private AttributeInstance createInstance(Attribute attribute) {
         AttributeInstance instance = attribute.createInstance(this.holder);
+        this.addAttributeListeners(instance);
+        return instance;
+    }
+
+    private void addAttributeListeners(Collection<AttributeInstance> collection) {
+        collection.forEach(this::addAttributeListeners);
+    }
+
+    private void addAttributeListeners(AttributeInstance instance) {
+        if (this.holder == null)
+            return;
         if (this.holder instanceof ServerPlayer serverPlayer) {
             instance.addListener(new SynchronizationAttributeListener(serverPlayer));
         }
-        if (BaseAttributes.SPRINT.is(attribute.identifier())) {
+        if (BaseAttributes.SPRINT.is(instance.getAttribute().identifier())) {
             instance.addListener(new SprintAttributeListener(instance));
         }
         // TODO event
-        return instance;
     }
 
     private final class SprintAttributeListener implements AttributeListener {

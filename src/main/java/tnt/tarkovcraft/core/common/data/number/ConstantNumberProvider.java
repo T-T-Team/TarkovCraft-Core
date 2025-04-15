@@ -11,6 +11,7 @@ public class ConstantNumberProvider implements NumberProvider {
             Codec.DOUBLE.fieldOf("value").forGetter(t -> t.value)
     ).apply(instance, ConstantNumberProvider::new));
     public static final NumberProvider ZERO = new ConstantNumberProvider(0);
+    public static final NumberProvider MAX_INT = new ConstantNumberProvider(Integer.MAX_VALUE);
     private final double value;
 
     public ConstantNumberProvider(double value) {
