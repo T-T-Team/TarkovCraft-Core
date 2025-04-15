@@ -3,7 +3,7 @@ package tnt.tarkovcraft.core.common.skill.tracker;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
-import tnt.tarkovcraft.core.common.init.TarkovCraftRegistries;
+import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.skill.tracker.condition.SkillTriggerCondition;
 import tnt.tarkovcraft.core.common.skill.tracker.condition.SkillTriggerConditionType;
 import tnt.tarkovcraft.core.util.context.Context;
@@ -16,7 +16,7 @@ public record SkillTrackerDefinition(UUID id, SkillTriggerEvent event, List<Skil
 
     public static final Codec<SkillTrackerDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             UUIDUtil.STRING_CODEC.fieldOf("id").forGetter(t -> t.id),
-            TarkovCraftRegistries.SKILL_TRIGGER_EVENT.byNameCodec().fieldOf("event").forGetter(SkillTrackerDefinition::event),
+            CoreRegistries.SKILL_TRIGGER_EVENT.byNameCodec().fieldOf("event").forGetter(SkillTrackerDefinition::event),
             SkillTriggerConditionType.INSTANCE_CODEC.listOf().optionalFieldOf("conditions", Collections.emptyList()).forGetter(SkillTrackerDefinition::conditions),
             SkillTrackerType.CONFIGURATION_CODEC.fieldOf("tracker").forGetter(SkillTrackerDefinition::tracker)
     ).apply(instance, SkillTrackerDefinition::new));

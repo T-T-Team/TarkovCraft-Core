@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import tnt.tarkovcraft.core.TarkovCraftCore;
-import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
+import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.mail.*;
 import tnt.tarkovcraft.core.network.TarkovCraftCoreNetwork;
 
@@ -25,7 +25,7 @@ public record C2S_MailClaimAttachments(UUID chatId) implements CustomPacketPaylo
 
     public void handleMessage(IPayloadContext context) {
         Player player = context.player();
-        MailManager mailManager = player.getData(BaseDataAttachments.MAIL_MANAGER);
+        MailManager mailManager = player.getData(CoreDataAttachments.MAIL_MANAGER);
         MailSource source = mailManager.getSender(this.chatId());
         if (source != null) {
             MailList chat = mailManager.getChat(source);

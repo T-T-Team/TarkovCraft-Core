@@ -8,7 +8,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.RegistryFixedCodec;
-import tnt.tarkovcraft.core.common.init.TarkovCraftRegistries;
+import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.skill.stat.SkillStatDefinition;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTrackerDefinition;
 
@@ -24,7 +24,7 @@ public class SkillDefinition {
             SkillTrackerDefinition.CODEC.listOf().fieldOf("trackers").forGetter(t -> t.trackers),
             SkillStatDefinition.CODEC.listOf().fieldOf("stats").forGetter(t -> t.stats)
     ).apply(instance, SkillDefinition::new));
-    public static final Codec<Holder<SkillDefinition>> CODEC = RegistryFixedCodec.create(TarkovCraftRegistries.DatapackKeys.SKILL_DEFINITION);
+    public static final Codec<Holder<SkillDefinition>> CODEC = RegistryFixedCodec.create(CoreRegistries.DatapackKeys.SKILL_DEFINITION);
 
     private final boolean enabled;
     private final Component name;
@@ -41,7 +41,7 @@ public class SkillDefinition {
     }
 
     public Skill instance(RegistryAccess access) {
-        Registry<SkillDefinition> registry = access.lookupOrThrow(TarkovCraftRegistries.DatapackKeys.SKILL_DEFINITION);
+        Registry<SkillDefinition> registry = access.lookupOrThrow(CoreRegistries.DatapackKeys.SKILL_DEFINITION);
         Holder<SkillDefinition> reference = registry.wrapAsHolder(this);
         return new Skill(reference);
     }

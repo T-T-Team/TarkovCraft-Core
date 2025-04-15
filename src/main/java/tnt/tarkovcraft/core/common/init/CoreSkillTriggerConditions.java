@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 
 public final class CoreSkillTriggerConditions {
 
-    public static final DeferredRegister<SkillTriggerConditionType<?>> REGISTRY = DeferredRegister.create(TarkovCraftRegistries.SKILL_TRIGGER_CONDITION_TYPE, TarkovCraftCore.MOD_ID);
+    public static final DeferredRegister<SkillTriggerConditionType<?>> REGISTRY = DeferredRegister.create(CoreRegistries.SKILL_TRIGGER_CONDITION_TYPE, TarkovCraftCore.MOD_ID);
 
     public static final Supplier<SkillTriggerConditionType<IsSprintingSkillTriggerCondition>> IS_SPRINTING = REGISTRY.register("sprinting", key -> new SkillTriggerConditionType<>(key, IsSprintingSkillTriggerCondition.CODEC));
 }

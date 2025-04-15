@@ -12,7 +12,7 @@ import tnt.tarkovcraft.core.common.skill.SkillData;
 
 import java.util.function.Supplier;
 
-public final class BaseDataAttachments {
+public final class CoreDataAttachments {
 
     public static final DeferredRegister<AttachmentType<?>> REGISTRY = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, TarkovCraftCore.MOD_ID);
 

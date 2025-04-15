@@ -16,7 +16,7 @@ import tnt.tarkovcraft.core.common.skill.tracker.SkillTrackerType;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTriggerEvent;
 import tnt.tarkovcraft.core.common.skill.tracker.condition.SkillTriggerConditionType;
 
-public class TarkovCraftRegistries {
+public final class CoreRegistries {
 
     // Global utilities
     public static final Registry<Attribute> ATTRIBUTE = new RegistryBuilder<>(Keys.ATTRIBUTE).create();

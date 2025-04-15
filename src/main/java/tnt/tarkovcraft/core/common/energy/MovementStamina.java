@@ -7,18 +7,19 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import tnt.tarkovcraft.core.common.attribute.Attribute;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
-import tnt.tarkovcraft.core.common.init.BaseAttributes;
-import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
-import tnt.tarkovcraft.core.common.init.TarkovCraftRegistries;
+import tnt.tarkovcraft.core.common.init.CoreAttributes;
+import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
+import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.network.Synchronizable;
 
 public class MovementStamina implements Synchronizable<MovementStamina> {
 
     public static final Codec<MovementStamina> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            TarkovCraftRegistries.ATTRIBUTE.holderByNameCodec().fieldOf("maxLevel").forGetter(t -> t.maxLevelAttribute),
-            TarkovCraftRegistries.ATTRIBUTE.holderByNameCodec().fieldOf("consumption").forGetter(t -> t.consumptionAttribute),
-            TarkovCraftRegistries.ATTRIBUTE.holderByNameCodec().fieldOf("recovery").forGetter(t -> t.recoveryAttribute),
-            Codec.FLOAT.fieldOf("energy").forGetter(t -> t.energy),
+            CoreRegistries.ATTRIBUTE.holderByNameCodec().fieldOf("maxLevel").forGetter(t -> t.maxLevelAttribute),
+            CoreRegistries.ATTRIBUTE.holderByNameCodec().fieldOf("consumption").forGetter(t -> t.consumptionAttribute),
+            CoreRegistries.ATTRIBUTE.holderByNameCodec().fieldOf("recovery").forGetter(t -> t.recoveryAttribute),
+            CoreRegistries.ATTRIBUTE.holderByNameCodec().fieldOf("recoveryDelay").forGetter(t -> t.recoveryDelayAttribute),
+            Codec.FLOAT.fieldOf("stamina").forGetter(t -> t.stamina),
             Codec.INT.fieldOf("recoveryDelay").forGetter(t -> t.recoveryDelay)
     ).apply(instance, MovementStamina::new));
 
@@ -27,46 +28,48 @@ public class MovementStamina implements Synchronizable<MovementStamina> {
     public static final float JUMP_STAMINA_CONSUMPTION = 15.0F;
     public static final float ENERGY_LOW_VALUE = 20.0F;
 
-    private final Holder<Attribute> maxLevelAttribute;
-    private final Holder<Attribute> consumptionAttribute;
-    private final Holder<Attribute> recoveryAttribute;
-    private float energy;
-    private int recoveryDelay;
+    private final Holder<Attribute> maxLevelAttribute; // max stamina value
+    private final Holder<Attribute> consumptionAttribute; // consumption multiplier
+    private final Holder<Attribute> recoveryAttribute; // recovery amount / tick
+    private final Holder<Attribute> recoveryDelayAttribute; // recovery time multiplier
+    private float stamina; // current stamina amount
+    private int recoveryDelay; // current delay before recoveing stamina
 
     public MovementStamina() {
         this(
-                BaseAttributes.LEG_ENERGY_MAX,
-                BaseAttributes.LEG_ENERGY_CONSUMPTION_MULTIPLIER,
-                BaseAttributes.LEG_ENERGY_RECOVERY,
+                CoreAttributes.LEG_ENERGY_MAX,
+                CoreAttributes.LEG_ENERGY_CONSUMPTION_MULTIPLIER,
+                CoreAttributes.LEG_ENERGY_RECOVERY,
+                CoreAttributes.LEG_ENERGY_RECOVERY_DELAY_MULTIPLER,
                 DEFAULT_STAMINA_VALUE,
                 0
         );
     }
 
-    public MovementStamina(Holder<Attribute> maxLevelAttribute, Holder<Attribute> consumptionAttribute, Holder<Attribute> recoveryAttribute, float energy, int recoveryDelay) {
+    public MovementStamina(Holder<Attribute> maxLevelAttribute, Holder<Attribute> consumptionAttribute, Holder<Attribute> recoveryAttribute, Holder<Attribute> recoveryDelayAttribute, float stamina, int recoveryDelay) {
         this.maxLevelAttribute = maxLevelAttribute;
         this.consumptionAttribute = consumptionAttribute;
         this.recoveryAttribute = recoveryAttribute;
-        this.energy = energy;
+        this.recoveryDelayAttribute = recoveryDelayAttribute;
+        this.stamina = stamina;
+        this.recoveryDelay = recoveryDelay;
     }
 
     public boolean canSprint(LivingEntity entity) {
-        EntityAttributeData data = entity.getData(BaseDataAttachments.ENTITY_ATTRIBUTES);
-        return data.getAttribute(BaseAttributes.SPRINT).booleanValue() && this.hasEnergy(SPRINT_STAMINA_CONSUMPTION);
+        EntityAttributeData data = entity.getData(CoreDataAttachments.ENTITY_ATTRIBUTES);
+        return data.getAttribute(CoreAttributes.SPRINT).booleanValue() && this.hasStamina(SPRINT_STAMINA_CONSUMPTION);
     }
 
     public boolean canJump(LivingEntity entity) {
-        return this.hasEnergy(ENERGY_LOW_VALUE);
+        return this.hasStamina(ENERGY_LOW_VALUE);
     }
 
     public void onSprint(LivingEntity entity) {
-        EntityAttributeData data = entity.getData(BaseDataAttachments.ENTITY_ATTRIBUTES);
-        this.consume(data, SPRINT_STAMINA_CONSUMPTION, 20); // TODO multiplier for recovery
+        this.consume(entity, SPRINT_STAMINA_CONSUMPTION, 20);
     }
 
     public void onJump(LivingEntity entity) {
-        EntityAttributeData data = entity.getData(BaseDataAttachments.ENTITY_ATTRIBUTES);
-        this.consume(data, JUMP_STAMINA_CONSUMPTION, 40); // TODO multiplier for recovery
+        this.consume(entity, JUMP_STAMINA_CONSUMPTION, 40);
     }
 
     public void update(LivingEntity entity) {
@@ -77,29 +80,29 @@ public class MovementStamina implements Synchronizable<MovementStamina> {
         if (entity.isSprinting()) {
             this.onSprint(entity);
         } else {
-            EntityAttributeData data = entity.getData(BaseDataAttachments.ENTITY_ATTRIBUTES);
+            EntityAttributeData data = entity.getData(CoreDataAttachments.ENTITY_ATTRIBUTES);
             this.recover(data);
         }
-        if (!this.hasAnyEnergy() && entity.isSprinting()) {
+        if (!this.hasAnyStamina() && entity.isSprinting()) {
             entity.setSprinting(false);
         }
     }
 
-    public boolean hasEnergy(float requiredValue) {
-        return this.energy >= requiredValue;
+    public boolean hasStamina(float requiredValue) {
+        return this.stamina >= requiredValue;
     }
 
-    public boolean hasAnyEnergy() {
-        return this.energy > 0;
+    public boolean hasAnyStamina() {
+        return this.stamina > 0;
     }
 
-    public float getEnergy() {
-        return energy;
+    public float getStamina() {
+        return stamina;
     }
 
-    public void set(EntityAttributeData data, float value) {
-        float max = this.getMaxEnergy(data);
-        this.energy = Mth.clamp(value, 0.0F, max);
+    public void setStamina(EntityAttributeData data, float value) {
+        float max = this.getMaxStamina(data);
+        this.stamina = Mth.clamp(value, 0.0F, max);
     }
 
     public void setRecoveryDelay(int recoveryDelay) {
@@ -110,20 +113,25 @@ public class MovementStamina implements Synchronizable<MovementStamina> {
         if (this.recoveryDelay > 0) {
             return;
         }
-        float max = this.getMaxEnergy(data);
-        if (this.energy < max) {
+        float max = this.getMaxStamina(data);
+        if (this.stamina < max) {
             float recoveryAmount = Math.abs(this.getRecoveryAmount(data));
-            this.energy = Math.min(max, this.energy + recoveryAmount);
+            this.stamina = Math.min(max, this.stamina + recoveryAmount);
         }
+    }
+
+    public void consume(LivingEntity entity, float amount, int recoveryDelay) {
+        this.consume(entity.getData(CoreDataAttachments.ENTITY_ATTRIBUTES), amount, recoveryDelay);
     }
 
     public void consume(EntityAttributeData data, float amount, int recoveryDelay) {
         float consumptionMultiplier = Math.abs(this.getConsumptionMultiplier(data));
-        this.set(data, this.energy - amount * consumptionMultiplier);
-        this.setRecoveryDelay(recoveryDelay);
+        this.setStamina(data, this.stamina - amount * consumptionMultiplier);
+        int delay = Mth.ceil(recoveryDelay * data.getAttribute(this.recoveryDelayAttribute).floatValue());
+        this.setRecoveryDelay(Math.max(delay, this.recoveryDelay));
     }
 
-    public float getMaxEnergy(EntityAttributeData data) {
+    public float getMaxStamina(EntityAttributeData data) {
         return this.value(data, this.maxLevelAttribute);
     }
 

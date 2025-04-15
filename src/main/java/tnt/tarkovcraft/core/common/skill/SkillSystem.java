@@ -7,8 +7,8 @@ import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import tnt.tarkovcraft.core.TarkovCraftCore;
-import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
-import tnt.tarkovcraft.core.common.init.TarkovCraftRegistries;
+import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
+import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTrackerDefinition;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTriggerEvent;
 import tnt.tarkovcraft.core.util.context.Context;
@@ -28,7 +28,7 @@ public final class SkillSystem {
     public static boolean trigger(SkillTriggerEvent event, Entity entity, float multiplier, Context context) {
         if (!isSkillSystemEnabled())
             return false;
-        SkillData data = entity.getData(BaseDataAttachments.SKILL);
+        SkillData data = entity.getData(CoreDataAttachments.SKILL);
         return getTriggerables(entity.registryAccess(), event).stream()
                 .filter(SkillDefinition::isEnabled)
                 .anyMatch(definition -> data.trigger(event, definition, multiplier, entity, context));
@@ -55,7 +55,7 @@ public final class SkillSystem {
     }
 
     public static Collection<SkillDefinition> getTriggerables(RegistryAccess access, SkillTriggerEvent event) {
-        Registry<SkillDefinition> registry = access.lookupOrThrow(TarkovCraftRegistries.DatapackKeys.SKILL_DEFINITION);
+        Registry<SkillDefinition> registry = access.lookupOrThrow(CoreRegistries.DatapackKeys.SKILL_DEFINITION);
         return registry.listElements()
                 .map(Holder.Reference::value)
                 .filter(definition -> {

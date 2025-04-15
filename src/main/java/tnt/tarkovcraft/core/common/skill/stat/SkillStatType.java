@@ -3,13 +3,13 @@ package tnt.tarkovcraft.core.common.skill.stat;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.resources.ResourceLocation;
-import tnt.tarkovcraft.core.common.init.TarkovCraftRegistries;
+import tnt.tarkovcraft.core.common.init.CoreRegistries;
 
 import java.util.Objects;
 
 public record SkillStatType<S extends SkillStat>(ResourceLocation identifier, MapCodec<S> codec) {
 
-    public static final Codec<SkillStat> INSTANCE_CODEC = TarkovCraftRegistries.SKILL_STAT.byNameCodec().dispatch(SkillStat::getType, SkillStatType::codec);
+    public static final Codec<SkillStat> INSTANCE_CODEC = CoreRegistries.SKILL_STAT.byNameCodec().dispatch(SkillStat::getType, SkillStatType::codec);
 
     @Override
     public boolean equals(Object o) {

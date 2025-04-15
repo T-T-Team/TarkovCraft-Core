@@ -11,10 +11,8 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
-import tnt.tarkovcraft.core.common.energy.EnergySystem;
-import tnt.tarkovcraft.core.common.energy.EnergyType;
 import tnt.tarkovcraft.core.common.energy.MovementStamina;
-import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
+import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreSkillTriggerEvents;
 import tnt.tarkovcraft.core.common.skill.SkillSystem;
 import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
@@ -36,15 +34,15 @@ public final class TarkovCraftCoreEventHandler {
         if (player.level().isClientSide())
             return;
         // Reset states
-        EntityAttributeData attributeData = player.getData(BaseDataAttachments.ENTITY_ATTRIBUTES);
-        MovementStamina stamina = player.getData(BaseDataAttachments.STAMINA);
-        stamina.set(attributeData, Integer.MAX_VALUE);
+        EntityAttributeData attributeData = player.getData(CoreDataAttachments.ENTITY_ATTRIBUTES);
+        MovementStamina stamina = player.getData(CoreDataAttachments.STAMINA);
+        stamina.setStamina(attributeData, Integer.MAX_VALUE);
         // Sync payload
         S2C_SendDataAttachments payload = new S2C_SendDataAttachments(player, Arrays.asList(
-                BaseDataAttachments.MAIL_MANAGER.get(),
-                BaseDataAttachments.ENTITY_ATTRIBUTES.get(),
-                BaseDataAttachments.STAMINA.get(),
-                BaseDataAttachments.SKILL.get()
+                CoreDataAttachments.MAIL_MANAGER.get(),
+                CoreDataAttachments.ENTITY_ATTRIBUTES.get(),
+                CoreDataAttachments.STAMINA.get(),
+                CoreDataAttachments.SKILL.get()
         ));
         PacketDistributor.sendToPlayer((ServerPlayer) player, payload);
     }
@@ -52,8 +50,8 @@ public final class TarkovCraftCoreEventHandler {
     @SubscribeEvent
     private void onPlayerTickPost(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
-        player.getData(BaseDataAttachments.STAMINA).update(player);
-        player.getData(BaseDataAttachments.ENTITY_ATTRIBUTES).update();
+        player.getData(CoreDataAttachments.STAMINA).update(player);
+        player.getData(CoreDataAttachments.ENTITY_ATTRIBUTES).update();
         SkillSystem.trigger(CoreSkillTriggerEvents.PLAYER_TICK, player);
     }
 }

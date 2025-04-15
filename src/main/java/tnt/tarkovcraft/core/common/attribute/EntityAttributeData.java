@@ -6,8 +6,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
-import tnt.tarkovcraft.core.common.init.BaseAttributes;
-import tnt.tarkovcraft.core.common.init.TarkovCraftRegistries;
+import tnt.tarkovcraft.core.common.init.CoreAttributes;
+import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.network.Synchronizable;
 
 import java.util.Collection;
@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 public final class EntityAttributeData implements Synchronizable<EntityAttributeData> {
 
     public static final Codec<EntityAttributeData> CODEC = Codec.unboundedMap(
-            TarkovCraftRegistries.ATTRIBUTE.byNameCodec(),
+            CoreRegistries.ATTRIBUTE.byNameCodec(),
             AttributeInstance.CODEC
     ).xmap(
             EntityAttributeData::new, t -> t.attributeMap
@@ -89,7 +89,7 @@ public final class EntityAttributeData implements Synchronizable<EntityAttribute
         if (this.holder instanceof ServerPlayer serverPlayer) {
             instance.addListener(new SynchronizationAttributeListener(serverPlayer));
         }
-        if (BaseAttributes.SPRINT.is(instance.getAttribute().identifier())) {
+        if (CoreAttributes.SPRINT.is(instance.getAttribute().identifier())) {
             instance.addListener(new SprintAttributeListener(instance));
         }
         // TODO event

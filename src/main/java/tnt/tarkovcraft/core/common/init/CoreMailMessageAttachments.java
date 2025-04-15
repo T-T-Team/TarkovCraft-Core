@@ -7,9 +7,9 @@ import tnt.tarkovcraft.core.common.mail.MailMessageItemAttachment;
 
 import java.util.function.Supplier;
 
-public final class BaseMailMessageAttachments {
+public final class CoreMailMessageAttachments {
 
-    public static final DeferredRegister<MailMessageAttachmentType<?>> REGISTRY = DeferredRegister.create(TarkovCraftRegistries.MAIL_MESSAGE_ATTACHMENT, TarkovCraftCore.MOD_ID);
+    public static final DeferredRegister<MailMessageAttachmentType<?>> REGISTRY = DeferredRegister.create(CoreRegistries.MAIL_MESSAGE_ATTACHMENT, TarkovCraftCore.MOD_ID);
 
     public static final Supplier<MailMessageAttachmentType<MailMessageItemAttachment>> ITEM = REGISTRY.register("item", key -> new MailMessageAttachmentType<>(key, MailMessageItemAttachment.CODEC));
 }

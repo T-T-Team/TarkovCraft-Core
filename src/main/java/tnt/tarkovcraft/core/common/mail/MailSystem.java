@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.config.TarkovCraftCoreConfig;
-import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
+import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 
 public final class MailSystem {
@@ -58,14 +58,14 @@ public final class MailSystem {
                 return;
             }
             MailSource targetChat = MailSource.player(target);
-            sender.getData(BaseDataAttachments.MAIL_MANAGER).sendMessage(targetChat, message);
-            PacketDistributor.sendToPlayer(sender, new S2C_SendDataAttachments(sender, BaseDataAttachments.MAIL_MANAGER.get()));
+            sender.getData(CoreDataAttachments.MAIL_MANAGER).sendMessage(targetChat, message);
+            PacketDistributor.sendToPlayer(sender, new S2C_SendDataAttachments(sender, CoreDataAttachments.MAIL_MANAGER.get()));
         }
         // and send the message to the target
-        MailManager targetManager = target.getData(BaseDataAttachments.MAIL_MANAGER);
+        MailManager targetManager = target.getData(CoreDataAttachments.MAIL_MANAGER);
         if (!targetManager.isBlocked(source)) {
             targetManager.receiveMessage(source, message);
-            PacketDistributor.sendToPlayer((ServerPlayer) target, new S2C_SendDataAttachments(target, BaseDataAttachments.MAIL_MANAGER.get()));
+            PacketDistributor.sendToPlayer((ServerPlayer) target, new S2C_SendDataAttachments(target, CoreDataAttachments.MAIL_MANAGER.get()));
         }
     }
 }

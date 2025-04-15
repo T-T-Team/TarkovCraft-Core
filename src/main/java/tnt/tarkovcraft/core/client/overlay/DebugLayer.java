@@ -15,11 +15,9 @@ import tnt.tarkovcraft.core.client.TarkovCraftCoreClient;
 import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.energy.MovementStamina;
-import tnt.tarkovcraft.core.common.energy.EnergySystem;
-import tnt.tarkovcraft.core.common.energy.EnergyType;
-import tnt.tarkovcraft.core.common.init.BaseAttributes;
-import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
-import tnt.tarkovcraft.core.common.init.TarkovCraftRegistries;
+import tnt.tarkovcraft.core.common.init.CoreAttributes;
+import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
+import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.skill.Skill;
 import tnt.tarkovcraft.core.common.skill.SkillData;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
@@ -40,17 +38,17 @@ public class DebugLayer implements LayeredDraw.Layer {
         Font font = client.font;
         Player player = client.player;
 
-        EntityAttributeData attributeData = player.getData(BaseDataAttachments.ENTITY_ATTRIBUTES);
+        EntityAttributeData attributeData = player.getData(CoreDataAttachments.ENTITY_ATTRIBUTES);
         renderEnergyStats(font, guiGraphics, player, attributeData);
 
         renderCoreAttributeData(font, guiGraphics, attributeData);
 
-        SkillData skillData = player.getData(BaseDataAttachments.SKILL);
+        SkillData skillData = player.getData(CoreDataAttachments.SKILL);
         renderSkillData(font, client.getConnection().registryAccess(), guiGraphics, skillData);
     }
 
     private void renderEnergyStats(Font font, GuiGraphics graphics, Player player, EntityAttributeData attributeData) {
-        MovementStamina stamina = player.getData(BaseDataAttachments.STAMINA);
+        MovementStamina stamina = player.getData(CoreDataAttachments.STAMINA);
         graphics.drawString(font, "Energy", 5, y(), 0xFFFFFF);
         renderStaminaInfo(font, graphics, attributeData, stamina);
         ++line;
@@ -58,15 +56,15 @@ public class DebugLayer implements LayeredDraw.Layer {
 
     private void renderCoreAttributeData(Font font, GuiGraphics graphics, EntityAttributeData attributeData) {
         graphics.drawString(font, "Core Attributes", 5, y(), 0xFFFFFF);
-        AttributeInstance sprintEnabled = attributeData.getAttribute(BaseAttributes.SPRINT);
+        AttributeInstance sprintEnabled = attributeData.getAttribute(CoreAttributes.SPRINT);
         boolean enabled = sprintEnabled.booleanValue();
         graphics.drawString(font, "Sprint: " + enabled, 5, y(), 0xFFFFFF);
         ++line;
     }
 
     private void renderStaminaInfo(Font font, GuiGraphics graphics, EntityAttributeData attributeData, MovementStamina energy) {
-        float current = energy.getEnergy();
-        float max = energy.getMaxEnergy(attributeData);
+        float current = energy.getStamina();
+        float max = energy.getMaxStamina(attributeData);
         float recovery = energy.getRecoveryAmount(attributeData);
         float consumption = energy.getConsumptionMultiplier(attributeData);
         String value = String.format(Locale.ROOT, "%s: %.2f/%.2f | R %.3f | C %.3f", "Move Stamina", current, max, recovery, consumption);
@@ -74,7 +72,7 @@ public class DebugLayer implements LayeredDraw.Layer {
     }
 
     private void renderSkillData(Font font, RegistryAccess access, GuiGraphics graphics, SkillData data) {
-        ResourceKey<SkillDefinition> rk = ResourceKey.create(TarkovCraftRegistries.DatapackKeys.SKILL_DEFINITION, TarkovCraftCore.createResourceLocation("sprinting"));
+        ResourceKey<SkillDefinition> rk = ResourceKey.create(CoreRegistries.DatapackKeys.SKILL_DEFINITION, TarkovCraftCore.createResourceLocation("sprinting"));
         Holder<SkillDefinition> holder = access.holderOrThrow(rk);
         SkillDefinition definition = holder.value();
 

@@ -12,7 +12,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import tnt.tarkovcraft.core.common.Notification;
-import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
+import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.skill.stat.SkillStat;
 import tnt.tarkovcraft.core.common.skill.stat.SkillStatDefinition;
 import tnt.tarkovcraft.core.common.skill.stat.condition.SkillStatCondition;
@@ -86,7 +86,7 @@ public final class SkillData implements Synchronizable<SkillData> {
                 notification.send(player);
                 this.applyStats();
 
-                PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, BaseDataAttachments.SKILL.get()));
+                PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, CoreDataAttachments.SKILL.get()));
             }
         });
     }

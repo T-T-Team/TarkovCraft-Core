@@ -5,8 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PlayerHeadItem;
-import tnt.tarkovcraft.core.common.init.BaseMailMessageAttachments;
+import tnt.tarkovcraft.core.common.init.CoreMailMessageAttachments;
 import tnt.tarkovcraft.core.util.helper.PlayerHelper;
 
 import java.util.UUID;
@@ -52,6 +51,6 @@ public class MailMessageItemAttachment implements MailMessageAttachment {
 
     @Override
     public MailMessageAttachmentType<?> getType() {
-        return BaseMailMessageAttachments.ITEM.get();
+        return CoreMailMessageAttachments.ITEM.get();
     }
 }

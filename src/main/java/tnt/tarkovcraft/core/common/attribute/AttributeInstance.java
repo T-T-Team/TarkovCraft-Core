@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.world.entity.Entity;
 import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
-import tnt.tarkovcraft.core.common.init.TarkovCraftRegistries;
+import tnt.tarkovcraft.core.common.init.CoreRegistries;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -13,7 +13,7 @@ import java.util.function.Consumer;
 public final class AttributeInstance {
 
     public static final Codec<AttributeInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            TarkovCraftRegistries.ATTRIBUTE.byNameCodec().fieldOf("attribute").forGetter(AttributeInstance::getAttribute),
+            CoreRegistries.ATTRIBUTE.byNameCodec().fieldOf("attribute").forGetter(AttributeInstance::getAttribute),
             Codec.unboundedMap(
                     UUIDUtil.STRING_CODEC,
                     AttributeModifier.CODEC

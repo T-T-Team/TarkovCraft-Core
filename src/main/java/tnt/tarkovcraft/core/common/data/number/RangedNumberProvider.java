@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import tnt.tarkovcraft.core.common.init.NumberProviders;
+import tnt.tarkovcraft.core.common.init.CoreNumberProviders;
 
 import java.util.Locale;
 import java.util.Random;
@@ -37,6 +37,6 @@ public class RangedNumberProvider implements NumberProvider {
 
     @Override
     public NumberProviderType<?> getType() {
-        return NumberProviders.RANGED.get();
+        return CoreNumberProviders.RANGED.get();
     }
 }

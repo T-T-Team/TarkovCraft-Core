@@ -10,7 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import tnt.tarkovcraft.core.TarkovCraftCore;
-import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
+import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.mail.MailList;
 import tnt.tarkovcraft.core.common.mail.MailManager;
 import tnt.tarkovcraft.core.common.mail.MailSource;
@@ -31,7 +31,7 @@ public record C2S_MailDeleteChat(UUID id) implements CustomPacketPayload {
 
     public void handleMessage(IPayloadContext ctx) {
         Player player = ctx.player();
-        MailManager mailManager = player.getData(BaseDataAttachments.MAIL_MANAGER);
+        MailManager mailManager = player.getData(CoreDataAttachments.MAIL_MANAGER);
         MailSource source = mailManager.getSender(this.id());
         if (source == null) {
             TarkovCraftCore.LOGGER.error(MailSystem.MARKER, "Couldn't find chat for ID {}", this.id());
@@ -39,7 +39,7 @@ public record C2S_MailDeleteChat(UUID id) implements CustomPacketPayload {
         }
         MailList chat = mailManager.deleteChat(source);
         if (chat != null) {
-            PacketDistributor.sendToPlayer((ServerPlayer) player, new S2C_SendDataAttachments(player, BaseDataAttachments.MAIL_MANAGER.get()));
+            PacketDistributor.sendToPlayer((ServerPlayer) player, new S2C_SendDataAttachments(player, CoreDataAttachments.MAIL_MANAGER.get()));
         }
     }
 

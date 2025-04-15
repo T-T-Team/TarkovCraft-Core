@@ -5,14 +5,14 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.resources.ResourceLocation;
 import tnt.tarkovcraft.core.common.data.Duration;
-import tnt.tarkovcraft.core.common.init.TarkovCraftRegistries;
+import tnt.tarkovcraft.core.common.init.CoreRegistries;
 
 import java.util.Objects;
 import java.util.function.Function;
 
 public record NumberProviderType<N extends NumberProvider>(ResourceLocation identifier, MapCodec<N> codec) {
 
-    public static final Codec<NumberProvider> ID_CODEC = TarkovCraftRegistries.NUMBER_PROVIDER.byNameCodec().dispatch(NumberProvider::getType, NumberProviderType::codec);
+    public static final Codec<NumberProvider> ID_CODEC = CoreRegistries.NUMBER_PROVIDER.byNameCodec().dispatch(NumberProvider::getType, NumberProviderType::codec);
 
     // resolve either simple number, duration string or custom number provider
     public static <N extends Number> NumberProvider resolve(Either<NumberProvider, Either<Duration, N>> either) {

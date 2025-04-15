@@ -5,7 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
 import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
-import tnt.tarkovcraft.core.common.init.BaseAttributeModifiers;
+import tnt.tarkovcraft.core.common.init.CoreAttributeModifiers;
 
 import java.util.UUID;
 
@@ -42,7 +42,7 @@ public class SetValueAttributeModifier extends AttributeModifier {
 
     @Override
     public AttributeModifierType<?> getType() {
-        return BaseAttributeModifiers.SET_VALUE.get();
+        return CoreAttributeModifiers.SET_VALUE.get();
     }
 
     @Override

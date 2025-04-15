@@ -9,8 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import tnt.tarkovcraft.core.TarkovCraftCore;
-import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
+import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.mail.MailManager;
 import tnt.tarkovcraft.core.network.TarkovCraftCoreNetwork;
 import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
@@ -29,13 +28,13 @@ public record C2S_MailBlockUser(UUID id, boolean block) implements CustomPacketP
 
     public void handleMessage(IPayloadContext ctx) {
         ServerPlayer player = (ServerPlayer) ctx.player();
-        MailManager manager = player.getData(BaseDataAttachments.MAIL_MANAGER);
+        MailManager manager = player.getData(CoreDataAttachments.MAIL_MANAGER);
         if (this.block()) {
             manager.block(this.id());
         } else {
             manager.unblock(this.id());
         }
-        PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, BaseDataAttachments.MAIL_MANAGER.get()));
+        PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, CoreDataAttachments.MAIL_MANAGER.get()));
     }
 
     @Override

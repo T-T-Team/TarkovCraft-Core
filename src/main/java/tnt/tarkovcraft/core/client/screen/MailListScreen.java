@@ -28,7 +28,7 @@ import tnt.tarkovcraft.core.client.screen.renderable.HorizontalLineRenderable;
 import tnt.tarkovcraft.core.client.screen.renderable.ShapeRenderable;
 import tnt.tarkovcraft.core.client.screen.renderable.VerticalLineRenderable;
 import tnt.tarkovcraft.core.client.screen.widget.*;
-import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
+import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.mail.MailList;
 import tnt.tarkovcraft.core.common.mail.MailManager;
 import tnt.tarkovcraft.core.common.mail.MailMessage;
@@ -75,7 +75,7 @@ public class MailListScreen extends LayeredScreen implements DataScreen {
     public void onAttachmentDataReceived(Entity entity, AttachmentType<?> attachmentType, Synchronizable<?> data) {
         if (!entity.getUUID().equals(Minecraft.getInstance().player.getUUID()))
             return;
-        if (attachmentType == BaseDataAttachments.MAIL_MANAGER.get()) {
+        if (attachmentType == CoreDataAttachments.MAIL_MANAGER.get()) {
             this.init(this.minecraft, this.width, this.height);
         }
     }
@@ -84,7 +84,7 @@ public class MailListScreen extends LayeredScreen implements DataScreen {
     protected void init() {
         super.init();
         Player player = Minecraft.getInstance().player;
-        this.userMailManager = player.getData(BaseDataAttachments.MAIL_MANAGER);
+        this.userMailManager = player.getData(CoreDataAttachments.MAIL_MANAGER);
         List<MailList> chats = this.userMailManager.listChats().stream()
                 .sorted()
                 .toList();

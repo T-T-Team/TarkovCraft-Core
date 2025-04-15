@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tnt.tarkovcraft.core.common.energy.EnergySystem;
 import tnt.tarkovcraft.core.common.energy.MovementStamina;
-import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
+import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity implements Attackable, ILivingEntityExtension {
@@ -31,8 +31,8 @@ public abstract class LivingEntityMixin extends Entity implements Attackable, IL
             return; // we do not care when entity is transitioning from sprinting state
         }
         LivingEntity entity = (LivingEntity) (Object) this;
-        if (EnergySystem.isEnabled() && hasData(BaseDataAttachments.STAMINA)) {
-            MovementStamina movementStamina = getData(BaseDataAttachments.STAMINA);
+        if (EnergySystem.isEnabled() && hasData(CoreDataAttachments.STAMINA)) {
+            MovementStamina movementStamina = getData(CoreDataAttachments.STAMINA);
             if (!movementStamina.canSprint(entity)) {
                 ci.cancel();
             }
@@ -45,9 +45,9 @@ public abstract class LivingEntityMixin extends Entity implements Attackable, IL
             cancellable = true
     )
     private void tarkovCraftCore$jumpFromGround(CallbackInfo ci) {
-        if (EnergySystem.isEnabled() && hasData(BaseDataAttachments.STAMINA)) {
+        if (EnergySystem.isEnabled() && hasData(CoreDataAttachments.STAMINA)) {
             LivingEntity livingEntity = (LivingEntity) (Object) this;
-            MovementStamina movementStamina = getData(BaseDataAttachments.STAMINA);
+            MovementStamina movementStamina = getData(CoreDataAttachments.STAMINA);
             if (!movementStamina.canJump(livingEntity)) {
                 ci.cancel();
             } else {

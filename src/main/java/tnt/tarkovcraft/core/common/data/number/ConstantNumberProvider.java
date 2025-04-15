@@ -3,7 +3,7 @@ package tnt.tarkovcraft.core.common.data.number;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import tnt.tarkovcraft.core.common.init.NumberProviders;
+import tnt.tarkovcraft.core.common.init.CoreNumberProviders;
 
 public class ConstantNumberProvider implements NumberProvider {
 
@@ -25,6 +25,6 @@ public class ConstantNumberProvider implements NumberProvider {
 
     @Override
     public NumberProviderType<?> getType() {
-        return NumberProviders.CONSTANT.get();
+        return CoreNumberProviders.CONSTANT.get();
     }
 }

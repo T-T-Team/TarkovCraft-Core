@@ -3,7 +3,7 @@ package tnt.tarkovcraft.core.common.attribute;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
 import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
-import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
+import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 
 public class SynchronizationAttributeListener implements AttributeListener {
@@ -31,7 +31,7 @@ public class SynchronizationAttributeListener implements AttributeListener {
 
     public void synchronize() {
         if (this.holder != null && this.holder.connection != null) {
-            PacketDistributor.sendToPlayer(this.holder, new S2C_SendDataAttachments(this.holder, BaseDataAttachments.ENTITY_ATTRIBUTES.get()));
+            PacketDistributor.sendToPlayer(this.holder, new S2C_SendDataAttachments(this.holder, CoreDataAttachments.ENTITY_ATTRIBUTES.get()));
         }
     }
 }

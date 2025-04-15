@@ -9,9 +9,9 @@ import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.attribute.modifier.AddValueModifier;
 import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
-import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
+import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreSkillStats;
-import tnt.tarkovcraft.core.common.init.TarkovCraftRegistries;
+import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.skill.Skill;
 import tnt.tarkovcraft.core.common.skill.SkillContextKeys;
 import tnt.tarkovcraft.core.util.context.Context;
@@ -22,7 +22,7 @@ import java.util.UUID;
 public class AddAttributeModifierStat implements SkillStat {
 
     public static final MapCodec<AddAttributeModifierStat> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            TarkovCraftRegistries.ATTRIBUTE.byNameCodec().fieldOf("attribute").forGetter(t -> t.target),
+            CoreRegistries.ATTRIBUTE.byNameCodec().fieldOf("attribute").forGetter(t -> t.target),
             UUIDUtil.STRING_CODEC.fieldOf("id").forGetter(t -> t.id),
             Codec.FLOAT.fieldOf("levelValue").forGetter(t -> t.levelValue),
             Codec.BOOL.optionalFieldOf("constant", false).forGetter(t -> t.constant)
@@ -43,8 +43,8 @@ public class AddAttributeModifierStat implements SkillStat {
     @Override
     public void clear(Context context) {
         context.get(ContextKeys.ENTITY).ifPresent(entity -> {
-            if (entity.hasData(BaseDataAttachments.ENTITY_ATTRIBUTES)) {
-                EntityAttributeData attributes = entity.getData(BaseDataAttachments.ENTITY_ATTRIBUTES);
+            if (entity.hasData(CoreDataAttachments.ENTITY_ATTRIBUTES)) {
+                EntityAttributeData attributes = entity.getData(CoreDataAttachments.ENTITY_ATTRIBUTES);
                 attributes.getAttribute(this.target).removeModifier(this.id);
             }
         });
@@ -55,7 +55,7 @@ public class AddAttributeModifierStat implements SkillStat {
         context.get(ContextKeys.ENTITY).ifPresent(entity -> {
             int skillLevel = context.get(SkillContextKeys.SKILL).map(Skill::getLevel).orElse(0);
             if (skillLevel > 0) {
-                EntityAttributeData attributes = entity.getData(BaseDataAttachments.ENTITY_ATTRIBUTES);
+                EntityAttributeData attributes = entity.getData(CoreDataAttachments.ENTITY_ATTRIBUTES);
                 AttributeInstance instance = attributes.getAttribute(this.target);
                 AttributeModifier modifier = new AddValueModifier(this.id, this.constant ? this.levelValue : skillLevel * this.levelValue);
                 instance.addModifier(modifier);

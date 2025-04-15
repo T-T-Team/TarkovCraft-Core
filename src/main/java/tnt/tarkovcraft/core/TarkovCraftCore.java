@@ -42,12 +42,12 @@ public class TarkovCraftCore {
         NeoForge.EVENT_BUS.register(new TarkovCraftCoreEventHandler());
 
         // Deferred registries
-        BaseAttributes.REGISTRY.register(modEventBus);
-        BaseAttributeModifiers.REGISTRY.register(modEventBus);
-        BaseItemStackFilters.REGISTRY.register(modEventBus);
-        NumberProviders.REGISTRY.register(modEventBus);
-        BaseMailMessageAttachments.REGISTRY.register(modEventBus);
-        BaseDataAttachments.REGISTRY.register(modEventBus);
+        CoreAttributes.REGISTRY.register(modEventBus);
+        CoreAttributeModifiers.REGISTRY.register(modEventBus);
+        CoreItemStackFilters.REGISTRY.register(modEventBus);
+        CoreNumberProviders.REGISTRY.register(modEventBus);
+        CoreMailMessageAttachments.REGISTRY.register(modEventBus);
+        CoreDataAttachments.REGISTRY.register(modEventBus);
         CoreSkillTriggerEvents.REGISTRY.register(modEventBus);
         CoreSkillTrackers.REGISTRY.register(modEventBus);
         CoreSkillTriggerConditions.REGISTRY.register(modEventBus);
@@ -65,23 +65,23 @@ public class TarkovCraftCore {
 
     private void registerCustomRegistries(NewRegistryEvent event) {
         // Utils
-        event.register(TarkovCraftRegistries.ATTRIBUTE);
-        event.register(TarkovCraftRegistries.ATTRIBUTE_MODIFIER);
-        event.register(TarkovCraftRegistries.ITEMSTACK_FILTER);
-        event.register(TarkovCraftRegistries.NUMBER_PROVIDER);
+        event.register(CoreRegistries.ATTRIBUTE);
+        event.register(CoreRegistries.ATTRIBUTE_MODIFIER);
+        event.register(CoreRegistries.ITEMSTACK_FILTER);
+        event.register(CoreRegistries.NUMBER_PROVIDER);
 
         // Mail system
-        event.register(TarkovCraftRegistries.MAIL_MESSAGE_ATTACHMENT);
+        event.register(CoreRegistries.MAIL_MESSAGE_ATTACHMENT);
 
         // Skill system
-        event.register(TarkovCraftRegistries.SKILL_TRIGGER_EVENT);
-        event.register(TarkovCraftRegistries.SKILL_TRIGGER_TYPE);
-        event.register(TarkovCraftRegistries.SKILL_TRIGGER_CONDITION_TYPE);
-        event.register(TarkovCraftRegistries.SKILL_STAT_CONDITION_TYPE);
-        event.register(TarkovCraftRegistries.SKILL_STAT);
+        event.register(CoreRegistries.SKILL_TRIGGER_EVENT);
+        event.register(CoreRegistries.SKILL_TRIGGER_TYPE);
+        event.register(CoreRegistries.SKILL_TRIGGER_CONDITION_TYPE);
+        event.register(CoreRegistries.SKILL_STAT_CONDITION_TYPE);
+        event.register(CoreRegistries.SKILL_STAT);
     }
 
     private void registerCustomDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(TarkovCraftRegistries.DatapackKeys.SKILL_DEFINITION, SkillDefinition.DIRECT_CODEC, SkillDefinition.DIRECT_CODEC);
+        event.dataPackRegistry(CoreRegistries.DatapackKeys.SKILL_DEFINITION, SkillDefinition.DIRECT_CODEC, SkillDefinition.DIRECT_CODEC);
     }
 }

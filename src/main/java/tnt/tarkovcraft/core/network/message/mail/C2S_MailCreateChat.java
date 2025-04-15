@@ -11,7 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import tnt.tarkovcraft.core.TarkovCraftCore;
-import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
+import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.mail.MailManager;
 import tnt.tarkovcraft.core.common.mail.MailSource;
 import tnt.tarkovcraft.core.common.mail.MailSystem;
@@ -32,7 +32,7 @@ public record C2S_MailCreateChat(UUID target) implements CustomPacketPayload {
 
     public void handleMessage(IPayloadContext ctx) {
         Player player = ctx.player();
-        MailManager mailManager = player.getData(BaseDataAttachments.MAIL_MANAGER);
+        MailManager mailManager = player.getData(CoreDataAttachments.MAIL_MANAGER);
         MinecraftServer server = player.getServer();
         ServerPlayer targetPlayer = server.getPlayerList().getPlayer(this.target());
         if (targetPlayer == null) {
@@ -40,10 +40,10 @@ public record C2S_MailCreateChat(UUID target) implements CustomPacketPayload {
             return;
         }
         MailSource source = MailSource.player(targetPlayer);
-        MailManager targetMailManager = targetPlayer.getData(BaseDataAttachments.MAIL_MANAGER);
+        MailManager targetMailManager = targetPlayer.getData(CoreDataAttachments.MAIL_MANAGER);
         if (!targetMailManager.isBlocked(source) && !mailManager.hasChat(source)) {
             mailManager.getChat(source);
-            PacketDistributor.sendToPlayer((ServerPlayer) player, new S2C_SendDataAttachments(player, BaseDataAttachments.MAIL_MANAGER.get()));
+            PacketDistributor.sendToPlayer((ServerPlayer) player, new S2C_SendDataAttachments(player, CoreDataAttachments.MAIL_MANAGER.get()));
         }
     }
 

@@ -28,8 +28,8 @@ import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
 import tnt.tarkovcraft.core.common.attribute.modifier.SetValueAttributeModifier;
-import tnt.tarkovcraft.core.common.init.BaseDataAttachments;
-import tnt.tarkovcraft.core.common.init.TarkovCraftRegistries;
+import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
+import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.mail.MailMessage;
 import tnt.tarkovcraft.core.common.mail.MailSource;
 import tnt.tarkovcraft.core.common.mail.MailSystem;
@@ -82,7 +82,7 @@ public final class TarkovCraftCommand {
                                 Commands.literal("attribute")
                                         .requires(src -> src.hasPermission(2))
                                         .then(
-                                                Commands.argument("attributeId", ResourceArgument.resource(context, TarkovCraftRegistries.Keys.ATTRIBUTE))
+                                                Commands.argument("attributeId", ResourceArgument.resource(context, CoreRegistries.Keys.ATTRIBUTE))
                                                         .executes(ctx -> getAttributeInfo(ctx, null, false))
                                                         .then(
                                                                 Commands.argument("target", EntityArgument.entity())
@@ -109,7 +109,7 @@ public final class TarkovCraftCommand {
                                 Commands.literal("skill")
                                         .requires(src -> src.hasPermission(2))
                                         .then(
-                                                Commands.argument("skillId", ResourceArgument.resource(context, TarkovCraftRegistries.DatapackKeys.SKILL_DEFINITION))
+                                                Commands.argument("skillId", ResourceArgument.resource(context, CoreRegistries.DatapackKeys.SKILL_DEFINITION))
                                                         .then(
                                                                 Commands.argument("target", EntityArgument.entity())
                                                                         .then(
@@ -127,10 +127,10 @@ public final class TarkovCraftCommand {
 
     private static int updateAttributeModifier(CommandContext<CommandSourceStack> ctx, boolean remove) throws CommandSyntaxException {
         Entity entity = EntityArgument.getEntity(ctx, "target");
-        Holder.Reference<Attribute> reference = ResourceArgument.getResource(ctx, "attributeId", TarkovCraftRegistries.Keys.ATTRIBUTE);
+        Holder.Reference<Attribute> reference = ResourceArgument.getResource(ctx, "attributeId", CoreRegistries.Keys.ATTRIBUTE);
         Attribute attribute = reference.value();
         UUID systemModifierId = Util.NIL_UUID;
-        EntityAttributeData attributeData = entity.getData(BaseDataAttachments.ENTITY_ATTRIBUTES);
+        EntityAttributeData attributeData = entity.getData(CoreDataAttachments.ENTITY_ATTRIBUTES);
         AttributeInstance instance = attributeData.getAttribute(attribute);
         instance.removeModifier(systemModifierId);
         if (!remove) {
@@ -139,7 +139,7 @@ public final class TarkovCraftCommand {
             instance.addModifier(modifier);
         }
         if (entity instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayer(serverPlayer, new S2C_SendDataAttachments(serverPlayer, BaseDataAttachments.ENTITY_ATTRIBUTES.get()));
+            PacketDistributor.sendToPlayer(serverPlayer, new S2C_SendDataAttachments(serverPlayer, CoreDataAttachments.ENTITY_ATTRIBUTES.get()));
         }
         return 0;
     }
@@ -155,12 +155,12 @@ public final class TarkovCraftCommand {
         if (attachmentHolder == null) {
             throw INVALID_ENTITY.create();
         }
-        Holder.Reference<Attribute> reference = ResourceArgument.getResource(ctx, "attributeId", TarkovCraftRegistries.Keys.ATTRIBUTE);
+        Holder.Reference<Attribute> reference = ResourceArgument.getResource(ctx, "attributeId", CoreRegistries.Keys.ATTRIBUTE);
         Attribute attribute = reference.value();
-        if (!forceInit && !attachmentHolder.hasData(BaseDataAttachments.ENTITY_ATTRIBUTES)) {
+        if (!forceInit && !attachmentHolder.hasData(CoreDataAttachments.ENTITY_ATTRIBUTES)) {
             return printAttributeInfo(entity.getDisplayName(), ctx.getSource(), attribute.createInstance((Entity) attachmentHolder));
         }
-        EntityAttributeData entityAttributeData = attachmentHolder.getData(BaseDataAttachments.ENTITY_ATTRIBUTES);
+        EntityAttributeData entityAttributeData = attachmentHolder.getData(CoreDataAttachments.ENTITY_ATTRIBUTES);
         if (!forceInit && !entityAttributeData.hasAttribute(attribute)) { // avoid unnecessary creation of attribute instance in entity data
             return printAttributeInfo(entity.getDisplayName(), ctx.getSource(), attribute.createInstance((Entity) attachmentHolder));
         }
@@ -219,16 +219,16 @@ public final class TarkovCraftCommand {
 
     private static int setSkillLevel(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         Entity target = EntityArgument.getEntity(ctx, "target");
-        SkillDefinition skillDefinition = ResourceArgument.getResource(ctx, "skillId", TarkovCraftRegistries.DatapackKeys.SKILL_DEFINITION).value();
+        SkillDefinition skillDefinition = ResourceArgument.getResource(ctx, "skillId", CoreRegistries.DatapackKeys.SKILL_DEFINITION).value();
         int level = IntegerArgumentType.getInteger(ctx, "levelValue");
         int maxLevel = skillDefinition.getLevelDefinition().getMaxLevel();
         int setLevel = Math.min(maxLevel, level);
-        SkillData skillData = target.getData(BaseDataAttachments.SKILL);
+        SkillData skillData = target.getData(CoreDataAttachments.SKILL);
         Skill instance = skillData.getSkill(skillDefinition);
         instance.forceSetLevel(setLevel);
         skillData.reloadStats();
         if (target instanceof ServerPlayer player) {
-            PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, BaseDataAttachments.SKILL.get()));
+            PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, CoreDataAttachments.SKILL.get()));
         }
         return 0;
     }
