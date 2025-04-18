@@ -25,7 +25,7 @@ public class MovementStamina implements Synchronizable<MovementStamina> {
 
     public static final int DEFAULT_STAMINA_VALUE = 100;
     public static final float SPRINT_STAMINA_CONSUMPTION = 0.5F;
-    public static final float JUMP_STAMINA_CONSUMPTION = 15.0F;
+    public static final float JUMP_STAMINA_CONSUMPTION = 10.0F;
     public static final float ENERGY_LOW_VALUE = 20.0F;
 
     private final Holder<Attribute> maxLevelAttribute; // max stamina value
@@ -33,7 +33,7 @@ public class MovementStamina implements Synchronizable<MovementStamina> {
     private final Holder<Attribute> recoveryAttribute; // recovery amount / tick
     private final Holder<Attribute> recoveryDelayAttribute; // recovery time multiplier
     private float stamina; // current stamina amount
-    private int recoveryDelay; // current delay before recoveing stamina
+    private int recoveryDelay; // current delay before recovering stamina
 
     public MovementStamina() {
         this(

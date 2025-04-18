@@ -80,7 +80,7 @@
         "type": "tarkovcraft_core:add_attribute_modifier",
         "attribute": "tarkovcraft_core:leg_energy_max",
         "id": "8c944806-fd54-4f60-a4d7-da8b01e15000",
-        "levelValue": 2
+        "levelValue": 1
       }
     },
     {
