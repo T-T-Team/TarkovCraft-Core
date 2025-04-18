@@ -2,6 +2,7 @@ package tnt.tarkovcraft.core.common;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
+import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -119,6 +120,13 @@ public final class TarkovCraftCommand {
                                                                                                         .executes(TarkovCraftCommand::setSkillLevel)
                                                                                         )
                                                                         )
+                                                                        .then(
+                                                                                Commands.literal("experience")
+                                                                                        .then(
+                                                                                                Commands.argument("experienceValue", FloatArgumentType.floatArg(0.001F))
+                                                                                                        .executes(TarkovCraftCommand::addSkillExperience)
+                                                                                        )
+                                                                        )
                                                         )
                                         )
                         )
@@ -227,6 +235,19 @@ public final class TarkovCraftCommand {
         Skill instance = skillData.getSkill(skillDefinition);
         instance.forceSetLevel(setLevel);
         skillData.reloadStats();
+        if (target instanceof ServerPlayer player) {
+            PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, CoreDataAttachments.SKILL.get()));
+        }
+        return 0;
+    }
+
+    private static int addSkillExperience(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        Entity target = EntityArgument.getEntity(ctx, "target");
+        SkillDefinition skillDefinition = ResourceArgument.getResource(ctx, "skillId", CoreRegistries.DatapackKeys.SKILL_DEFINITION).value();
+        float exp = FloatArgumentType.getFloat(ctx, "experienceValue");
+        SkillData skillData = target.getData(CoreDataAttachments.SKILL);
+        Skill instance = skillData.getSkill(skillDefinition);
+        skillData.addExperience(instance, exp);
         if (target instanceof ServerPlayer player) {
             PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, CoreDataAttachments.SKILL.get()));
         }
