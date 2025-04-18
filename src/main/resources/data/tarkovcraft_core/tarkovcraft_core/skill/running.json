@@ -1,6 +1,6 @@
 {
   "description": {
-    "translate": "skill.tarkovcraft_core.sprinting"
+    "translate": "skill.tarkovcraft_core.running"
   },
   "leveling": {
     "maxLevel": 100,
@@ -28,10 +28,10 @@
     {
       "display": {
         "name": {
-          "translate": "skill.tarkovcraft_core.sprinting.bonus.stamina_recovery",
+          "translate": "skill.tarkovcraft_core.running.bonus.stamina_recovery",
           "bold": true
         },
-        "descriptionKey": "skill.tarkovcraft_core.sprinting.bonus.stamina_recovery.description",
+        "descriptionKey": "skill.tarkovcraft_core.running.bonus.stamina_recovery.description",
         "color": "#FFFF00",
         "icon": "tarkovcraft_core:textures/icons/skill/bonus/stamina_recovery.png"
       },
@@ -55,9 +55,9 @@
     {
       "display": {
         "name": {
-          "translate": "skill.tarkovcraft_core.sprinting.bonus.stamina_max"
+          "translate": "skill.tarkovcraft_core.running.bonus.stamina_max"
         },
-        "descriptionKey": "skill.tarkovcraft_core.sprinting.bonus.stamina_max.description",
+        "descriptionKey": "skill.tarkovcraft_core.running.bonus.stamina_max.description",
         "color": "#FFFFFF",
         "icon": "tarkovcraft_core:textures/icons/skill/bonus/stamina_max.png"
       },
@@ -77,9 +77,9 @@
     {
       "display": {
         "name": {
-          "translate": "skill.tarkovcraft_core.sprinting.bonus.stamina_consumption"
+          "translate": "skill.tarkovcraft_core.running.bonus.stamina_consumption"
         },
-        "descriptionKey": "skill.tarkovcraft_core.sprinting.bonus.stamina_consumption.description",
+        "descriptionKey": "skill.tarkovcraft_core.running.bonus.stamina_consumption.description",
         "color": "#FFFFFF",
         "icon": "tarkovcraft_core:textures/icons/skill/bonus/stamina_consumption.png"
       },

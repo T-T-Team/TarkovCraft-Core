@@ -1,11 +1,11 @@
 {
-  "skill.tarkovcraft_core.sprinting": "Sprinting",
-  "skill.tarkovcraft_core.sprinting.bonus.stamina_recovery": "Stamina Recovery",
-  "skill.tarkovcraft_core.sprinting.bonus.stamina_recovery.description": "Extra stamina recovery by %s",
-  "skill.tarkovcraft_core.sprinting.bonus.stamina_max": "Max Stamina",
-  "skill.tarkovcraft_core.sprinting.bonus.stamina_max.description": "Extra %s stamina units",
-  "skill.tarkovcraft_core.sprinting.bonus.stamina_consumption": "Stamina Consumption",
-  "skill.tarkovcraft_core.sprinting.bonus.stamina_consumption.description": "%s lower stamina consumption",
+  "skill.tarkovcraft_core.running": "Running",
+  "skill.tarkovcraft_core.running.bonus.stamina_recovery": "Stamina Recovery",
+  "skill.tarkovcraft_core.running.bonus.stamina_recovery.description": "Extra stamina recovery by %s",
+  "skill.tarkovcraft_core.running.bonus.stamina_max": "Max Stamina",
+  "skill.tarkovcraft_core.running.bonus.stamina_max.description": "Extra %s stamina units",
+  "skill.tarkovcraft_core.running.bonus.stamina_consumption": "Stamina Consumption",
+  "skill.tarkovcraft_core.running.bonus.stamina_consumption.description": "%s lower stamina consumption",
 
   "screen.tarkovcraft_core.character.mail": "Messages",
   "screen.tarkovcraft_core.mail.title": "Character",
