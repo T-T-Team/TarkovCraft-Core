@@ -18,6 +18,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import tnt.tarkovcraft.core.client.screen.navigation.CoreNavigators;
 import tnt.tarkovcraft.core.client.screen.widget.ListWidget;
+import tnt.tarkovcraft.core.client.screen.widget.ScrollbarWidget;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.skill.Skill;
@@ -38,8 +39,9 @@ import java.util.Locale;
 
 public class SkillScreen extends CharacterSubScreen {
 
-
     private SkillData skillData;
+
+    private double scroll;
 
     public SkillScreen(Context context) {
         super(context.getOrThrow(ContextKeys.UUID), CoreNavigators.SKILL_ENTRY);
@@ -55,9 +57,18 @@ public class SkillScreen extends CharacterSubScreen {
         this.skillData = player.getData(CoreDataAttachments.SKILL);
         Registry<SkillDefinition> registry = this.minecraft.getConnection().registryAccess().lookupOrThrow(CoreRegistries.DatapackKeys.SKILL_DEFINITION);
         List<Skill> skills = registry.listElements().map(reference -> this.skillData.getSkill(reference.value())).toList();
-        ListWidget<SkillWidget> skillView = this.addRenderableWidget(new ListWidget<>(0, 25, this.width, this.height - 25, skills, (skill, i) -> this.buildSkillWidget(player, skill, i)));
+        List<Skill> ext = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            ext.add(skills.getFirst());
+        }
+
+        ListWidget<SkillWidget> skillView = this.addRenderableWidget(new ListWidget<>(0, 25, this.width, this.height - 25, ext, (skill, i) -> this.buildSkillWidget(player, skill, i)));
         skillView.setBackgroundColor(ColorPalette.BG_TRANSPARENT_WEAK);
         skillView.setAdditionalItemSpacing(5);
+        skillView.setScrollListener((x, y) -> this.scroll = y);
+        skillView.setScroll(this.scroll);
+
+        ScrollbarWidget scrollbar = this.addRenderableWidget(new ScrollbarWidget(this.width - 4, 25, 4, this.height - 25, skillView));
     }
 
     private SkillWidget buildSkillWidget(Player player, Skill skill, int index) {
@@ -67,7 +78,7 @@ public class SkillScreen extends CharacterSubScreen {
                 SkillContextKeys.DEFINITION, skill.getDefinition().value(),
                 SkillContextKeys.SKILL, skill
         );
-        return new SkillWidget(5, 5 + index * 40, this.width - 10, 35, this.font, skill, this, context);
+        return new SkillWidget(5, 5 + index * 40, this.width - 15, 35, this.font, skill, this, context);
     }
 
     public static final class SkillWidget extends AbstractWidget {

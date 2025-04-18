@@ -27,6 +27,8 @@ public interface Scrollable {
      */
     double getVisibleSize();
 
+    double getTotalSize();
+
     /**
      * Calculates and retrieves the maximum scroll value for the scrollable content.
      * The maximum scroll value typically represents the total content size minus

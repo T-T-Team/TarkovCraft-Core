@@ -4,6 +4,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.util.Mth;
 import tnt.tarkovcraft.core.client.screen.listener.ScrollChangeListener;
 import tnt.tarkovcraft.core.util.helper.MathHelper;
 import tnt.tarkovcraft.core.util.helper.RenderUtils;
@@ -73,7 +74,7 @@ public class ListWidget<T extends AbstractWidget> extends AbstractWidget impleme
         double oldScroll = this.scroll;
         this.scroll = Scrollable.scroll(this, scrollY);
         if (this.scrollListener != null && oldScroll != this.scroll) {
-            this.scrollListener.onScrollChange(scrollX, scrollY);
+            this.scrollListener.onScrollChange(scrollX, this.scroll);
         }
         return oldScroll != this.scroll;
     }
@@ -82,6 +83,12 @@ public class ListWidget<T extends AbstractWidget> extends AbstractWidget impleme
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         T item = this.getItemAt(mouseX, mouseY);
         return item != null && item.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        T item = this.getItemAt(mouseX, mouseY);
+        return item != null && item.isMouseOver(mouseX, mouseY);
     }
 
     public T getItemAt(double x, double y) {
@@ -113,15 +120,20 @@ public class ListWidget<T extends AbstractWidget> extends AbstractWidget impleme
 
     @Override
     public double getMaxScroll() {
-        int totalItemsHeight = this.getItems().stream()
+        double totalItemsHeight = this.getTotalSize();
+        return Math.max(0.0D, totalItemsHeight - this.getVisibleSize() + 2 * this.additionalItemSpacing);
+    }
+
+    @Override
+    public double getTotalSize() {
+        return this.getItems().stream()
                 .mapToInt(w -> w.getHeight() + this.additionalItemSpacing)
                 .sum();
-        return totalItemsHeight - this.getVisibleSize() + 2 * this.additionalItemSpacing;
     }
 
     @Override
     public void setScroll(double scroll) {
-        this.scroll = scroll;
+        this.scroll = Mth.clamp(scroll, 0.0D, this.getMaxScroll());
     }
 
     @Override

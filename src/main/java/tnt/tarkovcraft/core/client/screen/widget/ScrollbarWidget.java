@@ -36,8 +36,38 @@ public class ScrollbarWidget extends AbstractWidget {
 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        guiGraphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), this.backgroundColor);
-        // calculate scrollbar positions
+        if (this.canRender()) {
+            guiGraphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), this.backgroundColor);
+            double max = this.scrollable.getMaxScroll();
+            double sum = this.scrollable.getTotalSize();
+            double amountMin = max > 0 ? this.scrollable.getScroll() / sum : 0.0;
+            double amountMax = max > 0 ? (this.scrollable.getScroll() + this.scrollable.getVisibleSize()) / sum : 1.0;
+            int y1 = this.getY() + (int) (amountMin * this.height);
+            int y2 = this.getY() + (int) (amountMax * this.height);
+            guiGraphics.fill(this.getX() + this.scrollBarMargin, y1 + this.scrollBarMargin, this.getRight() - this.scrollBarMargin, y2 - this.scrollBarMargin, this.foregroundColor);
+        }
+    }
+
+    @Override
+    protected boolean isValidClickButton(int button) {
+        return this.canRender();
+    }
+
+    protected boolean canRender() {
+        return this.alwaysVisible || this.scrollable.getMaxScroll() > 0;
+    }
+
+    @Override
+    public void onClick(double mouseX, double mouseY, int button) {
+        double relativeY = (mouseY - this.getY()) / this.getHeight();
+        double max = this.scrollable.getMaxScroll();
+        double scrollAmount = max * relativeY;
+        this.scrollable.setScroll(scrollAmount);
+    }
+
+    @Override
+    protected void onDrag(double mouseX, double mouseY, double dragX, double dragY) {
+        this.onClick(mouseX, mouseY, 0);
     }
 
     @Override

@@ -121,7 +121,6 @@ public class MailListScreen extends LayeredScreen implements DataScreen {
         chatList.setScrollListener((x, y) -> this.chatSelectScroll = y);
         // Chat selection scrollbar
         ScrollbarWidget scrollbar = this.addRenderableWidget(new ScrollbarWidget(chatSelectionWidth, 0, 4, listHeight + 1, chatList));
-        scrollbar.setAlwaysVisible(true);
         // Horizontal line separator between chat selection and NewChat button
         this.addRenderableOnly(new HorizontalLineRenderable(-1, chatSelectionWidth + 4, this.height - diff + 1, ColorPalette.WHITE));
         // New chat button

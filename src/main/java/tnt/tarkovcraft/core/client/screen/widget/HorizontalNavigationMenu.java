@@ -87,6 +87,11 @@ public class HorizontalNavigationMenu<W extends AbstractWidget> extends Abstract
         return Math.max(0.0D, width - 4 - lastWidth - this.width);
     }
 
+    @Override
+    public double getTotalSize() {
+        return Math.max(0.0, this.navigationMenuEntries.stream().mapToInt(w -> w.getWidth() + 4).sum() - 4);
+    }
+
     @FunctionalInterface
     public interface EntryDisplayBuilder<W extends AbstractWidget> {
         W build(NavigationEntry entry, Context context);
