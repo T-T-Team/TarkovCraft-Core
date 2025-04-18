@@ -12,7 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.client.TarkovCraftCoreClient;
-import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.energy.MovementStamina;
 import tnt.tarkovcraft.core.common.init.CoreAttributes;
@@ -56,9 +55,10 @@ public class DebugLayer implements LayeredDraw.Layer {
 
     private void renderCoreAttributeData(Font font, GuiGraphics graphics, EntityAttributeData attributeData) {
         graphics.drawString(font, "Core Attributes", 5, y(), 0xFFFFFF);
-        AttributeInstance sprintEnabled = attributeData.getAttribute(CoreAttributes.SPRINT);
-        boolean enabled = sprintEnabled.booleanValue();
-        graphics.drawString(font, "Sprint: " + enabled, 5, y(), 0xFFFFFF);
+        float forgetRate = attributeData.getAttribute(CoreAttributes.MEMORY_FORGET_TIME_MULTIPLIER).floatValue();
+        graphics.drawString(font, String.format(Locale.ROOT, "Memory forget rate: %.1f", forgetRate), 5, y(), 0xFFFFFF);
+        float forgetAmount = attributeData.getAttribute(CoreAttributes.MEMORY_FORGET_AMOUNT_MULTIPLIER).floatValue();
+        graphics.drawString(font, String.format(Locale.ROOT, "Memory forget amount: %.1f", forgetAmount), 5, y(), 0xFFFFFF);
         ++line;
     }
 

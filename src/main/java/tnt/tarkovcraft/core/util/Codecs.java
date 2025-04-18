@@ -31,6 +31,8 @@ public final class Codecs {
         }
     }, Integer::toHexString);
     public static final Codec<Integer> RGB_COLOR = Codec.withAlternative(ExtraCodecs.RGB_COLOR_CODEC, HEX_RGB_COLOR_CODEC);
+    public static final Codec<Integer> NON_NEGATIVE_INT = Codec.intRange(0, Integer.MAX_VALUE);
+    public static final Codec<Float> NON_NEGATIVE_FLOAT = Codec.floatRange(0.0F, Float.MAX_VALUE);
 
     public static <R, T> R serialize(DynamicOps<R> ops, Codec<T> codec, T data) {
         DataResult<R> result = codec.encodeStart(ops, data);

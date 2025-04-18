@@ -1,0 +1,76 @@
+{
+  "description": {
+    "translate": "skill.tarkovcraft_core.memory"
+  },
+  "groupLevelModifiers": [
+    "tarkovcraft_core:mental_leveling_multiplier"
+  ],
+  "leveling": {
+    "maxLevel": 100,
+    "baseExperience": 10.0,
+    "additionalExperience": 0.0
+  },
+  "memory": {
+    "enabled": true,
+    "canLoseLevel": true,
+    "forgetAfter": "4h",
+    "forgetAmount": 0.1
+  },
+  "trackers": [],
+  "stats": [
+    {
+      "display": {
+        "name": {
+          "translate": "skill.tarkovcraft_core.memory.bonus.memory_forget_rate"
+        },
+        "descriptionKey": "skill.tarkovcraft_core.memory.bonus.memory_forget_rate.description",
+        "color": "#FFFF",
+        "icon": "tarkovcraft_core:textures/icons/skill/bonus/memory_rate.png"
+      },
+      "conditions": [
+        {
+          "type": "tarkovcraft_core:skill_level_range",
+          "min": 1
+        }
+      ],
+      "apply": {
+        "type": "tarkovcraft_core:add_attribute_modifier",
+        "attribute": "tarkovcraft_core:memory_forget_time_multiplier",
+        "id": "09868750-7bd6-4f63-8342-6a9e583213fe",
+        "levelValue": 0.01,
+        "displayUnitFormat": {
+          "decimalPlaces": 0,
+          "multiplier": 100,
+          "suffix": "%"
+        }
+      }
+    },
+    {
+      "display": {
+        "name": {
+          "translate": "skill.tarkovcraft_core.memory.bonus.memory_forget_amount"
+        },
+        "descriptionKey": "skill.tarkovcraft_core.memory.bonus.memory_forget_amount.description",
+        "color": "#FFFF",
+        "icon": "tarkovcraft_core:textures/icons/skill/bonus/memory_amount.png"
+      },
+      "conditions": [
+        {
+          "type": "tarkovcraft_core:skill_level_range",
+          "min": 1
+        }
+      ],
+      "apply": {
+        "type": "tarkovcraft_core:add_attribute_modifier",
+        "attribute": "tarkovcraft_core:memory_forget_amount_multiplier",
+        "id": "d6868f12-7502-42d8-a680-1aaca0de9dd9",
+        "levelValue": -0.01,
+        "displayUnitFormat": {
+          "decimalPlaces": 0,
+          "multiplier": -100,
+          "suffix": "%"
+        }
+      }
+    }
+  ]
+}

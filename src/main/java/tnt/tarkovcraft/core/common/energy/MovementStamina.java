@@ -60,8 +60,7 @@ public class MovementStamina implements Synchronizable<MovementStamina> {
         if (eventResult != null) {
             return eventResult;
         }
-        EntityAttributeData data = entity.getData(CoreDataAttachments.ENTITY_ATTRIBUTES);
-        return data.getAttribute(CoreAttributes.SPRINT).booleanValue() && this.hasStamina(ENERGY_LOW_VALUE);
+        return this.hasStamina(ENERGY_LOW_VALUE);
     }
 
     public boolean canJump(LivingEntity entity) {

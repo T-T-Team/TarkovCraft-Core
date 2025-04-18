@@ -2,10 +2,19 @@
   "description": {
     "translate": "skill.tarkovcraft_core.running"
   },
+  "groupLevelModifiers": [
+    "tarkovcraft_core:physical_leveling_multiplier"
+  ],
   "leveling": {
     "maxLevel": 100,
     "baseExperience": 10.0,
     "additionalExperience": 5.0
+  },
+  "memory": {
+    "enabled": true,
+    "canLoseLevel": true,
+    "forgetAfter": "2h",
+    "forgetAmount": 0.05
   },
   "trackers": [
     {

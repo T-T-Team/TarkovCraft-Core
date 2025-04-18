@@ -37,6 +37,7 @@ import tnt.tarkovcraft.core.common.mail.MailSystem;
 import tnt.tarkovcraft.core.common.skill.Skill;
 import tnt.tarkovcraft.core.common.skill.SkillData;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
+import tnt.tarkovcraft.core.common.skill.SkillMemoryConfiguration;
 import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 
 import javax.annotation.Nullable;
@@ -125,6 +126,13 @@ public final class TarkovCraftCommand {
                                                                                         .then(
                                                                                                 Commands.argument("experienceValue", FloatArgumentType.floatArg(0.001F))
                                                                                                         .executes(TarkovCraftCommand::addSkillExperience)
+                                                                                        )
+                                                                        )
+                                                                        .then(
+                                                                                Commands.literal("forget")
+                                                                                        .then(
+                                                                                                Commands.argument("experienceValue", FloatArgumentType.floatArg(0.001F))
+                                                                                                        .executes(TarkovCraftCommand::forgetSkillExperience)
                                                                                         )
                                                                         )
                                                         )
@@ -248,6 +256,22 @@ public final class TarkovCraftCommand {
         SkillData skillData = target.getData(CoreDataAttachments.SKILL);
         Skill instance = skillData.getSkill(skillDefinition);
         skillData.addExperience(instance, exp);
+        instance.setLastExperienceUpdate(target.level().getGameTime());
+        if (target instanceof ServerPlayer player) {
+            PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, CoreDataAttachments.SKILL.get()));
+        }
+        return 0;
+    }
+
+    private static int forgetSkillExperience(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        Entity target = EntityArgument.getEntity(ctx, "target");
+        SkillDefinition skillDefinition = ResourceArgument.getResource(ctx, "skillId", CoreRegistries.DatapackKeys.SKILL_DEFINITION).value();
+        float exp = FloatArgumentType.getFloat(ctx, "experienceValue");
+        SkillData skillData = target.getData(CoreDataAttachments.SKILL);
+        Skill instance = skillData.getSkill(skillDefinition);
+        SkillMemoryConfiguration memoryCfg = skillDefinition.getMemory();
+        instance.loseExperience(exp, memoryCfg, lvl -> skillData.onLevelChange(lvl, instance));
+        instance.setLastExperienceUpdate(target.level().getGameTime());
         if (target instanceof ServerPlayer player) {
             PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, CoreDataAttachments.SKILL.get()));
         }

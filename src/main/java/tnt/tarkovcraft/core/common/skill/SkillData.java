@@ -3,6 +3,7 @@ package tnt.tarkovcraft.core.common.skill;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,6 +13,8 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import tnt.tarkovcraft.core.common.Notification;
+import tnt.tarkovcraft.core.common.attribute.Attribute;
+import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.skill.stat.SkillStat;
 import tnt.tarkovcraft.core.common.skill.stat.SkillStatDefinition;
@@ -66,7 +69,11 @@ public final class SkillData implements Synchronizable<SkillData> {
                 .build();
         float triggerAmount = instance.trigger(ctx);
         if (triggerAmount > 0) {
-            this.addExperience(instance, triggerAmount);
+            EntityAttributeData attributes = triggerSource.getData(CoreDataAttachments.ENTITY_ATTRIBUTES);
+            float experience = triggerAmount * this.getGroupLevelMultiplier(attributes, definition.getGroupLevelingModifiers());
+            long gameTime = triggerSource.level().getGameTime();
+            instance.updateMemory(gameTime, attributes, prevLevel -> this.onLevelChange(prevLevel, instance));
+            this.addExperience(instance, experience);
             return true;
         }
         return false;
@@ -78,16 +85,7 @@ public final class SkillData implements Synchronizable<SkillData> {
     }
 
     public void addExperience(Skill instance, float experience) {
-        instance.addExperience(experience, () -> {
-            if (this.holder instanceof ServerPlayer player) {
-                SkillDefinition definition = instance.getDefinition().value();
-                Notification notification = Notification.info(Component.translatable("label.tarkovcraft_core.skill.level_up", definition.getName(), instance.getLevel()));
-                notification.send(player);
-                this.applyStats();
-
-                PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, CoreDataAttachments.SKILL.get()));
-            }
-        });
+        instance.addExperience(experience, (previousLevel) -> this.onLevelChange(previousLevel, instance));
     }
 
     public Skill getSkill(SkillDefinition skill) {
@@ -160,6 +158,28 @@ public final class SkillData implements Synchronizable<SkillData> {
             return getClientRegistryAccess();
         } else {
             return this.holder.registryAccess();
+        }
+    }
+
+    private float getGroupLevelMultiplier(EntityAttributeData data, List<Holder<Attribute>> group) {
+        float multiplier = 1.0F;
+        for (Holder<Attribute> holder : group) {
+            float attributeValue = data.getAttribute(holder).floatValue();
+            multiplier *= attributeValue;
+        }
+        return Math.max(0.0F, multiplier);
+    }
+
+    public void onLevelChange(int prevLevel, Skill skill) {
+        if (this.holder instanceof ServerPlayer player) {
+            if (prevLevel < skill.getLevel()) {
+                SkillDefinition definition = skill.getDefinition().value();
+                Notification notification = Notification.info(Component.translatable("label.tarkovcraft_core.skill.level_up", definition.getName(), skill.getLevel()));
+                notification.send(player);
+            }
+            this.applyStats();
+
+            PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, CoreDataAttachments.SKILL.get()));
         }
     }
 

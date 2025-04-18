@@ -14,5 +14,9 @@ public class SkillSystemConfig {
 
     @Configurable
     @Configurable.Synchronized
-    public boolean enableSkillLoss = true;
+    public boolean enableSkillExperienceLoss = true;
+
+    @Configurable
+    @Configurable.Synchronized
+    public boolean enableSkillLevelLoss = true;
 }

@@ -10,12 +10,8 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
-import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
-import tnt.tarkovcraft.core.common.attribute.SprintAttributeListener;
 import tnt.tarkovcraft.core.common.energy.MovementStamina;
-import tnt.tarkovcraft.core.common.event.EntityAttributeEvent;
-import tnt.tarkovcraft.core.common.init.CoreAttributes;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreSkillTriggerEvents;
 import tnt.tarkovcraft.core.common.skill.SkillSystem;
@@ -57,13 +53,5 @@ public final class TarkovCraftCoreEventHandler {
         player.getData(CoreDataAttachments.STAMINA).update(player);
         player.getData(CoreDataAttachments.ENTITY_ATTRIBUTES).update();
         SkillSystem.trigger(CoreSkillTriggerEvents.PLAYER_TICK, player);
-    }
-
-    @SubscribeEvent
-    private void onAttributeConstructing(EntityAttributeEvent.AttributeInstanceConstructing event) {
-        if (CoreAttributes.SPRINT.is(event.getAttribute().identifier())) {
-            AttributeInstance instance = event.getInstance();
-            instance.addListener(new SprintAttributeListener(instance::booleanValue, event::getEntity));
-        }
     }
 }

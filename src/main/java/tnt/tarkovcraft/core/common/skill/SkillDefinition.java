@@ -8,11 +8,13 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.RegistryFixedCodec;
+import tnt.tarkovcraft.core.common.attribute.Attribute;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.skill.stat.SkillStatDefinition;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTrackerDefinition;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class SkillDefinition {
@@ -21,6 +23,8 @@ public class SkillDefinition {
             Codec.BOOL.optionalFieldOf("enabled", true).forGetter(t -> t.enabled),
             ComponentSerialization.CODEC.fieldOf("description").forGetter(t -> t.name),
             SkillLevelDefinition.CODEC.optionalFieldOf("leveling", SkillLevelDefinition.DEFAULT).forGetter(t -> t.levelDefinition),
+            SkillMemoryConfiguration.CODEC.optionalFieldOf("memory", SkillMemoryConfiguration.NO_LOSS).forGetter(t -> t.memory),
+            CoreRegistries.ATTRIBUTE.holderByNameCodec().listOf().optionalFieldOf("groupLevelModifiers", Collections.emptyList()).forGetter(t -> t.groupLevelingModifiers),
             SkillTrackerDefinition.CODEC.listOf().fieldOf("trackers").forGetter(t -> t.trackers),
             SkillStatDefinition.CODEC.listOf().fieldOf("stats").forGetter(t -> t.stats)
     ).apply(instance, SkillDefinition::new));
@@ -29,13 +33,17 @@ public class SkillDefinition {
     private final boolean enabled;
     private final Component name;
     private final SkillLevelDefinition levelDefinition;
+    private final SkillMemoryConfiguration memory;
+    private final List<Holder<Attribute>> groupLevelingModifiers;
     private final List<SkillTrackerDefinition> trackers;
     private final List<SkillStatDefinition> stats;
 
-    public SkillDefinition(boolean enabled, Component name, SkillLevelDefinition levelDefinition, List<SkillTrackerDefinition> trackers, List<SkillStatDefinition> stats) {
+    public SkillDefinition(boolean enabled, Component name, SkillLevelDefinition levelDefinition, SkillMemoryConfiguration memory, List<Holder<Attribute>> groupLevelingModifiers, List<SkillTrackerDefinition> trackers, List<SkillStatDefinition> stats) {
         this.enabled = enabled;
         this.name = name;
         this.levelDefinition = levelDefinition;
+        this.memory = memory;
+        this.groupLevelingModifiers = groupLevelingModifiers;
         this.trackers = trackers;
         this.stats = stats;
     }
@@ -52,6 +60,14 @@ public class SkillDefinition {
 
     public SkillLevelDefinition getLevelDefinition() {
         return this.levelDefinition;
+    }
+
+    public SkillMemoryConfiguration getMemory() {
+        return memory;
+    }
+
+    public List<Holder<Attribute>> getGroupLevelingModifiers() {
+        return groupLevelingModifiers;
     }
 
     public Collection<SkillTrackerDefinition> getTrackers() {

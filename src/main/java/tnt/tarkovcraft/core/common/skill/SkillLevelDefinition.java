@@ -7,15 +7,16 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Mth;
 import tnt.tarkovcraft.core.common.data.number.NumberProvider;
 import tnt.tarkovcraft.core.common.data.number.NumberProviderType;
+import tnt.tarkovcraft.core.util.Codecs;
 
 public final class SkillLevelDefinition {
 
     public static final SkillLevelDefinition DEFAULT = new SkillLevelDefinition(Either.right(100), Either.right(10.0F), Either.right(15.0F), Either.right((int) Short.MAX_VALUE));
     public static final Codec<SkillLevelDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             NumberProviderType.complexCodecNoDuration(ExtraCodecs.POSITIVE_INT).optionalFieldOf("maxLevel", Either.left(DEFAULT.maxLevel)).forGetter(t -> Either.left(t.maxLevel)),
-            NumberProviderType.complexCodecNoDuration(ExtraCodecs.POSITIVE_FLOAT).optionalFieldOf("baseExperience", Either.left(DEFAULT.baseExperience)).forGetter(t -> Either.left(t.baseExperience)),
-            NumberProviderType.complexCodecNoDuration(ExtraCodecs.POSITIVE_FLOAT).optionalFieldOf("additionalExperience", Either.left(DEFAULT.additionalExperience)).forGetter(t -> Either.left(t.additionalExperience)),
-            NumberProviderType.complexCodecNoDuration(ExtraCodecs.POSITIVE_INT).optionalFieldOf("maxStack", Either.left(DEFAULT.maxStack)).forGetter(t -> Either.left(t.maxLevel))
+            NumberProviderType.complexCodecNoDuration(Codecs.NON_NEGATIVE_FLOAT).optionalFieldOf("baseExperience", Either.left(DEFAULT.baseExperience)).forGetter(t -> Either.left(t.baseExperience)),
+            NumberProviderType.complexCodecNoDuration(Codecs.NON_NEGATIVE_FLOAT).optionalFieldOf("additionalExperience", Either.left(DEFAULT.additionalExperience)).forGetter(t -> Either.left(t.additionalExperience)),
+            NumberProviderType.complexCodecNoDuration(Codecs.NON_NEGATIVE_INT).optionalFieldOf("maxStack", Either.left(DEFAULT.maxStack)).forGetter(t -> Either.left(t.maxLevel))
     ).apply(instance, SkillLevelDefinition::new));
 
     private final NumberProvider maxLevel;

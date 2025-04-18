@@ -7,6 +7,7 @@ import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import tnt.tarkovcraft.core.TarkovCraftCore;
+import tnt.tarkovcraft.core.common.config.SkillSystemConfig;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTrackerDefinition;
@@ -23,6 +24,16 @@ public final class SkillSystem {
 
     public static boolean isSkillSystemEnabled() {
         return TarkovCraftCore.getConfig().skillSystemConfig.skillSystemEnabled;
+    }
+
+    public static boolean isMemoryEnabled() {
+        SkillSystemConfig cfg = TarkovCraftCore.getConfig().skillSystemConfig;
+        return cfg.enableSkillExperienceLoss;
+    }
+
+    public static boolean isLevelMemoryEnabled() {
+        SkillSystemConfig cfg = TarkovCraftCore.getConfig().skillSystemConfig;
+        return cfg.enableSkillLevelLoss;
     }
 
     public static boolean trigger(SkillTriggerEvent event, Entity entity, float multiplier, Context context) {
