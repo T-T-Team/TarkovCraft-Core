@@ -59,11 +59,13 @@ public final class Skill {
         if (this.isMaxLevel() || !this.definition.value().isEnabled())
             return;
         if ((this.experience += experience) >= this.requiredExperience) {
-            this.experience = this.experience - this.requiredExperience;
             this.level++;
+            float overflow = this.experience - this.requiredExperience;
             SkillLevelDefinition levelDefinition = this.definition.value().getLevelDefinition();
             this.requiredExperience = levelDefinition.getRequiredExperience(this.level);
+            this.experience = 0.0F;
             levelChangeCallback.run();
+            this.addExperience(overflow, levelChangeCallback);
         }
     }
 

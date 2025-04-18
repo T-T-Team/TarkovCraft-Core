@@ -4,10 +4,12 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.CommonComponents;
+import tnt.tarkovcraft.core.util.helper.RenderUtils;
 
 public class ScrollbarWidget extends AbstractWidget {
 
     private final Scrollable scrollable;
+    private int background;
     private int backgroundColor = 0xFF << 24;
     private int foregroundColor = 0xFFFFFFFF;
     private int scrollBarMargin = 1;
@@ -17,6 +19,10 @@ public class ScrollbarWidget extends AbstractWidget {
     public ScrollbarWidget(int x, int y, int width, int height, Scrollable scrollable) {
         super(x, y, width, height, CommonComponents.EMPTY);
         this.scrollable = scrollable;
+    }
+
+    public void setBackground(int background) {
+        this.background = background;
     }
 
     public void setBackgroundColor(int backgroundColor) {
@@ -50,6 +56,8 @@ public class ScrollbarWidget extends AbstractWidget {
             int y1 = this.getY() + (int) (amountMin * this.height);
             int y2 = this.getY() + (int) (amountMax * this.height);
             guiGraphics.fill(this.getX() + this.scrollBarMargin, y1 + this.scrollBarMargin, this.getRight() - this.scrollBarMargin, y2 - this.scrollBarMargin, this.foregroundColor);
+        } else if (RenderUtils.isNotTransparent(this.background)) {
+            guiGraphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), this.background);
         }
     }
 

@@ -85,12 +85,6 @@ public class ListWidget<T extends AbstractWidget> extends AbstractWidget impleme
         return item != null && item.mouseClicked(mouseX, mouseY, button);
     }
 
-    @Override
-    public boolean isMouseOver(double mouseX, double mouseY) {
-        T item = this.getItemAt(mouseX, mouseY);
-        return item != null && item.isMouseOver(mouseX, mouseY);
-    }
-
     public T getItemAt(double x, double y) {
         for (T item : this.getItems()) {
             if (item.isMouseOver(x, y - this.scroll)) {

@@ -57,18 +57,15 @@ public class SkillScreen extends CharacterSubScreen {
         this.skillData = player.getData(CoreDataAttachments.SKILL);
         Registry<SkillDefinition> registry = this.minecraft.getConnection().registryAccess().lookupOrThrow(CoreRegistries.DatapackKeys.SKILL_DEFINITION);
         List<Skill> skills = registry.listElements().map(reference -> this.skillData.getSkill(reference.value())).toList();
-        List<Skill> ext = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            ext.add(skills.getFirst());
-        }
 
-        ListWidget<SkillWidget> skillView = this.addRenderableWidget(new ListWidget<>(0, 25, this.width, this.height - 25, ext, (skill, i) -> this.buildSkillWidget(player, skill, i)));
+        ListWidget<SkillWidget> skillView = this.addRenderableWidget(new ListWidget<>(0, 25, this.width - 4, this.height - 25, skills, (skill, i) -> this.buildSkillWidget(player, skill, i)));
         skillView.setBackgroundColor(ColorPalette.BG_TRANSPARENT_WEAK);
         skillView.setAdditionalItemSpacing(5);
         skillView.setScrollListener((x, y) -> this.scroll = y);
         skillView.setScroll(this.scroll);
 
-        this.addRenderableWidget(new ScrollbarWidget(this.width - 4, 25, 4, this.height - 25, skillView));
+        ScrollbarWidget scrollbar = this.addRenderableWidget(new ScrollbarWidget(this.width - 4, 25, 4, this.height - 25, skillView));
+        scrollbar.setBackground(ColorPalette.BG_TRANSPARENT_WEAK);
     }
 
     private SkillWidget buildSkillWidget(Player player, Skill skill, int index) {
