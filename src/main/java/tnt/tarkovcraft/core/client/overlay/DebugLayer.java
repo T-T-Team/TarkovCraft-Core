@@ -5,9 +5,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
-import net.minecraft.core.Holder;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import tnt.tarkovcraft.core.TarkovCraftCore;
@@ -16,10 +13,6 @@ import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.energy.MovementStamina;
 import tnt.tarkovcraft.core.common.init.CoreAttributes;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
-import tnt.tarkovcraft.core.common.init.CoreRegistries;
-import tnt.tarkovcraft.core.common.skill.Skill;
-import tnt.tarkovcraft.core.common.skill.SkillData;
-import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 
 import java.util.Locale;
 
@@ -41,9 +34,6 @@ public class DebugLayer implements LayeredDraw.Layer {
         renderEnergyStats(font, guiGraphics, player, attributeData);
 
         renderCoreAttributeData(font, guiGraphics, attributeData);
-
-        SkillData skillData = player.getData(CoreDataAttachments.SKILL);
-        renderSkillData(font, client.getConnection().registryAccess(), guiGraphics, skillData);
     }
 
     private void renderEnergyStats(Font font, GuiGraphics graphics, Player player, EntityAttributeData attributeData) {
@@ -56,9 +46,9 @@ public class DebugLayer implements LayeredDraw.Layer {
     private void renderCoreAttributeData(Font font, GuiGraphics graphics, EntityAttributeData attributeData) {
         graphics.drawString(font, "Core Attributes", 5, y(), 0xFFFFFF);
         float forgetRate = attributeData.getAttribute(CoreAttributes.MEMORY_FORGET_TIME_MULTIPLIER).floatValue();
-        graphics.drawString(font, String.format(Locale.ROOT, "Memory forget rate: %.1f", forgetRate), 5, y(), 0xFFFFFF);
+        graphics.drawString(font, String.format(Locale.ROOT, "Memory forget rate: %.2f", forgetRate), 5, y(), 0xFFFFFF);
         float forgetAmount = attributeData.getAttribute(CoreAttributes.MEMORY_FORGET_AMOUNT_MULTIPLIER).floatValue();
-        graphics.drawString(font, String.format(Locale.ROOT, "Memory forget amount: %.1f", forgetAmount), 5, y(), 0xFFFFFF);
+        graphics.drawString(font, String.format(Locale.ROOT, "Memory forget amount: %.2f", forgetAmount), 5, y(), 0xFFFFFF);
         ++line;
     }
 
@@ -69,18 +59,6 @@ public class DebugLayer implements LayeredDraw.Layer {
         float consumption = energy.getConsumptionMultiplier(attributeData);
         String value = String.format(Locale.ROOT, "%s: %.2f/%.2f | R %.3f | C %.3f", "Move Stamina", current, max, recovery, consumption);
         graphics.drawString(font, value, 5, y(), 0xFFFFFF);
-    }
-
-    private void renderSkillData(Font font, RegistryAccess access, GuiGraphics graphics, SkillData data) {
-        ResourceKey<SkillDefinition> rk = ResourceKey.create(CoreRegistries.DatapackKeys.SKILL_DEFINITION, TarkovCraftCore.createResourceLocation("sprinting"));
-        Holder<SkillDefinition> holder = access.holderOrThrow(rk);
-        SkillDefinition definition = holder.value();
-
-        Skill skill = data.getSkill(definition);
-        String info = String.format(Locale.ROOT, "%s: L%d | %.3f/%.1f", definition.getName().getString(), skill.getLevel(), skill.getExperience(), skill.getRequiredExperience());
-        graphics.drawString(font, info, 5, y(), 0xFFFFFF);
-
-        ++line;
     }
 
     private int y() {
