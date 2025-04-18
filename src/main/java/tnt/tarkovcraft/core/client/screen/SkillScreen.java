@@ -68,7 +68,7 @@ public class SkillScreen extends CharacterSubScreen {
         skillView.setScrollListener((x, y) -> this.scroll = y);
         skillView.setScroll(this.scroll);
 
-        ScrollbarWidget scrollbar = this.addRenderableWidget(new ScrollbarWidget(this.width - 4, 25, 4, this.height - 25, skillView));
+        this.addRenderableWidget(new ScrollbarWidget(this.width - 4, 25, 4, this.height - 25, skillView));
     }
 
     private SkillWidget buildSkillWidget(Player player, Skill skill, int index) {

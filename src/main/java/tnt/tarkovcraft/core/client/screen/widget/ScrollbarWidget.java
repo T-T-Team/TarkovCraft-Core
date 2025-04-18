@@ -12,6 +12,7 @@ public class ScrollbarWidget extends AbstractWidget {
     private int foregroundColor = 0xFFFFFFFF;
     private int scrollBarMargin = 1;
     private boolean alwaysVisible;
+    private boolean clickable = true;
 
     public ScrollbarWidget(int x, int y, int width, int height, Scrollable scrollable) {
         super(x, y, width, height, CommonComponents.EMPTY);
@@ -34,6 +35,10 @@ public class ScrollbarWidget extends AbstractWidget {
         this.alwaysVisible = alwaysVisible;
     }
 
+    public void setClickable(boolean clickable) {
+        this.clickable = clickable;
+    }
+
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         if (this.canRender()) {
@@ -50,7 +55,7 @@ public class ScrollbarWidget extends AbstractWidget {
 
     @Override
     protected boolean isValidClickButton(int button) {
-        return this.canRender();
+        return this.canRender() && this.clickable;
     }
 
     protected boolean canRender() {
