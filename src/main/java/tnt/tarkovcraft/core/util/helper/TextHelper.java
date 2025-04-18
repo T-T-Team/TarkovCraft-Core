@@ -3,7 +3,15 @@ package tnt.tarkovcraft.core.util.helper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
-public class LocalizationHelper {
+public class TextHelper {
+
+    public static boolean isBlank(String str) {
+        return str == null || str.isBlank();
+    }
+
+    public static boolean isNotBlank(String str) {
+        return !isBlank(str);
+    }
 
     public static String createKeybindName(String owner, String name) {
         return "key." + owner + "." + name;

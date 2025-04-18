@@ -25,11 +25,14 @@ import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.client.notification.NotificationChannel;
 import tnt.tarkovcraft.core.client.notification.NotificationLayer;
 import tnt.tarkovcraft.core.client.overlay.DebugLayer;
-import tnt.tarkovcraft.core.client.screen.CharacterScreen;
 import tnt.tarkovcraft.core.client.screen.DataScreen;
+import tnt.tarkovcraft.core.client.screen.navigation.CoreNavigators;
 import tnt.tarkovcraft.core.network.Synchronizable;
+import tnt.tarkovcraft.core.util.context.Context;
+import tnt.tarkovcraft.core.util.context.ContextImpl;
+import tnt.tarkovcraft.core.util.context.ContextKeys;
 
-import static tnt.tarkovcraft.core.util.helper.LocalizationHelper.createKeybindName;
+import static tnt.tarkovcraft.core.util.helper.TextHelper.createKeybindName;
 
 @Mod(value = TarkovCraftCore.MOD_ID, dist = Dist.CLIENT)
 public final class TarkovCraftCoreClient {
@@ -71,7 +74,8 @@ public final class TarkovCraftCoreClient {
         // Game keybinds
         if (player != null) {
             if (KEY_CHARACTER.consumeClick()) {
-                client.setScreen(new CharacterScreen());
+                Context context = ContextImpl.of(ContextKeys.UUID, player.getUUID());
+                client.setScreen(CoreNavigators.CHARACTER_NAVIGATION_PROVIDER.buildInitial(context));
             }
         }
     }

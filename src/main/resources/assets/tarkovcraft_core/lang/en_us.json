@@ -1,7 +1,12 @@
 {
   "skill.tarkovcraft_core.sprinting": "Sprinting",
+  "skill.tarkovcraft_core.sprinting.bonus.stamina_recovery": "Stamina Recovery",
+  "skill.tarkovcraft_core.sprinting.bonus.stamina_recovery.description": "Extra stamina recovery by %s",
+  "skill.tarkovcraft_core.sprinting.bonus.stamina_max": "Max Stamina",
+  "skill.tarkovcraft_core.sprinting.bonus.stamina_max.description": "Extra %s stamina units",
+  "skill.tarkovcraft_core.sprinting.bonus.stamina_consumption": "Stamina Consumption",
+  "skill.tarkovcraft_core.sprinting.bonus.stamina_consumption.description": "%s lower stamina consumption",
 
-  "screen.tarkovcraft_core.character.title": "Character",
   "screen.tarkovcraft_core.character.mail": "Messages",
   "screen.tarkovcraft_core.mail.title": "Character",
   "screen.tarkovcraft_core.mail.active_chat": "Active Chat",
@@ -12,7 +17,9 @@
   "screen.tarkovcraft_core.mail.hint.block_user": "Block user",
   "screen.tarkovcraft_core.mail.hint.unblock_user": "Unblock user",
   "screen.tarkovcraft_core.mail.hint.claim_attachments": "Claim attachments",
+  "screen.tarkovcraft_core.skills.title": "Skills",
 
+  "label.tarkovcraft_core.profile": "%s's profile",
   "label.tarkovcraft_core.message.item_received": "You have received new item",
   "label.tarkovcraft_core.system": "System",
   "label.tarkovcraft_core.form.player_name": "Player name",
@@ -22,6 +29,8 @@
   "label.tarkovcraft_core.validation.player_self": "You cannot use your player",
   "label.tarkovcraft_core.mail.failed_to_send_message": "Failed to send message",
   "label.tarkovcraft_core.skill.level_up": "%s skill level increased to %s",
+  "label.tarkovcraft_core.skill.level": "Level: %s / %s",
+  "label.tarkovcraft_core.skill.max_level": "ELITE LEVEL",
 
   "config.screen.tarkovcraft_core": "TarkovCraft",
   "config.tarkovcraft_core.option.enableSkillSystem": "Enable skill system",

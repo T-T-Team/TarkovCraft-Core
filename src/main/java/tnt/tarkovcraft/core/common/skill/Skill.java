@@ -2,8 +2,10 @@ package tnt.tarkovcraft.core.common.skill;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.chat.Component;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTracker;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTrackerDefinition;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTrackerType;
@@ -23,6 +25,7 @@ public final class Skill {
             Codec.FLOAT.fieldOf("exp").forGetter(t -> t.experience),
             Codec.FLOAT.fieldOf("requiredExp").forGetter(t -> t.requiredExperience)
     ).apply(instance, Skill::new));
+    public static final Component MAX_LEVEL = Component.translatable("label.tarkovcraft_core.skill.max_level").withStyle(ChatFormatting.GOLD);
 
     private final Holder<SkillDefinition> definition;
     private final Map<UUID, SkillTracker> trackerData;
@@ -74,6 +77,10 @@ public final class Skill {
         return level;
     }
 
+    public int getMaxLevel() {
+        return this.definition.value().getLevelDefinition().getMaxLevel();
+    }
+
     public float getExperience() {
         return experience;
     }
@@ -83,8 +90,7 @@ public final class Skill {
     }
 
     public boolean isMaxLevel() {
-        SkillLevelDefinition levelDefinition = this.definition.value().getLevelDefinition();
-        return this.level >= levelDefinition.getMaxLevel();
+        return this.level >= this.getMaxLevel();
     }
 
     public Holder<SkillDefinition> getDefinition() {

@@ -11,6 +11,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 
+import java.util.UUID;
+
 public final class ContextKeys {
 
     // Entity
@@ -28,4 +30,5 @@ public final class ContextKeys {
     public static final ContextKey<Level> LEVEL = new ContextKey<>(TarkovCraftCore.createResourceLocation("level"));
     public static final ContextKey<DamageSource> DAMAGE_SOURCE = new ContextKey<>(TarkovCraftCore.createResourceLocation("damage_source"));
     public static final ContextKey<BlockPos> POSITION = new ContextKey<>(TarkovCraftCore.createResourceLocation("position"));
+    public static final ContextKey<UUID> UUID = new ContextKey<>(TarkovCraftCore.createResourceLocation("uuid"));
 }

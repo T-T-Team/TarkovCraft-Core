@@ -13,7 +13,7 @@ public class IconButton extends AbstractButton {
 
     private ResourceLocation icon;
     private final SimpleClickListener onClick;
-    private Integer hoverBackground = ColorPalette.BG_HOVER_LIGHT;
+    private Integer hoverBackground = ColorPalette.BG_HOVER_WEAK;
     private int iconOffset = 0;
     private int tint = -1;
 

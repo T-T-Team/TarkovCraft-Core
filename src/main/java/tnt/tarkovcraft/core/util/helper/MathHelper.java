@@ -6,11 +6,10 @@ public final class MathHelper {
         return x >= boundX && x <= boundX + width && y >= boundY && y <= boundY + height;
     }
 
-    public static boolean areaOverlapsPartial(double x, double y, double areaWidth, double areaHeight, double boundX, double boundY, double width, double height) {
-        double xMax1 = x + areaWidth;
-        double yMax1 = y + areaHeight;
-        double xMax2 = boundX + width;
-        double yMax2 = boundY + height;
-        return !(xMax1 < boundX) && !(xMax2 < x) && !(yMax1 < boundY) && !(yMax2 < y);
+    public static boolean areaOverlapsPartial(double p1x, double p1y, double p1w, double p1h, double a1x, double a1y, double a1w, double a1h) {
+        if (p1x + p1w < a1x || p1x > a1x + a1w) {
+            return false;
+        }
+        return !(p1y + p1h < a1y) && !(p1y > a1y + a1h);
     }
 }

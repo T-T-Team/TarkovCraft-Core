@@ -8,5 +8,7 @@ public interface SkillStat {
 
     void clear(Context context);
 
+    Object[] getTranslationData(Context context);
+
     SkillStatType<?> getType();
 }

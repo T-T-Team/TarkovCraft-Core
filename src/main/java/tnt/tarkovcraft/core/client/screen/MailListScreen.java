@@ -36,7 +36,7 @@ import tnt.tarkovcraft.core.common.mail.MailSource;
 import tnt.tarkovcraft.core.network.Synchronizable;
 import tnt.tarkovcraft.core.network.message.mail.*;
 import tnt.tarkovcraft.core.util.CommonLabels;
-import tnt.tarkovcraft.core.util.helper.LocalizationHelper;
+import tnt.tarkovcraft.core.util.helper.TextHelper;
 
 import java.time.Duration;
 import java.util.List;
@@ -45,15 +45,15 @@ import java.util.UUID;
 
 public class MailListScreen extends LayeredScreen implements DataScreen {
 
-    public static final Component TITLE = LocalizationHelper.createScreenTitle(TarkovCraftCore.MOD_ID, "mail");
-    public static final Component ACTIVE_CHAT = LocalizationHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "active_chat");
-    public static final Component NEW_CHAT = LocalizationHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "new_chat");
-    public static final Component SEND_MESSAGE_HINT = LocalizationHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "hint.send").withStyle(ChatFormatting.ITALIC).withColor(ColorPalette.TEXT_COLOR_DISABLED);
-    public static final Component CANNOT_CHAT = LocalizationHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "hint.no_chat").withStyle(ChatFormatting.ITALIC);
-    public static final Component DELETE_CHAT = LocalizationHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "hint.delete_chat");
-    public static final Component BLOCK_USER = LocalizationHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "hint.block_user");
-    public static final Component UNBLOCK_USER = LocalizationHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "hint.unblock_user");
-    public static final Component CLAIM_ATTACHMENTS = LocalizationHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "hint.claim_attachments");
+    public static final Component TITLE = TextHelper.createScreenTitle(TarkovCraftCore.MOD_ID, "mail");
+    public static final Component ACTIVE_CHAT = TextHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "active_chat");
+    public static final Component NEW_CHAT = TextHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "new_chat");
+    public static final Component SEND_MESSAGE_HINT = TextHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "hint.send").withStyle(ChatFormatting.ITALIC).withColor(ColorPalette.TEXT_COLOR_DISABLED);
+    public static final Component CANNOT_CHAT = TextHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "hint.no_chat").withStyle(ChatFormatting.ITALIC);
+    public static final Component DELETE_CHAT = TextHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "hint.delete_chat");
+    public static final Component BLOCK_USER = TextHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "hint.block_user");
+    public static final Component UNBLOCK_USER = TextHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "hint.unblock_user");
+    public static final Component CLAIM_ATTACHMENTS = TextHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "mail", "hint.claim_attachments");
 
     public static final ResourceLocation ICON_DELETE_CHAT = TarkovCraftCore.createResourceLocation("textures/icons/mail/delete.png");
     public static final ResourceLocation ICON_BLOCK_USER = TarkovCraftCore.createResourceLocation("textures/icons/mail/block.png");
@@ -126,7 +126,7 @@ public class MailListScreen extends LayeredScreen implements DataScreen {
         this.addRenderableOnly(new HorizontalLineRenderable(-1, chatSelectionWidth + 4, this.height - diff + 1, ColorPalette.WHITE));
         // New chat button
         LabelButton newChatButton = this.addRenderableWidget(new LabelButton(Button.builder(NEW_CHAT, this::showNewChatDialog).bounds(0, listHeight + 2, this.width / 3, this.height - listHeight - 2)));
-        newChatButton.setBackgroundHoverColor(ColorPalette.BG_HOVER_LIGHT);
+        newChatButton.setBackgroundHoverColor(ColorPalette.BG_HOVER_WEAK);
         // Chat window
         if (this.selectedChat != null) {
             // bg
@@ -304,7 +304,7 @@ public class MailListScreen extends LayeredScreen implements DataScreen {
         @Override
         protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
             if (this.chat.getSource().equals(MailListScreen.this.selectedChat) || this.isHoveredOrFocused()) {
-                guiGraphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), ColorPalette.BG_HOVER_LIGHT);
+                guiGraphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), ColorPalette.BG_HOVER_WEAK);
             }
             int x = this.getX() + 2;
             int y = this.getY() + 2;

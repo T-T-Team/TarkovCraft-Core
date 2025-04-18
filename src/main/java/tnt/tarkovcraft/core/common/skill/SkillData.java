@@ -15,7 +15,6 @@ import tnt.tarkovcraft.core.common.Notification;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.skill.stat.SkillStat;
 import tnt.tarkovcraft.core.common.skill.stat.SkillStatDefinition;
-import tnt.tarkovcraft.core.common.skill.stat.condition.SkillStatCondition;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTriggerEvent;
 import tnt.tarkovcraft.core.network.Synchronizable;
 import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
@@ -137,8 +136,7 @@ public final class SkillData implements Synchronizable<SkillData> {
                 SkillContextKeys.SKILL, skill
         );
         for (SkillStatDefinition statDefinition : definition.getStats()) {
-            List<SkillStatCondition> conditions = statDefinition.conditions();
-            if (conditions.stream().allMatch(condition -> condition.canApply(context))) {
+            if (statDefinition.isAvailable(context)) {
                 SkillStat stat = statDefinition.stat();
                 stat.apply(context);
             }

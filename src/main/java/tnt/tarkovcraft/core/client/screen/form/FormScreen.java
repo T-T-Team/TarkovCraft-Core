@@ -43,7 +43,7 @@ public class FormScreen extends DialogScreen {
 
     protected <T, C extends AbstractWidget> void initFormElement(FormElement<T, C> element, int index) {
         int left = this.left + this.getButtonMargin();
-        int top = this.top + this.getButtonMargin() + index * 35; // 10 title, 15 element, 10 errors
+        int top = this.top + this.getButtonMargin() + index * 35; // 10 label, 15 element, 10 errors
         int width = this.windowWidth - this.getButtonMargin() * 2;
 
         Component label = element.getLabel();
