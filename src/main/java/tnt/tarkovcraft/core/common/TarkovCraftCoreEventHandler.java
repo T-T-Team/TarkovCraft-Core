@@ -10,13 +10,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
-import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
-import tnt.tarkovcraft.core.common.energy.MovementStamina;
+import tnt.tarkovcraft.core.api.MovementStaminaComponent;
+import tnt.tarkovcraft.core.common.energy.EnergySystem;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreSkillTriggerEvents;
 import tnt.tarkovcraft.core.common.init.CoreStatistics;
@@ -24,9 +25,11 @@ import tnt.tarkovcraft.core.common.skill.SkillSystem;
 import tnt.tarkovcraft.core.common.statistic.CustomStatTrackerProvider;
 import tnt.tarkovcraft.core.common.statistic.Statistic;
 import tnt.tarkovcraft.core.common.statistic.StatisticTracker;
+import tnt.tarkovcraft.core.network.Synchronizable;
 import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class TarkovCraftCoreEventHandler {
 
@@ -43,9 +46,8 @@ public final class TarkovCraftCoreEventHandler {
         if (player.level().isClientSide())
             return;
         // Reset states
-        EntityAttributeData attributeData = player.getData(CoreDataAttachments.ENTITY_ATTRIBUTES);
-        MovementStamina stamina = player.getData(CoreDataAttachments.STAMINA);
-        stamina.setStamina(attributeData, Integer.MAX_VALUE);
+        MovementStaminaComponent stamina = EnergySystem.STAMINA.getComponent();
+        stamina.setStamina(player, Integer.MAX_VALUE);
         // Sync payload
         PacketDistributor.sendToPlayer((ServerPlayer) player, this.getSyncPacket(player));
     }
@@ -71,7 +73,7 @@ public final class TarkovCraftCoreEventHandler {
     @SubscribeEvent
     private void onPlayerTickPost(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
-        player.getData(CoreDataAttachments.STAMINA).update(player);
+        EnergySystem.STAMINA.getComponent().update(player);
         player.getData(CoreDataAttachments.ENTITY_ATTRIBUTES).update();
         SkillSystem.trigger(CoreSkillTriggerEvents.PLAYER_TICK, player);
     }
@@ -105,12 +107,14 @@ public final class TarkovCraftCoreEventHandler {
     }
 
     private S2C_SendDataAttachments getSyncPacket(Player player) {
-        return new S2C_SendDataAttachments(player, Arrays.asList(
-                CoreDataAttachments.MAIL_MANAGER.get(),
-                CoreDataAttachments.ENTITY_ATTRIBUTES.get(),
-                CoreDataAttachments.STAMINA.get(),
-                CoreDataAttachments.SKILL.get(),
-                CoreDataAttachments.STATISTICS.get()
-        ));
+        List<AttachmentType<? extends Synchronizable<?>>> list = new ArrayList<>();
+        list.add(CoreDataAttachments.MAIL_MANAGER.get());
+        list.add(CoreDataAttachments.ENTITY_ATTRIBUTES.get());
+        list.add(CoreDataAttachments.STATISTICS.get());
+        list.add(CoreDataAttachments.SKILL.get());
+        if (EnergySystem.STAMINA.isVanilla()) {
+            list.add(CoreDataAttachments.STAMINA.get());
+        }
+        return new S2C_SendDataAttachments(player, list);
     }
 }

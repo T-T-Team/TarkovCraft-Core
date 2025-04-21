@@ -5,8 +5,12 @@ import net.neoforged.neoforge.common.NeoForge;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.config.SkillSystemConfig;
 import tnt.tarkovcraft.core.common.event.MovementStaminaEvent;
+import tnt.tarkovcraft.core.compatibility.CompatibilityComponent;
+import tnt.tarkovcraft.core.api.MovementStaminaComponent;
 
 public final class EnergySystem {
+
+    public static final CompatibilityComponent<MovementStaminaComponent> STAMINA = new CompatibilityComponent<>("Stamina", VanillaMovementStaminaComponent.INSTANCE);
 
     public static boolean isEnabled() {
         SkillSystemConfig config = TarkovCraftCore.getConfig().skillSystemConfig;

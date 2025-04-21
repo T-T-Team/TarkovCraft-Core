@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.client.TarkovCraftCoreClient;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
+import tnt.tarkovcraft.core.common.energy.EnergySystem;
 import tnt.tarkovcraft.core.common.energy.MovementStamina;
 import tnt.tarkovcraft.core.common.init.CoreAttributes;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
@@ -31,14 +32,16 @@ public class DebugLayer implements LayeredDraw.Layer {
         Player player = client.player;
 
         EntityAttributeData attributeData = player.getData(CoreDataAttachments.ENTITY_ATTRIBUTES);
-        renderEnergyStats(font, guiGraphics, player, attributeData);
+        guiGraphics.drawString(font, "Stamina Component: " + EnergySystem.STAMINA, 5, y(), 0xFFFFFF);
+        if (EnergySystem.STAMINA.isVanilla()) {
+            renderEnergyStats(font, guiGraphics, player, attributeData);
+        }
 
         renderCoreAttributeData(font, guiGraphics, attributeData);
     }
 
     private void renderEnergyStats(Font font, GuiGraphics graphics, Player player, EntityAttributeData attributeData) {
         MovementStamina stamina = player.getData(CoreDataAttachments.STAMINA);
-        graphics.drawString(font, "Energy", 5, y(), 0xFFFFFF);
         renderStaminaInfo(font, graphics, attributeData, stamina);
         ++line;
     }
