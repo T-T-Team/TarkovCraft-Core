@@ -46,11 +46,26 @@
   "label.tarkovcraft_core.skill.level": "Level: %s / %s",
   "label.tarkovcraft_core.skill.max_level": "ELITE LEVEL",
   "label.tarkovcraft_core.not_available.short": "N/A",
+  "label.tarkovcraft_core.kdr": "K/D %s",
 
   "config.screen.tarkovcraft_core": "TarkovCraft",
-  "config.tarkovcraft_core.option.enableSkillSystem": "Enable skill system",
   "config.tarkovcraft_core.option.enableMailSystem": "Enable mail system",
+  "config.tarkovcraft_core.option.enableMailSystem.comment.0": "Allows usage of the mail system to receive items or messages",
   "config.tarkovcraft_core.option.allowMailPlayerMessages": "Allow player chat",
+  "config.tarkovcraft_core.option.allowMailPlayerMessages.comment.0": "Allows mail messages between players",
+  "config.tarkovcraft_core.option.skillSystemConfig": "Skill system configuration",
+  "config.tarkovcraft_core.option.skillSystemConfig.comment.0": "Configurations related to skill system",
+  "config.tarkovcraft_core.option.skillSystemEnabled": "Enable skills",
+  "config.tarkovcraft_core.option.skillSystemEnabled.comment.0": "Enables skill system",
+  "config.tarkovcraft_core.option.staminaEnabled": "Enable stamina",
+  "config.tarkovcraft_core.option.staminaEnabled.comment.0": "Enables stamina system",
+  "config.tarkovcraft_core.option.enableSkillExperienceLoss": "Skill experience loss",
+  "config.tarkovcraft_core.option.enableSkillExperienceLoss.comment.0": "Allows you to lose skill experience (but not levels)",
+  "config.tarkovcraft_core.option.enableSkillLevelLoss": "Skill level loss",
+  "config.tarkovcraft_core.option.enableSkillLevelLoss.comment.0": "Allows you to lose skill levels",
+
+  "config.screen.tarkovcraft_core-client": "Tarkovcraft Client",
+  "config.tarkovcraft_core-client.option.renderDebugOverlay": "Debug Overlay",
 
   "category.tarkovcraft": "TarkovCraft",
   "key.tarkovcraft_core.character": "Character info"

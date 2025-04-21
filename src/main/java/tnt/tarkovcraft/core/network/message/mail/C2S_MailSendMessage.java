@@ -36,9 +36,6 @@ public record C2S_MailSendMessage(UUID target, MailMessage message) implements C
             return;
         }
         MailSystem.sendMessage(target, MailSource.player(sender), this.message());
-        // TODO remove
-        Notification notification = Notification.warn(Component.literal("Test"));
-        notification.send((ServerPlayer) sender);
     }
 
     @Override

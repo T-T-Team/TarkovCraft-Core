@@ -60,6 +60,9 @@ public class MovementStamina implements Synchronizable<MovementStamina> {
         if (eventResult != null) {
             return eventResult;
         }
+        if (!EnergySystem.isEnabled()) {
+            return true;
+        }
         return this.hasStamina(ENERGY_LOW_VALUE);
     }
 
@@ -67,6 +70,9 @@ public class MovementStamina implements Synchronizable<MovementStamina> {
         Boolean eventResult = EnergySystem.canJump(this, entity);
         if (eventResult != null) {
             return eventResult;
+        }
+        if (!EnergySystem.isEnabled()) {
+            return true;
         }
         return this.hasStamina(ENERGY_LOW_VALUE);
     }
@@ -131,13 +137,15 @@ public class MovementStamina implements Synchronizable<MovementStamina> {
     }
 
     public void consume(EntityAttributeData data, float amount, int recoveryDelay) {
-        float consumptionMultiplier = Math.abs(this.getConsumptionMultiplier(data));
-        this.setStamina(data, this.stamina - amount * consumptionMultiplier);
-        int delay = Mth.ceil(recoveryDelay * data.getAttribute(this.recoveryDelayAttribute).floatValue());
-        if (!this.hasAnyStamina()) {
-            delay *= 2;
+        if (EnergySystem.isEnabled()) {
+            float consumptionMultiplier = Math.abs(this.getConsumptionMultiplier(data));
+            this.setStamina(data, this.stamina - amount * consumptionMultiplier);
+            int delay = Mth.ceil(recoveryDelay * data.getAttribute(this.recoveryDelayAttribute).floatValue());
+            if (!this.hasAnyStamina()) {
+                delay *= 2;
+            }
+            this.setRecoveryDelay(Math.max(delay, this.recoveryDelay));
         }
-        this.setRecoveryDelay(Math.max(delay, this.recoveryDelay));
     }
 
     public float getMaxStamina(EntityAttributeData data) {

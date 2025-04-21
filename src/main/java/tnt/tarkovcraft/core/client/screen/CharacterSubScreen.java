@@ -27,6 +27,7 @@ import tnt.tarkovcraft.core.util.helper.TextHelper;
 import java.util.Optional;
 import java.util.UUID;
 
+// TODO implement profile look-up, possibly by clicking on the current profile name - change it to button and open search dialog
 public abstract class CharacterSubScreen extends NotificationScreen implements DataScreen {
 
     protected final UUID characterProfileId;
@@ -97,6 +98,7 @@ public abstract class CharacterSubScreen extends NotificationScreen implements D
 
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        this.renderBlurredBackground();
         guiGraphics.fill(0, 0, this.width, this.height, ColorPalette.BG_TRANSPARENT_NORMAL);
         guiGraphics.fill(0, 0, this.width, 25, ColorPalette.BG_TRANSPARENT_WEAK);
     }

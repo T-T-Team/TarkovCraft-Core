@@ -23,6 +23,11 @@
       "conditions": [
         {
           "type": "tarkovcraft_core:sprinting"
+        },
+        {
+          "type": "tarkovcraft_core:configurable",
+          "configId": "tarkovcraft_core",
+          "configPath": "skillSystemConfig.staminaEnabled"
         }
       ],
       "tracker": {

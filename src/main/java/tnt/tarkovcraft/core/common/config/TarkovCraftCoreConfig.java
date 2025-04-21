@@ -10,16 +10,16 @@ public class TarkovCraftCoreConfig {
 
     @Configurable
     @Configurable.Synchronized
-    @Configurable.Comment(localize = true, value = "Enables mail system for reception of items and chat messages")
+    @Configurable.Comment(localize = true, value = "Allows usage of the mail system to receive items or messages")
     public boolean enableMailSystem = true;
 
     @Configurable
     @Configurable.Synchronized
-    @Configurable.Comment(localize = true, value = "Allows messages to be sent between players as a chat")
+    @Configurable.Comment(localize = true, value = "Allows mail messages between players")
     public boolean allowMailPlayerMessages = true;
 
     @Configurable
     @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
-    @Configurable.Comment(localize = true, value = "Skill system tracker")
+    @Configurable.Comment(localize = true, value = "Configurations related to skill system")
     public SkillSystemConfig skillSystemConfig = new SkillSystemConfig();
 }

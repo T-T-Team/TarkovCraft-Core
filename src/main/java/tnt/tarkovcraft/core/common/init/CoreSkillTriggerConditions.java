@@ -2,6 +2,7 @@ package tnt.tarkovcraft.core.common.init;
 
 import net.neoforged.neoforge.registries.DeferredRegister;
 import tnt.tarkovcraft.core.TarkovCraftCore;
+import tnt.tarkovcraft.core.common.skill.tracker.condition.ConfigToggleSkillCondition;
 import tnt.tarkovcraft.core.common.skill.tracker.condition.IsSprintingSkillTriggerCondition;
 import tnt.tarkovcraft.core.common.skill.tracker.condition.SkillTriggerConditionType;
 
@@ -12,4 +13,5 @@ public final class CoreSkillTriggerConditions {
     public static final DeferredRegister<SkillTriggerConditionType<?>> REGISTRY = DeferredRegister.create(CoreRegistries.SKILL_TRIGGER_CONDITION_TYPE, TarkovCraftCore.MOD_ID);
 
     public static final Supplier<SkillTriggerConditionType<IsSprintingSkillTriggerCondition>> IS_SPRINTING = REGISTRY.register("sprinting", key -> new SkillTriggerConditionType<>(key, IsSprintingSkillTriggerCondition.CODEC));
+    public static final Supplier<SkillTriggerConditionType<ConfigToggleSkillCondition>> CONFIG_TOGGLE = REGISTRY.register("configurable", key -> new SkillTriggerConditionType<>(key, ConfigToggleSkillCondition.CODEC));
 }

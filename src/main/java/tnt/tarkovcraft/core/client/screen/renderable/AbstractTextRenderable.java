@@ -62,6 +62,20 @@ public abstract class AbstractTextRenderable<T> implements Renderable {
         }
     }
 
+    public static class CenteredComponent extends AbstractTextRenderable<net.minecraft.network.chat.Component> {
+
+        public CenteredComponent(int x, int y, int width, int height, int color, boolean shadow, Font font, net.minecraft.network.chat.Component text) {
+            super(x, y, width, height, color, shadow, font, text);
+        }
+
+        @Override
+        public void renderText(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+            int left = this.x + (this.width - this.font.width(this.text)) / 2;
+            int top = this.y + (this.height - this.font.lineHeight) / 2;
+            graphics.drawString(this.font, this.text, left, top, this.color, this.shadow);
+        }
+    }
+
     public static class ScrollingComponent extends AbstractTextRenderable<net.minecraft.network.chat.Component> {
 
         private final net.minecraft.network.chat.Component textComponent;
