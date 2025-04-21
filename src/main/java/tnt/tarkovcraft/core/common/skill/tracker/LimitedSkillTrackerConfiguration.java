@@ -14,19 +14,19 @@ import tnt.tarkovcraft.core.common.skill.SkillContextKeys;
 import tnt.tarkovcraft.core.util.context.Context;
 import tnt.tarkovcraft.core.util.context.ContextKeys;
 
-public class LimitedSkillTrackerConfigurationConfiguration implements SkillTrackerConfiguration<LimitedSkillTrackerConfigurationConfiguration.Tracker> {
+public class LimitedSkillTrackerConfiguration implements SkillTrackerConfiguration<LimitedSkillTrackerConfiguration.Tracker> {
 
-    public static final MapCodec<LimitedSkillTrackerConfigurationConfiguration> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+    public static final MapCodec<LimitedSkillTrackerConfiguration> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             NumberProviderType.complexCodecNoDuration(ExtraCodecs.POSITIVE_FLOAT).fieldOf("value").forGetter(t -> Either.left(t.value)),
             NumberProviderType.complexCodecNoDuration(ExtraCodecs.POSITIVE_FLOAT).fieldOf("limit").forGetter(t -> Either.left(t.maxValue)),
             NumberProviderType.complexCodec(ExtraCodecs.POSITIVE_INT).fieldOf("cooldown").forGetter(t -> Either.left(t.cooldown))
-    ).apply(instance, LimitedSkillTrackerConfigurationConfiguration::new));
+    ).apply(instance, LimitedSkillTrackerConfiguration::new));
 
     private final NumberProvider value;
     private final NumberProvider maxValue;
     private final NumberProvider cooldown;
 
-    private LimitedSkillTrackerConfigurationConfiguration(Either<NumberProvider, Float> value, Either<NumberProvider, Float> maxValue, Either<NumberProvider, Either<Duration, Integer>> cooldown) {
+    private LimitedSkillTrackerConfiguration(Either<NumberProvider, Float> value, Either<NumberProvider, Float> maxValue, Either<NumberProvider, Either<Duration, Integer>> cooldown) {
         this.value = NumberProviderType.resolveNoDuration(value);
         this.maxValue = NumberProviderType.resolveNoDuration(maxValue);
         this.cooldown = NumberProviderType.resolve(cooldown);

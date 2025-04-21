@@ -1,10 +1,7 @@
 package tnt.tarkovcraft.core.common;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.DoubleArgumentType;
-import com.mojang.brigadier.arguments.FloatArgumentType;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.arguments.*;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -38,6 +35,8 @@ import tnt.tarkovcraft.core.common.skill.Skill;
 import tnt.tarkovcraft.core.common.skill.SkillData;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 import tnt.tarkovcraft.core.common.skill.SkillMemoryConfiguration;
+import tnt.tarkovcraft.core.common.statistic.Statistic;
+import tnt.tarkovcraft.core.common.statistic.StatisticTracker;
 import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 
 import javax.annotation.Nullable;
@@ -134,6 +133,20 @@ public final class TarkovCraftCommand {
                                                                                                 Commands.argument("experienceValue", FloatArgumentType.floatArg(0.001F))
                                                                                                         .executes(TarkovCraftCommand::forgetSkillExperience)
                                                                                         )
+                                                                        )
+                                                        )
+                                        )
+                        )
+                        .then(
+                                Commands.literal("stat")
+                                        .requires(src -> src.hasPermission(2))
+                                        .then(
+                                                Commands.argument("statId", ResourceArgument.resource(context, CoreRegistries.Keys.STATISTICS))
+                                                        .then(
+                                                                Commands.argument("target", EntityArgument.entity())
+                                                                        .then(
+                                                                                Commands.argument("value", LongArgumentType.longArg(0))
+                                                                                        .executes(TarkovCraftCommand::setStatValue)
                                                                         )
                                                         )
                                         )
@@ -274,6 +287,18 @@ public final class TarkovCraftCommand {
         instance.setLastExperienceUpdate(target.level().getGameTime());
         if (target instanceof ServerPlayer player) {
             PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, CoreDataAttachments.SKILL.get()));
+        }
+        return 0;
+    }
+
+    private static int setStatValue(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        Entity target = EntityArgument.getEntity(ctx, "target");
+        Statistic statistic = ResourceArgument.getResource(ctx, "statId", CoreRegistries.Keys.STATISTICS).value();
+        long value = LongArgumentType.getLong(ctx, "value");
+        StatisticTracker tracker = target.getData(CoreDataAttachments.STATISTICS);
+        tracker.set(statistic, value);
+        if (target instanceof ServerPlayer player) {
+            PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, CoreDataAttachments.STATISTICS.get()));
         }
         return 0;
     }

@@ -16,6 +16,9 @@ public record UnitFormat(int decimalPlaces, double multiplier, String suffix) {
     ).apply(instance, UnitFormat::new));
 
     public String format(double value) {
+        if (Double.isNaN(value)) {
+            return CommonLabels.NOT_AVAILABLE_SHORT.getString();
+        }
         if (this.decimalPlaces == 0) {
             return String.format(Locale.ROOT, "%d%s", Math.round(value * multiplier), suffix);
         } else {

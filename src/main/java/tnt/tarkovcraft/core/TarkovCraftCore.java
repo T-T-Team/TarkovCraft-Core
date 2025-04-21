@@ -17,6 +17,7 @@ import tnt.tarkovcraft.core.common.TarkovCraftCoreEventHandler;
 import tnt.tarkovcraft.core.common.config.TarkovCraftCoreConfig;
 import tnt.tarkovcraft.core.common.init.*;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
+import tnt.tarkovcraft.core.common.statistic.DisplayStatistic;
 import tnt.tarkovcraft.core.network.TarkovCraftCoreNetwork;
 
 @Mod(TarkovCraftCore.MOD_ID)
@@ -53,6 +54,7 @@ public class TarkovCraftCore {
         CoreSkillTriggerConditions.REGISTRY.register(modEventBus);
         CoreSkillStatConditions.REGISTRY.register(modEventBus);
         CoreSkillStats.REGISTRY.register(modEventBus);
+        CoreStatistics.REGISTRY.register(modEventBus);
     }
 
     public static TarkovCraftCoreConfig getConfig() {
@@ -69,6 +71,7 @@ public class TarkovCraftCore {
         event.register(CoreRegistries.ATTRIBUTE_MODIFIER);
         event.register(CoreRegistries.ITEMSTACK_FILTER);
         event.register(CoreRegistries.NUMBER_PROVIDER);
+        event.register(CoreRegistries.STATISTICS);
 
         // Mail system
         event.register(CoreRegistries.MAIL_MESSAGE_ATTACHMENT);
@@ -83,5 +86,6 @@ public class TarkovCraftCore {
 
     private void registerCustomDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
         event.dataPackRegistry(CoreRegistries.DatapackKeys.SKILL_DEFINITION, SkillDefinition.DIRECT_CODEC, SkillDefinition.DIRECT_CODEC);
+        event.dataPackRegistry(CoreRegistries.DatapackKeys.DISPLAY_STATISTIC, DisplayStatistic.CODEC, DisplayStatistic.CODEC);
     }
 }

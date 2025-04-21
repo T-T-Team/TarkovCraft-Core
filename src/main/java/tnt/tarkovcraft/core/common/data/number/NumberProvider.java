@@ -1,34 +1,40 @@
 package tnt.tarkovcraft.core.common.data.number;
 
-import java.util.function.DoubleSupplier;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import tnt.tarkovcraft.core.util.context.Context;
 
-public interface NumberProvider extends Supplier<Double>, DoubleSupplier {
+import java.util.function.Function;
+
+public interface NumberProvider {
 
     NumberProviderType<?> getType();
 
-    double getNumber();
+    double getNumber(Context context);
+
+    default double getNumber() {
+        return this.getNumber(Context.NONE);
+    }
+
+    default int intValue(Context context) {
+        return map(Double::intValue, context);
+    }
 
     default int intValue() {
-        return map(Double::intValue);
+        return this.intValue(Context.NONE);
+    }
+
+    default float floatValue(Context context) {
+        return map(Double::floatValue, context);
     }
 
     default float floatValue() {
-        return map(Double::floatValue);
+        return this.floatValue(Context.NONE);
     }
 
-    @Override
-    default Double get() {
-        return getNumber();
-    }
-
-    @Override
-    default double getAsDouble() {
-        return getNumber();
+    default <N extends Number> N map(Function<Double, N> mapper, Context context) {
+        return mapper.apply(this.getNumber(context));
     }
 
     default <N extends Number> N map(Function<Double, N> mapper) {
-        return mapper.apply(this.getNumber());
+        return this.map(mapper, Context.NONE);
     }
 }

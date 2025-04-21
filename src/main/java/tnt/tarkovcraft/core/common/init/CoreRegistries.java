@@ -15,6 +15,8 @@ import tnt.tarkovcraft.core.common.skill.stat.condition.SkillStatConditionType;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTrackerType;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTriggerEvent;
 import tnt.tarkovcraft.core.common.skill.tracker.condition.SkillTriggerConditionType;
+import tnt.tarkovcraft.core.common.statistic.DisplayStatistic;
+import tnt.tarkovcraft.core.common.statistic.Statistic;
 
 public final class CoreRegistries {
 
@@ -23,6 +25,7 @@ public final class CoreRegistries {
     public static final Registry<AttributeModifierType<?>> ATTRIBUTE_MODIFIER = new RegistryBuilder<>(Keys.ATTRIBUTE_MODIFIER).create();
     public static final Registry<ItemStackFilterType<?>> ITEMSTACK_FILTER = new RegistryBuilder<>(Keys.ITEMSTACK_FILTER).create();
     public static final Registry<NumberProviderType<?>> NUMBER_PROVIDER = new RegistryBuilder<>(Keys.NUMBER_PROVIDER).create();
+    public static final Registry<Statistic> STATISTICS = new RegistryBuilder<>(Keys.STATISTICS).create();
 
     // Mail system
     public static final Registry<MailMessageAttachmentType<?>> MAIL_MESSAGE_ATTACHMENT = new RegistryBuilder<>(Keys.MAIL_MESSAGE_ATTACHMENT).create();
@@ -40,6 +43,7 @@ public final class CoreRegistries {
         public static final ResourceKey<Registry<AttributeModifierType<?>>> ATTRIBUTE_MODIFIER = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("attribute/attribute_modifier"));
         public static final ResourceKey<Registry<ItemStackFilterType<?>>> ITEMSTACK_FILTER = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("util/itemstack_filter"));
         public static final ResourceKey<Registry<NumberProviderType<?>>> NUMBER_PROVIDER = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("util/number_provider"));
+        public static final ResourceKey<Registry<Statistic>> STATISTICS = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("util/statistics"));
         public static final ResourceKey<Registry<MailMessageAttachmentType<?>>> MAIL_MESSAGE_ATTACHMENT = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("mail/message_attachment"));
         public static final ResourceKey<Registry<SkillTriggerEvent>> SKILL_TRIGGER_EVENT = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/trigger_event"));
         public static final ResourceKey<Registry<SkillTrackerType<?, ?>>> SKILL_TRIGGER_TYPE = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/trigger_type"));
@@ -51,5 +55,6 @@ public final class CoreRegistries {
     public static final class DatapackKeys {
 
         public static final ResourceKey<Registry<SkillDefinition>> SKILL_DEFINITION = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill"));
+        public static final ResourceKey<Registry<DisplayStatistic>> DISPLAY_STATISTIC = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("statistic"));
     }
 }

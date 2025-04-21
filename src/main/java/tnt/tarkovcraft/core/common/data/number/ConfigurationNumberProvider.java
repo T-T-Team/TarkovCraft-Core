@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.toma.configuration.Configuration;
 import dev.toma.configuration.config.value.IConfigValueReadable;
 import tnt.tarkovcraft.core.common.init.CoreNumberProviders;
+import tnt.tarkovcraft.core.util.context.Context;
 
 public class ConfigurationNumberProvider implements NumberProvider {
 
@@ -26,7 +27,7 @@ public class ConfigurationNumberProvider implements NumberProvider {
     }
 
     @Override
-    public double getNumber() {
+    public double getNumber(Context context) {
         return Configuration.getConfig(this.configId)
                 .flatMap(holder -> holder.getConfigValue(this.fieldId, Number.class))
                 .map(val -> {

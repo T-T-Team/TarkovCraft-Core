@@ -10,6 +10,8 @@ import java.util.function.Supplier;
 
 public interface Context {
 
+    Context NONE = ContextImpl.empty();
+
     Set<ContextKey<?>> listKeys();
 
     <T> Optional<T> get(ContextKey<T> key);

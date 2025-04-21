@@ -45,7 +45,7 @@ public class ListWidget<T extends AbstractWidget> extends AbstractWidget impleme
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         guiGraphics.enableScissor(this.getX(), this.getY(), this.getRight(), this.getBottom());
-        if (RenderUtils.isNotTransparent(this.backgroundColor)) {
+        if (RenderUtils.isVisibleColor(this.backgroundColor)) {
             guiGraphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), this.backgroundColor);
         }
         boolean wasVisible = false;

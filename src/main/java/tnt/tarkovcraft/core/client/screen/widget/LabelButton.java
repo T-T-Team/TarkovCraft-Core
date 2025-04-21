@@ -48,7 +48,7 @@ public class LabelButton extends Button {
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float renderTick) {
         Font font = Minecraft.getInstance().font;
         int background = this.isActive() ? this.isHoveredOrFocused() ? this.backgroundHoverColor : this.backgroundColor : this.backgroundDisabledColor;
-        if (RenderUtils.isNotTransparent(background)) {
+        if (RenderUtils.isVisibleColor(background)) {
             guiGraphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), background);
         }
         int color = this.isActive() ? this.isHoveredOrFocused() ? this.colorSelected : this.color : this.colorDisabled;

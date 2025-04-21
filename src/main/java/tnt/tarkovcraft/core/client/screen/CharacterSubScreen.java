@@ -7,6 +7,7 @@ import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.client.ClientContextKeys;
@@ -23,6 +24,7 @@ import tnt.tarkovcraft.core.util.context.ContextImpl;
 import tnt.tarkovcraft.core.util.context.ContextKeys;
 import tnt.tarkovcraft.core.util.helper.TextHelper;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public abstract class CharacterSubScreen extends NotificationScreen implements DataScreen {
@@ -42,6 +44,10 @@ public abstract class CharacterSubScreen extends NotificationScreen implements D
         if (entity.getUUID().equals(this.characterProfileId)) {
             this.init(this.minecraft, this.width, this.height); // reload data if applicable
         }
+    }
+
+    protected Optional<Player> getPlayer() {
+        return Optional.ofNullable(this.minecraft.level.getPlayerByUUID(this.characterProfileId));
     }
 
     @Override

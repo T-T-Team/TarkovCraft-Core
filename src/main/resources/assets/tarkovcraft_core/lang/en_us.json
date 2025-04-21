@@ -12,6 +12,13 @@
   "skill.tarkovcraft_core.memory.bonus.memory_forget_amount": "Forget Amount",
   "skill.tarkovcraft_core.memory.bonus.memory_forget_amount.description": "Lower forget amount by %s",
 
+  "stat.tarkovcraft_core.kills": "Total kills",
+  "stat.tarkovcraft_core.deaths": "Total deaths",
+  "stat.tarkovcraft_core.pvp_kills": "Player kills",
+  "stat.tarkovcraft_core.pvp_deaths": "Player deaths",
+  "stat.tarkovcraft_core.kd_ratio": "K/D",
+  "stat.tarkovcraft_core.pvp_kd_ratio": "K/D (PvP)",
+
   "screen.tarkovcraft_core.character.mail": "Messages",
   "screen.tarkovcraft_core.mail.title": "Character",
   "screen.tarkovcraft_core.mail.active_chat": "Active Chat",
@@ -22,6 +29,8 @@
   "screen.tarkovcraft_core.mail.hint.block_user": "Block user",
   "screen.tarkovcraft_core.mail.hint.unblock_user": "Unblock user",
   "screen.tarkovcraft_core.mail.hint.claim_attachments": "Claim attachments",
+  "screen.tarkovcraft_core.statistics.title": "Statistics",
+  "screen.tarkovcraft_core.statistics.overview": "Player statistics overview",
   "screen.tarkovcraft_core.skills.title": "Skills",
 
   "label.tarkovcraft_core.profile": "%s's profile",
@@ -36,6 +45,7 @@
   "label.tarkovcraft_core.skill.level_up": "%s skill level increased to %s",
   "label.tarkovcraft_core.skill.level": "Level: %s / %s",
   "label.tarkovcraft_core.skill.max_level": "ELITE LEVEL",
+  "label.tarkovcraft_core.not_available.short": "N/A",
 
   "config.screen.tarkovcraft_core": "TarkovCraft",
   "config.tarkovcraft_core.option.enableSkillSystem": "Enable skill system",

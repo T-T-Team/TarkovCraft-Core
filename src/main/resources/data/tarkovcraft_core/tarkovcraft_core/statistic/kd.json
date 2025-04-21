@@ -1,0 +1,30 @@
+{
+  "label": {
+    "translate": "stat.tarkovcraft_core.kd_ratio"
+  },
+  "format": {
+    "decimalPlaces": 2
+  },
+  "order": 300,
+  "source": {
+    "type": "tarkovcraft_core:operand",
+    "operator": "DIV",
+    "values": [
+      {
+        "type": "tarkovcraft_core:statistic",
+        "stat": "tarkovcraft_core:kills"
+      },
+      {
+        "type": "tarkovcraft_core:operand",
+        "operator": "MAX",
+        "values": [
+          1,
+          {
+            "type": "tarkovcraft_core:statistic",
+            "stat": "tarkovcraft_core:deaths"
+          }
+        ]
+      }
+    ]
+  }
+}

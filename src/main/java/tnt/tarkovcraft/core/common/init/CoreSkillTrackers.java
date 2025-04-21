@@ -2,9 +2,9 @@ package tnt.tarkovcraft.core.common.init;
 
 import net.neoforged.neoforge.registries.DeferredRegister;
 import tnt.tarkovcraft.core.TarkovCraftCore;
-import tnt.tarkovcraft.core.common.skill.tracker.LimitedSkillTrackerConfigurationConfiguration;
+import tnt.tarkovcraft.core.common.skill.tracker.LimitedSkillTrackerConfiguration;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTrackerType;
-import tnt.tarkovcraft.core.common.skill.tracker.UnrestrictedSkillTrackerConfigurationConfiguration;
+import tnt.tarkovcraft.core.common.skill.tracker.UnrestrictedSkillTrackerConfiguration;
 
 import java.util.function.Supplier;
 
@@ -12,6 +12,6 @@ public final class CoreSkillTrackers {
 
     public static final DeferredRegister<SkillTrackerType<?, ?>> REGISTRY = DeferredRegister.create(CoreRegistries.SKILL_TRIGGER_TYPE, TarkovCraftCore.MOD_ID);
 
-    public static final Supplier<SkillTrackerType<UnrestrictedSkillTrackerConfigurationConfiguration.UnrestrictedDataHolder, UnrestrictedSkillTrackerConfigurationConfiguration>> UNRESTRICTED = REGISTRY.register("unrestricted", key -> new SkillTrackerType<>(key, UnrestrictedSkillTrackerConfigurationConfiguration.CODEC, UnrestrictedSkillTrackerConfigurationConfiguration.UnrestrictedDataHolder.CODEC));
-    public static final Supplier<SkillTrackerType<LimitedSkillTrackerConfigurationConfiguration.Tracker, LimitedSkillTrackerConfigurationConfiguration>> LIMITED = REGISTRY.register("limited", key -> new SkillTrackerType<>(key, LimitedSkillTrackerConfigurationConfiguration.CODEC, LimitedSkillTrackerConfigurationConfiguration.Tracker.CODEC));
+    public static final Supplier<SkillTrackerType<UnrestrictedSkillTrackerConfiguration.UnrestrictedDataHolder, UnrestrictedSkillTrackerConfiguration>> UNRESTRICTED = REGISTRY.register("unrestricted", key -> new SkillTrackerType<>(key, UnrestrictedSkillTrackerConfiguration.CODEC, UnrestrictedSkillTrackerConfiguration.UnrestrictedDataHolder.CODEC));
+    public static final Supplier<SkillTrackerType<LimitedSkillTrackerConfiguration.Tracker, LimitedSkillTrackerConfiguration>> LIMITED = REGISTRY.register("limited", key -> new SkillTrackerType<>(key, LimitedSkillTrackerConfiguration.CODEC, LimitedSkillTrackerConfiguration.Tracker.CODEC));
 }

@@ -7,7 +7,7 @@ import net.minecraft.util.ARGB;
 
 public final class RenderUtils {
 
-    public static boolean isNotTransparent(int color) {
+    public static boolean isVisibleColor(int color) {
         return isNotTransparent(color, 0);
     }
 

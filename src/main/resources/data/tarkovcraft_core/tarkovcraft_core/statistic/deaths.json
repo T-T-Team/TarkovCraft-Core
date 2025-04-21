@@ -1,0 +1,7 @@
+{
+  "label": {
+    "translate": "stat.tarkovcraft_core.deaths"
+  },
+  "source": "tarkovcraft_core:deaths",
+  "order": 200
+}

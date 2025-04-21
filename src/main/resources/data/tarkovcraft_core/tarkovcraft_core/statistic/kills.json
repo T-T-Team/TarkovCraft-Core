@@ -1,0 +1,7 @@
+{
+  "label": {
+    "translate": "stat.tarkovcraft_core.kills"
+  },
+  "source": "tarkovcraft_core:kills",
+  "order": 100
+}

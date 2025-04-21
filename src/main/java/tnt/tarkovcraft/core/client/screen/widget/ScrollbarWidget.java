@@ -56,7 +56,7 @@ public class ScrollbarWidget extends AbstractWidget {
             int y1 = this.getY() + (int) (amountMin * this.height);
             int y2 = this.getY() + (int) (amountMax * this.height);
             guiGraphics.fill(this.getX() + this.scrollBarMargin, y1 + this.scrollBarMargin, this.getRight() - this.scrollBarMargin, y2 - this.scrollBarMargin, this.foregroundColor);
-        } else if (RenderUtils.isNotTransparent(this.background)) {
+        } else if (RenderUtils.isVisibleColor(this.background)) {
             guiGraphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), this.background);
         }
     }

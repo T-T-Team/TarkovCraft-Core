@@ -1,0 +1,7 @@
+{
+  "label": {
+    "translate": "stat.tarkovcraft_core.pvp_deaths"
+  },
+  "source": "tarkovcraft_core:player_deaths",
+  "order": 210
+}

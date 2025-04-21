@@ -6,6 +6,7 @@ public final class CommonLabels {
 
     public static final Component MESSAGE_ITEM_RECEIVED = Component.translatable("label.tarkovcraft_core.message.item_received");
     public static final Component SYSTEM = Component.translatable("label.tarkovcraft_core.system");
+    public static final Component NOT_AVAILABLE_SHORT = Component.translatable("label.tarkovcraft_core.not_available.short");
 
     public static final Component FORM_PLAYER_NAME = Component.translatable("label.tarkovcraft_core.form.player_name");
 

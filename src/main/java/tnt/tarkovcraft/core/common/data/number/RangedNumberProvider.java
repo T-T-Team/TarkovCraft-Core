@@ -5,6 +5,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import tnt.tarkovcraft.core.common.init.CoreNumberProviders;
+import tnt.tarkovcraft.core.util.context.Context;
 
 import java.util.Locale;
 import java.util.Random;
@@ -31,7 +32,7 @@ public class RangedNumberProvider implements NumberProvider {
     }
 
     @Override
-    public double getNumber() {
+    public double getNumber(Context context) {
         return this.min + RANDOM.nextDouble() * (this.max - this.min);
     }
 

@@ -9,6 +9,7 @@ import tnt.tarkovcraft.core.common.data.PartialAttachmentTypeSerializer;
 import tnt.tarkovcraft.core.common.energy.MovementStamina;
 import tnt.tarkovcraft.core.common.mail.MailManager;
 import tnt.tarkovcraft.core.common.skill.SkillData;
+import tnt.tarkovcraft.core.common.statistic.StatisticTracker;
 
 import java.util.function.Supplier;
 
@@ -32,6 +33,11 @@ public final class CoreDataAttachments {
     );
     public static final Supplier<AttachmentType<SkillData>> SKILL = REGISTRY.register("skill", () -> AttachmentType.builder(SkillData::new)
             .serialize(PartialAttachmentTypeSerializer.withCodecAndHolder(SkillData.CODEC, SkillData::setHolder))
+            .copyOnDeath()
+            .build()
+    );
+    public static final Supplier<AttachmentType<StatisticTracker>> STATISTICS = REGISTRY.register("statistics", () -> AttachmentType.builder(StatisticTracker::new)
+            .serialize(PartialAttachmentTypeSerializer.withCodec(StatisticTracker.CODEC))
             .copyOnDeath()
             .build()
     );

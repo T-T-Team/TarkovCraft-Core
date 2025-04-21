@@ -10,15 +10,15 @@ import tnt.tarkovcraft.core.common.init.CoreSkillTrackers;
 import tnt.tarkovcraft.core.common.skill.SkillContextKeys;
 import tnt.tarkovcraft.core.util.context.Context;
 
-public class UnrestrictedSkillTrackerConfigurationConfiguration implements SkillTrackerConfiguration<UnrestrictedSkillTrackerConfigurationConfiguration.UnrestrictedDataHolder> {
+public class UnrestrictedSkillTrackerConfiguration implements SkillTrackerConfiguration<UnrestrictedSkillTrackerConfiguration.UnrestrictedDataHolder> {
 
-    public static final MapCodec<UnrestrictedSkillTrackerConfigurationConfiguration> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+    public static final MapCodec<UnrestrictedSkillTrackerConfiguration> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             NumberProviderType.complexCodecNoDuration(ExtraCodecs.POSITIVE_FLOAT).fieldOf("value").forGetter(t -> Either.left(t.value))
-    ).apply(instance, UnrestrictedSkillTrackerConfigurationConfiguration::new));
+    ).apply(instance, UnrestrictedSkillTrackerConfiguration::new));
 
     private final NumberProvider value;
 
-    public UnrestrictedSkillTrackerConfigurationConfiguration(Either<NumberProvider, Float> value) {
+    public UnrestrictedSkillTrackerConfiguration(Either<NumberProvider, Float> value) {
         this.value = NumberProviderType.resolveNoDuration(value);
     }
 
