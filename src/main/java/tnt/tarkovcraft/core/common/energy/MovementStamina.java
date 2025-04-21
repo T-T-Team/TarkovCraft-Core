@@ -133,18 +133,22 @@ public class MovementStamina implements Synchronizable<MovementStamina> {
     }
 
     public void consume(LivingEntity entity, float amount, int recoveryDelay) {
-        this.consume(entity.getData(CoreDataAttachments.ENTITY_ATTRIBUTES), amount, recoveryDelay);
+        this.consume(entity.getData(CoreDataAttachments.ENTITY_ATTRIBUTES), entity, amount, recoveryDelay);
     }
 
-    public void consume(EntityAttributeData data, float amount, int recoveryDelay) {
+    public void consume(EntityAttributeData data, LivingEntity entity, float amount, int recoveryDelay) {
         if (EnergySystem.isEnabled()) {
             float consumptionMultiplier = Math.abs(this.getConsumptionMultiplier(data));
-            this.setStamina(data, this.stamina - amount * consumptionMultiplier);
+            float consumedAmount = EnergySystem.consumeEnergy(this, entity, amount * consumptionMultiplier);
+            this.setStamina(data, this.stamina - consumedAmount);
             int delay = Mth.ceil(recoveryDelay * data.getAttribute(this.recoveryDelayAttribute).floatValue());
+            boolean wasDrained = false;
             if (!this.hasAnyStamina()) {
                 delay *= 2;
+                wasDrained = true;
             }
-            this.setRecoveryDelay(Math.max(delay, this.recoveryDelay));
+            int recDelay = EnergySystem.getRecoveryDelay(this, entity, delay, wasDrained);
+            this.setRecoveryDelay(recDelay == -1 ? 0 : Math.max(recDelay, this.recoveryDelay));
         }
     }
 
