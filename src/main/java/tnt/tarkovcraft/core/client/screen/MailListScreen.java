@@ -97,6 +97,8 @@ public class MailListScreen extends LayeredScreen implements DataScreen {
         Component chatName = ACTIVE_CHAT;
         this.addRenderableOnly(new ShapeRenderable(left, 0, this.width - left, 25, ColorPalette.BG_TRANSPARENT_NORMAL));
         this.addRenderableOnly(new HorizontalLineRenderable(left, this.width, 25, ColorPalette.WHITE));
+        // chat bg
+        this.addRenderableOnly(new ShapeRenderable(left, 26, this.width - left, this.height - 26, ColorPalette.BG_TRANSPARENT_NORMAL));
         if (this.selectedChat != null) {
             chatName = this.selectedChat.getName();
             this.addRenderableOnly(new HorizontalLineRenderable(left, this.width, this.height - 26, ColorPalette.WHITE));
@@ -104,9 +106,10 @@ public class MailListScreen extends LayeredScreen implements DataScreen {
         this.addRenderableOnly(new AbstractTextRenderable.ScrollingComponent(left + 5, 5, this.width - left - 10, 15, ColorPalette.TEXT_COLOR, this.font, chatName));
 
         // back button
-        this.addRenderableWidget(new LabelButton(Button.builder(CommonComponents.GUI_BACK, t -> this.openParentScreen())
+        LabelButton backButton = this.addRenderableWidget(new LabelButton(Button.builder(CommonComponents.GUI_BACK, t -> this.openParentScreen())
                 .bounds(this.width - 55, 5, 50, 16)
         ));
+        backButton.setBackgroundHoverColor(0);
 
         int chatHeight = 20;
         int maxChatCount = (this.height - 30) / chatHeight;
@@ -125,15 +128,12 @@ public class MailListScreen extends LayeredScreen implements DataScreen {
         this.addRenderableOnly(new HorizontalLineRenderable(-1, chatSelectionWidth + 4, this.height - diff + 1, ColorPalette.WHITE));
         // New chat button
         LabelButton newChatButton = this.addRenderableWidget(new LabelButton(Button.builder(NEW_CHAT, this::showNewChatDialog).bounds(0, listHeight + 2, this.width / 3, this.height - listHeight - 2)));
-        newChatButton.setBackgroundHoverColor(ColorPalette.BG_HOVER_WEAK);
+        newChatButton.setBackgroundHoverColor(0);
         // Chat window
         if (this.selectedChat != null) {
-            // bg
-            this.addRenderableOnly(new ShapeRenderable(left, this.height - 25, this.width - left, 25, ColorPalette.BG_TRANSPARENT_NORMAL));
             // chat
             MailList chat = this.userMailManager.getChat(this.selectedChat);
             this.messages = this.addRenderableWidget(new ChatMessagesWidget(left, 26, this.width - left, this.height - 52, player.getUUID(), this.font, chat));
-            this.messages.setBackgroundColor(ColorPalette.BG_TRANSPARENT_WEAK);
             this.messages.setScrollAmount(this.chatMessageScroll);
             this.messages.setScrollChangeListener((x, y) -> this.chatMessageScroll = y);
             // Send message box

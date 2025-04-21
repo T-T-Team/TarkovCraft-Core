@@ -11,6 +11,7 @@ import tnt.tarkovcraft.core.client.screen.ColorPalette;
 import tnt.tarkovcraft.core.client.screen.listener.ScrollChangeListener;
 import tnt.tarkovcraft.core.common.mail.MailList;
 import tnt.tarkovcraft.core.common.mail.MailMessage;
+import tnt.tarkovcraft.core.util.helper.RenderUtils;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -40,7 +41,8 @@ public class ChatMessagesWidget extends AbstractWidget {
             Component text = message.getContent();
             List<Message> formattedText = this.font.split(text, this.width - 4).stream()
                     .map(seq -> new Message(message.getMessageReceptionTime(), message.getSender(), seq))
-                    .toList();
+                    .toList()
+                    .reversed();
             this.compiledMessages.addAll(formattedText);
         }
     }
@@ -61,7 +63,9 @@ public class ChatMessagesWidget extends AbstractWidget {
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         int index = (int) (this.scrollAmount / 10.0);
         guiGraphics.enableScissor(this.getX(), this.getY(), this.getRight(), this.getBottom());
-        guiGraphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), this.backgroundColor);
+        if (RenderUtils.isVisibleColor(this.backgroundColor)) {
+            guiGraphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), this.backgroundColor);
+        }
         float y = this.getBottom() - 10 + (float) (this.scrollAmount - index * 10.0F);
         for (int i = index; i < this.compiledMessages.size(); i++) {
             Message message = this.compiledMessages.get(i);
