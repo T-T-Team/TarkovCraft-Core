@@ -77,6 +77,6 @@ public final class MailSystem {
 
     public static boolean canSendMessage(Level level, MailMessage message, MailSource source, MailSource destination) {
         MailEvent.MailSendingEvent event = NeoForge.EVENT_BUS.post(new MailEvent.MailSendingEvent(level, message, source, destination));
-        return !event.isCancelled();
+        return !event.isCanceled();
     }
 }

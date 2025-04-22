@@ -2,6 +2,7 @@ package tnt.tarkovcraft.core.common.event;
 
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.ICancellableEvent;
 import tnt.tarkovcraft.core.common.mail.MailManager;
 import tnt.tarkovcraft.core.common.mail.MailMessage;
 import tnt.tarkovcraft.core.common.mail.MailSource;
@@ -30,10 +31,9 @@ public abstract class MailEvent extends Event {
         return destination;
     }
 
-    public static final class MailSendingEvent extends MailEvent {
+    public static final class MailSendingEvent extends MailEvent implements ICancellableEvent {
 
         private final Level level;
-        private boolean cancelled;
 
         public MailSendingEvent(Level level, MailMessage message, MailSource source, MailSource destination) {
             super(message, source, destination);
@@ -42,14 +42,6 @@ public abstract class MailEvent extends Event {
 
         public Level getLevel() {
             return level;
-        }
-
-        public void setCancelled(boolean cancelled) {
-            this.cancelled = cancelled;
-        }
-
-        public boolean isCancelled() {
-            return cancelled;
         }
     }
 
