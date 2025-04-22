@@ -22,9 +22,11 @@ import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
 import org.lwjgl.glfw.GLFW;
 import tnt.tarkovcraft.core.TarkovCraftCore;
+import tnt.tarkovcraft.core.client.config.TarkovCraftCoreClientConfig;
 import tnt.tarkovcraft.core.client.notification.NotificationChannel;
 import tnt.tarkovcraft.core.client.notification.NotificationLayer;
 import tnt.tarkovcraft.core.client.overlay.DebugLayer;
+import tnt.tarkovcraft.core.client.overlay.StaminaLayer;
 import tnt.tarkovcraft.core.client.screen.DataScreen;
 import tnt.tarkovcraft.core.client.screen.navigation.CoreNavigators;
 import tnt.tarkovcraft.core.network.Synchronizable;
@@ -84,6 +86,7 @@ public final class TarkovCraftCoreClient {
         if (!FMLEnvironment.production)
             event.registerAboveAll(DebugLayer.LAYER_ID, new DebugLayer());
         event.registerAboveAll(NotificationLayer.LAYER_ID, new NotificationLayer(NotificationChannel.MAIN));
+        event.registerAboveAll(StaminaLayer.LAYER_ID, new StaminaLayer());
     }
 
     public static void sendDataSyncEvent(Entity entity, AttachmentType<?> type, Synchronizable<?> data) {

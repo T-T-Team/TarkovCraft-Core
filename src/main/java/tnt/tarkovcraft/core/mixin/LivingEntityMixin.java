@@ -30,7 +30,7 @@ public abstract class LivingEntityMixin extends Entity implements Attackable, IL
             return; // we do not care when entity is transitioning from sprinting state
         }
         LivingEntity entity = (LivingEntity) (Object) this;
-        MovementStaminaComponent component = EnergySystem.STAMINA.getComponent();
+        MovementStaminaComponent component = EnergySystem.MOVEMENT_STAMINA.getComponent();
         if (EnergySystem.isEnabled() && component.isAttached(entity)) {
             if (!component.canSprint(entity)) {
                 ci.cancel();
@@ -45,7 +45,7 @@ public abstract class LivingEntityMixin extends Entity implements Attackable, IL
     )
     private void tarkovCraftCore$jumpFromGround(CallbackInfo ci) {
         LivingEntity entity = (LivingEntity) (Object) this;
-        MovementStaminaComponent component = EnergySystem.STAMINA.getComponent();
+        MovementStaminaComponent component = EnergySystem.MOVEMENT_STAMINA.getComponent();
         if (EnergySystem.isEnabled() && component.isAttached(entity)) {
             if (component.canJump(entity)) {
                 component.onJump(entity);

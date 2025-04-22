@@ -65,7 +65,19 @@
   "config.tarkovcraft_core.option.enableSkillLevelLoss.comment.0": "Allows you to lose skill levels",
 
   "config.screen.tarkovcraft_core-client": "Tarkovcraft Client",
-  "config.tarkovcraft_core-client.option.renderDebugOverlay": "Debug Overlay",
+  "config.tarkovcraft_core-client.option.renderDebugOverlay": "Debug overlay",
+  "config.tarkovcraft_core-client.option.moveStaminaOverlay": "Movement stamina overlay",
+  "config.tarkovcraft_core-client.option.armStaminaOverlay": "Arm stamina overlay",
+  "config.tarkovcraft_core-client.option.enabled": "Enabled",
+  "config.tarkovcraft_core-client.option.horizontalAlignment": "Horizontal alignment",
+  "config.tarkovcraft_core-client.option.verticalAlignment": "Vertical alignment",
+  "config.tarkovcraft_core-client.option.x": "Position X",
+  "config.tarkovcraft_core-client.option.y": "Position Y",
+  "config.tarkovcraft_core-client.option.backgroundColor": "Background color",
+  "config.tarkovcraft_core-client.option.barGradientStartColor": "Gradient min",
+  "config.tarkovcraft_core-client.option.barGradientEndColor": "Gradient max",
+  "config.tarkovcraft_core-client.option.barGradientStartCriticalColor": "Gradient critical max",
+  "config.tarkovcraft_core-client.option.barGradientEndCriticalColor": "Gradient critical max",
 
   "category.tarkovcraft": "TarkovCraft",
   "key.tarkovcraft_core.character": "Character info"

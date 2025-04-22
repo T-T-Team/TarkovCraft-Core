@@ -2,7 +2,7 @@ package tnt.tarkovcraft.core.api;
 
 import net.minecraft.world.entity.LivingEntity;
 
-public interface MovementStaminaComponent {
+public interface MovementStaminaComponent extends StaminaComponent {
 
     boolean isAttached(LivingEntity entity);
 

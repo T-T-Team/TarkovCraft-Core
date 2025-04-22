@@ -2,19 +2,20 @@ package tnt.tarkovcraft.core.common.event;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.Event;
+import tnt.tarkovcraft.core.common.energy.AbstractStamina;
 import tnt.tarkovcraft.core.common.energy.MovementStamina;
 
-public abstract class MovementStaminaEvent extends Event {
+public abstract class StaminaEvent extends Event {
 
-    private final MovementStamina stamina;
+    private final AbstractStamina stamina;
     private final LivingEntity entity;
 
-    public MovementStaminaEvent(MovementStamina stamina, LivingEntity entity) {
+    public StaminaEvent(AbstractStamina stamina, LivingEntity entity) {
         this.stamina = stamina;
         this.entity = entity;
     }
 
-    public MovementStamina getStamina() {
+    public AbstractStamina getStamina() {
         return stamina;
     }
 
@@ -22,12 +23,17 @@ public abstract class MovementStaminaEvent extends Event {
         return entity;
     }
 
-    public static final class CanSprint extends MovementStaminaEvent {
+    public static final class CanSprint extends StaminaEvent {
 
         private Boolean result;
 
         public CanSprint(MovementStamina stamina, LivingEntity entity) {
             super(stamina, entity);
+        }
+
+        @Override
+        public MovementStamina getStamina() {
+            return (MovementStamina) super.getStamina();
         }
 
         public void setCanSprint(Boolean result) {
@@ -39,12 +45,17 @@ public abstract class MovementStaminaEvent extends Event {
         }
     }
 
-    public static final class CanJump extends MovementStaminaEvent {
+    public static final class CanJump extends StaminaEvent {
 
         private Boolean result;
 
         public CanJump(MovementStamina stamina, LivingEntity entity) {
             super(stamina, entity);
+        }
+
+        @Override
+        public MovementStamina getStamina() {
+            return (MovementStamina) super.getStamina();
         }
 
         public void setCanJump(Boolean result) {
@@ -56,11 +67,11 @@ public abstract class MovementStaminaEvent extends Event {
         }
     }
 
-    public static final class Consuming extends MovementStaminaEvent {
+    public static final class Consuming extends StaminaEvent {
 
         private float consumeAmount;
 
-        public Consuming(MovementStamina stamina, LivingEntity entity, float consumeAmount) {
+        public Consuming(AbstractStamina stamina, LivingEntity entity, float consumeAmount) {
             super(stamina, entity);
             this.consumeAmount = consumeAmount;
         }
@@ -74,12 +85,12 @@ public abstract class MovementStaminaEvent extends Event {
         }
     }
 
-    public static final class SetRecoveryDelay extends MovementStaminaEvent {
+    public static final class SetRecoveryDelay extends StaminaEvent {
 
         private int recoveryDelay;
         private final boolean wasEnergyDrained;
 
-        public SetRecoveryDelay(MovementStamina stamina, LivingEntity entity, int recoveryDelay, boolean wasEnergyDrained) {
+        public SetRecoveryDelay(AbstractStamina stamina, LivingEntity entity, int recoveryDelay, boolean wasEnergyDrained) {
             super(stamina, entity);
             this.recoveryDelay = recoveryDelay;
             this.wasEnergyDrained = wasEnergyDrained;

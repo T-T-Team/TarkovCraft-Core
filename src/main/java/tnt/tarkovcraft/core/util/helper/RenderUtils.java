@@ -4,6 +4,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
+import org.joml.Vector2f;
+import tnt.tarkovcraft.core.util.ScreenPositionCalculator;
 
 public final class RenderUtils {
 
@@ -25,5 +27,11 @@ public final class RenderUtils {
                 0.0F, 1.0F,
                 color
         );
+    }
+
+    public static Vector2f getPosition(float x1, float y1, float x2, float y2, float width, float height, ScreenPositionCalculator horizontal, ScreenPositionCalculator vertical) {
+        float x = horizontal.getPosition(x1, x2, width);
+        float y = vertical.getPosition(y1, y2, height);
+        return new Vector2f(x, y);
     }
 }
