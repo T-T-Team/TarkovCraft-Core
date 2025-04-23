@@ -6,8 +6,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.phys.AABB;
 
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.function.Function;
 
@@ -35,6 +37,10 @@ public final class Codecs {
     public static final Codec<Integer> RGB_COLOR = Codec.withAlternative(ExtraCodecs.RGB_COLOR_CODEC, HEX_RGB_COLOR_CODEC);
     public static final Codec<Integer> NON_NEGATIVE_INT = Codec.intRange(0, Integer.MAX_VALUE);
     public static final Codec<Float> NON_NEGATIVE_FLOAT = Codec.floatRange(0.0F, Float.MAX_VALUE);
+    public static final Codec<AABB> AABB_VEC_CODEC = Codec.DOUBLE.listOf(6, 6).xmap(
+            list -> new AABB(list.get(0), list.get(1), list.get(2), list.get(3), list.get(4), list.get(5)),
+            aabb -> Arrays.asList(aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ)
+    );
 
     public static <E extends Enum<E>> Codec<E> simpleEnumCodec(Class<E> type) {
         return enumCodec(type, Function.identity());
