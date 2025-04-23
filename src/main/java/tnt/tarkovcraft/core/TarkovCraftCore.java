@@ -21,7 +21,7 @@ import tnt.tarkovcraft.core.common.statistic.DisplayStatistic;
 import tnt.tarkovcraft.core.network.TarkovCraftCoreNetwork;
 
 @Mod(TarkovCraftCore.MOD_ID)
-public class TarkovCraftCore {
+public final class TarkovCraftCore {
 
     public static final String MOD_ID = "tarkovcraft_core";
     public static final String GLOBAL_CATEGORY_KEY = "category.tarkovcraft";
