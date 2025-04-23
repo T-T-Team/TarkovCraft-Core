@@ -4,8 +4,6 @@ import net.minecraft.world.entity.LivingEntity;
 
 public interface MovementStaminaComponent extends StaminaComponent {
 
-    boolean isAttached(LivingEntity entity);
-
     void update(LivingEntity entity);
 
     void setStamina(LivingEntity entity, int amount);

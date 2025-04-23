@@ -6,6 +6,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import org.joml.Vector2f;
 import tnt.tarkovcraft.core.TarkovCraftCore;
@@ -27,20 +29,23 @@ public class StaminaLayer implements LayeredDraw.Layer {
 
         Minecraft client = Minecraft.getInstance();
         Window window = client.getWindow();
-        Player player = client.player;
-
-        TarkovCraftCoreClientConfig clientConfig = TarkovCraftCoreClient.getConfig();
-        renderStaminaOverlay(guiGraphics, window, clientConfig.moveStaminaOverlay, player, EnergySystem.MOVEMENT_STAMINA);
-        renderStaminaOverlay(guiGraphics, window, clientConfig.armStaminaOverlay, player, EnergySystem.ARM_STAMINA);
+        Entity entity = client.cameraEntity;
+        if (entity instanceof LivingEntity livingEntity) {
+            TarkovCraftCoreClientConfig clientConfig = TarkovCraftCoreClient.getConfig();
+            renderStaminaOverlay(guiGraphics, window, clientConfig.moveStaminaOverlay, livingEntity, EnergySystem.MOVEMENT_STAMINA);
+            renderStaminaOverlay(guiGraphics, window, clientConfig.armStaminaOverlay, livingEntity, EnergySystem.ARM_STAMINA);
+        }
     }
 
-    private void renderStaminaOverlay(GuiGraphics graphics, Window window, StaminaConfigurableOverlay overlay, Player player, CompatibilityComponent<? extends StaminaComponent> intgComponent) {
+    private void renderStaminaOverlay(GuiGraphics graphics, Window window, StaminaConfigurableOverlay overlay, LivingEntity entity, CompatibilityComponent<? extends StaminaComponent> intgComponent) {
         if (!overlay.enabled)
             return;
         StaminaComponent component = intgComponent.getComponent();
-        float stamina = component.getStamina(player);
-        float maxStamina = component.getMaxStamina(player);
-        boolean critical = component.isCriticalValue(player);
+        if (!component.isAttached(entity))
+            return;
+        float stamina = component.getStamina(entity);
+        float maxStamina = component.getMaxStamina(entity);
+        boolean critical = component.isCriticalValue(entity);
 
         // background
         long background = Long.decode(overlay.backgroundColor);

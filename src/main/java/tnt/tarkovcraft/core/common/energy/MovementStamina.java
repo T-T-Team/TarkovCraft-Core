@@ -59,6 +59,8 @@ public class MovementStamina extends AbstractStamina implements Synchronizable<M
     }
 
     public void update(LivingEntity entity) {
+        if (entity.isSpectator())
+            return;
         if (this.recoveryDelay > 0) {
             --this.recoveryDelay;
         }
