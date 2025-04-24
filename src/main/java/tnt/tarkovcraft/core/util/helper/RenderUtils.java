@@ -1,9 +1,12 @@
 package tnt.tarkovcraft.core.util.helper;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
+import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import tnt.tarkovcraft.core.util.ScreenPositionCalculator;
 
@@ -27,6 +30,32 @@ public final class RenderUtils {
                 0.0F, 1.0F,
                 color
         );
+    }
+
+    public static void fill(GuiGraphics graphics, float x1, float y1, float x2, float y2, float z, int color) {
+        Matrix4f pose = graphics.pose().last().pose();
+        VertexConsumer consumer = graphics.bufferSource.getBuffer(RenderType.gui());
+        consumer.addVertex(pose, x1, y1, z).setColor(color);
+        consumer.addVertex(pose, x1, y2, z).setColor(color);
+        consumer.addVertex(pose, x2, y2, z).setColor(color);
+        consumer.addVertex(pose, x2, y1, z).setColor(color);
+    }
+
+    public static void fill(GuiGraphics graphics, float x1, float y1, float x2, float y2, int color) {
+        fill(graphics, x1, y1, x2, y2, 0, color);
+    }
+
+    public static void fillGradient(GuiGraphics graphics, float x1, float y1, float x2, float y2, float z, int colorFrom, int colorTo) {
+        Matrix4f pose = graphics.pose().last().pose();
+        VertexConsumer consumer = graphics.bufferSource.getBuffer(RenderType.gui());
+        consumer.addVertex(pose, x1, y1, z).setColor(colorFrom);
+        consumer.addVertex(pose, x1, y2, z).setColor(colorTo);
+        consumer.addVertex(pose, x2, y2, z).setColor(colorTo);
+        consumer.addVertex(pose, x2, y1, z).setColor(colorFrom);
+    }
+
+    public static void fillGradient(GuiGraphics graphics, float x1, float y1, float x2, float y2, int colorFrom, int colorTo) {
+        fillGradient(graphics, x1, y1, x2, y2, 0, colorFrom, colorTo);
     }
 
     public static Vector2f getPosition(float x1, float y1, float x2, float y2, float width, float height, ScreenPositionCalculator horizontal, ScreenPositionCalculator vertical) {
