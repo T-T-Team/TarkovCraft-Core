@@ -15,8 +15,8 @@ public class TarkovCraftCoreClientConfig {
     public boolean renderDebugOverlay = false;
 
     @Configurable
-    public StaminaConfigurableOverlay moveStaminaOverlay = new StaminaConfigurableOverlay(true, HorizontalAlignment.LEFT, VerticalAlignment.BOTTOM, 5, -5, 80, 4, "#FF000000", "#FF00CE14", "#FF007F0E", "#FFC10000", "#FF780000");
+    public StaminaConfigurableOverlay moveStaminaOverlay = new StaminaConfigurableOverlay(true, HorizontalAlignment.LEFT, VerticalAlignment.BOTTOM, 5, -5, "#FF000000", "#FF00CE14", "#FF007F0E", "#FFC10000", "#FF780000");
 
     @Configurable
-    public StaminaConfigurableOverlay armStaminaOverlay = new StaminaConfigurableOverlay(true, HorizontalAlignment.LEFT, VerticalAlignment.BOTTOM, 5, -9, 80, 4, "#FF000000", "#FF00B2C2", "#FF004EC2", "#FFC10000", "#FF780000");
+    public StaminaConfigurableOverlay armStaminaOverlay = new StaminaConfigurableOverlay(true, HorizontalAlignment.LEFT, VerticalAlignment.BOTTOM, 5, -9, "#FF000000", "#FF00B2C2", "#FF004EC2", "#FFC10000", "#FF780000");
 }

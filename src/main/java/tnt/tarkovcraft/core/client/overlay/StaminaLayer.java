@@ -8,7 +8,6 @@ import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import org.joml.Vector2f;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.api.StaminaComponent;
@@ -21,6 +20,7 @@ import tnt.tarkovcraft.core.compatibility.CompatibilityComponent;
 public class StaminaLayer implements LayeredDraw.Layer {
 
     public static final ResourceLocation LAYER_ID = TarkovCraftCore.createResourceLocation("layer/stamina");
+    public static final int BAR_WIDTH = 80;
 
     @Override
     public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
@@ -54,15 +54,14 @@ public class StaminaLayer implements LayeredDraw.Layer {
         long background = Long.decode(overlay.backgroundColor);
         int width = window.getGuiScaledWidth();
         int height = window.getGuiScaledHeight();
-        int overlayWidth = 80;
         int overlayHeight = 4;
-        Vector2f bgPos = overlay.getPosition(0, 0, width, height, overlayWidth, overlayHeight);
-        graphics.fill((int) bgPos.x, (int) bgPos.y, (int) (bgPos.x + overlayWidth), (int) (bgPos.y + overlayHeight), (int) background);
+        Vector2f bgPos = overlay.getPosition(0, 0, width, height, BAR_WIDTH, overlayHeight);
+        graphics.fill((int) bgPos.x, (int) bgPos.y, (int) (bgPos.x + BAR_WIDTH), (int) (bgPos.y + overlayHeight), (int) background);
 
         // status
         long gradientMin = Long.decode(critical ? overlay.barGradientStartCriticalColor : overlay.barGradientStartColor);
         long gradientMax = Long.decode(critical ? overlay.barGradientEndCriticalColor : overlay.barGradientEndColor);
-        int gradientWidth = (int) ((overlayWidth - 2) * (stamina / maxStamina));
+        int gradientWidth = (int) ((BAR_WIDTH - 2) * (stamina / maxStamina));
         graphics.fillGradient((int) bgPos.x + 1, (int) bgPos.y + 1, (int) bgPos.x + 1 + gradientWidth, (int) (bgPos.y + overlayHeight - 1), (int) gradientMin, (int) gradientMax);
     }
 }

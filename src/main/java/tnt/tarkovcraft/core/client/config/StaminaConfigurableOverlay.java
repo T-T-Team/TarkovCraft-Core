@@ -26,7 +26,7 @@ public class StaminaConfigurableOverlay extends ConfigurableOverlay {
     @Configurable.Gui.ColorValue(isARGB = true)
     public String barGradientEndCriticalColor;
 
-    public StaminaConfigurableOverlay(boolean enabled, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, int x, int y, int width, int height, String backgroundColor, String barGradientStartColor, String barGradientEndColor, String barGradientStartCriticalColor, String barGradientEndCriticalColor) {
+    public StaminaConfigurableOverlay(boolean enabled, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, int x, int y, String backgroundColor, String barGradientStartColor, String barGradientEndColor, String barGradientStartCriticalColor, String barGradientEndCriticalColor) {
         super(enabled, horizontalAlignment, verticalAlignment, x, y);
         this.backgroundColor = backgroundColor;
         this.barGradientStartColor = barGradientStartColor;
