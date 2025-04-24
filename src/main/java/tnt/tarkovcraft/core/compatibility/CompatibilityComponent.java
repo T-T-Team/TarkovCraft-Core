@@ -32,12 +32,12 @@ public final class CompatibilityComponent<T> {
                     T value = holder.componentProvider.get();
                     this.holders = null;
                     this.isVanilla = false;
-                    TarkovCraftCore.LOGGER.info(MARKER, "Found override for component {}, will use {} from mod {}", name, value, holder.modId);
+                    TarkovCraftCore.LOGGER.warn(MARKER, "Detected component {} override, will use component {} from mod {}", name, value, holder.modId);
                     return value;
                 }
             }
             this.holders = null;
-            TarkovCraftCore.LOGGER.info("No override found for component {} using default component {}", name, defaultComponent);
+            TarkovCraftCore.LOGGER.info(MARKER, "No override found for component {} will use default component {}", name, defaultComponent);
             return defaultComponent;
         });
     }
