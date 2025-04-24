@@ -3,7 +3,7 @@ package tnt.tarkovcraft.core.util;
 public enum HorizontalAlignment implements ScreenPositionCalculator {
 
     LEFT((from, to, size) -> from),
-    CENTER((from, to, size) -> from + (from - to - size) / 2.0F),
+    CENTER((from, to, size) -> from + (to - from - size) / 2.0F),
     RIGHT((from, to, size) -> to - size);
 
     private final ScreenPositionCalculator delegate;

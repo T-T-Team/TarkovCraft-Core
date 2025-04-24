@@ -33,6 +33,9 @@ public class StaminaLayer implements LayeredDraw.Layer {
         if (client.player.isSpectator() && client.player == entity) {
             return;
         }
+        if (client.screen != null || client.options.hideGui) {
+            return;
+        }
         if (entity instanceof LivingEntity livingEntity) {
             TarkovCraftCoreClientConfig clientConfig = TarkovCraftCoreClient.getConfig();
             renderStaminaOverlay(guiGraphics, window, clientConfig.moveStaminaOverlay, livingEntity, EnergySystem.MOVEMENT_STAMINA);

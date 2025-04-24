@@ -3,7 +3,7 @@ package tnt.tarkovcraft.core.util;
 public enum VerticalAlignment implements ScreenPositionCalculator {
 
     TOP((from, to, size) -> from),
-    CENTER((from, to, size) -> from + (from - to - size) / 2.0F),
+    CENTER((from, to, size) -> from + (to - from - size) / 2.0F),
     BOTTOM((from, to, size) -> to - size);
 
     private final ScreenPositionCalculator delegate;
