@@ -7,13 +7,16 @@ import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import tnt.tarkovcraft.core.api.MovementStaminaComponent;
@@ -103,6 +106,18 @@ public final class TarkovCraftCoreEventHandler {
                     StatisticTracker.increment(entity, counter);
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    private void onExperiencePickup(PlayerXpEvent.PickupXp event) {
+        if (event.isCanceled())
+            return;
+        Player player = event.getEntity();
+        ExperienceOrb orb = event.getOrb();
+        int value = orb.getValue();
+        if (SkillSystem.trigger(CoreSkillTriggerEvents.XP_PICKUP, player, value) && player instanceof ServerPlayer serverPlayer) {
+            PacketDistributor.sendToPlayer(serverPlayer, new S2C_SendDataAttachments(serverPlayer, CoreDataAttachments.SKILL.get()));
         }
     }
 

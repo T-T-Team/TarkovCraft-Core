@@ -16,7 +16,16 @@
     "forgetAfter": "4h",
     "forgetAmount": 0.1
   },
-  "trackers": [],
+  "trackers": [
+    {
+      "id": "bded2675-ade0-47e2-962a-ba73f7efff08",
+      "event": "tarkovcraft_core:xp_pickup",
+      "tracker": {
+        "type": "tarkovcraft_core:unrestricted",
+        "value": 0.05
+      }
+    }
+  ],
   "stats": [
     {
       "display": {
