@@ -1,4 +1,4 @@
-package tnt.tarkovcraft.core.client.event;
+package tnt.tarkovcraft.core.api.event.client;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;

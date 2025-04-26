@@ -13,7 +13,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.NeoForge;
 import tnt.tarkovcraft.core.TarkovCraftCore;
-import tnt.tarkovcraft.core.client.event.GetPlayerLabelsEvent;
+import tnt.tarkovcraft.core.api.event.client.GetPlayerLabelsEvent;
 import tnt.tarkovcraft.core.client.screen.navigation.CoreNavigators;
 import tnt.tarkovcraft.core.client.screen.renderable.AbstractTextRenderable;
 import tnt.tarkovcraft.core.client.screen.renderable.HorizontalLineRenderable;

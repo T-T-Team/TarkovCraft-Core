@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.config.TarkovCraftCoreConfig;
-import tnt.tarkovcraft.core.common.event.MailEvent;
+import tnt.tarkovcraft.core.api.event.MailEvent;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 

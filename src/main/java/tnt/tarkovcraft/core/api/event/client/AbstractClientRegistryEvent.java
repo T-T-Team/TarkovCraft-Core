@@ -1,4 +1,4 @@
-package tnt.tarkovcraft.core.client.event;
+package tnt.tarkovcraft.core.api.event.client;
 
 import net.neoforged.bus.api.Event;
 import net.neoforged.fml.event.IModBusEvent;

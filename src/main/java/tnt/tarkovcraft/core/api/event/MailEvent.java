@@ -1,4 +1,4 @@
-package tnt.tarkovcraft.core.common.event;
+package tnt.tarkovcraft.core.api.event;
 
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.Event;

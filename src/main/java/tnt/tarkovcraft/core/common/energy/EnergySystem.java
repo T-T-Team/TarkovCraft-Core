@@ -5,7 +5,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.api.ArmStaminaComponent;
 import tnt.tarkovcraft.core.common.config.SkillSystemConfig;
-import tnt.tarkovcraft.core.common.event.StaminaEvent;
+import tnt.tarkovcraft.core.api.event.StaminaEvent;
 import tnt.tarkovcraft.core.compatibility.CompatibilityComponent;
 import tnt.tarkovcraft.core.api.MovementStaminaComponent;
 
@@ -24,9 +24,17 @@ public final class EnergySystem {
         return event.canSprint();
     }
 
+    public static void onSprinted(MovementStamina stamina, LivingEntity entity) {
+        NeoForge.EVENT_BUS.post(new StaminaEvent.AfterSprint(stamina, entity));
+    }
+
     public static Boolean canJump(MovementStamina stamina, LivingEntity entity) {
         StaminaEvent.CanJump event = NeoForge.EVENT_BUS.post(new StaminaEvent.CanJump(stamina, entity));
         return event.canJump();
+    }
+
+    public static void onJumped(MovementStamina stamina, LivingEntity entity) {
+        NeoForge.EVENT_BUS.post(new StaminaEvent.AfterJump(stamina, entity));
     }
 
     public static float consumeEnergy(AbstractStamina stamina, LivingEntity entity, float baseConsumption) {

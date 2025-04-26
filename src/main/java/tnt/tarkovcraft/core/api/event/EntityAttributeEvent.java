@@ -1,7 +1,6 @@
-package tnt.tarkovcraft.core.common.event;
+package tnt.tarkovcraft.core.api.event;
 
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.Event;
 import tnt.tarkovcraft.core.common.attribute.Attribute;
 import tnt.tarkovcraft.core.common.attribute.AttributeInstance;

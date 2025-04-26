@@ -52,10 +52,12 @@ public class MovementStamina extends AbstractStamina implements Synchronizable<M
 
     public void onSprint(LivingEntity entity) {
         this.consume(entity, SPRINT_STAMINA_CONSUMPTION, 20);
+        EnergySystem.onSprinted(this, entity);
     }
 
     public void onJump(LivingEntity entity) {
         this.consume(entity, JUMP_STAMINA_CONSUMPTION, 40);
+        EnergySystem.onJumped(this, entity);
     }
 
     public void update(LivingEntity entity) {

@@ -1,4 +1,4 @@
-package tnt.tarkovcraft.core.common.event;
+package tnt.tarkovcraft.core.api.event;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.Event;
@@ -45,6 +45,13 @@ public abstract class StaminaEvent extends Event {
         }
     }
 
+    public static final class AfterSprint extends StaminaEvent {
+
+        public AfterSprint(AbstractStamina stamina, LivingEntity entity) {
+            super(stamina, entity);
+        }
+    }
+
     public static final class CanJump extends StaminaEvent {
 
         private Boolean result;
@@ -64,6 +71,13 @@ public abstract class StaminaEvent extends Event {
 
         public Boolean canJump() {
             return result;
+        }
+    }
+
+    public static final class AfterJump extends StaminaEvent {
+
+        public AfterJump(AbstractStamina stamina, LivingEntity entity) {
+            super(stamina, entity);
         }
     }
 
