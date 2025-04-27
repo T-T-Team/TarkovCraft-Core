@@ -5,7 +5,6 @@ import com.mojang.brigadier.arguments.*;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import dev.toma.configuration.config.validate.IValidationResult;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandBuildContext;
@@ -67,7 +66,7 @@ public final class TarkovCraftCommand {
                                         .then(
                                                 Commands.argument("target", EntityArgument.players())
                                                         .then(
-                                                                Commands.argument("severity", EnumArgument.enumArgument(IValidationResult.Severity.class))
+                                                                Commands.argument("severity", EnumArgument.enumArgument(Notification.Severity.class))
                                                                         .then(
                                                                                 Commands.argument("content", StringArgumentType.string())
                                                                                         .executes(TarkovCraftCommand::sendNotification)
@@ -148,6 +147,10 @@ public final class TarkovCraftCommand {
                                                                                 Commands.argument("value", LongArgumentType.longArg(0))
                                                                                         .executes(TarkovCraftCommand::setStatValue)
                                                                         )
+                                                                        .then(
+                                                                                Commands.literal("reset")
+                                                                                        .executes(TarkovCraftCommand::resetStats)
+                                                                        )
                                                         )
                                         )
                         )
@@ -198,7 +201,7 @@ public final class TarkovCraftCommand {
 
     private static int sendNotification(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         Collection<ServerPlayer> targets = EntityArgument.getPlayers(ctx, "target");
-        IValidationResult.Severity severity = ctx.getArgument("severity", IValidationResult.Severity.class);
+        Notification.Severity severity = ctx.getArgument("severity", Notification.Severity.class);
         String content = StringArgumentType.getString(ctx, "content");
         createNotificationAndSend(targets, severity, content, Notification.DEFAULT_LIFETIME);
         return 0;
@@ -206,7 +209,7 @@ public final class TarkovCraftCommand {
 
     private static int sendNotificationWithLifetime(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         Collection<ServerPlayer> targets = EntityArgument.getPlayers(ctx, "target");
-        IValidationResult.Severity severity = ctx.getArgument("severity", IValidationResult.Severity.class);
+        Notification.Severity severity = ctx.getArgument("severity", Notification.Severity.class);
         String content = StringArgumentType.getString(ctx, "content");
         int lifetime = ctx.getArgument("lifetime", Integer.class);
         createNotificationAndSend(targets, severity, content, lifetime);
@@ -223,7 +226,7 @@ public final class TarkovCraftCommand {
         return 0;
     }
 
-    private static void createNotificationAndSend(Collection<ServerPlayer> players, IValidationResult.Severity severity, String content, int lifetime) {
+    private static void createNotificationAndSend(Collection<ServerPlayer> players, Notification.Severity severity, String content, int lifetime) {
         Notification notification = Notification.of(severity, Component.literal(content), lifetime);
         players.forEach(notification::send);
     }
@@ -297,6 +300,16 @@ public final class TarkovCraftCommand {
         long value = LongArgumentType.getLong(ctx, "value");
         StatisticTracker tracker = target.getData(CoreDataAttachments.STATISTICS);
         tracker.set(statistic, value);
+        if (target instanceof ServerPlayer player) {
+            PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, CoreDataAttachments.STATISTICS.get()));
+        }
+        return 0;
+    }
+
+    private static int resetStats(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        Entity target = EntityArgument.getEntity(ctx, "target");
+        StatisticTracker tracker = target.getData(CoreDataAttachments.STATISTICS);
+        tracker.resetStatistics();
         if (target instanceof ServerPlayer player) {
             PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, CoreDataAttachments.STATISTICS.get()));
         }

@@ -66,6 +66,10 @@ public final class StatisticTracker implements Synchronizable<StatisticTracker> 
         this.stats.put(stat, Math.clamp(amount, 0L, Long.MAX_VALUE));
     }
 
+    public void resetStatistics() {
+        this.stats.clear();
+    }
+
     @Override
     public Codec<StatisticTracker> networkCodec() {
         return CODEC;

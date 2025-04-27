@@ -1,11 +1,13 @@
 package tnt.tarkovcraft.core.common;
 
-import dev.toma.configuration.config.validate.IValidationResult;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.network.chat.Style;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
@@ -15,42 +17,47 @@ import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.network.message.notification.S2C_SendNotification;
 
 import java.util.Objects;
+import java.util.function.UnaryOperator;
 
 public final class Notification {
 
     public static final Marker MARKER = MarkerManager.getMarker("Notification");
     public static final int DEFAULT_LIFETIME = 100;
     public static final StreamCodec<RegistryFriendlyByteBuf, Notification> STREAM_CODEC = StreamCodec.composite(
-            NeoForgeStreamCodecs.enumCodec(IValidationResult.Severity.class), Notification::getSeverity,
+            NeoForgeStreamCodecs.enumCodec(Severity.class), Notification::getSeverity,
             ComponentSerialization.STREAM_CODEC, Notification::getLabel,
             ByteBufCodecs.INT, Notification::getLifetime,
             Notification::new
     );
 
-    private final IValidationResult.Severity notificationSeverity;
+    private final Severity notificationSeverity;
     private final Component label;
     private int lifetime;
 
-    private Notification(IValidationResult.Severity notificationSeverity, Component label, int lifetime) {
+    private Notification(Severity notificationSeverity, Component label, int lifetime) {
         this.notificationSeverity = Objects.requireNonNull(notificationSeverity);
         this.label = Objects.requireNonNull(label);
         this.lifetime = lifetime;
     }
 
-    public static Notification of(IValidationResult.Severity severity, Component label, int lifetime) {
+    public static Notification of(Severity severity, Component label, int lifetime) {
         return new Notification(severity, label, lifetime);
     }
 
     public static Notification info(Component label) {
-        return of(IValidationResult.Severity.NONE, label, DEFAULT_LIFETIME);
+        return of(Severity.INFO, label, DEFAULT_LIFETIME);
     }
 
     public static Notification warn(Component label) {
-        return of(IValidationResult.Severity.WARNING, label, DEFAULT_LIFETIME);
+        return of(Severity.WARNING, label, DEFAULT_LIFETIME);
     }
 
     public static Notification error(Component label) {
-        return of(IValidationResult.Severity.ERROR, label, DEFAULT_LIFETIME);
+        return of(Severity.ERROR, label, DEFAULT_LIFETIME);
+    }
+
+    public static Notification system(Component label) {
+        return of(Severity.SYSTEM, label, DEFAULT_LIFETIME);
     }
 
     public void send(ServerPlayer target) {
@@ -58,7 +65,7 @@ public final class Notification {
         PacketDistributor.sendToPlayer(target, new S2C_SendNotification(this));
     }
 
-    public IValidationResult.Severity getSeverity() {
+    public Severity getSeverity() {
         return this.notificationSeverity;
     }
 
@@ -72,5 +79,30 @@ public final class Notification {
 
     public int getLifetime() {
         return lifetime;
+    }
+
+    public enum Severity implements UnaryOperator<Style> {
+
+        SYSTEM(style -> style.withBold(true).withItalic(true).applyFormat(ChatFormatting.GOLD)),
+        INFO(style -> style.applyFormat(ChatFormatting.GREEN)),
+        WARNING(style -> style.applyFormat(ChatFormatting.YELLOW)),
+        ERROR(style -> style.applyFormat(ChatFormatting.RED)),;
+
+        private final UnaryOperator<Style> labelStylization;
+        private final ResourceLocation icon;
+
+        Severity(UnaryOperator<Style> labelStylization) {
+            this.labelStylization = labelStylization;
+            this.icon = TarkovCraftCore.createResourceLocation("textures/icons/notification/" + this.name().toLowerCase() + ".png");
+        }
+
+        public ResourceLocation getIcon() {
+            return icon;
+        }
+
+        @Override
+        public Style apply(Style style) {
+            return labelStylization.apply(style);
+        }
     }
 }
