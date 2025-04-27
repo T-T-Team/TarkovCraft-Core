@@ -39,6 +39,10 @@ public final class StatisticTracker implements Synchronizable<StatisticTracker> 
         increment(holder, stat.value(), amount);
     }
 
+    public static void increment(IAttachmentHolder holder, Statistic stat) {
+        increment(holder, stat, 1L);
+    }
+
     public static void increment(IAttachmentHolder holder, Statistic stat, long amount) {
         holder.getData(CoreDataAttachments.STATISTICS).increment(stat, amount);
         if (holder instanceof ServerPlayer player) {
@@ -46,8 +50,24 @@ public final class StatisticTracker implements Synchronizable<StatisticTracker> 
         }
     }
 
-    public static void increment(IAttachmentHolder holder, Statistic stat) {
-        increment(holder, stat, 1L);
+    public static boolean incrementOptional(IAttachmentHolder holder, Holder<Statistic> stat) {
+        return incrementOptional(holder, stat.value());
+    }
+
+    public static boolean incrementOptional(IAttachmentHolder holder, Holder<Statistic> stat, long amount) {
+        return incrementOptional(holder, stat.value(), amount);
+    }
+
+    public static boolean incrementOptional(IAttachmentHolder holder, Statistic stat) {
+        return incrementOptional(holder, stat, 1L);
+    }
+
+    public static boolean incrementOptional(IAttachmentHolder holder, Statistic statistic, long amount) {
+        if (holder.hasData(CoreDataAttachments.STATISTICS)) {
+            increment(holder, statistic, amount);
+            return true;
+        }
+        return false;
     }
 
     public long get(Statistic stat) {
