@@ -11,7 +11,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.client.screen.ColorPalette;
-import tnt.tarkovcraft.core.common.Notification;
 
 import java.util.Deque;
 import java.util.function.IntUnaryOperator;
@@ -47,8 +46,7 @@ public class NotificationLayer implements LayeredDraw.Layer {
         graphics.pose().translate(0, 0, NOTIFICATION_Z_LAYER);
         for (ClientNotification notification : notifications) {
             graphics.fill(left, y, windowWidth, y + 10, ColorPalette.BG_TRANSPARENT_NORMAL);
-            Notification.Severity severity = notification.severity();
-            graphics.blit(RenderType::guiTextured, severity.getIcon(), left + 1, y + 1, 0.0F, 0.0F, 8, 8, 16, 16, 16, 16);
+            graphics.blit(RenderType::guiTextured, notification.icon(), left + 1, y + 1, 0.0F, 0.0F, 8, 8, 16, 16, 16, 16);
             graphics.drawScrollingString(font, notification.label(), left + 12, windowWidth, y + 1, 0xFFFFFF);
             y -= 11;
         }

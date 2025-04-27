@@ -1,0 +1,12 @@
+{
+  "label": {
+    "translate": "stat.tarkovcraft_core.longest_hit"
+  },
+  "source": "tarkovcraft_core:longest_hit",
+  "format": {
+    "decimalPlaces": 2,
+    "multiplier": 0.01,
+    "suffix": "m"
+  },
+  "order": 172
+}

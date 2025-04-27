@@ -26,6 +26,7 @@ public final class Notification {
     public static final StreamCodec<RegistryFriendlyByteBuf, Notification> STREAM_CODEC = StreamCodec.composite(
             NeoForgeStreamCodecs.enumCodec(Severity.class), Notification::getSeverity,
             ComponentSerialization.STREAM_CODEC, Notification::getLabel,
+            ResourceLocation.STREAM_CODEC, Notification::getIcon,
             ByteBufCodecs.INT, Notification::getLifetime,
             Notification::new
     );
@@ -33,15 +34,16 @@ public final class Notification {
     private final Severity notificationSeverity;
     private final Component label;
     private int lifetime;
+    private ResourceLocation customIcon;
 
-    private Notification(Severity notificationSeverity, Component label, int lifetime) {
+    private Notification(Severity notificationSeverity, Component label, ResourceLocation icon, int lifetime) {
         this.notificationSeverity = Objects.requireNonNull(notificationSeverity);
         this.label = Objects.requireNonNull(label);
         this.lifetime = lifetime;
     }
 
     public static Notification of(Severity severity, Component label, int lifetime) {
-        return new Notification(severity, label, lifetime);
+        return new Notification(severity, label, null, lifetime);
     }
 
     public static Notification info(Component label) {
@@ -79,6 +81,14 @@ public final class Notification {
 
     public int getLifetime() {
         return lifetime;
+    }
+
+    public void setIcon(ResourceLocation customIcon) {
+        this.customIcon = customIcon;
+    }
+
+    public ResourceLocation getIcon() {
+        return this.customIcon != null ? this.customIcon : this.notificationSeverity.getIcon();
     }
 
     public enum Severity implements UnaryOperator<Style> {

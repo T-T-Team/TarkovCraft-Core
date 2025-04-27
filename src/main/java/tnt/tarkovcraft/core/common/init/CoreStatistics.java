@@ -13,4 +13,6 @@ public final class CoreStatistics {
     public static final Holder<Statistic> PLAYER_KILLS = REGISTRY.register("player_kills", Statistic::new);
     public static final Holder<Statistic> DEATHS = REGISTRY.register("deaths", Statistic::new);
     public static final Holder<Statistic> PLAYER_DEATHS = REGISTRY.register("player_deaths", Statistic::new);
+    public static final Holder<Statistic> LONGEST_HIT = REGISTRY.register("longest_hit", Statistic::new);
+    public static final Holder<Statistic> LONGEST_KILL = REGISTRY.register("longest_kill", Statistic::new);
 }

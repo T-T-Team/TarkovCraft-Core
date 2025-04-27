@@ -147,10 +147,13 @@ public final class TarkovCraftCommand {
                                                                                 Commands.argument("value", LongArgumentType.longArg(0))
                                                                                         .executes(TarkovCraftCommand::setStatValue)
                                                                         )
-                                                                        .then(
-                                                                                Commands.literal("reset")
-                                                                                        .executes(TarkovCraftCommand::resetStats)
-                                                                        )
+                                                        )
+                                        )
+                                        .then(
+                                                Commands.argument("target", EntityArgument.entity())
+                                                        .then(
+                                                                Commands.literal("reset")
+                                                                        .executes(TarkovCraftCommand::resetStats)
                                                         )
                                         )
                         )

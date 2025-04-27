@@ -30,10 +30,10 @@ public class StaminaLayer implements LayeredDraw.Layer {
         Minecraft client = Minecraft.getInstance();
         Window window = client.getWindow();
         Entity entity = client.cameraEntity;
-        if (client.player.isSpectator() && client.player == entity) {
+        if (client.options.hideGui) {
             return;
         }
-        if ((client.screen != null && !client.screen.isPauseScreen()) || client.options.hideGui) {
+        if (client.player.isSpectator() && client.player == entity) {
             return;
         }
         if (entity instanceof LivingEntity livingEntity) {

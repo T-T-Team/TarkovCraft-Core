@@ -18,6 +18,8 @@
   "stat.tarkovcraft_core.pvp_deaths": "Player deaths",
   "stat.tarkovcraft_core.kd_ratio": "K/D",
   "stat.tarkovcraft_core.pvp_kd_ratio": "K/D (PvP)",
+  "stat.tarkovcraft_core.longest_hit": "Longest hit distance",
+  "stat.tarkovcraft_core.longest_kill": "Longest kill distance",
 
   "screen.tarkovcraft_core.character.mail": "Messages",
   "screen.tarkovcraft_core.mail.title": "Character",

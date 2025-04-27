@@ -8,6 +8,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.RegistryFixedCodec;
+import net.minecraft.resources.ResourceLocation;
 import tnt.tarkovcraft.core.common.attribute.Attribute;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.skill.stat.SkillStatDefinition;
@@ -46,6 +47,11 @@ public class SkillDefinition {
         this.groupLevelingModifiers = groupLevelingModifiers;
         this.trackers = trackers;
         this.stats = stats;
+    }
+
+    public static ResourceLocation getIcon(Holder<SkillDefinition> holder) {
+        ResourceLocation skillIdentifier = holder.getKey().location();
+        return skillIdentifier.withPath(pth -> "textures/icons/skills/" + pth + ".png");
     }
 
     public Skill instance(RegistryAccess access) {

@@ -13,8 +13,8 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
-import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -82,6 +82,17 @@ public final class TarkovCraftCoreEventHandler {
     }
 
     @SubscribeEvent
+    private void onEntityHurt(LivingDamageEvent.Post event) {
+        LivingEntity entity = event.getEntity();
+        DamageSource source = event.getSource();
+        Entity sourceEntity = source.getEntity();
+        if (sourceEntity != null) {
+            long distance = (long) (entity.distanceTo(sourceEntity) * 100);
+            StatisticTracker.replace(sourceEntity, CoreStatistics.LONGEST_HIT, distance, Math::max);
+        }
+    }
+
+    @SubscribeEvent
     private void onEntityDeath(LivingDeathEvent event) {
         LivingEntity entity = event.getEntity();
         DamageSource source = event.getSource();
@@ -91,6 +102,8 @@ public final class TarkovCraftCoreEventHandler {
         }
         if (killer != null && killer.hasData(CoreDataAttachments.STATISTICS)) {
             StatisticTracker.increment(killer, CoreStatistics.KILLS);
+            long distance = (long) (entity.distanceTo(killer) * 100);
+            StatisticTracker.replace(killer, CoreStatistics.LONGEST_KILL, distance, Math::max);
             if (entity instanceof CustomStatTrackerProvider tracker) {
                 Holder<Statistic> counter = tracker.getKillCounter(killer);
                 if (counter != null) {

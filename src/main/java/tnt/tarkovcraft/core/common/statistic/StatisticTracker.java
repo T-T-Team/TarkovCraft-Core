@@ -15,6 +15,7 @@ import tnt.tarkovcraft.core.network.Synchronizable;
 import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 
 import java.util.Map;
+import java.util.function.LongBinaryOperator;
 
 public final class StatisticTracker implements Synchronizable<StatisticTracker> {
 
@@ -65,6 +66,32 @@ public final class StatisticTracker implements Synchronizable<StatisticTracker> 
     public static boolean incrementOptional(IAttachmentHolder holder, Statistic statistic, long amount) {
         if (holder.hasData(CoreDataAttachments.STATISTICS)) {
             increment(holder, statistic, amount);
+            return true;
+        }
+        return false;
+    }
+
+    public static void replace(IAttachmentHolder holder, Holder<Statistic> stat, long amount, LongBinaryOperator replacer) {
+        replace(holder, stat.value(), amount, replacer);
+    }
+
+    public static void replace(IAttachmentHolder holder, Statistic statistic, long amount, LongBinaryOperator replacer) {
+        StatisticTracker tracker = holder.getData(CoreDataAttachments.STATISTICS);
+        long existing = tracker.get(statistic);
+        long newValue = replacer.applyAsLong(existing, amount);
+        tracker.set(statistic, newValue);
+        if (holder instanceof ServerPlayer player) {
+            PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, CoreDataAttachments.STATISTICS.get()));
+        }
+    }
+
+    public static boolean replaceOptional(IAttachmentHolder holder, Holder<Statistic> stat, long amount, LongBinaryOperator replacer) {
+        return replaceOptional(holder, stat.value(), amount, replacer);
+    }
+
+    public static boolean replaceOptional(IAttachmentHolder holder, Statistic statistic, long amount, LongBinaryOperator replacer) {
+        if (holder.hasData(CoreDataAttachments.STATISTICS)) {
+            replace(holder, statistic, amount, replacer);
             return true;
         }
         return false;

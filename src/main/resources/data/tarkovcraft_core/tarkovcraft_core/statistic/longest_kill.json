@@ -1,0 +1,12 @@
+{
+  "label": {
+    "translate": "stat.tarkovcraft_core.longest_kill"
+  },
+  "source": "tarkovcraft_core:longest_kill",
+  "format": {
+    "decimalPlaces": 2,
+    "multiplier": 0.01,
+    "suffix": "m"
+  },
+  "order": 174
+}

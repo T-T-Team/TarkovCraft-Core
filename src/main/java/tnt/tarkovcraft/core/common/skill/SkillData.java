@@ -173,8 +173,10 @@ public final class SkillData implements Synchronizable<SkillData> {
     public void onLevelChange(int prevLevel, Skill skill) {
         if (this.holder instanceof ServerPlayer player) {
             if (prevLevel < skill.getLevel()) {
-                SkillDefinition definition = skill.getDefinition().value();
+                Holder<SkillDefinition> definitionHolder = skill.getDefinition();
+                SkillDefinition definition = definitionHolder.value();
                 Notification notification = Notification.info(Component.translatable("label.tarkovcraft_core.skill.level_up", definition.getName(), skill.getLevel()));
+                notification.setIcon(SkillDefinition.getIcon(definitionHolder));
                 notification.send(player);
             }
             this.applyStats();

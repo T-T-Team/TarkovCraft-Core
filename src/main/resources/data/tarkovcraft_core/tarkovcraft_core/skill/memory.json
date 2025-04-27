@@ -8,7 +8,8 @@
   "leveling": {
     "maxLevel": 100,
     "baseExperience": 10.0,
-    "additionalExperience": 0.0
+    "additionalExperience": 1.0,
+    "maxExperience": 100.0
   },
   "memory": {
     "enabled": true,

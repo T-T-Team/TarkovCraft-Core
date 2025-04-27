@@ -94,8 +94,7 @@ public class SkillScreen extends CharacterSubScreen {
             this.context = context;
             MutableComponent title = skill.getDefinition().value().getName().copy();
             this.setMessage(title.withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE));
-            ResourceLocation skillIdentifier = skill.getDefinition().getKey().location();
-            this.skillIcon = skillIdentifier.withPath(pth -> "textures/icons/skills/" + pth + ".png");
+            this.skillIcon = SkillDefinition.getIcon(skill.getDefinition());
         }
 
         @Override
