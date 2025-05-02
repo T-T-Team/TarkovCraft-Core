@@ -6,7 +6,7 @@ import net.minecraft.util.context.ContextKey;
 import java.util.*;
 import java.util.function.Function;
 
-public class ContextImpl implements Context {
+public class ContextImpl implements WritableContext {
 
     private static final ContextImpl EMPTY = new ContextImpl(ImmutableMap.of());
 
@@ -77,6 +77,7 @@ public class ContextImpl implements Context {
         return this.data.keySet();
     }
 
+    @Override
     public <T> void set(ContextKey<T> key, T value) {
         this.data.put(key, value);
     }

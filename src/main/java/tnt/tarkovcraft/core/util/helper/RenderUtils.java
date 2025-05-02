@@ -1,6 +1,5 @@
 package tnt.tarkovcraft.core.util.helper;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
@@ -56,6 +55,22 @@ public final class RenderUtils {
 
     public static void fillGradient(GuiGraphics graphics, float x1, float y1, float x2, float y2, int colorFrom, int colorTo) {
         fillGradient(graphics, x1, y1, x2, y2, 0, colorFrom, colorTo);
+    }
+
+    public static void fillDarkenGradient(GuiGraphics graphics, float x1, float y1, float x2, float y2, float z, int colorFrom, float rgbScale) {
+        fillGradient(graphics, x1, y1, x2, y2, z, colorFrom, ARGB.scaleRGB(colorFrom, rgbScale));
+    }
+
+    public static void fillDarkenGradient(GuiGraphics graphics, float x1, float y1, float x2, float y2, int colorFrom, float rgbScale) {
+        fillGradient(graphics, x1, y1, x2, y2, 0, colorFrom, ARGB.scaleRGB(colorFrom, rgbScale));
+    }
+
+    public static void fillDarkenGradient(GuiGraphics graphics, float x1, float y1, float x2, float y2, float z, int colorFrom) {
+        fillDarkenGradient(graphics, x1, y1, x2, y2, z, colorFrom, 0.8F);
+    }
+
+    public static void fillDarkenGradient(GuiGraphics graphics, float x1, float y1, float x2, float y2, int colorFrom) {
+        fillDarkenGradient(graphics, x1, y1, x2, y2, colorFrom, 0.8F);
     }
 
     public static Vector2f getPosition(float x1, float y1, float x2, float y2, float width, float height, ScreenPositionCalculator horizontal, ScreenPositionCalculator vertical) {

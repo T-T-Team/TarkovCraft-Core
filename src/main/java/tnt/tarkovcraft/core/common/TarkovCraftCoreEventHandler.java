@@ -129,9 +129,7 @@ public final class TarkovCraftCoreEventHandler {
         Player player = event.getEntity();
         ExperienceOrb orb = event.getOrb();
         int value = orb.getValue();
-        if (SkillSystem.trigger(CoreSkillTriggerEvents.XP_PICKUP, player, value) && player instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayer(serverPlayer, new S2C_SendDataAttachments(serverPlayer, CoreDataAttachments.SKILL.get()));
-        }
+        SkillSystem.triggerAndSynchronize(CoreSkillTriggerEvents.XP_PICKUP, player, value);
     }
 
     private S2C_SendDataAttachments getSyncPacket(Player player) {
