@@ -4,9 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -75,22 +73,22 @@ public class SkillScreen extends CharacterSubScreen {
                 SkillContextKeys.DEFINITION, skill.getDefinition().value(),
                 SkillContextKeys.SKILL, skill
         );
-        return new SkillWidget(5, 5 + index * 40, this.width - 15, 35, this.font, skill, this, context);
+        return new SkillWidget(5, 5 + index * 40, this.width - 15, 35, this.font, skill, TooltipHelper.screen(this), context);
     }
 
     public static final class SkillWidget extends AbstractWidget {
 
         private final Context context;
-        private final Screen screen;
+        private final TooltipHelper tooltip;
         private final Font font;
         private final Skill skill;
         private final ResourceLocation skillIcon;
 
-        public SkillWidget(int x, int y, int width, int height, Font font, Skill skill, Screen screen, Context context) {
+        public SkillWidget(int x, int y, int width, int height, Font font, Skill skill, TooltipHelper tooltip, Context context) {
             super(x, y, width, height, CommonComponents.EMPTY);
             this.font = font;
             this.skill = skill;
-            this.screen = screen;
+            this.tooltip = tooltip;
             this.context = context;
             MutableComponent title = skill.getDefinition().value().getName().copy();
             this.setMessage(title.withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE));
@@ -137,9 +135,9 @@ public class SkillScreen extends CharacterSubScreen {
                     Component name = displayInfo.name().copy().withStyle(ChatFormatting.UNDERLINE).withStyle(ChatFormatting.YELLOW);
                     Component statDescription = displayInfo.getDescription(this.context, statDefinition.stat());
                     List<FormattedCharSequence> tooltip = new ArrayList<>();
-                    tooltip.addAll(Tooltip.splitTooltip(this.screen.getMinecraft(), name));
-                    tooltip.addAll(Tooltip.splitTooltip(this.screen.getMinecraft(), statDescription));
-                    this.screen.setTooltipForNextRenderPass(tooltip);
+                    tooltip.addAll(this.tooltip.split(name));
+                    tooltip.addAll(this.tooltip.split(statDescription));
+                    this.tooltip.setForNextRenderPass(tooltip);
                 }
                 ++index;
             }
