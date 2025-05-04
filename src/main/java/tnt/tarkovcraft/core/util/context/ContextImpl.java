@@ -13,7 +13,7 @@ public class ContextImpl implements WritableContext {
     private final Map<ContextKey<?>, Object> data;
 
     private ContextImpl(Map<ContextKey<?>, Object> data) {
-        this.data = ImmutableMap.copyOf(data);
+        this.data = new HashMap<>(data);
     }
 
     public static ContextImpl empty() {
@@ -80,6 +80,16 @@ public class ContextImpl implements WritableContext {
     @Override
     public <T> void set(ContextKey<T> key, T value) {
         this.data.put(key, value);
+    }
+
+    @Override
+    public void remove(ContextKey<?> key) {
+        this.data.remove(key);
+    }
+
+    @Override
+    public void clear() {
+        this.data.clear();
     }
 
     public void copy(Context reader) {
