@@ -2,6 +2,8 @@ package tnt.tarkovcraft.core.common.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
 
 import java.util.Collection;
@@ -69,6 +71,23 @@ public record Duration(DurationUnit unit, double value) implements TickValue {
     public Duration addMany(Collection<Duration> durations) {
         int totalTickValue = this.tickValue() + durations.stream().mapToInt(Duration::tickValue).sum();
         return convertFromTicks(totalTickValue, this.unit());
+    }
+
+    public Component formatDisplay() {
+        int value = this.tickValue();
+        MutableComponent component = Component.literal("");
+        int days = value / DurationUnit.DAYS.unitValue();
+        value %= DurationUnit.DAYS.unitValue();
+        component.append(DurationUnit.DAYS.getLocalizedName(days));
+        int hours = value / DurationUnit.HOURS.unitValue();
+        value %= DurationUnit.HOURS.unitValue();
+        component.append(DurationUnit.HOURS.getLocalizedName(hours));
+        int minutes = value / DurationUnit.MINUTES.unitValue();
+        value %= DurationUnit.MINUTES.unitValue();
+        component.append(DurationUnit.MINUTES.getLocalizedName(minutes));
+        int seconds = value / DurationUnit.SECONDS.unitValue();
+        component.append(DurationUnit.SECONDS.getLocalizedName(seconds));
+        return component;
     }
 
     public String toDurationString() {

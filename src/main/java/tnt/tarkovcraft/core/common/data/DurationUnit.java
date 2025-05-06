@@ -2,6 +2,7 @@ package tnt.tarkovcraft.core.common.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import net.minecraft.network.chat.Component;
 
 import java.time.Duration;
 import java.time.temporal.Temporal;
@@ -59,6 +60,10 @@ public record DurationUnit(String sign, int unitValue) implements TemporalUnit {
     @Override
     public long between(Temporal temporal1Inclusive, Temporal temporal2Exclusive) {
         return temporal1Inclusive.until(temporal2Exclusive, this);
+    }
+
+    public Component getLocalizedName(int time) {
+        return Component.translatable("duration.unit." + this.sign, time);
     }
 
     public static DurationUnit getBySign(String sign) {
