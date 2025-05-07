@@ -8,12 +8,11 @@ import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import tnt.tarkovcraft.core.TarkovCraftCore;
+import tnt.tarkovcraft.core.api.StaminaComponent;
 import tnt.tarkovcraft.core.client.TarkovCraftCoreClient;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.energy.AbstractStamina;
-import tnt.tarkovcraft.core.common.energy.ArmStamina;
 import tnt.tarkovcraft.core.common.energy.EnergySystem;
-import tnt.tarkovcraft.core.common.energy.MovementStamina;
 import tnt.tarkovcraft.core.common.init.CoreAttributes;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 
@@ -42,14 +41,8 @@ public class DebugLayer implements LayeredDraw.Layer {
     }
 
     private void renderEnergyStats(Font font, GuiGraphics graphics, Player player) {
-        if (EnergySystem.MOVEMENT_STAMINA.isVanilla()) {
-            MovementStamina moveStamina = player.getData(CoreDataAttachments.MOVEMENT_STAMINA);
-            renderStaminaInfo(font, graphics, player, moveStamina);
-        }
-        if (EnergySystem.ARM_STAMINA.isVanilla()) {
-            ArmStamina armStamina = player.getData(CoreDataAttachments.ARM_STAMINA);
-            renderStaminaInfo(font, graphics, player, armStamina);
-        }
+        this.renderStaminaInfo(font, graphics, player, EnergySystem.MOVEMENT_STAMINA.getComponent());
+        this.renderStaminaInfo(font, graphics, player, EnergySystem.ARM_STAMINA.getComponent());
         ++line;
     }
 
@@ -62,7 +55,10 @@ public class DebugLayer implements LayeredDraw.Layer {
         ++line;
     }
 
-    private void renderStaminaInfo(Font font, GuiGraphics graphics, Player player, AbstractStamina energy) {
+    private void renderStaminaInfo(Font font, GuiGraphics graphics, Player player, StaminaComponent component) {
+        if (!component.isAttached(player))
+            return;
+        AbstractStamina energy = component.getStaminaData(player);
         float current = energy.getStamina();
         float max = energy.getMaxStamina(player);
         float consumption = energy.getConsumptionMultiplier(player);

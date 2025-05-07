@@ -6,7 +6,6 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.data.PartialAttachmentTypeSerializer;
-import tnt.tarkovcraft.core.common.energy.ArmStamina;
 import tnt.tarkovcraft.core.common.energy.MovementStamina;
 import tnt.tarkovcraft.core.common.mail.MailManager;
 import tnt.tarkovcraft.core.common.skill.SkillData;
@@ -30,10 +29,6 @@ public final class CoreDataAttachments {
     );
     public static final Supplier<AttachmentType<MovementStamina>> MOVEMENT_STAMINA = REGISTRY.register("move_stamina", () -> AttachmentType.builder(MovementStamina::new)
             .serialize(MovementStamina.CODEC)
-            .build()
-    );
-    public static final Supplier<AttachmentType<ArmStamina>> ARM_STAMINA = REGISTRY.register("arm_stamina", () -> AttachmentType.builder(ArmStamina::new)
-            .serialize(ArmStamina.CODEC)
             .build()
     );
     public static final Supplier<AttachmentType<SkillData>> SKILL = REGISTRY.register("skill", () -> AttachmentType.builder(SkillData::new)

@@ -14,6 +14,11 @@ public final class VanillaMovementStaminaComponent implements MovementStaminaCom
     }
 
     @Override
+    public AbstractStamina getStaminaData(LivingEntity entity) {
+        return entity.getData(CoreDataAttachments.MOVEMENT_STAMINA);
+    }
+
+    @Override
     public void update(LivingEntity entity) {
         entity.getData(CoreDataAttachments.MOVEMENT_STAMINA).update(entity);
     }

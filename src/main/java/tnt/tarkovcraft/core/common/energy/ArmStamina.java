@@ -8,6 +8,7 @@ import tnt.tarkovcraft.core.common.init.CoreAttributes;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.network.Synchronizable;
 
+@Deprecated
 public final class ArmStamina extends AbstractStamina implements Synchronizable<ArmStamina> {
 
     public static final Codec<ArmStamina> CODEC = RecordCodecBuilder.create(instance -> instance.group(

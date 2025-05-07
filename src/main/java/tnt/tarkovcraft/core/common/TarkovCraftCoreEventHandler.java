@@ -141,9 +141,6 @@ public final class TarkovCraftCoreEventHandler {
         if (EnergySystem.MOVEMENT_STAMINA.isVanilla()) {
             list.add(CoreDataAttachments.MOVEMENT_STAMINA.get());
         }
-        if (EnergySystem.ARM_STAMINA.isVanilla()) {
-            list.add(CoreDataAttachments.ARM_STAMINA.get());
-        }
         return new S2C_SendDataAttachments(player, list);
     }
 }
