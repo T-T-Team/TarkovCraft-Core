@@ -2,10 +2,8 @@ package tnt.tarkovcraft.core.common.skill.stat;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.resources.ResourceLocation;
 import tnt.tarkovcraft.core.common.skill.stat.condition.SkillStatCondition;
 import tnt.tarkovcraft.core.common.skill.stat.condition.SkillStatConditionType;
-import tnt.tarkovcraft.core.util.Codecs;
 import tnt.tarkovcraft.core.util.context.Context;
 
 import java.util.Collections;

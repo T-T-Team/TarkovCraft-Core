@@ -4,10 +4,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.common.NeoForge;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.api.ArmStaminaComponent;
-import tnt.tarkovcraft.core.common.config.SkillSystemConfig;
-import tnt.tarkovcraft.core.api.event.StaminaEvent;
-import tnt.tarkovcraft.core.compatibility.CompatibilityComponent;
 import tnt.tarkovcraft.core.api.MovementStaminaComponent;
+import tnt.tarkovcraft.core.api.event.StaminaEvent;
+import tnt.tarkovcraft.core.common.config.SkillSystemConfig;
+import tnt.tarkovcraft.core.compatibility.CompatibilityComponent;
 
 public final class EnergySystem {
 

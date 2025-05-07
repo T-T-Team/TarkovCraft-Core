@@ -13,7 +13,10 @@ import tnt.tarkovcraft.core.common.skill.tracker.SkillTrackerDefinition;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTrackerType;
 import tnt.tarkovcraft.core.util.context.Context;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.IntConsumer;
 
 public final class Skill {
