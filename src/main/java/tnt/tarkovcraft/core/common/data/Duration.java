@@ -73,20 +73,28 @@ public record Duration(DurationUnit unit, double value) implements TickValue {
         return convertFromTicks(totalTickValue, this.unit());
     }
 
-    public Component formatDisplay() {
+    public Component format() {
         int value = this.tickValue();
+        return format(value);
+    }
+
+    public static Component format(int ticks) {
         MutableComponent component = Component.literal("");
-        int days = value / DurationUnit.DAYS.unitValue();
-        value %= DurationUnit.DAYS.unitValue();
-        component.append(DurationUnit.DAYS.getLocalizedName(days));
-        int hours = value / DurationUnit.HOURS.unitValue();
-        value %= DurationUnit.HOURS.unitValue();
-        component.append(DurationUnit.HOURS.getLocalizedName(hours));
-        int minutes = value / DurationUnit.MINUTES.unitValue();
-        value %= DurationUnit.MINUTES.unitValue();
-        component.append(DurationUnit.MINUTES.getLocalizedName(minutes));
-        int seconds = value / DurationUnit.SECONDS.unitValue();
-        component.append(DurationUnit.SECONDS.getLocalizedName(seconds));
+        int days = ticks / DurationUnit.DAYS.unitValue();
+        ticks %= DurationUnit.DAYS.unitValue();
+        if (days > 0)
+            component.append(DurationUnit.DAYS.getLocalizedName(days));
+        int hours = ticks / DurationUnit.HOURS.unitValue();
+        ticks %= DurationUnit.HOURS.unitValue();
+        if (hours > 0)
+            component.append(DurationUnit.HOURS.getLocalizedName(hours));
+        int minutes = ticks / DurationUnit.MINUTES.unitValue();
+        ticks %= DurationUnit.MINUTES.unitValue();
+        if (minutes > 0)
+            component.append(DurationUnit.MINUTES.getLocalizedName(minutes));
+        int seconds = ticks / DurationUnit.SECONDS.unitValue();
+        if (seconds > 0)
+            component.append(DurationUnit.SECONDS.getLocalizedName(seconds));
         return component;
     }
 

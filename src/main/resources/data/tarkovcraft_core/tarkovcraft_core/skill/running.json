@@ -32,8 +32,8 @@
       ],
       "tracker": {
         "type": "tarkovcraft_core:limited",
-        "value": 0.00025,
-        "limit": 0.5,
+        "value": 0.0005,
+        "limit": 1.0,
         "cooldown": "5m"
       }
     }

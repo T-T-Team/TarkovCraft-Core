@@ -12,7 +12,7 @@ import tnt.tarkovcraft.core.api.MovementStaminaComponent;
 public final class EnergySystem {
 
     public static final CompatibilityComponent<MovementStaminaComponent> MOVEMENT_STAMINA = new CompatibilityComponent<>("Movement Stamina", VanillaMovementStaminaComponent.INSTANCE);
-    public static final CompatibilityComponent<ArmStaminaComponent> ARM_STAMINA = new CompatibilityComponent<>("Arm Stamina", VanillaArmStaminaComponent.INSTANCE);
+    public static final CompatibilityComponent<ArmStaminaComponent> ARM_STAMINA = new CompatibilityComponent<>("Arm Stamina", NoArmStaminaComponent.INSTANCE);
 
     public static boolean isEnabled() {
         SkillSystemConfig config = TarkovCraftCore.getConfig().skillSystemConfig;
