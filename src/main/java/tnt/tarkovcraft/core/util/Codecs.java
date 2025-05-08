@@ -8,9 +8,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.util.ExtraCodecs;
 
 import java.time.ZonedDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.function.Function;
 
 public final class Codecs {
@@ -73,12 +71,56 @@ public final class Codecs {
         return tag;
     }
 
-    public static <T> Codec<List<T>> list(Codec<T> elementCodec, int maxCount) {
-        return Codec.withAlternative(elementCodec.sizeLimitedListOf(maxCount), elementCodec, Collections::singletonList);
+    public static <T> Codec<List<T>> list(Codec<T> elementCodec, int minCount, int maxCount) {
+        return Codec.withAlternative(elementCodec.listOf(minCount, maxCount), elementCodec, Collections::singletonList);
+    }
+
+    public static <T> Codec<List<T>> lowerBoundList(Codec<T> elementCodec, int minCount) {
+        return list(elementCodec, minCount, Integer.MAX_VALUE);
+    }
+
+    public static <T> Codec<List<T>> upperBoundList(Codec<T> elementCodec, int maxCount) {
+        return list(elementCodec, 0, maxCount);
     }
 
     public static <T> Codec<List<T>> list(Codec<T> elementCodec) {
-        return list(elementCodec, Integer.MAX_VALUE);
+        return list(elementCodec, 0, Integer.MAX_VALUE);
+    }
+
+    public static <T> Codec<Set<T>> hashSet(Codec<T> elementCodec) {
+        return set(elementCodec, HashSet::new);
+    }
+
+    public static <T> Codec<Set<T>> linkedHashSet(Codec<T> elementCodec) {
+        return set(elementCodec, LinkedHashSet::new);
+    }
+
+    public static <E extends Enum<E>> Codec<Set<E>> enumSet(Codec<E> enumCodec) {
+        return set(enumCodec, EnumSet::copyOf);
+    }
+
+    public static <E extends Enum<E>> Codec<Set<E>> enumSet(Class<E> enumType) {
+        return enumSet(enumCodec(enumType));
+    }
+
+    public static <T> Codec<Set<T>> set(Codec<T> codec, Function<List<T>, Set<T>> setProvider) {
+        return list(codec).xmap(setProvider, ArrayList::new);
+    }
+
+    public static <T, C extends Collection<T>> Codec<C> collection(Codec<T> codec, int minCount, int maxCount, Function<List<T>, C> toCollection, Function<C, List<T>> fromCollection) {
+        return list(codec, minCount, maxCount).xmap(toCollection, fromCollection);
+    }
+
+    public static <T, C extends Collection<T>> Codec<C> lowerBoundCollection(Codec<T> codec, int minCount, Function<List<T>, C> toCollection, Function<C, List<T>> fromCollection) {
+        return lowerBoundList(codec, minCount).xmap(toCollection, fromCollection);
+    }
+
+    public static <T, C extends Collection<T>> Codec<C> upperBoundCollection(Codec<T> codec, int maxCount, Function<List<T>, C> toCollection, Function<C, List<T>> fromCollection) {
+        return upperBoundList(codec, maxCount).xmap(toCollection, fromCollection);
+    }
+
+    public static <T, C extends Collection<T>> Codec<C> collection(Codec<T> codec, Function<List<T>, C> toCollection, Function<C, List<T>> fromCollection) {
+        return collection(codec, 0, Integer.MAX_VALUE, toCollection, fromCollection);
     }
 
     public static <T> T deserializeNbtCompound(Codec<T> codec, CompoundTag tag) {
