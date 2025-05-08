@@ -1,9 +1,8 @@
-package tnt.tarkovcraft.core.common.data;
+package tnt.tarkovcraft.core.common.data.duration;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
 
 import java.util.Collection;
@@ -73,29 +72,28 @@ public record Duration(DurationUnit unit, double value) implements TickValue {
         return convertFromTicks(totalTickValue, this.unit());
     }
 
+    public Component format(DurationFormatSettings settings, DurationFormatter formatter) {
+        return Component.literal(formatter.toLocalizedString(settings, this.tickValue()));
+    }
+
+    public Component format(DurationFormatter formatter) {
+        return format(new DurationFormatSettings(), formatter);
+    }
+
     public Component format() {
-        int value = this.tickValue();
-        return format(value);
+        return format(DurationFormats.LONG_NAME);
+    }
+
+    public static Component format(int ticks, DurationFormatSettings settings, DurationFormatter formatter) {
+        return Duration.ticks(ticks).format(settings, formatter);
+    }
+
+    public static Component format(int ticks, DurationFormatter formatter) {
+        return format(ticks, new DurationFormatSettings(), formatter);
     }
 
     public static Component format(int ticks) {
-        MutableComponent component = Component.literal("");
-        int days = ticks / DurationUnit.DAYS.unitValue();
-        ticks %= DurationUnit.DAYS.unitValue();
-        if (days > 0)
-            component.append(DurationUnit.DAYS.getLocalizedName(days));
-        int hours = ticks / DurationUnit.HOURS.unitValue();
-        ticks %= DurationUnit.HOURS.unitValue();
-        if (hours > 0)
-            component.append(DurationUnit.HOURS.getLocalizedName(hours));
-        int minutes = ticks / DurationUnit.MINUTES.unitValue();
-        ticks %= DurationUnit.MINUTES.unitValue();
-        if (minutes > 0)
-            component.append(DurationUnit.MINUTES.getLocalizedName(minutes));
-        int seconds = ticks / DurationUnit.SECONDS.unitValue();
-        if (seconds > 0)
-            component.append(DurationUnit.SECONDS.getLocalizedName(seconds));
-        return component;
+        return format(ticks, DurationFormats.LONG_NAME);
     }
 
     public String toDurationString() {

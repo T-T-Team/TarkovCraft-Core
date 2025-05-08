@@ -1,4 +1,4 @@
-package tnt.tarkovcraft.core.common.data;
+package tnt.tarkovcraft.core.common.data.duration;
 
 public interface TickValue {
 

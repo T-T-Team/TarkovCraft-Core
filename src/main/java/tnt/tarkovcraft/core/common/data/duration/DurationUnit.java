@@ -1,4 +1,4 @@
-package tnt.tarkovcraft.core.common.data;
+package tnt.tarkovcraft.core.common.data.duration;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -7,10 +7,12 @@ import net.minecraft.network.chat.Component;
 import java.time.Duration;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalUnit;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public record DurationUnit(String sign, int unitValue) implements TemporalUnit {
+public record DurationUnit(String sign, int unitValue) implements TemporalUnit, Unit {
 
     private static final Map<String, DurationUnit> units = new HashMap<>();
     public static final Codec<DurationUnit> CODEC = Codec.STRING.comapFlatMap(sign -> {
@@ -25,6 +27,8 @@ public record DurationUnit(String sign, int unitValue) implements TemporalUnit {
     public static final DurationUnit HOURS = new DurationUnit("h", 72_000);
     public static final DurationUnit DAYS = new DurationUnit("d", 1_728_000);
 
+    public static final List<DurationUnit> DEFAULT_FORMAT_UNITS = Arrays.asList(DAYS, HOURS, MINUTES, SECONDS);
+
     public DurationUnit(String sign, int unitValue) {
         this.sign = sign;
         this.unitValue = unitValue;
@@ -34,6 +38,21 @@ public record DurationUnit(String sign, int unitValue) implements TemporalUnit {
     @Override
     public Duration getDuration() {
         return Duration.ofMillis(this.unitValue() * 50L);
+    }
+
+    @Override
+    public String getShortName() {
+        return this.sign;
+    }
+
+    @Override
+    public int value() {
+        return this.unitValue;
+    }
+
+    @Override
+    public Component getLocalizedName(String value) {
+        return Component.translatable("duration.unit." + this.sign, value);
     }
 
     @Override
@@ -60,10 +79,6 @@ public record DurationUnit(String sign, int unitValue) implements TemporalUnit {
     @Override
     public long between(Temporal temporal1Inclusive, Temporal temporal2Exclusive) {
         return temporal1Inclusive.until(temporal2Exclusive, this);
-    }
-
-    public Component getLocalizedName(int time) {
-        return Component.translatable("duration.unit." + this.sign, time);
     }
 
     public static DurationUnit getBySign(String sign) {
