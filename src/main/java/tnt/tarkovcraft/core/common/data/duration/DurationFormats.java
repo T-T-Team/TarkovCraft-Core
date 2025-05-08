@@ -43,6 +43,7 @@ public enum DurationFormats implements DurationFormatter {
                 String strValue = settings.getNumberFormat().apply(unitValue);
                 builder.append(output.apply(unit, strValue));
             }
+            value %= unit.value();
         }
         String out = builder.toString().trim();
         return post.apply(out);
