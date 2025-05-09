@@ -31,10 +31,8 @@
         }
       ],
       "tracker": {
-        "type": "tarkovcraft_core:limited",
-        "value": 0.0005,
-        "limit": 1.0,
-        "cooldown": "5m"
+        "type": "tarkovcraft_core:unrestricted",
+        "value": 0.001
       }
     }
   ],
@@ -62,7 +60,14 @@
         "constant": true,
         "displayUnitFormat": {
           "decimalPlaces": 1,
-          "suffix": " units/tick"
+          "suffix": {
+            "text": " ",
+            "extra": [
+              {
+                "translate": "label.units.unit_per_tick"
+              }
+            ]
+          }
         }
       }
     },

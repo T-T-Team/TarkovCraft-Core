@@ -4,7 +4,7 @@ import net.minecraft.network.chat.Component;
 
 public interface Unit {
 
-    String getShortName();
+    Component getShortName();
 
     Component getLocalizedName(String value);
 

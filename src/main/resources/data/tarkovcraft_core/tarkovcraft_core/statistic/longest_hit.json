@@ -6,7 +6,9 @@
   "format": {
     "decimalPlaces": 2,
     "multiplier": 0.01,
-    "suffix": "m"
+    "suffix": {
+      "translate": "distance.unit.meter.short"
+    }
   },
   "order": 172
 }

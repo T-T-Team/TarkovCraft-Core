@@ -27,7 +27,7 @@ public enum DurationFormats implements DurationFormatter {
     }
 
     public static String formatUnitNameDuration(DurationFormatSettings settings, int value) {
-        return format(settings, value, (unit, unitValue) -> unitValue + unit.getShortName(), UnaryOperator.identity());
+        return format(settings, value, (unit, unitValue) -> unitValue + unit.getShortName().getString(), UnaryOperator.identity());
     }
 
     public static String formatTimeDuration(DurationFormatSettings settings, int value) {

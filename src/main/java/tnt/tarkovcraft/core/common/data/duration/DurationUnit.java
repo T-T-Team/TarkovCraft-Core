@@ -41,8 +41,8 @@ public record DurationUnit(String sign, int unitValue) implements TemporalUnit, 
     }
 
     @Override
-    public String getShortName() {
-        return this.sign;
+    public Component getShortName() {
+        return Component.translatable("duration.unit." + this.sign + ".short");
     }
 
     @Override
