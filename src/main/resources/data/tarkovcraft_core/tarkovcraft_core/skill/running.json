@@ -31,7 +31,7 @@
         }
       ],
       "tracker": {
-        "type": "tarkovcraft_core:unrestricted",
+        "type": "tarkovcraft_core:simple",
         "value": 0.001
       }
     }

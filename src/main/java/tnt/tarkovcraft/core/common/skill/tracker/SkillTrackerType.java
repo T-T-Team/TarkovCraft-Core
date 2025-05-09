@@ -5,8 +5,20 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.resources.ResourceLocation;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 
-public record SkillTrackerType<T extends SkillTracker, CFG extends SkillTrackerConfiguration<T>>(ResourceLocation identifier, MapCodec<CFG> codec, MapCodec<T> dataCodec) {
+import java.util.Objects;
 
-    public static final Codec<SkillTrackerConfiguration<?>> CONFIGURATION_CODEC = CoreRegistries.SKILL_TRIGGER_TYPE.byNameCodec().dispatch(SkillTrackerConfiguration::getType, SkillTrackerType::codec);
-    public static final Codec<SkillTracker> DATA_CODEC = CoreRegistries.SKILL_TRIGGER_TYPE.byNameCodec().dispatch(SkillTracker::getType, SkillTrackerType::dataCodec);
+public record SkillTrackerType<T extends SkillTracker>(ResourceLocation identifier, MapCodec<T> codec) {
+
+    public static final Codec<SkillTracker> CODEC = CoreRegistries.SKILL_TRIGGER_TYPE.byNameCodec().dispatch(SkillTracker::getType, SkillTrackerType::codec);
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof SkillTrackerType<?> that)) return false;
+        return Objects.equals(identifier, that.identifier);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(identifier);
+    }
 }

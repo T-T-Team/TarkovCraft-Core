@@ -32,7 +32,7 @@ public final class CoreRegistries {
 
     // Skill system
     public static final Registry<SkillTriggerEvent> SKILL_TRIGGER_EVENT = new RegistryBuilder<>(Keys.SKILL_TRIGGER_EVENT).create();
-    public static final Registry<SkillTrackerType<?, ?>> SKILL_TRIGGER_TYPE = new RegistryBuilder<>(Keys.SKILL_TRIGGER_TYPE).create();
+    public static final Registry<SkillTrackerType<?>> SKILL_TRIGGER_TYPE = new RegistryBuilder<>(Keys.SKILL_TRIGGER_TYPE).create();
     public static final Registry<SkillTriggerConditionType<?>> SKILL_TRIGGER_CONDITION_TYPE = new RegistryBuilder<>(Keys.SKILL_TRIGGER_CONDITION_TYPE).create();
     public static final Registry<SkillStatConditionType<?>> SKILL_STAT_CONDITION_TYPE = new RegistryBuilder<>(Keys.SKILL_STAT_CONDITION_TYPE).create();
     public static final Registry<SkillStatType<?>> SKILL_STAT = new RegistryBuilder<>(Keys.SKILL_STAT).create();
@@ -46,7 +46,7 @@ public final class CoreRegistries {
         public static final ResourceKey<Registry<Statistic>> STATISTICS = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("util/statistics"));
         public static final ResourceKey<Registry<MailMessageAttachmentType<?>>> MAIL_MESSAGE_ATTACHMENT = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("mail/message_attachment"));
         public static final ResourceKey<Registry<SkillTriggerEvent>> SKILL_TRIGGER_EVENT = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/trigger_event"));
-        public static final ResourceKey<Registry<SkillTrackerType<?, ?>>> SKILL_TRIGGER_TYPE = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/trigger_type"));
+        public static final ResourceKey<Registry<SkillTrackerType<?>>> SKILL_TRIGGER_TYPE = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/trigger_type"));
         public static final ResourceKey<Registry<SkillTriggerConditionType<?>>> SKILL_TRIGGER_CONDITION_TYPE = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/trigger_condition"));
         public static final ResourceKey<Registry<SkillStatConditionType<?>>> SKILL_STAT_CONDITION_TYPE = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/stat_condition"));
         public static final ResourceKey<Registry<SkillStatType<?>>> SKILL_STAT = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/stat"));
