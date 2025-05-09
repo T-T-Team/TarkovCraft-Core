@@ -12,6 +12,13 @@
   "skill.tarkovcraft_core.memory.bonus.memory_forget_amount": "Forget Amount",
   "skill.tarkovcraft_core.memory.bonus.memory_forget_amount.description": "Lower forget amount by %s",
 
+  "skill.trigger.tarkovcraft_core.xp_pickup.info": "On XP pickup",
+  "skill.trigger.tarkovcraft_core.player_tick.info": "On tick",
+
+  "skill.condition.sprinting": "Player must be sprinting",
+  "skill.condition.not_sprinting": "Player cannot be sprinting",
+  "skill.condition.config_toggle": "Config option '%s' must be enabled",
+
   "attribute.tarkovcraft_core.physical_leveling_multiplier": "Physical skill leveling multiplier",
   "attribute.tarkovcraft_core.practical_leveling_multiplier": "Practical skill leveling multiplier",
   "attribute.tarkovcraft_core.mental_leveling_multiplier": "Mental skill leveling multiplier",
@@ -79,6 +86,9 @@
   "duration.unit.d.short": "d",
   "distance.unit.meter": "meters",
   "distance.unit.meter.short": "m",
+
+  "tooltip.tarkovcraft_core.skill.skill_info": "Triggers",
+  "tooltip.tarkovcraft_core.skill.conditions": "Conditions",
 
   "config.screen.tarkovcraft_core": "TarkovCraft",
   "config.tarkovcraft_core.option.enableMailSystem": "Enable mail system",

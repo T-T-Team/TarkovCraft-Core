@@ -4,6 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.CommonComponents;
@@ -25,13 +26,16 @@ import tnt.tarkovcraft.core.common.skill.SkillData;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 import tnt.tarkovcraft.core.common.skill.stat.SkillStatDefinition;
 import tnt.tarkovcraft.core.common.skill.stat.SkillStatDisplayInformation;
+import tnt.tarkovcraft.core.common.skill.tracker.SkillTrackerDefinition;
 import tnt.tarkovcraft.core.util.context.Context;
 import tnt.tarkovcraft.core.util.context.ContextImpl;
 import tnt.tarkovcraft.core.util.context.ContextKeys;
+import tnt.tarkovcraft.core.util.helper.Helper;
 import tnt.tarkovcraft.core.util.helper.MathHelper;
 import tnt.tarkovcraft.core.util.helper.RenderUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -73,7 +77,14 @@ public class SkillScreen extends CharacterSubScreen {
                 SkillContextKeys.DEFINITION, skill.getDefinition().value(),
                 SkillContextKeys.SKILL, skill
         );
-        return new SkillWidget(5, 5 + index * 40, this.width - 15, 35, this.font, skill, TooltipHelper.screen(this), context);
+        SkillWidget widget = new SkillWidget(5, 5 + index * 40, this.width - 15, 35, this.font, skill, TooltipHelper.screen(this), context);
+        SkillDefinition definition = skill.getDefinition().value();
+        Collection<SkillTrackerDefinition> trackers = definition.getTrackers();
+        List<Component> tooltip = new ArrayList<>();
+        tooltip.add(Component.translatable("tooltip.tarkovcraft_core.skill.skill_info").withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
+        trackers.stream().flatMap(def -> def.getInfoComponents().stream()).forEach(tooltip::add);
+        widget.setDescription(tooltip);
+        return widget;
     }
 
     public static final class SkillWidget extends AbstractWidget {
@@ -83,6 +94,7 @@ public class SkillScreen extends CharacterSubScreen {
         private final Font font;
         private final Skill skill;
         private final ResourceLocation skillIcon;
+        private List<FormattedCharSequence> description;
 
         public SkillWidget(int x, int y, int width, int height, Font font, Skill skill, TooltipHelper tooltip, Context context) {
             super(x, y, width, height, CommonComponents.EMPTY);
@@ -93,6 +105,10 @@ public class SkillScreen extends CharacterSubScreen {
             MutableComponent title = skill.getDefinition().value().getName().copy();
             this.setMessage(title.withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE));
             this.skillIcon = SkillDefinition.getIcon(skill.getDefinition());
+        }
+
+        public void setDescription(List<Component> description) {
+            this.description = description.stream().flatMap(component -> this.tooltip.split(component).stream()).toList();
         }
 
         @Override
@@ -140,6 +156,10 @@ public class SkillScreen extends CharacterSubScreen {
                     this.tooltip.setForNextRenderPass(tooltip);
                 }
                 ++index;
+            }
+            //noinspection SuspiciousNameCombination
+            if (MathHelper.isWithinBounds(mouseX, mouseY, this.getX(), this.getY(), this.height, this.height) && Helper.isNotEmpty(this.description)) {
+                this.tooltip.setForNextRenderPass(this.description);
             }
         }
 

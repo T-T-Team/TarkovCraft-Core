@@ -5,6 +5,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.toma.configuration.Configuration;
 import dev.toma.configuration.config.value.IConfigValueReadable;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 import tnt.tarkovcraft.core.common.init.CoreSkillTriggerConditions;
 import tnt.tarkovcraft.core.util.context.Context;
 
@@ -28,6 +30,14 @@ public class ConfigToggleSkillCondition implements SkillTriggerCondition {
         return Configuration.getConfig(this.configId).flatMap(holder -> holder.getConfigValue(this.configPath, Boolean.class))
                 .map(value -> value.get(IConfigValueReadable.Mode.SAVED))
                 .orElse(false);
+    }
+
+    @Override
+    public Component getDescription() {
+        Component title = Configuration.getConfig(this.configId).flatMap(holder -> holder.getConfigValue(this.configPath, Boolean.class))
+                .map(IConfigValueReadable::getTitle)
+                .orElse(Component.literal("???"));
+        return Component.translatable("skill.condition.config_toggle", title);
     }
 
     @Override

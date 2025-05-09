@@ -3,7 +3,7 @@ package tnt.tarkovcraft.core.client.screen.form;
 import dev.toma.configuration.config.validate.IValidationResult;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
-import tnt.tarkovcraft.core.util.Util;
+import tnt.tarkovcraft.core.util.helper.Helper;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -32,7 +32,7 @@ public abstract class FormElement<T, C extends AbstractWidget> implements Suppli
     }
 
     protected void setValidatorResult(IValidationResult result) {
-        this.validatorResult = Util.orDefault(result, IValidationResult.success());
+        this.validatorResult = Helper.orDefault(result, IValidationResult.success());
     }
 
     @Override

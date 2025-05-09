@@ -3,6 +3,8 @@ package tnt.tarkovcraft.core.common.skill.tracker.condition;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import tnt.tarkovcraft.core.common.init.CoreSkillTriggerConditions;
 import tnt.tarkovcraft.core.util.context.Context;
@@ -24,6 +26,11 @@ public class IsSprintingSkillTriggerCondition implements SkillTriggerCondition {
         Entity entity = context.getOrThrow(ContextKeys.ENTITY);
         boolean sprinting = entity.isSprinting();
         return this.invert != sprinting;
+    }
+
+    @Override
+    public Component getDescription() {
+        return invert ? Component.translatable("skill.condition.not_sprinting") : Component.translatable("skill.condition.sprinting");
     }
 
     @Override
