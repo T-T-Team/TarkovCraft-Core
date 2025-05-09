@@ -4,8 +4,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import tnt.tarkovcraft.core.client.notification.NotificationChannel;
 import tnt.tarkovcraft.core.common.Notification;
@@ -20,7 +18,6 @@ public record S2C_SendNotification(Notification notification) implements CustomP
             S2C_SendNotification::new
     );
 
-    @OnlyIn(Dist.CLIENT)
     public void handleMessage(IPayloadContext context) {
         NotificationChannel channel = NotificationChannel.MAIN;
         channel.add(this.notification());

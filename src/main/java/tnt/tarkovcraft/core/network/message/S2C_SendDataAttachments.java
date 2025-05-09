@@ -13,8 +13,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -82,7 +80,6 @@ public class S2C_SendDataAttachments implements CustomPacketPayload {
         this.data = buf.readNbt();
     }
 
-    @OnlyIn(Dist.CLIENT)
     @SuppressWarnings("unchecked")
     public <T extends Synchronizable<T>> void handleMessage(IPayloadContext ctx) {
         Player player = ctx.player();
