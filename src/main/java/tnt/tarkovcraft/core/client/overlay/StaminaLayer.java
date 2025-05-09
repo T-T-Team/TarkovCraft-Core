@@ -15,7 +15,7 @@ import tnt.tarkovcraft.core.client.TarkovCraftCoreClient;
 import tnt.tarkovcraft.core.client.config.StaminaConfigurableOverlay;
 import tnt.tarkovcraft.core.client.config.TarkovCraftCoreClientConfig;
 import tnt.tarkovcraft.core.common.energy.EnergySystem;
-import tnt.tarkovcraft.core.compatibility.CompatibilityComponent;
+import tnt.tarkovcraft.core.compatibility.Component;
 
 public class StaminaLayer implements LayeredDraw.Layer {
 
@@ -43,7 +43,7 @@ public class StaminaLayer implements LayeredDraw.Layer {
         }
     }
 
-    private void renderStaminaOverlay(GuiGraphics graphics, Window window, StaminaConfigurableOverlay overlay, LivingEntity entity, CompatibilityComponent<? extends StaminaComponent> intgComponent) {
+    private void renderStaminaOverlay(GuiGraphics graphics, Window window, StaminaConfigurableOverlay overlay, LivingEntity entity, Component<? extends StaminaComponent> intgComponent) {
         if (!overlay.enabled)
             return;
         StaminaComponent component = intgComponent.getComponent();

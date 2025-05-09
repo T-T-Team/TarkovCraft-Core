@@ -7,9 +7,10 @@ import org.apache.logging.log4j.MarkerManager;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 
 import java.util.*;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
-public final class CompatibilityComponent<T> {
+public final class Component<T> {
 
     public static final Marker MARKER = MarkerManager.getMarker("Compatibility");
 
@@ -19,20 +20,19 @@ public final class CompatibilityComponent<T> {
     private final Lazy<T> component;
     private boolean isVanilla = true;
 
-    public CompatibilityComponent(String name, T defaultComponent) {
+    public Component(String name, T defaultComponent) {
         this.name = name;
         this.holders = new LinkedHashSet<>();
         this.defaultComponent = defaultComponent;
         this.component = Lazy.of(() -> {
-            ModList list = ModList.get();
             List<ComponentHolder<T>> components = new ArrayList<>(holders);
             components.sort(Comparator.comparingInt(ComponentHolder::order));
             for (ComponentHolder<T> holder : holders) {
-                if (list.isLoaded(holder.modId())) {
+                if (holder.loadPredicate.getAsBoolean()) {
                     T value = holder.componentProvider.get();
                     this.holders = null;
                     this.isVanilla = false;
-                    TarkovCraftCore.LOGGER.warn(MARKER, "Detected component {} override, will use component {} from mod {}", name, value, holder.modId);
+                    TarkovCraftCore.LOGGER.warn(MARKER, "Detected component {} override, will use component {}", name, value);
                     return value;
                 }
             }
@@ -46,11 +46,19 @@ public final class CompatibilityComponent<T> {
         return this.isVanilla;
     }
 
-    public synchronized void register(String modId, Supplier<T> provider, int order) {
+    public synchronized void register(BooleanSupplier predicate, Supplier<T> provider, int order) {
         if (this.holders == null) {
             throw new IllegalStateException("Component registration is not possible at this stage");
         }
-        this.holders.add(new ComponentHolder<>(modId, order, provider));
+        this.holders.add(new ComponentHolder<>(predicate, order, provider));
+    }
+
+    public synchronized void register(BooleanSupplier predicate, Supplier<T> provider) {
+        this.register(predicate, provider, 0);
+    }
+
+    public synchronized void register(String modId, Supplier<T> provider, int order) {
+        this.register(() -> ModList.get().isLoaded(modId), provider, order);
     }
 
     public synchronized void register(String modId, Supplier<T> provider) {
@@ -65,6 +73,11 @@ public final class CompatibilityComponent<T> {
         return defaultComponent;
     }
 
+    public void invalidate() {
+        this.component.invalidate();
+        TarkovCraftCore.LOGGER.debug(MARKER, "Component '{}' invalidated", name);
+    }
+
     @Override
     public String toString() {
         return "Component{" +
@@ -74,17 +87,6 @@ public final class CompatibilityComponent<T> {
                 '}';
     }
 
-    public record ComponentHolder<T>(String modId, int order, Supplier<T> componentProvider) {
-
-        @Override
-        public boolean equals(Object o) {
-            if (!(o instanceof ComponentHolder<?> that)) return false;
-            return Objects.equals(modId, that.modId);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hashCode(modId);
-        }
+    public record ComponentHolder<T>(BooleanSupplier loadPredicate, int order, Supplier<T> componentProvider) {
     }
 }
