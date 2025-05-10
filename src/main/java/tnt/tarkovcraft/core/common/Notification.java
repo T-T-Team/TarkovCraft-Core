@@ -39,6 +39,7 @@ public final class Notification {
     private Notification(Severity notificationSeverity, Component label, ResourceLocation icon, int lifetime) {
         this.notificationSeverity = Objects.requireNonNull(notificationSeverity);
         this.label = Objects.requireNonNull(label);
+        this.customIcon = icon;
         this.lifetime = lifetime;
     }
 
