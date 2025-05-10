@@ -24,9 +24,6 @@ public class StaminaLayer implements LayeredDraw.Layer {
 
     @Override
     public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
-        if (!EnergySystem.isEnabled())
-            return;
-
         Minecraft client = Minecraft.getInstance();
         Window window = client.getWindow();
         Entity entity = client.cameraEntity;
