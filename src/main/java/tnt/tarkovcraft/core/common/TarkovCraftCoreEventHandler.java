@@ -76,9 +76,7 @@ public final class TarkovCraftCoreEventHandler {
     @SubscribeEvent
     private void onPlayerTickPost(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
-        EnergySystem.MOVEMENT_STAMINA.getComponent().tick(player);
         player.getData(CoreDataAttachments.ENTITY_ATTRIBUTES).update();
-        SkillSystem.trigger(CoreSkillTriggerEvents.PLAYER_TICK, player);
     }
 
     @SubscribeEvent
