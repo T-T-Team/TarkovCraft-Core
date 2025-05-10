@@ -6,11 +6,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.client.screen.ColorPalette;
+import tnt.tarkovcraft.core.util.helper.RenderUtils;
 
 import java.util.Deque;
 import java.util.function.IntUnaryOperator;
@@ -46,7 +46,7 @@ public class NotificationLayer implements LayeredDraw.Layer {
         graphics.pose().translate(0, 0, NOTIFICATION_Z_LAYER);
         for (ClientNotification notification : notifications) {
             graphics.fill(left, y, windowWidth, y + 10, ColorPalette.BG_TRANSPARENT_NORMAL);
-            graphics.blit(RenderType::guiTextured, notification.icon(), left + 1, y + 1, 0.0F, 0.0F, 8, 8, 16, 16, 16, 16);
+            RenderUtils.blitFull(graphics, notification.icon(), left, y, left + 10, y + 10);
             graphics.drawScrollingString(font, notification.label(), left + 12, windowWidth, y + 1, 0xFFFFFF);
             y -= 11;
         }

@@ -20,6 +20,10 @@ public final class RenderUtils {
         return a > limit;
     }
 
+    public static void blitFull(GuiGraphics graphics, ResourceLocation icon, int x1, int y1, int x2, int y2) {
+        blitFull(graphics, icon, x1, y1, x2, y2, -1);
+    }
+
     public static void blitFull(GuiGraphics graphics, ResourceLocation icon, int x1, int y1, int x2, int y2, int color) {
         graphics.innerBlit(
                 RenderType::guiTextured,

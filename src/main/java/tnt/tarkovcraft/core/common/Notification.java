@@ -59,6 +59,10 @@ public final class Notification {
         return of(Severity.ERROR, label, DEFAULT_LIFETIME);
     }
 
+    public static Notification success(Component label) {
+        return of(Severity.SUCCESS, label, DEFAULT_LIFETIME);
+    }
+
     public static Notification system(Component label) {
         return of(Severity.SYSTEM, label, DEFAULT_LIFETIME);
     }
@@ -94,10 +98,11 @@ public final class Notification {
 
     public enum Severity implements UnaryOperator<Style> {
 
-        SYSTEM(style -> style.withBold(true).withItalic(true).applyFormat(ChatFormatting.GOLD)),
-        INFO(style -> style.applyFormat(ChatFormatting.GREEN)),
+        SYSTEM(style -> style.withItalic(true).applyFormat(ChatFormatting.AQUA)),
+        SUCCESS(style -> style.withColor(ChatFormatting.GREEN)),
+        INFO(style -> style.applyFormat(ChatFormatting.WHITE)),
         WARNING(style -> style.applyFormat(ChatFormatting.YELLOW)),
-        ERROR(style -> style.applyFormat(ChatFormatting.RED)),;
+        ERROR(style -> style.applyFormat(ChatFormatting.RED));
 
         private final UnaryOperator<Style> labelStylization;
         private final ResourceLocation icon;
