@@ -8,37 +8,44 @@ public class NoArmStaminaComponent implements ArmStaminaComponent {
     public static final NoArmStaminaComponent INSTANCE = new NoArmStaminaComponent();
 
     @Override
-    public boolean isAttached(LivingEntity entity) {
+    public boolean isActiveForEntity(LivingEntity entity) {
         return false;
     }
 
     @Override
-    public AbstractStamina getStaminaData(LivingEntity entity) {
-        return null;
-    }
-
-    @Override
-    public boolean checkRecoveryAndUpdate(LivingEntity entity) {
-        return false;
+    public void tick(LivingEntity entity) {
     }
 
     @Override
     public float getStamina(LivingEntity entity) {
-        return 0.0F;
+        return 0;
+    }
+
+    @Override
+    public void setStamina(LivingEntity entity, float amount) {
+    }
+
+    @Override
+    public void consumeStamina(LivingEntity entity, float amount) {
+    }
+
+    @Override
+    public void recoverStamina(LivingEntity entity, float amount) {
     }
 
     @Override
     public float getMaxStamina(LivingEntity entity) {
-        return 0.0F;
+        return 0;
     }
 
     @Override
-    public void setStamina(LivingEntity entity, float stamina) {
+    public boolean hasAnyStamina(LivingEntity entity) {
+        return true;
     }
 
     @Override
-    public boolean hasSufficientStamina(LivingEntity entity, float amount) {
-        return false;
+    public boolean hasStamina(LivingEntity entity, float requiredAmount) {
+        return true;
     }
 
     @Override

@@ -6,7 +6,6 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.data.PartialAttachmentTypeSerializer;
-import tnt.tarkovcraft.core.common.energy.MovementStamina;
 import tnt.tarkovcraft.core.common.mail.MailManager;
 import tnt.tarkovcraft.core.common.skill.SkillData;
 import tnt.tarkovcraft.core.common.statistic.StatisticTracker;
@@ -25,10 +24,6 @@ public final class CoreDataAttachments {
     public static final Supplier<AttachmentType<EntityAttributeData>> ENTITY_ATTRIBUTES = REGISTRY.register("entity_attributes", () -> AttachmentType.builder(EntityAttributeData::new)
             .serialize(PartialAttachmentTypeSerializer.withCodecAndHolder(EntityAttributeData.CODEC, EntityAttributeData::setHolder))
             .copyOnDeath()
-            .build()
-    );
-    public static final Supplier<AttachmentType<MovementStamina>> MOVEMENT_STAMINA = REGISTRY.register("move_stamina", () -> AttachmentType.builder(MovementStamina::new)
-            .serialize(MovementStamina.CODEC)
             .build()
     );
     public static final Supplier<AttachmentType<SkillData>> SKILL = REGISTRY.register("skill", () -> AttachmentType.builder(SkillData::new)

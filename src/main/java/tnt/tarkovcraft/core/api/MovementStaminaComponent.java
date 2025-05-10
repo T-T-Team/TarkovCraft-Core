@@ -4,10 +4,6 @@ import net.minecraft.world.entity.LivingEntity;
 
 public interface MovementStaminaComponent extends StaminaComponent {
 
-    void update(LivingEntity entity);
-
-    void setStamina(LivingEntity entity, int amount);
-
     boolean canSprint(LivingEntity entity);
 
     boolean canJump(LivingEntity entity);

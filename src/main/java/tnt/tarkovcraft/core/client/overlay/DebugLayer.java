@@ -11,7 +11,6 @@ import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.api.StaminaComponent;
 import tnt.tarkovcraft.core.client.TarkovCraftCoreClient;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
-import tnt.tarkovcraft.core.common.energy.AbstractStamina;
 import tnt.tarkovcraft.core.common.energy.EnergySystem;
 import tnt.tarkovcraft.core.common.init.CoreAttributes;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
@@ -41,8 +40,8 @@ public class DebugLayer implements LayeredDraw.Layer {
     }
 
     private void renderEnergyStats(Font font, GuiGraphics graphics, Player player) {
-        this.renderStaminaInfo(font, graphics, player, EnergySystem.MOVEMENT_STAMINA.getComponent());
-        this.renderStaminaInfo(font, graphics, player, EnergySystem.ARM_STAMINA.getComponent());
+        this.renderStaminaInfo(font, graphics, player, "Sprint stamina", EnergySystem.MOVEMENT_STAMINA.getComponent());
+        this.renderStaminaInfo(font, graphics, player, "Arm stamina", EnergySystem.ARM_STAMINA.getComponent());
         ++line;
     }
 
@@ -55,15 +54,13 @@ public class DebugLayer implements LayeredDraw.Layer {
         ++line;
     }
 
-    private void renderStaminaInfo(Font font, GuiGraphics graphics, Player player, StaminaComponent component) {
-        if (!component.isAttached(player))
-            return;
-        AbstractStamina energy = component.getStaminaData(player);
-        float current = energy.getStamina();
-        float max = energy.getMaxStamina(player);
-        float consumption = energy.getConsumptionMultiplier(player);
-        String value = String.format(Locale.ROOT, "%s: %.2f/%.2f | C %.3f", energy.getStaminaType(), current, max, consumption);
-        graphics.drawString(font, value, 5, y(), 0xFFFFFF);
+    private void renderStaminaInfo(Font font, GuiGraphics graphics, Player player, String name, StaminaComponent component) {
+        if (component.isActiveForEntity(player)) {
+            float current = component.getStamina(player);
+            float max = component.getMaxStamina(player);
+            String value = String.format(Locale.ROOT, "%s: %.2f/%.2f", name, current, max);
+            graphics.drawString(font, value, 5, y(), 0xFFFFFF);
+        }
     }
 
     private int y() {

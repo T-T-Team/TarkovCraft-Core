@@ -2,20 +2,20 @@ package tnt.tarkovcraft.core.api.event;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.Event;
-import tnt.tarkovcraft.core.common.energy.AbstractStamina;
-import tnt.tarkovcraft.core.common.energy.MovementStamina;
+import tnt.tarkovcraft.core.api.MovementStaminaComponent;
+import tnt.tarkovcraft.core.api.StaminaComponent;
 
 public abstract class StaminaEvent extends Event {
 
-    private final AbstractStamina stamina;
+    private final StaminaComponent stamina;
     private final LivingEntity entity;
 
-    public StaminaEvent(AbstractStamina stamina, LivingEntity entity) {
+    public StaminaEvent(StaminaComponent stamina, LivingEntity entity) {
         this.stamina = stamina;
         this.entity = entity;
     }
 
-    public AbstractStamina getStamina() {
+    public StaminaComponent getStamina() {
         return stamina;
     }
 
@@ -27,13 +27,13 @@ public abstract class StaminaEvent extends Event {
 
         private Boolean result;
 
-        public CanSprint(MovementStamina stamina, LivingEntity entity) {
+        public CanSprint(MovementStaminaComponent stamina, LivingEntity entity) {
             super(stamina, entity);
         }
 
         @Override
-        public MovementStamina getStamina() {
-            return (MovementStamina) super.getStamina();
+        public MovementStaminaComponent getStamina() {
+            return (MovementStaminaComponent) super.getStamina();
         }
 
         public void setCanSprint(Boolean result) {
@@ -47,8 +47,13 @@ public abstract class StaminaEvent extends Event {
 
     public static final class AfterSprint extends StaminaEvent {
 
-        public AfterSprint(AbstractStamina stamina, LivingEntity entity) {
+        public AfterSprint(MovementStaminaComponent stamina, LivingEntity entity) {
             super(stamina, entity);
+        }
+
+        @Override
+        public MovementStaminaComponent getStamina() {
+            return (MovementStaminaComponent) super.getStamina();
         }
     }
 
@@ -56,13 +61,13 @@ public abstract class StaminaEvent extends Event {
 
         private Boolean result;
 
-        public CanJump(MovementStamina stamina, LivingEntity entity) {
+        public CanJump(MovementStaminaComponent stamina, LivingEntity entity) {
             super(stamina, entity);
         }
 
         @Override
-        public MovementStamina getStamina() {
-            return (MovementStamina) super.getStamina();
+        public MovementStaminaComponent getStamina() {
+            return (MovementStaminaComponent) super.getStamina();
         }
 
         public void setCanJump(Boolean result) {
@@ -76,8 +81,13 @@ public abstract class StaminaEvent extends Event {
 
     public static final class AfterJump extends StaminaEvent {
 
-        public AfterJump(AbstractStamina stamina, LivingEntity entity) {
+        public AfterJump(MovementStaminaComponent stamina, LivingEntity entity) {
             super(stamina, entity);
+        }
+
+        @Override
+        public MovementStaminaComponent getStamina() {
+            return (MovementStaminaComponent) super.getStamina();
         }
     }
 
@@ -85,7 +95,7 @@ public abstract class StaminaEvent extends Event {
 
         private float consumeAmount;
 
-        public Consuming(AbstractStamina stamina, LivingEntity entity, float consumeAmount) {
+        public Consuming(StaminaComponent stamina, LivingEntity entity, float consumeAmount) {
             super(stamina, entity);
             this.consumeAmount = consumeAmount;
         }
@@ -104,7 +114,7 @@ public abstract class StaminaEvent extends Event {
         private int recoveryDelay;
         private final boolean wasEnergyDrained;
 
-        public SetRecoveryDelay(AbstractStamina stamina, LivingEntity entity, int recoveryDelay, boolean wasEnergyDrained) {
+        public SetRecoveryDelay(StaminaComponent stamina, LivingEntity entity, int recoveryDelay, boolean wasEnergyDrained) {
             super(stamina, entity);
             this.recoveryDelay = recoveryDelay;
             this.wasEnergyDrained = wasEnergyDrained;

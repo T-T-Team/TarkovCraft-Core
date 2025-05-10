@@ -50,7 +50,7 @@ public final class TarkovCraftCoreEventHandler {
             return;
         // Reset states
         MovementStaminaComponent stamina = EnergySystem.MOVEMENT_STAMINA.getComponent();
-        stamina.setStamina(player, Integer.MAX_VALUE);
+        stamina.setStamina(player, (float) Integer.MAX_VALUE);
         // Sync payload
         PacketDistributor.sendToPlayer((ServerPlayer) player, this.getSyncPacket(player));
     }
@@ -76,7 +76,7 @@ public final class TarkovCraftCoreEventHandler {
     @SubscribeEvent
     private void onPlayerTickPost(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
-        EnergySystem.MOVEMENT_STAMINA.getComponent().update(player);
+        EnergySystem.MOVEMENT_STAMINA.getComponent().tick(player);
         player.getData(CoreDataAttachments.ENTITY_ATTRIBUTES).update();
         SkillSystem.trigger(CoreSkillTriggerEvents.PLAYER_TICK, player);
     }
@@ -138,9 +138,6 @@ public final class TarkovCraftCoreEventHandler {
         list.add(CoreDataAttachments.ENTITY_ATTRIBUTES.get());
         list.add(CoreDataAttachments.STATISTICS.get());
         list.add(CoreDataAttachments.SKILL.get());
-        if (EnergySystem.MOVEMENT_STAMINA.isVanilla()) {
-            list.add(CoreDataAttachments.MOVEMENT_STAMINA.get());
-        }
         return new S2C_SendDataAttachments(player, list);
     }
 }

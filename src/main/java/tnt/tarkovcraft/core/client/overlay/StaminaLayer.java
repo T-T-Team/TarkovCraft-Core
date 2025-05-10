@@ -47,7 +47,7 @@ public class StaminaLayer implements LayeredDraw.Layer {
         if (!overlay.enabled)
             return;
         StaminaComponent component = intgComponent.getComponent();
-        if (!component.isAttached(entity))
+        if (!component.isActiveForEntity(entity))
             return;
         float stamina = component.getStamina(entity);
         float maxStamina = component.getMaxStamina(entity);

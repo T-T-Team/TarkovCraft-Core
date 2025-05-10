@@ -1,17 +1,26 @@
 package tnt.tarkovcraft.core.api;
 
 import net.minecraft.world.entity.LivingEntity;
-import tnt.tarkovcraft.core.common.energy.AbstractStamina;
 
 public interface StaminaComponent {
 
-    boolean isAttached(LivingEntity entity);
+    boolean isActiveForEntity(LivingEntity entity);
 
-    AbstractStamina getStaminaData(LivingEntity entity);
+    void tick(LivingEntity entity);
 
     float getStamina(LivingEntity entity);
 
+    void setStamina(LivingEntity entity, float amount);
+
+    void consumeStamina(LivingEntity entity, float amount);
+
+    void recoverStamina(LivingEntity entity, float amount);
+
     float getMaxStamina(LivingEntity entity);
+
+    boolean hasStamina(LivingEntity entity, float requiredAmount);
+
+    boolean hasAnyStamina(LivingEntity entity);
 
     boolean isCriticalValue(LivingEntity entity);
 }

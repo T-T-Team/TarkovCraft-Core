@@ -31,10 +31,8 @@ public abstract class LivingEntityMixin extends Entity implements Attackable, IL
         }
         LivingEntity entity = (LivingEntity) (Object) this;
         MovementStaminaComponent component = EnergySystem.MOVEMENT_STAMINA.getComponent();
-        if (component.isAttached(entity)) {
-            if (!component.canSprint(entity)) {
-                ci.cancel();
-            }
+        if (!component.canSprint(entity)) {
+            ci.cancel();
         }
     }
 
@@ -46,12 +44,20 @@ public abstract class LivingEntityMixin extends Entity implements Attackable, IL
     private void tarkovCraftCore$jumpFromGround(CallbackInfo ci) {
         LivingEntity entity = (LivingEntity) (Object) this;
         MovementStaminaComponent component = EnergySystem.MOVEMENT_STAMINA.getComponent();
-        if (component.isAttached(entity)) {
-            if (component.canJump(entity)) {
-                component.onJump(entity);
-            } else {
-                ci.cancel();
-            }
+        if (component.canJump(entity)) {
+            component.onJump(entity);
+        } else {
+            ci.cancel();
         }
+    }
+
+    @Inject(
+            method = "tick",
+            at = @At("RETURN")
+    )
+    private void tarkovCraftCore$tick(CallbackInfo ci) {
+        LivingEntity entity = (LivingEntity) (Object) this;
+        MovementStaminaComponent component = EnergySystem.MOVEMENT_STAMINA.getComponent();
+        component.tick(entity);
     }
 }

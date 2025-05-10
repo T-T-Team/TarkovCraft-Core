@@ -5,13 +5,14 @@ import net.neoforged.neoforge.common.NeoForge;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.api.ArmStaminaComponent;
 import tnt.tarkovcraft.core.api.MovementStaminaComponent;
+import tnt.tarkovcraft.core.api.StaminaComponent;
 import tnt.tarkovcraft.core.api.event.StaminaEvent;
 import tnt.tarkovcraft.core.common.config.SkillSystemConfig;
 import tnt.tarkovcraft.core.compatibility.Component;
 
 public final class EnergySystem {
 
-    public static final Component<MovementStaminaComponent> MOVEMENT_STAMINA = new Component<>("Movement Stamina", VanillaMovementStaminaComponent.INSTANCE);
+    public static final Component<MovementStaminaComponent> MOVEMENT_STAMINA = new Component<>("Movement Stamina", NoMovementStaminaComponent.INSTANCE);
     public static final Component<ArmStaminaComponent> ARM_STAMINA = new Component<>("Arm Stamina", NoArmStaminaComponent.INSTANCE);
 
     public static boolean isEnabled() {
@@ -19,31 +20,31 @@ public final class EnergySystem {
         return config.skillSystemEnabled && config.staminaEnabled;
     }
 
-    public static Boolean canSprint(MovementStamina stamina, LivingEntity entity) {
-        StaminaEvent.CanSprint event = NeoForge.EVENT_BUS.post(new StaminaEvent.CanSprint(stamina, entity));
+    public static Boolean canSprint(LivingEntity entity) {
+        StaminaEvent.CanSprint event = NeoForge.EVENT_BUS.post(new StaminaEvent.CanSprint(MOVEMENT_STAMINA.getComponent(), entity));
         return event.canSprint();
     }
 
-    public static void onSprinted(MovementStamina stamina, LivingEntity entity) {
-        NeoForge.EVENT_BUS.post(new StaminaEvent.AfterSprint(stamina, entity));
+    public static void onSprinted(LivingEntity entity) {
+        NeoForge.EVENT_BUS.post(new StaminaEvent.AfterSprint(MOVEMENT_STAMINA.getComponent(), entity));
     }
 
-    public static Boolean canJump(MovementStamina stamina, LivingEntity entity) {
-        StaminaEvent.CanJump event = NeoForge.EVENT_BUS.post(new StaminaEvent.CanJump(stamina, entity));
+    public static Boolean canJump(LivingEntity entity) {
+        StaminaEvent.CanJump event = NeoForge.EVENT_BUS.post(new StaminaEvent.CanJump(MOVEMENT_STAMINA.getComponent(), entity));
         return event.canJump();
     }
 
-    public static void onJumped(MovementStamina stamina, LivingEntity entity) {
-        NeoForge.EVENT_BUS.post(new StaminaEvent.AfterJump(stamina, entity));
+    public static void onJumped(LivingEntity entity) {
+        NeoForge.EVENT_BUS.post(new StaminaEvent.AfterJump(MOVEMENT_STAMINA.getComponent(), entity));
     }
 
-    public static float consumeEnergy(AbstractStamina stamina, LivingEntity entity, float baseConsumption) {
-        StaminaEvent.Consuming event = NeoForge.EVENT_BUS.post(new StaminaEvent.Consuming(stamina, entity, baseConsumption));
+    public static float consumeEnergy(StaminaComponent component, LivingEntity entity, float baseConsumption) {
+        StaminaEvent.Consuming event = NeoForge.EVENT_BUS.post(new StaminaEvent.Consuming(component, entity, baseConsumption));
         return Math.abs(event.getConsumeAmount());
     }
 
-    public static int getRecoveryDelay(AbstractStamina stamina, LivingEntity entity, int recoveryDelay, boolean wasDrained) {
-        StaminaEvent.SetRecoveryDelay event = NeoForge.EVENT_BUS.post(new StaminaEvent.SetRecoveryDelay(stamina, entity, recoveryDelay, wasDrained));
+    public static int getRecoveryDelay(StaminaComponent component, LivingEntity entity, int recoveryDelay, boolean wasDrained) {
+        StaminaEvent.SetRecoveryDelay event = NeoForge.EVENT_BUS.post(new StaminaEvent.SetRecoveryDelay(component, entity, recoveryDelay, wasDrained));
         return event.getRecoveryDelay();
     }
 }
