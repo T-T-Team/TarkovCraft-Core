@@ -16,6 +16,18 @@ public class SkillSystemConfig {
 
     @Configurable
     @Configurable.Synchronized
+    @Configurable.DecimalRange(min = 0, max = 1000)
+    @Configurable.Comment(localize = true, value = "Amount of stamina units consumed per sprint tick")
+    public float sprintStaminaConsumption = 0.5F;
+
+    @Configurable
+    @Configurable.Synchronized
+    @Configurable.DecimalRange(min = 0, max = 1000)
+    @Configurable.Comment(localize = true, value = "Amount of stamina units consumed per jump")
+    public float jumpStaminaConsumption = 2.5F;
+
+    @Configurable
+    @Configurable.Synchronized
     @Configurable.Comment(localize = true, value = "Allows you to lose skill experience (but not levels)")
     public boolean enableSkillExperienceLoss = true;
 

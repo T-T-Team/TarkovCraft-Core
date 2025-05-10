@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.LivingEntity;
+import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.attribute.Attribute;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.init.CoreAttributes;
@@ -16,9 +17,6 @@ public class MovementStamina extends AbstractStamina implements Synchronizable<M
             Codec.FLOAT.optionalFieldOf("stamina", (float) DEFAULT_STAMINA_VALUE).forGetter(t -> t.stamina),
             Codec.INT.optionalFieldOf("recoveryTime", 0).forGetter(t -> t.recoveryDelay)
     ).apply(instance, MovementStamina::new));
-
-    public static final float SPRINT_STAMINA_CONSUMPTION = 0.5F;
-    public static final float JUMP_STAMINA_CONSUMPTION = 10.0F;
 
     public MovementStamina() {
         this(DEFAULT_STAMINA_VALUE, 0);
@@ -51,13 +49,19 @@ public class MovementStamina extends AbstractStamina implements Synchronizable<M
     }
 
     public void onSprint(LivingEntity entity) {
-        this.consume(entity, SPRINT_STAMINA_CONSUMPTION, 20);
-        EnergySystem.onSprinted(this, entity);
+        float amount = TarkovCraftCore.getConfig().skillSystemConfig.sprintStaminaConsumption;
+        if (amount > 0) {
+            this.consume(entity, amount, 20);
+            EnergySystem.onSprinted(this, entity);
+        }
     }
 
     public void onJump(LivingEntity entity) {
-        this.consume(entity, JUMP_STAMINA_CONSUMPTION, 40);
-        EnergySystem.onJumped(this, entity);
+        float amount = TarkovCraftCore.getConfig().skillSystemConfig.jumpStaminaConsumption;
+        if (amount > 0) {
+            this.consume(entity, amount, 40);
+            EnergySystem.onJumped(this, entity);
+        }
     }
 
     public void update(LivingEntity entity) {
