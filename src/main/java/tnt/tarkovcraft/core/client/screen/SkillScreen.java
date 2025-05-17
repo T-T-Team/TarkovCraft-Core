@@ -4,7 +4,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.CommonComponents;
@@ -118,7 +117,7 @@ public class SkillScreen extends CharacterSubScreen {
             // Skill name
             guiGraphics.drawString(this.font, this.getMessage(), this.getX() + this.height + 3, this.getY() + 1, ColorPalette.WHITE, true);
             // Skill frame + icon
-            guiGraphics.fill(this.getX(), this.getY(), this.getX() + this.height, this.getY() + this.height, frameColor);
+            //guiGraphics.fill(this.getX(), this.getY(), this.getX() + this.height, this.getY() + this.height, frameColor);
             RenderUtils.blitFull(guiGraphics, this.skillIcon, this.getX() + 1, this.getY() + 1, this.getX() + this.height - 1, this.getY() + this.height - 1, -1);
             // Experience bar
             guiGraphics.fillGradient(this.getX() + this.height + 2, this.getY() + 13, this.getRight(), this.getBottom() - 11, ARGB.opaque(ColorPalette.TEXT_COLOR_DISABLED), ARGB.scaleRGB(ARGB.opaque(ColorPalette.TEXT_COLOR_DISABLED), 0.6F));
@@ -145,7 +144,6 @@ public class SkillScreen extends CharacterSubScreen {
                 int right = left + 10;
                 int top = this.getY();
                 int bottom = top + 10;
-                guiGraphics.fillGradient(left, top, right, bottom, ARGB.opaque(displayInfo.color()), ARGB.scaleRGB(ARGB.opaque(displayInfo.color()), 0.75F));
                 RenderUtils.blitFull(guiGraphics, displayInfo.icon(), left + 1, top + 1, right - 1, bottom - 1, -1);
                 if (MathHelper.isWithinBounds(mouseX, mouseY, left, top, right - left, bottom - top)) {
                     Component name = displayInfo.name().copy().withStyle(ChatFormatting.UNDERLINE).withStyle(ChatFormatting.YELLOW);

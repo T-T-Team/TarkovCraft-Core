@@ -51,7 +51,7 @@ public class SkillDefinition {
 
     public static ResourceLocation getIcon(Holder<SkillDefinition> holder) {
         ResourceLocation skillIdentifier = holder.getKey().location();
-        return skillIdentifier.withPath(pth -> "textures/icons/skills/" + pth + ".png");
+        return skillIdentifier.withPath(pth -> "textures/icons/skill/" + pth + ".png");
     }
 
     public Skill instance(RegistryAccess access) {

@@ -34,7 +34,6 @@
           "translate": "skill.tarkovcraft_core.memory.bonus.memory_forget_rate"
         },
         "descriptionKey": "skill.tarkovcraft_core.memory.bonus.memory_forget_rate.description",
-        "color": "#FFFF",
         "icon": "tarkovcraft_core:textures/icons/skill/bonus/memory_rate.png"
       },
       "conditions": [
@@ -61,7 +60,6 @@
           "translate": "skill.tarkovcraft_core.memory.bonus.memory_forget_amount"
         },
         "descriptionKey": "skill.tarkovcraft_core.memory.bonus.memory_forget_amount.description",
-        "color": "#FFFF",
         "icon": "tarkovcraft_core:textures/icons/skill/bonus/memory_amount.png"
       },
       "conditions": [
