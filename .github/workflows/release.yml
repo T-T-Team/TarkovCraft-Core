@@ -29,12 +29,12 @@ jobs:
 #      - name: Release
 #        run: ./gradlew publishMod -PCURSEFORGE_TOKEN=${{ secrets.CF_TOKEN }} -PMODRINTH_TOKEN=${{ secrets.MODRINTH_TOKEN }} --no-configuration-cache
 
-      - name: Prepare changelog
-        run: echo "CHANGELOG_CONTENT=$(head -n 15 CHANGELOG.md | sed 's/"/\\"/g')" >> $GITHUB_ENV
+  notify:
+    runs-on: ubuntu-latest
+    needs:
+      release
 
-      - name: Convert changelog
-        run: echo="CHANGELOG_JSON=$(printf '```markdown\n%s\n```' "$CHANGELOG_CONTENT" | jq -Rs .)" >> $GITHUB_ENV
-
+    steps:
       - name: Notify
         run: |
           curl -H "Content-Type: application/json" \
@@ -56,11 +56,6 @@ jobs:
                 \"url\": \"https://media.forgecdn.net/avatars/1277/751/638831094834853443.png\"
               },
               \"fields\": [
-                {
-                  \"name\": \"ChangeLog (up to 15 entries max)\",
-                  \"value\": ${CHANGELOG_JSON},
-                  \"inline\": false
-                },
                 {
                   \"name\": \"CurseForge\",
                   \"value\": \"[Download](<https://www.curseforge.com/minecraft/mc-mods/tarkovcraft-core>)\",
