@@ -29,18 +29,20 @@ jobs:
 #      - name: Release
 #        run: ./gradlew publishMod -PCURSEFORGE_TOKEN=${{ secrets.CF_TOKEN }} -PMODRINTH_TOKEN=${{ secrets.MODRINTH_TOKEN }} --no-configuration-cache
 
+      - name: Prepare changelog
+        run: echo "CHANGELOG_CONTENT=$(head -n 15 CHANGELOG.md | sed 's/"/\\"/g')" >> $GITHUB_ENV
+
+      - name: Convert changelog
+        run: echo="CHANGELOG_JSON=$(printf '```markdown\n%s\n```' "$CHANGELOG_CONTENT" | jq -Rs .)" >> $GITHUB_ENV
+
       - name: Notify
         run: |
-          ROLE_ID=1373296070574080070
-          CHANGELOG_CONTENT=$(head -n 15 CHANGELOG.md | sed 's/"/\\"/g')
-          CHANGELOG_JSON=$(printf '```markdown\n%s\n```' "$CHANGELOG_CONTENT" | jq -Rs .)
-          
           curl -H "Content-Type: application/json" \
           -X POST \
           -d "{
             \"username\": \"Release bot\",
             \"avatar_url\": \"https://cdn.discordapp.com/avatars/1308464796831711244/e886df028da3a37ad84b05e3fb0c3b8b.webp?size=32\",
-            \"content\": \"<@&$ROLE_ID>\",
+            \"content\": \"<@&1373296070574080070>\",
             \"embeds\": [{
               \"title\": \"TarkovCraft: Core\",
               \"url\": \"https://github.com/T-T-Team/TarkovCraft-Core\",
