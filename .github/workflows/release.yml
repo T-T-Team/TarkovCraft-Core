@@ -18,76 +18,22 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-# TODO uncomment once ready
-#      - name: Prepare Gradle Wrapper
-#        if: ${{ runner.os != 'Windows' }}
-#        run: chmod +x ./gradlew
-#
-#      - name: Gradle setup
-#        uses: gradle/actions/setup-gradle@v4
-#
-#      - name: Release
-#        run: ./gradlew publishMod -PCURSEFORGE_TOKEN=${{ secrets.CF_TOKEN }} -PMODRINTH_TOKEN=${{ secrets.MODRINTH_TOKEN }} --no-configuration-cache
+      - name: Prepare Gradle Wrapper
+        if: ${{ runner.os != 'Windows' }}
+        run: chmod +x ./gradlew
 
+      - name: Gradle setup
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Release
+        run: ./gradlew publishMod -PCURSEFORGE_TOKEN=${{ secrets.CF_TOKEN }} -PMODRINTH_TOKEN=${{ secrets.MODRINTH_TOKEN }} --no-configuration-cache
+
+  notify:
+    runs-on: ubuntu-latest
+    needs:
+      release
+
+    steps:
       - name: Notify
         run: |
-          ROLE_ID=1373296070574080070
-          CHANGELOG_CONTENT=$(head -n 15 CHANGELOG.md | sed 's/"/\\"/g')
-          CHANGELOG_JSON=$(printf '```markdown\n%s\n```' "$CHANGELOG_CONTENT" | jq -Rs .)
-          
-          curl -H "Content-Type: application/json" \
-          -X POST \
-          -d "{
-            \"username\": \"Release bot\",
-            \"avatar_url\": \"https://cdn.discordapp.com/avatars/1308464796831711244/e886df028da3a37ad84b05e3fb0c3b8b.webp?size=32\",
-            \"content\": \"<@&$ROLE_ID>\",
-            \"embeds\": [{
-              \"title\": \"TarkovCraft: Core\",
-              \"url\": \"https://github.com/T-T-Team/TarkovCraft-Core\",
-              \"description\": \"New version is now being published and should be available soon\",
-              \"color\": 695807,
-              \"author\": {
-                \"name\": \"Mod updates\",
-                \"icon_url\": \"https://cdn.discordapp.com/avatars/1308464796831711244/e886df028da3a37ad84b05e3fb0c3b8b.webp?size=32\"
-              },
-              \"thumbnail\": {
-                \"url\": \"https://media.forgecdn.net/avatars/1277/751/638831094834853443.png\"
-              },
-              \"fields\": [
-                {
-                  \"name\": \"ChangeLog (up to 15 entries max)\",
-                  \"value\": ${CHANGELOG_JSON},
-                  \"inline\": false
-                },
-                {
-                  \"name\": \"CurseForge\",
-                  \"value\": \"[Download](<https://www.curseforge.com/minecraft/mc-mods/tarkovcraft-core>)\",
-                  \"inline\": true
-                },
-                {
-                  \"name\": \"Modrinth\",
-                  \"value\": \"[Download](<https://modrinth.com/mod/tarkovcraft-core>)\",
-                  \"inline\": true
-                },
-                {
-                  \"name\": \"Sources\",
-                  \"value\": \"[GitHub](<https://github.com/T-T-Team/TarkovCraft-Core/issues>)\",
-                  \"inline\": true
-                },
-                {
-                  \"name\": \"Donate\",
-                  \"value\": \"[Patreon](<https://www.patreon.com/c/tnt_team>)\",
-                  \"inline\": false
-                },
-                {
-                  \"name\": \"Report issue\",
-                  \"value\": \"[GitHub](<https://github.com/T-T-Team/TarkovCraft-Core/issues>)\",
-                  \"inline\": false
-                },
-              ],
-              \"footer\": {
-                \"text\": \"CurseForge file may take up to 1 hour to be published\"
-              }
-            }]
-          }" \
-          ${{ secrets.WEBHOOK_URL }}
+          curl ${{ secrets.WEBHOOK_URL }} --json '{"username":"Release bot","avatar_url":"https://cdn.discordapp.com/avatars/1308464796831711244/e886df028da3a37ad84b05e3fb0c3b8b.webp?size=32","content":"<@&1373296070574080070>","embeds":[{"title":"TarkovCraft: Core","url":"https://github.com/T-T-Team/TarkovCraft-Core","description":"New version is now being published and should be available soon","color":695807,"author":{"name":"Mod updates","icon_url":"https://cdn.discordapp.com/avatars/1308464796831711244/e886df028da3a37ad84b05e3fb0c3b8b.webp?size=32"},"thumbnail":{"url":"https://media.forgecdn.net/avatars/1277/751/638831094834853443.png"},"fields":[{"name":"CurseForge","value":"[Download](<https://www.curseforge.com/minecraft/mc-mods/tarkovcraft-core>)","inline":true},{"name":"Modrinth","value":"[Download](<https://modrinth.com/mod/tarkovcraft-core>)","inline":true},{"name":"Sources","value":"[GitHub](<https://github.com/T-T-Team/TarkovCraft-Core/issues>)","inline":true},{"name":"Support","value":"[Patreon](<https://www.patreon.com/c/tnt_team>)","inline":false},{"name":"Report issue","value":"[GitHub](<https://github.com/T-T-Team/TarkovCraft-Core/issues>)","inline":false}],"footer":{"text":"CurseForge file may take up to 1 hour to be published"}}]}'
