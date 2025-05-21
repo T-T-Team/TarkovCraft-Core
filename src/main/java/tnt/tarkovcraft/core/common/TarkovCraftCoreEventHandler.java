@@ -77,6 +77,7 @@ public final class TarkovCraftCoreEventHandler {
     private void onPlayerTickPost(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
         player.getData(CoreDataAttachments.ENTITY_ATTRIBUTES).update();
+        SkillSystem.trigger(CoreSkillTriggerEvents.PLAYER_TICK, player);
     }
 
     @SubscribeEvent

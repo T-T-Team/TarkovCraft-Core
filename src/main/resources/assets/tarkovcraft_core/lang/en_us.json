@@ -5,6 +5,7 @@
   "skill.tarkovcraft_core.memory.bonus.memory_forget_amount": "Forget Amount",
   "skill.tarkovcraft_core.memory.bonus.memory_forget_amount.description": "Lower forget amount by %s",
 
+  "skill.trigger.tarkovcraft_core.player_tick.info": "On tick",
   "skill.trigger.tarkovcraft_core.xp_pickup.info": "On XP pickup",
 
   "skill.condition.sprinting": "Player must be sprinting",
