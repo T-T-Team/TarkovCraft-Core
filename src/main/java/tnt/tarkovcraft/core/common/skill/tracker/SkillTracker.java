@@ -8,7 +8,5 @@ public interface SkillTracker {
 
     float trigger(Context context);
 
-    default SkillTrackerType<?> getType() {
-        return null;
-    }
+    SkillTrackerType<?> getType();
 }
