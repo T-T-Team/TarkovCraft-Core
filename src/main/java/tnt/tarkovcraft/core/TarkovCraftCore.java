@@ -17,6 +17,7 @@ import tnt.tarkovcraft.core.common.TarkovCraftCoreEventHandler;
 import tnt.tarkovcraft.core.common.config.TarkovCraftCoreConfig;
 import tnt.tarkovcraft.core.common.init.*;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
+import tnt.tarkovcraft.core.common.skill.SkillSystem;
 import tnt.tarkovcraft.core.common.statistic.DisplayStatistic;
 import tnt.tarkovcraft.core.network.TarkovCraftCoreNetwork;
 
@@ -41,6 +42,7 @@ public final class TarkovCraftCore {
 
         // Neoforge event listeners
         NeoForge.EVENT_BUS.register(new TarkovCraftCoreEventHandler());
+        NeoForge.EVENT_BUS.addListener(SkillSystem::onServerStarted);
 
         // Deferred registries
         CoreAttributes.REGISTRY.register(modEventBus);

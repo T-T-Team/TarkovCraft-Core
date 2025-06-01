@@ -1,13 +1,18 @@
 package tnt.tarkovcraft.core.common.skill;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
+import org.jetbrains.annotations.ApiStatus;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.config.SkillSystemConfig;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
@@ -24,6 +29,7 @@ import java.util.function.Supplier;
 public final class SkillSystem {
 
     public static final Marker MARKER = MarkerManager.getMarker("SkillSystem");
+    private static final Multimap<SkillTriggerEvent, SkillDefinition> TRIGGER_CACHE = ArrayListMultimap.create();
 
     public static boolean isSkillSystemEnabled() {
         return TarkovCraftCore.getConfig().skillSystemConfig.skillSystemEnabled;
@@ -49,9 +55,14 @@ public final class SkillSystem {
         if (!isSkillSystemEnabled())
             return false;
         SkillData data = entity.getData(CoreDataAttachments.SKILL);
-        return getTriggerables(entity.registryAccess(), event).stream()
-                .filter(SkillDefinition::isEnabled)
-                .anyMatch(definition -> data.trigger(event, definition, multiplier, entity, context));
+        Collection<SkillDefinition> definitions = TRIGGER_CACHE.get(event);
+        boolean anyTrigger = false;
+        for (SkillDefinition definition : definitions) {
+            if (data.trigger(event, definition, multiplier, entity, context)) {
+                anyTrigger = true;
+            }
+        }
+        return anyTrigger;
     }
 
     public static boolean trigger(Supplier<SkillTriggerEvent> event, Entity entity, float multiplier, Context context) {
@@ -124,18 +135,19 @@ public final class SkillSystem {
         triggerAndSynchronize(event, entity, 1.0F);
     }
 
-    public static Collection<SkillDefinition> getTriggerables(RegistryAccess access, SkillTriggerEvent event) {
+    @ApiStatus.Internal
+    public static void onServerStarted(ServerStartedEvent event) {
+        TRIGGER_CACHE.clear();
+        MinecraftServer server = event.getServer();
+        RegistryAccess access = server.registryAccess();
         Registry<SkillDefinition> registry = access.lookupOrThrow(CoreRegistries.DatapackKeys.SKILL_DEFINITION);
-        return registry.listElements()
-                .map(Holder.Reference::value)
-                .filter(definition -> {
+        registry.listElements().map(Holder.Reference::value)
+                .filter(SkillDefinition::isEnabled)
+                .forEach(definition -> {
                     for (SkillTrackerDefinition trackerDefinition : definition.getTrackers()) {
-                        if (trackerDefinition.event().equals(event)) {
-                            return true;
-                        }
+                        SkillTriggerEvent triggerEvent = trackerDefinition.event();
+                        TRIGGER_CACHE.put(triggerEvent, definition);
                     }
-                    return false;
-                })
-                .toList();
+                });
     }
 }
