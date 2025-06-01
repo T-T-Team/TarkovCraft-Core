@@ -183,8 +183,7 @@ tasks.register('generateChangeLog', GitChangelogTask) {
     untaggedName.set("# $version")
     fromRevision.set(getReleaseCommit())
     toRevision.set("HEAD~1")
-    templateContent.set("""
-# Release $version
+    templateContent.set("""# Release $version
 {{#commits}}
 - {{{messageTitle}}}
 {{/commits}}
@@ -220,7 +219,12 @@ modrinth {
     uploadFile.set(jar)
     gameVersions.set(compatibleVersions)
     debugMode.set(debug.toBoolean())
-    changelog.set(file("./CHANGELOG.md").exists() ? file("./CHANGELOG.md").text : "-- No changelog provided --")
+    changelog.set(
+            providers.provider {
+                def changelogFile = file("./CHANGELOG.md")
+                changelogFile.exists() ? changelogFile.text : "-- No changelog provided --"
+            }
+    )
     loaders.set(["neoforge"])
     dependencies {
         required.project("configuration")
@@ -249,5 +253,6 @@ def getReleaseCommit() {
         errorOutput = System.err
         ignoreExitValue = true
     }
-    return out.toString().trim().split('\n')[1]
+    String[] commits = out.toString().trim().split('\n')
+    return commits[Math.min(1, commits.length - 1)]
 }
