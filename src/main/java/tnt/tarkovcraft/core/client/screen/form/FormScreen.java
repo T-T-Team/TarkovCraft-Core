@@ -39,6 +39,8 @@ public class FormScreen extends DialogScreen {
         for (FormElement<?, ?> element : elements) {
             this.initFormElement(element, index++);
         }
+
+        this.initNotificationLayer();
     }
 
     protected <T, C extends AbstractWidget> void initFormElement(FormElement<T, C> element, int index) {
@@ -48,7 +50,7 @@ public class FormScreen extends DialogScreen {
 
         Component label = element.getLabel();
         // Field name
-        this.addRenderableOnly(new AbstractTextRenderable.Component(left, top, width, 10, 0xFFFFFF, false, this.font, label));
+        this.addRenderableOnly(new AbstractTextRenderable.Component(left, top, width, 10, 0xFFFFFFFF, false, this.font, label));
         // Field
         this.addRenderableWidget(element.init(left, top + 10, width, 15, this.context));
         // Error field

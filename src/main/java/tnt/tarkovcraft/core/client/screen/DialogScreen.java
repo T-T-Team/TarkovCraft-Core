@@ -68,12 +68,14 @@ public class DialogScreen extends OverlayScreen {
         this.addBody();
         this.addTitleSeparator();
         this.addControlButtons();
+
+        this.initNotificationLayer();
     }
 
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
-        this.renderBlurredBackground();
+        this.renderBlurredBackground(guiGraphics);
         if (this.windowBackground != null) {
             guiGraphics.fill(0, 0, this.width, this.height, this.windowBackground);
         }
@@ -99,7 +101,7 @@ public class DialogScreen extends OverlayScreen {
 
     protected void addTitle() {
         int margin = this.getButtonMargin();
-        this.addRenderableOnly(new AbstractTextRenderable.Component(this.left + margin, this.top + 2, this.windowWidth - 2 * margin, 10, 0xFFFFFF, false, this.font, this.title));
+        this.addRenderableOnly(new AbstractTextRenderable.Component(this.left + margin, this.top + 2, this.windowWidth - 2 * margin, 10, 0xFFFFFFFF, false, this.font, this.title));
     }
 
     protected void addBody() {
@@ -109,7 +111,7 @@ public class DialogScreen extends OverlayScreen {
                 .toList();
         int index = 0;
         for (FormattedCharSequence text : formattedText) {
-            this.addRenderableOnly(new AbstractTextRenderable.FormattedSequence(this.left + margin, this.top + 15 + index++ * 10, this.windowWidth - 2 * margin, 10, 0xFFFFFF, false, this.font, text));
+            this.addRenderableOnly(new AbstractTextRenderable.FormattedSequence(this.left + margin, this.top + 15 + index++ * 10, this.windowWidth - 2 * margin, 10, 0xFFFFFFFF, false, this.font, text));
         }
     }
 

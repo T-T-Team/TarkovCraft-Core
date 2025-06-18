@@ -4,7 +4,7 @@ import dev.toma.configuration.config.validate.IValidationResult;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -29,7 +29,7 @@ public class ValidationMessageRenderable extends AbstractRenderable {
         IValidationResult result = this.resultProvider.get();
         IValidationResult.Severity severity = result.severity();
         if (!this.onlyWarnOrError || severity.isWarningOrError()) {
-            guiGraphics.blit(RenderType::guiTextured, severity.iconPath, this.x, this.y, 0.0F, 0.0F, 10, 10, 16, 16, 16, 16);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, severity.iconPath, this.x, this.y, 0.0F, 0.0F, 10, 10, 16, 16, 16, 16);
             List<Component> messages = result.messages();
             if (this.height >= 10 && !messages.isEmpty()) {
                 int renderCount = Math.min(this.height / 10, messages.size());

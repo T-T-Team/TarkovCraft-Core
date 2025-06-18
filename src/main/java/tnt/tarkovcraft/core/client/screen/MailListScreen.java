@@ -10,7 +10,7 @@ import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.PlayerInfo;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -169,6 +169,8 @@ public class MailListScreen extends LayeredScreen implements DataScreen {
                 claimAttachmentsButton.setTint(ColorPalette.YELLOW);
             }
         }
+
+        this.initNotificationLayer();
     }
 
     protected boolean canSendChatMessages() {
@@ -177,7 +179,7 @@ public class MailListScreen extends LayeredScreen implements DataScreen {
 
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBlurredBackground();
+        this.renderBlurredBackground(guiGraphics);
     }
 
     @Override
@@ -308,7 +310,7 @@ public class MailListScreen extends LayeredScreen implements DataScreen {
             int x = this.getX() + 2;
             int y = this.getY() + 2;
             if (this.chat.getSource().isSystemChat()) {
-                guiGraphics.blit(RenderType::guiTextured, this.icon, x, y, 0.0F, 0.0F, 16, 16, 16, 16);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.icon, x, y, 0.0F, 0.0F, 16, 16, 16, 16);
             } else {
                 PlayerFaceRenderer.draw(guiGraphics, this.icon, x, y, 16, false, false, -1);
             }

@@ -11,7 +11,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import tnt.tarkovcraft.core.client.screen.navigation.CoreNavigators;
@@ -33,10 +32,7 @@ import tnt.tarkovcraft.core.util.helper.Helper;
 import tnt.tarkovcraft.core.util.helper.MathHelper;
 import tnt.tarkovcraft.core.util.helper.RenderUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class SkillScreen extends CharacterSubScreen {
 
@@ -67,6 +63,8 @@ public class SkillScreen extends CharacterSubScreen {
 
         ScrollbarWidget scrollbar = this.addRenderableWidget(new ScrollbarWidget(this.width - 4, 25, 4, this.height - 25, skillView));
         scrollbar.setBackground(ColorPalette.BG_TRANSPARENT_WEAK);
+
+        this.initNotificationLayer();
     }
 
     private SkillWidget buildSkillWidget(Player player, Skill skill, int index) {
@@ -76,7 +74,7 @@ public class SkillScreen extends CharacterSubScreen {
                 SkillContextKeys.DEFINITION, skill.getDefinition().value(),
                 SkillContextKeys.SKILL, skill
         );
-        SkillWidget widget = new SkillWidget(5, 5 + index * 40, this.width - 15, 35, this.font, skill, TooltipHelper.screen(this), context);
+        SkillWidget widget = new SkillWidget(5, 5 + index * 40, this.width - 15, 35, this.font, skill, context);
         SkillDefinition definition = skill.getDefinition().value();
         Collection<SkillTrackerDefinition> trackers = definition.getTrackers();
         List<Component> tooltip = new ArrayList<>();
@@ -89,17 +87,15 @@ public class SkillScreen extends CharacterSubScreen {
     public static final class SkillWidget extends AbstractWidget {
 
         private final Context context;
-        private final TooltipHelper tooltip;
         private final Font font;
         private final Skill skill;
         private final ResourceLocation skillIcon;
-        private List<FormattedCharSequence> description;
+        private List<Component> description;
 
-        public SkillWidget(int x, int y, int width, int height, Font font, Skill skill, TooltipHelper tooltip, Context context) {
+        public SkillWidget(int x, int y, int width, int height, Font font, Skill skill, Context context) {
             super(x, y, width, height, CommonComponents.EMPTY);
             this.font = font;
             this.skill = skill;
-            this.tooltip = tooltip;
             this.context = context;
             MutableComponent title = skill.getDefinition().value().getName().copy();
             this.setMessage(title.withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE));
@@ -107,17 +103,15 @@ public class SkillScreen extends CharacterSubScreen {
         }
 
         public void setDescription(List<Component> description) {
-            this.description = description.stream().flatMap(component -> this.tooltip.split(component).stream()).toList();
+            this.description = description;
         }
 
         @Override
         protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
             boolean isMaxLevel = this.skill.isMaxLevel();
-            int frameColor = isMaxLevel ? 0xFFFFFF00 : 0xFF888888;
             // Skill name
             guiGraphics.drawString(this.font, this.getMessage(), this.getX() + this.height + 3, this.getY() + 1, ColorPalette.WHITE, true);
-            // Skill frame + icon
-            //guiGraphics.fill(this.getX(), this.getY(), this.getX() + this.height, this.getY() + this.height, frameColor);
+            // Skill icon
             RenderUtils.blitFull(guiGraphics, this.skillIcon, this.getX() + 1, this.getY() + 1, this.getX() + this.height - 1, this.getY() + this.height - 1, -1);
             // Experience bar
             guiGraphics.fillGradient(this.getX() + this.height + 2, this.getY() + 13, this.getRight(), this.getBottom() - 11, ARGB.opaque(ColorPalette.TEXT_COLOR_DISABLED), ARGB.scaleRGB(ARGB.opaque(ColorPalette.TEXT_COLOR_DISABLED), 0.6F));
@@ -148,16 +142,14 @@ public class SkillScreen extends CharacterSubScreen {
                 if (MathHelper.isWithinBounds(mouseX, mouseY, left, top, right - left, bottom - top)) {
                     Component name = displayInfo.name().copy().withStyle(ChatFormatting.UNDERLINE).withStyle(ChatFormatting.YELLOW);
                     Component statDescription = displayInfo.getDescription(this.context, statDefinition.stat());
-                    List<FormattedCharSequence> tooltip = new ArrayList<>();
-                    tooltip.addAll(this.tooltip.split(name));
-                    tooltip.addAll(this.tooltip.split(statDescription));
-                    this.tooltip.setForNextRenderPass(tooltip);
+                    List<Component> tooltip = Arrays.asList(name, statDescription);
+                    guiGraphics.setTooltipForNextFrame(this.font, tooltip, Optional.empty(), mouseX, mouseY);
                 }
                 ++index;
             }
             //noinspection SuspiciousNameCombination
             if (MathHelper.isWithinBounds(mouseX, mouseY, this.getX(), this.getY(), this.height, this.height) && Helper.isNotEmpty(this.description)) {
-                this.tooltip.setForNextRenderPass(this.description);
+                guiGraphics.setTooltipForNextFrame(this.font, this.description, Optional.empty(), mouseX, mouseY);
             }
         }
 

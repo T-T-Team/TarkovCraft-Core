@@ -54,7 +54,7 @@ public class StatisticsScreen extends CharacterSubScreen {
             int left = this.width / 3;
             EntityWidget entityWidget = this.addRenderableWidget(new EntityWidget(0, 25, left, this.height - 25, player));
             entityWidget.setBackground(ColorPalette.BG_TRANSPARENT_WEAK);
-            entityWidget.setOffset(0.0F, -0.4F, 0.0F);
+            entityWidget.setOffset(0.0F, 1.0F, 0.0F);
 
             StatisticTracker tracker = player.getData(CoreDataAttachments.STATISTICS);
 
@@ -75,7 +75,7 @@ public class StatisticsScreen extends CharacterSubScreen {
             int top = this.height - 20 - playerLabels.size() * 12;
             for (int i = 0; i < playerLabels.size(); i++) {
                 Component playerLabel = playerLabels.get(i);
-                this.addRenderableOnly(new AbstractTextRenderable.CenteredComponent(0, top + i * 12, left, 10, 0xFFFFFF, true, this.font, playerLabel));
+                this.addRenderableOnly(new AbstractTextRenderable.CenteredComponent(0, top + i * 12, left, 10, 0xFFFFFFFF, true, this.font, playerLabel));
             }
 
             ListWidget<TextStatisticWidget> textStats = this.addRenderableWidget(new ListWidget<>(left, 36, this.width - left, this.height - 26, statistics, (it, in) -> this.createTextStatistic(left, this.width - left, context, it, in)));
@@ -83,6 +83,8 @@ public class StatisticsScreen extends CharacterSubScreen {
             textStats.setScroll(this.textScroll);
             textStats.setScrollListener((x, y) -> this.textScroll = y);
         });
+
+        this.initNotificationLayer();
     }
 
     private List<Component> getPlayerLabels(Player player, StatisticTracker tracker) {

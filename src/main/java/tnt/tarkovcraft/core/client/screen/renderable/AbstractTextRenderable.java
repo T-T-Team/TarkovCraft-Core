@@ -56,8 +56,8 @@ public abstract class AbstractTextRenderable<T> implements Renderable {
 
         @Override
         public void renderText(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-            float left = this.x + (this.width - this.font.width(this.text)) / 2.0F;
-            float top = this.y + (this.height - this.font.lineHeight) / 2.0F;
+            int left = (int) (this.x + (this.width - this.font.width(this.text)) / 2.0F);
+            int top = (int) (this.y + (this.height - this.font.lineHeight) / 2.0F);
             graphics.drawString(this.font, this.text, left, top, this.color, this.shadow);
         }
     }

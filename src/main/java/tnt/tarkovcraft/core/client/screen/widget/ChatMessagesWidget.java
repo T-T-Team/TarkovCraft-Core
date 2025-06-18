@@ -66,7 +66,7 @@ public class ChatMessagesWidget extends AbstractWidget {
         if (RenderUtils.isVisibleColor(this.backgroundColor)) {
             guiGraphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), this.backgroundColor);
         }
-        float y = this.getBottom() - 10 + (float) (this.scrollAmount - index * 10.0F);
+        int y = (int) (this.getBottom() - 10 + (float) (this.scrollAmount - index * 10.0F));
         for (int i = index; i < this.compiledMessages.size(); i++) {
             Message message = this.compiledMessages.get(i);
             boolean isMine = this.me.equals(message.owner);

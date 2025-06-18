@@ -3,7 +3,7 @@ package tnt.tarkovcraft.core.client.screen.widget;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.ResourceLocation;
 import tnt.tarkovcraft.core.client.screen.ColorPalette;
@@ -50,7 +50,7 @@ public class IconButton extends AbstractButton {
         }
         if (this.icon != null) {
             graphics.innerBlit(
-                    RenderType::guiTextured,
+                    RenderPipelines.GUI_TEXTURED,
                     this.icon,
                     this.getX() + this.iconOffset,
                     this.getRight() - this.iconOffset,

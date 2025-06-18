@@ -55,8 +55,8 @@ public class LabelButton extends Button {
         guiGraphics.drawString(
                 font,
                 this.getMessage().getString(),
-                this.getX() + (this.getWidth() - font.width(this.getMessage())) / 2.0F,
-                this.getY() + (this.getHeight() - font.lineHeight) / 2.0F,
+                (int) (this.getX() + (this.getWidth() - font.width(this.getMessage())) / 2.0F),
+                (int) (this.getY() + (this.getHeight() - font.lineHeight) / 2.0F),
                 color,
                 false
         );

@@ -53,7 +53,6 @@ public abstract class CharacterSubScreen extends NotificationScreen implements D
 
     @Override
     protected void init() {
-        super.init();
         this.isMyProfile = this.minecraft.player.getUUID().equals(this.characterProfileId);
         this.addHeader();
     }
@@ -98,7 +97,7 @@ public abstract class CharacterSubScreen extends NotificationScreen implements D
 
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBlurredBackground();
+        this.renderBlurredBackground(guiGraphics);
         guiGraphics.fill(0, 0, this.width, this.height, ColorPalette.BG_TRANSPARENT_NORMAL);
         guiGraphics.fill(0, 0, this.width, 25, ColorPalette.BG_TRANSPARENT_WEAK);
     }

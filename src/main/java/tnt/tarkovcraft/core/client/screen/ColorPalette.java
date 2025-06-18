@@ -10,11 +10,11 @@ public final class ColorPalette {
     public static final int BG_HOVER_WEAK = 0x44FFFFFF;
     public static final int BG_HOVER_STRONG = 0x99FFFFFF;
 
-    public static final int TEXT_COLOR = 0xE0E0E0;
-    public static final int TEXT_COLOR_DISABLED = 0x707070;
-    public static final int TEXT_COLOR_INFO = 0x0066AA;
-    public static final int TEXT_COLOR_WARNING = 0xAAAA00;
-    public static final int TEXT_COLOR_ERROR = 0xAA0000;
+    public static final int TEXT_COLOR = 0xFFE0E0E0;
+    public static final int TEXT_COLOR_DISABLED = 0xFF707070;
+    public static final int TEXT_COLOR_INFO = 0xFF0066AA;
+    public static final int TEXT_COLOR_WARNING = 0xFFAAAA00;
+    public static final int TEXT_COLOR_ERROR = 0xFFAA0000;
 
     public static final int WHITE = 0xFFFFFFFF;
     public static final int BLACK = 0xFF << 24;
