@@ -1,6 +1,8 @@
 package tnt.tarkovcraft.core.common.statistic;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.minecraft.core.Holder;
@@ -19,8 +21,10 @@ import java.util.function.LongBinaryOperator;
 
 public final class StatisticTracker implements Synchronizable<StatisticTracker> {
 
-    public static final Codec<StatisticTracker> CODEC = Codec.unboundedMap(CoreRegistries.STATISTICS.byNameCodec(), Codec.LONG)
-            .xmap(StatisticTracker::new, tracker -> tracker.stats);
+    public static final MapCodec<StatisticTracker> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.unboundedMap(CoreRegistries.STATISTICS.byNameCodec(), Codec.LONG).fieldOf("statMap").forGetter(t -> t.stats)
+    ).apply(instance, StatisticTracker::new));
+    public static final Codec<StatisticTracker> CODEC = MAP_CODEC.codec();
     public static final ContextKey<StatisticTracker> TRACKER = new ContextKey<>(TarkovCraftCore.createResourceLocation("stat_tracker"));
     private final Object2LongMap<Statistic> stats;
 

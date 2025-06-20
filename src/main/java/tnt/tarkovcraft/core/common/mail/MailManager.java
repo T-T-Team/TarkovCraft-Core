@@ -1,6 +1,7 @@
 package tnt.tarkovcraft.core.common.mail;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
 import tnt.tarkovcraft.core.network.Synchronizable;
@@ -9,10 +10,11 @@ import java.util.*;
 
 public final class MailManager implements Synchronizable<MailManager> {
 
-    public static final Codec<MailManager> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<MailManager> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             MailList.CODEC.listOf().fieldOf("chat").forGetter(t -> new ArrayList<>(t.messages.values())),
             UUIDUtil.STRING_CODEC.listOf().fieldOf("blocked").forGetter(t -> new ArrayList<>(t.blockedIds))
     ).apply(instance, MailManager::resolve));
+    public static final Codec<MailManager> CODEC = MAP_CODEC.codec();
 
     private final Map<MailSource, MailList> messages;
     private final Set<UUID> blockedIds;

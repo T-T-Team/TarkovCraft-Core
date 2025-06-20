@@ -1,6 +1,8 @@
 package tnt.tarkovcraft.core.common.attribute;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -17,12 +19,10 @@ import java.util.function.Supplier;
 
 public final class EntityAttributeData implements Synchronizable<EntityAttributeData> {
 
-    public static final Codec<EntityAttributeData> CODEC = Codec.unboundedMap(
-            CoreRegistries.ATTRIBUTE.byNameCodec(),
-            AttributeInstance.CODEC
-    ).xmap(
-            EntityAttributeData::new, t -> t.attributeMap
-    );
+    public static final MapCodec<EntityAttributeData> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.unboundedMap(CoreRegistries.ATTRIBUTE.byNameCodec(), AttributeInstance.CODEC).fieldOf("attributeMap").forGetter(t -> t.attributeMap)
+    ).apply(instance, EntityAttributeData::new));
+    public static final Codec<EntityAttributeData> CODEC = MAP_CODEC.codec();
 
     private Entity holder;
     private final Map<Attribute, AttributeInstance> attributeMap;

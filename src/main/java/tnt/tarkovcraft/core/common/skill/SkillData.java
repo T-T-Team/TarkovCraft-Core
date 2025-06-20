@@ -1,6 +1,7 @@
 package tnt.tarkovcraft.core.common.skill;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
@@ -34,9 +35,10 @@ import java.util.stream.Collectors;
 
 public final class SkillData implements Synchronizable<SkillData> {
 
-    public static final Codec<SkillData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<SkillData> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Skill.CODEC.listOf().fieldOf("skills").xmap(SkillData::asSkillMap, map -> new ArrayList<>(map.values())).forGetter(t -> t.skillMap)
     ).apply(instance, SkillData::new));
+    public static final Codec<SkillData> CODEC = MAP_CODEC.codec();
 
     private Entity holder;
     private final Map<SkillDefinition, Skill> skillMap;
