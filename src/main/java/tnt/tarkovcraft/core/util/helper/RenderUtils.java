@@ -47,7 +47,7 @@ public final class RenderUtils {
         Matrix3x2f pose = new Matrix3x2f(graphics.pose());
         ScreenRectangle scissor = graphics.peekScissorStack();
         ScreenRectangle bounds = getBounds(pose, scissor, x1, y1, x2, y2);
-        graphics.submitGuiElementRenderState(new ColoredRectangleRenderState(RenderPipelines.GUI_TEXTURED, TextureSetup.noTexture(), pose, x1, y1, x2, y2, colorFrom, colorTo, scissor, bounds));
+        graphics.submitGuiElementRenderState(new ColoredRectangleRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), pose, x1, y1, x2, y2, colorFrom, colorTo, scissor, bounds));
     }
 
     public static ScreenRectangle getBounds(Matrix3x2f pose, @Nullable ScreenRectangle scissor, float x1, float y1, float x2, float y2) {
