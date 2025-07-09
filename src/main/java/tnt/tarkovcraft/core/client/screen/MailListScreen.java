@@ -18,7 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.lwjgl.glfw.GLFW;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.client.screen.form.FormScreen;
@@ -187,7 +187,7 @@ public class MailListScreen extends LayeredScreen implements DataScreen {
         if (keyCode == GLFW.GLFW_KEY_ENTER && Objects.equals(this.getFocused(), this.messageBox) && this.canSendCurrentMessage()) {
             String messageContent = this.messageBox.getValue();
             MailMessage message = MailMessage.simpleChatMessage(MailSource.player(this.minecraft.player), messageContent);
-            PacketDistributor.sendToServer(new C2S_MailSendMessage(this.selectedChat.getSourceId(), message));
+            ClientPacketDistributor.sendToServer(new C2S_MailSendMessage(this.selectedChat.getSourceId(), message));
             this.messageBox.setValue("");
             return true;
         }
@@ -239,7 +239,7 @@ public class MailListScreen extends LayeredScreen implements DataScreen {
         PlayerInfo playerInfo = this.getPlayer(playerName);
         if (playerInfo != null) {
             UUID targetId = playerInfo.getProfile().getId();
-            PacketDistributor.sendToServer(new C2S_MailCreateChat(targetId));
+            ClientPacketDistributor.sendToServer(new C2S_MailCreateChat(targetId));
         }
         dialogScreen.openParentScreen();
     }
@@ -247,20 +247,20 @@ public class MailListScreen extends LayeredScreen implements DataScreen {
     private void deleteChat() {
         UUID chatId = this.selectedChat.getSourceId();
         this.selectedChat = null;
-        PacketDistributor.sendToServer(new C2S_MailDeleteChat(chatId));
+        ClientPacketDistributor.sendToServer(new C2S_MailDeleteChat(chatId));
         this.init(this.minecraft, this.width, this.height);
     }
 
     private void blockOrUnblockUser() {
         UUID target = this.selectedChat.getSourceId();
         boolean isBlocked = this.userMailManager.isBlocked(this.selectedChat);
-        PacketDistributor.sendToServer(new C2S_MailBlockUser(target, !isBlocked));
+        ClientPacketDistributor.sendToServer(new C2S_MailBlockUser(target, !isBlocked));
         this.init(this.minecraft, this.width, this.height);
     }
 
     private void claimAttachments() {
         UUID target = this.selectedChat.getSourceId();
-        PacketDistributor.sendToServer(new C2S_MailClaimAttachments(target));
+        ClientPacketDistributor.sendToServer(new C2S_MailClaimAttachments(target));
         this.init(this.minecraft, this.width, this.height);
     }
 

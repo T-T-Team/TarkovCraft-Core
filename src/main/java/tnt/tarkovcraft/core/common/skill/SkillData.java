@@ -3,16 +3,14 @@ package tnt.tarkovcraft.core.common.skill;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
+import tnt.tarkovcraft.core.client.util.ClientUtils;
 import tnt.tarkovcraft.core.common.Notification;
 import tnt.tarkovcraft.core.common.attribute.Attribute;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
@@ -157,7 +155,7 @@ public final class SkillData implements Synchronizable<SkillData> {
 
     private RegistryAccess getRegistryAccess() {
         if (this.holder == null || this.holder.level().isClientSide()) {
-            return getClientRegistryAccess();
+            return ClientUtils.getClientRegistryAccess();
         } else {
             return this.holder.registryAccess();
         }
@@ -185,10 +183,5 @@ public final class SkillData implements Synchronizable<SkillData> {
 
             PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, CoreDataAttachments.SKILL.get()));
         }
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private static RegistryAccess getClientRegistryAccess() {
-        return Minecraft.getInstance().getConnection().registryAccess();
     }
 }

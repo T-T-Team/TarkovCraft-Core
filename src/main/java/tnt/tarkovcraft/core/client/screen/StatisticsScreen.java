@@ -54,7 +54,7 @@ public class StatisticsScreen extends CharacterSubScreen {
             int left = this.width / 3;
             EntityWidget entityWidget = this.addRenderableWidget(new EntityWidget(0, 25, left, this.height - 25, player));
             entityWidget.setBackground(ColorPalette.BG_TRANSPARENT_WEAK);
-            entityWidget.setOffset(0.0F, 1.0F, 0.0F);
+            entityWidget.setOffset(0.0F, 0.75F, 0.0F);
 
             StatisticTracker tracker = player.getData(CoreDataAttachments.STATISTICS);
 
