@@ -16,6 +16,9 @@ public class TarkovCraftCoreConfig {
     @Configurable
     @Configurable.Synchronized
     @Configurable.Comment("Allows mail messages between players")
+    @Configurable.DependsOn(
+            configValues = @Configurable.DependsOn.ConfigValue(location = "tarkovcraft_core:enableMailSystem", accepts = "true")
+    )
     public boolean allowMailPlayerMessages = true;
 
     @Configurable

@@ -1,6 +1,6 @@
 package tnt.tarkovcraft.core.client.screen.form;
 
-import dev.toma.configuration.config.validate.IValidationResult;
+import dev.toma.configuration.config.validate.ValidationResult;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -123,10 +123,10 @@ public class FormScreen extends DialogScreen {
                 return true;
             }
             T value = this.getValue(id);
-            IValidationResult result = validator.validate(value);
+            ValidationResult result = validator.validate(value);
             FormElement<?, ?> formElement = this.element.get(id);
             formElement.setValidatorResult(result);
-            return result.severity().isValid();
+            return result.type().isValid();
         }
 
         public FormPage getPage(int index) {

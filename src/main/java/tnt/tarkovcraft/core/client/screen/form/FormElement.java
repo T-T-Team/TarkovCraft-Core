@@ -1,6 +1,6 @@
 package tnt.tarkovcraft.core.client.screen.form;
 
-import dev.toma.configuration.config.validate.IValidationResult;
+import dev.toma.configuration.config.validate.ValidationResult;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
 import tnt.tarkovcraft.core.util.helper.Helper;
@@ -8,11 +8,11 @@ import tnt.tarkovcraft.core.util.helper.Helper;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public abstract class FormElement<T, C extends AbstractWidget> implements Supplier<IValidationResult> {
+public abstract class FormElement<T, C extends AbstractWidget> implements Supplier<ValidationResult> {
 
     protected String id;
     protected Component label;
-    protected IValidationResult validatorResult = IValidationResult.success();
+    protected ValidationResult validatorResult = ValidationResult.success();
     protected C component;
     protected FormElementManager<T, C> manager;
 
@@ -31,12 +31,12 @@ public abstract class FormElement<T, C extends AbstractWidget> implements Suppli
     protected void onComponentInitialize(C component, FormContext context) {
     }
 
-    protected void setValidatorResult(IValidationResult result) {
-        this.validatorResult = Helper.orDefault(result, IValidationResult.success());
+    protected void setValidatorResult(ValidationResult result) {
+        this.validatorResult = Helper.orDefault(result, ValidationResult.success());
     }
 
     @Override
-    public IValidationResult get() {
+    public ValidationResult get() {
         return this.validatorResult;
     }
 

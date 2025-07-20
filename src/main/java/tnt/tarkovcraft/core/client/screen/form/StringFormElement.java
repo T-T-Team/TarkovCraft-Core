@@ -1,6 +1,6 @@
 package tnt.tarkovcraft.core.client.screen.form;
 
-import dev.toma.configuration.config.validate.IValidationResult;
+import dev.toma.configuration.config.validate.ValidationResult;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.EditBox;
@@ -26,7 +26,7 @@ public class StringFormElement extends FormElement<String, EditBox> {
             component.setResponder(val -> {
                 context.updateValue(this.id, val);
                 if (!val.isBlank()) {
-                    IValidationResult result = validator.validate(val);
+                    ValidationResult result = validator.validate(val);
                     this.setValidatorResult(result);
                 }
             });

@@ -1,7 +1,7 @@
 package tnt.tarkovcraft.core.client.screen;
 
 import com.mojang.authlib.GameProfile;
-import dev.toma.configuration.config.validate.IValidationResult;
+import dev.toma.configuration.config.validate.ValidationResult;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -218,19 +218,19 @@ public class MailListScreen extends LayeredScreen implements DataScreen {
         field.setMaxLength(256);
     }
 
-    private IValidationResult validatePlayerName(String playerName) {
+    private ValidationResult validatePlayerName(String playerName) {
         if (playerName == null || playerName.isBlank()) {
-            return IValidationResult.error(CommonLabels.VALIDATION_NULL);
+            return ValidationResult.error(CommonLabels.VALIDATION_NULL);
         }
         PlayerInfo playerInfo = this.getPlayer(playerName);
         if (playerInfo == null) {
-            return IValidationResult.error(CommonLabels.VALIDATION_UNKNOWN_PLAYER);
+            return ValidationResult.error(CommonLabels.VALIDATION_UNKNOWN_PLAYER);
         }
         UUID me = this.minecraft.player.getUUID();
         if (me.equals(playerInfo.getProfile().getId())) {
-            return IValidationResult.error(CommonLabels.VALIDATION_PLAYER_SELF);
+            return ValidationResult.error(CommonLabels.VALIDATION_PLAYER_SELF);
         }
-        return IValidationResult.success();
+        return ValidationResult.success();
     }
 
     private void openChatFormSent(DialogScreen dialogScreen) {
