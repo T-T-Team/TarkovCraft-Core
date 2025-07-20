@@ -1,7 +1,6 @@
 package tnt.tarkovcraft.core;
 
 import dev.toma.configuration.Configuration;
-import dev.toma.configuration.config.format.ConfigFormats;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -33,7 +32,7 @@ public final class TarkovCraftCore {
 
     public TarkovCraftCore(IEventBus modEventBus, ModContainer container) {
         // Configuration init
-        config = Configuration.registerConfig(TarkovCraftCoreConfig.class, ConfigFormats.YAML).getConfigInstance();
+        config = Configuration.registerSimpleYmlConfig(TarkovCraftCoreConfig.class);
 
         // Mod event listeners
         modEventBus.addListener(this::registerCustomRegistries);

@@ -2,7 +2,6 @@ package tnt.tarkovcraft.core.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.toma.configuration.Configuration;
-import dev.toma.configuration.config.format.ConfigFormats;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -44,7 +43,7 @@ public final class TarkovCraftCoreClient {
     private static TarkovCraftCoreClientConfig config;
 
     public TarkovCraftCoreClient(IEventBus modEventBus, ModContainer container) {
-        config = Configuration.registerConfig(TarkovCraftCoreClientConfig.class, ConfigFormats.YAML).getConfigInstance();
+        config = Configuration.registerSimpleYmlConfig(TarkovCraftCoreClientConfig.class);
 
         modEventBus.addListener(this::setup);
         modEventBus.addListener(this::registerKeyBindings);
