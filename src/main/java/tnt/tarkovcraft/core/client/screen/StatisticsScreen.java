@@ -13,7 +13,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.NeoForge;
 import tnt.tarkovcraft.core.TarkovCraftCore;
-import tnt.tarkovcraft.core.api.event.client.GetPlayerLabelsEvent;
+import tnt.tarkovcraft.core.api.event.client.AddPlayerProfileLabelsEvent;
 import tnt.tarkovcraft.core.client.screen.navigation.CoreNavigators;
 import tnt.tarkovcraft.core.client.screen.renderable.AbstractTextRenderable;
 import tnt.tarkovcraft.core.client.screen.renderable.HorizontalLineRenderable;
@@ -21,6 +21,7 @@ import tnt.tarkovcraft.core.client.screen.renderable.ShapeRenderable;
 import tnt.tarkovcraft.core.client.screen.renderable.VerticalLineRenderable;
 import tnt.tarkovcraft.core.client.screen.widget.EntityWidget;
 import tnt.tarkovcraft.core.client.screen.widget.ListWidget;
+import tnt.tarkovcraft.core.client.util.PlayerProfileLabelContainer;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.init.CoreStatistics;
@@ -32,7 +33,6 @@ import tnt.tarkovcraft.core.util.context.ContextKeys;
 import tnt.tarkovcraft.core.util.helper.RenderUtils;
 import tnt.tarkovcraft.core.util.helper.TextHelper;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -71,11 +71,22 @@ public class StatisticsScreen extends CharacterSubScreen {
             this.addRenderableOnly(new VerticalLineRenderable(left - 1, 25, this.height, ColorPalette.WHITE));
             this.addRenderableOnly(new AbstractTextRenderable.Component(left + 3, 26, this.width - left, 10, ColorPalette.WHITE, true, this.font, OVERVIEW_LABEL));
 
-            List<Component> playerLabels = this.getPlayerLabels(player, tracker);
-            int top = this.height - 20 - playerLabels.size() * 12;
-            for (int i = 0; i < playerLabels.size(); i++) {
-                Component playerLabel = playerLabels.get(i);
-                this.addRenderableOnly(new AbstractTextRenderable.CenteredComponent(0, top + i * 12, left, 10, 0xFFFFFFFF, true, this.font, playerLabel));
+            PlayerProfileLabelContainer container = this.getProfileLabels(player, tracker);
+            List<PlayerProfileLabelContainer.ProfileLabelRow> rows = container.getRows();
+            int top = this.height - 20 - rows.size() * 12;
+            for (int i = 0; i < rows.size(); i++) {
+                PlayerProfileLabelContainer.ProfileLabelRow row = rows.get(i);
+                int y = top + i * 12;
+                if (row.left() != null) {
+                    this.addRenderableOnly(new AbstractTextRenderable.Component(3, y, left, 10,  ColorPalette.WHITE, true, this.font, row.left()));
+                }
+                if (row.center() != null) {
+                    this.addRenderableOnly(new AbstractTextRenderable.CenteredComponent(0, y, left, 10, ColorPalette.WHITE, true, this.font, row.center()));
+                }
+                if (row.right() != null) {
+                    int labelWidth = font.width(row.right());
+                    this.addRenderableOnly(new AbstractTextRenderable.Component(left - labelWidth - 3, y, labelWidth, 10, ColorPalette.WHITE, true, this.font, row.right()));
+                }
             }
 
             ListWidget<TextStatisticWidget> textStats = this.addRenderableWidget(new ListWidget<>(left, 36, this.width - left, this.height - 26, statistics, (it, in) -> this.createTextStatistic(left, this.width - left, context, it, in)));
@@ -87,20 +98,22 @@ public class StatisticsScreen extends CharacterSubScreen {
         this.initNotificationLayer();
     }
 
-    private List<Component> getPlayerLabels(Player player, StatisticTracker tracker) {
-        List<Component> playerLabels = new ArrayList<>();
+    private PlayerProfileLabelContainer getProfileLabels(Player player, StatisticTracker tracker) {
+        PlayerProfileLabelContainer container = new PlayerProfileLabelContainer();
         // playername
-        playerLabels.add(player.getDisplayName().copy().withStyle(ChatFormatting.BOLD, ChatFormatting.GOLD));
+        Component playerNameLabel = player.getDisplayName().copy().withStyle(ChatFormatting.BOLD, ChatFormatting.GOLD);
+        container.addRow(PlayerProfileLabelContainer.ProfileLabelRow.center(PlayerProfileLabelContainer.ROW_PLAYER_NAME, playerNameLabel));
         // kdr
         long kills = tracker.get(CoreStatistics.PLAYER_KILLS.value());
         long deaths = Math.max(tracker.get(CoreStatistics.PLAYER_DEATHS.value()), 1L);
         float kdr = kills / (float) deaths;
         String kdrLabel = String.format(Locale.ROOT, "%.2f", kdr);
         MutableComponent kdrComponent = Component.literal(kdrLabel);
-        playerLabels.add(Component.translatable("label.tarkovcraft_core.kdr", kdrComponent).withStyle(ChatFormatting.GRAY));
+        Component formattedKdrComponent = Component.translatable("label.tarkovcraft_core.kdr", kdrComponent).withStyle(ChatFormatting.GRAY);
+        container.addRow(PlayerProfileLabelContainer.ProfileLabelRow.center(PlayerProfileLabelContainer.ROW_KDR, formattedKdrComponent));
         // API for custom player labels
-        GetPlayerLabelsEvent event = NeoForge.EVENT_BUS.post(new GetPlayerLabelsEvent(player, playerLabels));
-        return event.getLabelList();
+        AddPlayerProfileLabelsEvent event = NeoForge.EVENT_BUS.post(new AddPlayerProfileLabelsEvent(player, container));
+        return event.getContainer();
     }
 
     private TextStatisticWidget createTextStatistic(int left, int width, Context ctx, DisplayStatistic stat, int index) {

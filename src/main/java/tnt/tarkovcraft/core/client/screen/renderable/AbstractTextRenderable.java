@@ -5,6 +5,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.util.FormattedCharSequence;
 
+// TODO simplify to work with text alignments
 public abstract class AbstractTextRenderable<T> implements Renderable {
 
     protected final int x;
