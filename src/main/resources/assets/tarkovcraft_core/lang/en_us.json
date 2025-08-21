@@ -56,6 +56,7 @@
   "label.tarkovcraft_core.not_available.short": "N/A",
   "label.tarkovcraft_core.kdr": "K/D %s",
   "label.units.unit_per_tick": "units/tick",
+  "label.tarkovcraft_core.config.validation.not_development_mode": "Game is running in production mode",
 
   "duration.unit.t": "%s ticks",
   "duration.unit.t.short": "t",
@@ -103,6 +104,8 @@
   "config.tarkovcraft_core-client.option.barGradientStartCriticalColor.comment.0": "Gradient start color of stamina status bar when reached critical treshold",
   "config.tarkovcraft_core-client.option.barGradientEndCriticalColor": "Gradient critical max",
   "config.tarkovcraft_core-client.option.barGradientEndCriticalColor.comment.0": "Gradient end color of stamina status bar when reached critical treshold",
+  "config.tarkovcraft_core-client.option.hintDisplayMode": "Hint display mode",
+  "config.tarkovcraft_core-client.option.hintDisplayMode.comment.0": "Configure which on screen hint types will be displayed on HUD",
 
   "config.option.tarkovcraft_core.global.overlay.enabled": "Render",
   "config.option.tarkovcraft_core.global.overlay.enabled.comment.0": "Toggles overlay rendering",

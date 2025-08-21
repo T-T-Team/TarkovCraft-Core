@@ -14,9 +14,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.client.event.InputEvent;
-import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
 import org.lwjgl.glfw.GLFW;
@@ -25,6 +23,7 @@ import tnt.tarkovcraft.core.client.config.TarkovCraftCoreClientConfig;
 import tnt.tarkovcraft.core.client.notification.NotificationChannel;
 import tnt.tarkovcraft.core.client.notification.NotificationLayer;
 import tnt.tarkovcraft.core.client.overlay.DebugLayer;
+import tnt.tarkovcraft.core.client.overlay.OnScreenHintLayer;
 import tnt.tarkovcraft.core.client.overlay.StaminaLayer;
 import tnt.tarkovcraft.core.client.screen.DataScreen;
 import tnt.tarkovcraft.core.client.screen.navigation.CoreNavigators;
@@ -42,6 +41,8 @@ public final class TarkovCraftCoreClient {
 
     private static TarkovCraftCoreClientConfig config;
 
+    private OnScreenHintLayer hintUiLayer;
+
     public TarkovCraftCoreClient(IEventBus modEventBus, ModContainer container) {
         config = Configuration.registerSimpleYmlConfig(TarkovCraftCoreClientConfig.class);
 
@@ -50,11 +51,20 @@ public final class TarkovCraftCoreClient {
         modEventBus.addListener(this::registerCustomGuiLayers);
 
         NeoForge.EVENT_BUS.addListener(this::onKeyboardInput);
-        NeoForge.EVENT_BUS.register(new TarkovCraftCoreClientEventHandler());
+        NeoForge.EVENT_BUS.addListener(this::clientPostTick);
+        NeoForge.EVENT_BUS.addListener(this::clientLoggedOut);
     }
 
     public static TarkovCraftCoreClientConfig getConfig() {
         return config;
+    }
+
+    public static void sendDataSyncEvent(Entity entity, AttachmentType<?> type, Synchronizable<?> data) {
+        Minecraft minecraft = Minecraft.getInstance();
+        Screen screen = minecraft.screen;
+        if (screen instanceof DataScreen dataScreen) {
+            dataScreen.onAttachmentDataReceived(entity, type, data);
+        }
     }
 
     private void dispatchParallelRegistryEvents() {
@@ -86,13 +96,24 @@ public final class TarkovCraftCoreClient {
             event.registerAboveAll(DebugLayer.LAYER_ID, new DebugLayer());
         event.registerAboveAll(NotificationLayer.LAYER_ID, new NotificationLayer(NotificationChannel.MAIN));
         event.registerAboveAll(StaminaLayer.LAYER_ID, new StaminaLayer());
+        this.hintUiLayer = new OnScreenHintLayer();
+        event.registerAboveAll(OnScreenHintLayer.LAYER_ID, this.hintUiLayer);
     }
 
-    public static void sendDataSyncEvent(Entity entity, AttachmentType<?> type, Synchronizable<?> data) {
+    private void clientPostTick(ClientTickEvent.Post event) {
         Minecraft minecraft = Minecraft.getInstance();
         Screen screen = minecraft.screen;
-        if (screen instanceof DataScreen dataScreen) {
-            dataScreen.onAttachmentDataReceived(entity, type, data);
+
+        // notification tick
+        if (screen == null) {
+            NotificationChannel.MAIN.update();
         }
+        if (minecraft.level != null) {
+            this.hintUiLayer.tick();
+        }
+    }
+
+    private void clientLoggedOut(ClientPlayerNetworkEvent.LoggingOut event) {
+        NotificationChannel.MAIN.clearAllNotifications();
     }
 }

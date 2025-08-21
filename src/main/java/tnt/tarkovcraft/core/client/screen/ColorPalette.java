@@ -22,4 +22,5 @@ public final class ColorPalette {
     public static final int GREEN = 0xFF00FF00;
     public static final int BLUE = 0xFF0000FF;
     public static final int YELLOW = 0xFFFFFF00;
+    public static final int GOLD = 0xFFFFAA00;
 }
