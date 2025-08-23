@@ -45,7 +45,7 @@ public class OverweightFactorSkillTracker implements SkillTracker {
         }
         float factor = WeightSystem.getOverweightEffectFactor(livingEntity);
         if (factor <= 0.0) {
-            return this.value;
+            return 0.0F;
         }
         if (factor >= this.limit) {
             return this.countOverLimit ? this.value : 0.0F;

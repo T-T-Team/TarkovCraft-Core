@@ -98,7 +98,7 @@ public final class TarkovCraftCoreEventHandler {
     private void onPlayerTickPost(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
         player.getData(CoreDataAttachments.ENTITY_ATTRIBUTES).update();
-        if (SkillSystem.trigger(CoreSkillTriggerEvents.PLAYER_TICK, player)) {
+        if (!player.level().isClientSide() && SkillSystem.trigger(CoreSkillTriggerEvents.PLAYER_TICK, player)) {
             SkillSystem.synchronize(player);
         }
     }
