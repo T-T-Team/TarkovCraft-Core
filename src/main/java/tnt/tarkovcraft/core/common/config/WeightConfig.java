@@ -27,13 +27,13 @@ public final class WeightConfig {
     @Configurable.DecimalRange(min = -1.0F, max = 0.0F)
     @Configurable.Gui.NumberFormat("0.0##")
     @Configurable.Gui.Slider
-    public float overweightJumpReduction = -0.08F;
+    public float overweightJumpReduction = -0.125F;
 
     @Configurable
     @Configurable.DecimalRange(min = -1.0F, max = 0.0F)
     @Configurable.Gui.NumberFormat("0.0##")
     @Configurable.Gui.Slider
-    public float overweightSafeFallDistanceReduction = -0.25F;
+    public float overweightSafeFallDistanceReduction = -0.4F;
 
     @Configurable
     @Configurable.DecimalRange(min = -1.0F, max = 0.0F)

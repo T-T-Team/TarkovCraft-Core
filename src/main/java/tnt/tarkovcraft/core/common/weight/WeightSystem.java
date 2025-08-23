@@ -45,7 +45,7 @@ public class WeightSystem {
     public static final DecimalFormat FORMAT = new DecimalFormat("0.0##");
     public static final Marker MARKER = MarkerManager.getMarker("WeightSystem");
     public static final ResourceLocation OVERWEIGHT_ATTRIBUTE_MODIFIER = TarkovCraftCore.createResourceLocation("overweight");
-    public static final BiFunction<Integer, Style, Style> BASE_LABEL_STYLE = (weight, style) -> style.withColor(ChatFormatting.DARK_GRAY);
+    public static final BiFunction<Integer, Style, Style> BASE_LABEL_STYLE = (weight, style) -> style.withColor(ChatFormatting.GRAY);
     public static final BiFunction<Integer, Style, Style> BASE_VALUE_STYLE = (weight, style) -> style.withColor(ChatFormatting.YELLOW);
 
     private final Map<ResourceLocation, WeightProvider> providerMap = new HashMap<>();
