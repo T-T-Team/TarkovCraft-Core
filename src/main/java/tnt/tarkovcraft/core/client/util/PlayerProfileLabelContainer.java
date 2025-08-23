@@ -14,9 +14,8 @@ import java.util.function.UnaryOperator;
 public class PlayerProfileLabelContainer {
 
     public static final ResourceLocation ROW_PLAYER_NAME = TarkovCraftCore.createResourceLocation("profile_name");
-    public static final ResourceLocation ROW_KDR = TarkovCraftCore.createResourceLocation("kdr");
-    public static final ResourceLocation ROW_STATUS = TarkovCraftCore.createResourceLocation("status");
-    public static final ResourceLocation ROW_STATUS_SEPARATOR = TarkovCraftCore.createResourceLocation("separator/status");
+    public static final ResourceLocation ROW_STAT = TarkovCraftCore.createResourceLocation("stat");
+    public static final ResourceLocation ROW_STAT_SEPARATOR = TarkovCraftCore.createResourceLocation("separator/status");
     private final List<ProfileLabelRow> rows = new ArrayList<>();
 
     public void addRow(ProfileLabelRow row) {

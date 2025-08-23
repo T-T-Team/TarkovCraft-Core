@@ -9,7 +9,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.NeoForge;
 import tnt.tarkovcraft.core.TarkovCraftCore;
@@ -36,7 +35,6 @@ import tnt.tarkovcraft.core.util.helper.TextHelper;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 public class StatisticsScreen extends CharacterSubScreen {
 
@@ -104,23 +102,24 @@ public class StatisticsScreen extends CharacterSubScreen {
         // playername
         Component playerNameLabel = player.getDisplayName().copy().withStyle(ChatFormatting.BOLD, ChatFormatting.GOLD);
         container.addRow(PlayerProfileLabelContainer.ProfileLabelRow.center(PlayerProfileLabelContainer.ROW_PLAYER_NAME, playerNameLabel));
-        // kdr
-        long kills = tracker.get(CoreStatistics.PLAYER_KILLS.value());
-        long deaths = Math.max(tracker.get(CoreStatistics.PLAYER_DEATHS.value()), 1L);
-        float kdr = kills / (float) deaths;
-        String kdrLabel = String.format(Locale.ROOT, "%.2f", kdr);
-        MutableComponent kdrComponent = Component.literal(kdrLabel);
-        Component formattedKdrComponent = Component.translatable("label.tarkovcraft_core.kdr", kdrComponent).withStyle(ChatFormatting.GRAY);
-        container.addRow(PlayerProfileLabelContainer.ProfileLabelRow.center(PlayerProfileLabelContainer.ROW_KDR, formattedKdrComponent));
-        container.addEmptyRow(PlayerProfileLabelContainer.ROW_STATUS_SEPARATOR);
-        container.addEmptyRow(PlayerProfileLabelContainer.ROW_STATUS);
+        container.addEmptyRow(PlayerProfileLabelContainer.ROW_STAT_SEPARATOR);
+        // Stat row
+        // kills
+        long kills = tracker.get(CoreStatistics.KILLS.value());
+        Component killCount = Component.literal(String.valueOf(kills)).withStyle(ChatFormatting.YELLOW);
+        Component killLabel = Component.literal("⚔ ").withStyle(ChatFormatting.GRAY).append(killCount);
+        Component weightLabel = null;
+        // deaths
+        long deaths = tracker.get(CoreStatistics.DEATHS.value());
+        Component deathCount = Component.literal(String.valueOf(deaths)).withStyle(ChatFormatting.YELLOW);
+        Component deathLabel = Component.literal("☠ ").withStyle(ChatFormatting.GRAY).append(deathCount);
         // weight
-        if (WeightSystem.isEnabled()) {
+        if (WeightSystem.isEnabled() && this.isMyProfile) {
             int weight = WeightSystem.getWeight(player);
-            Component weightLabel = WeightSystem.getWeightValueDisplay(weight, WeightSystem.isOverweight(player) ? (w, st) -> st.withColor(ChatFormatting.RED) : WeightSystem.BASE_VALUE_STYLE);
-            Component label = Component.literal("⚖ ").withStyle(ChatFormatting.GRAY).append(weightLabel);
-            container.replaceOrDeleteRow(PlayerProfileLabelContainer.ROW_STATUS, old -> PlayerProfileLabelContainer.ProfileLabelRow.left(old.identifier(), label));
+            Component weightValue = WeightSystem.getWeightValueDisplay(weight, WeightSystem.isOverweight(player) ? (w, st) -> st.withColor(ChatFormatting.RED) : WeightSystem.BASE_VALUE_STYLE);
+            weightLabel = Component.literal("⚖ ").withStyle(ChatFormatting.GRAY).append(weightValue);
         }
+        container.addRow(new PlayerProfileLabelContainer.ProfileLabelRow(PlayerProfileLabelContainer.ROW_STAT, killLabel, deathLabel, weightLabel));
         // API for custom player labels
         AddPlayerProfileLabelsEvent event = NeoForge.EVENT_BUS.post(new AddPlayerProfileLabelsEvent(player, container));
         return event.getContainer();

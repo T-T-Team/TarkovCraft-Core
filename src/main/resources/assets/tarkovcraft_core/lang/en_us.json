@@ -63,7 +63,6 @@
   "label.tarkovcraft_core.skill.level": "Level: %s / %s",
   "label.tarkovcraft_core.skill.max_level": "ELITE LEVEL",
   "label.tarkovcraft_core.not_available.short": "N/A",
-  "label.tarkovcraft_core.kdr": "K/D %s",
   "label.units.unit_per_tick": "units/tick",
   "label.tarkovcraft_core.weight": "Weight: %s",
   "label.tarkovcraft_core.weight.unit": "%skg",
