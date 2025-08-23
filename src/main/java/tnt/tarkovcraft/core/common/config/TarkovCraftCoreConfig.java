@@ -25,4 +25,8 @@ public class TarkovCraftCoreConfig {
     @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
     @Configurable.Comment("Configurations related to skill system")
     public SkillSystemConfig skillSystemConfig = new SkillSystemConfig();
+
+    @Configurable
+    @Configurable.Comment("Configurations related to weight system")
+    public WeightConfig weightConfig = new WeightConfig();
 }

@@ -27,6 +27,7 @@ import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.init.CoreStatistics;
 import tnt.tarkovcraft.core.common.statistic.DisplayStatistic;
 import tnt.tarkovcraft.core.common.statistic.StatisticTracker;
+import tnt.tarkovcraft.core.common.weight.WeightSystem;
 import tnt.tarkovcraft.core.util.context.Context;
 import tnt.tarkovcraft.core.util.context.ContextImpl;
 import tnt.tarkovcraft.core.util.context.ContextKeys;
@@ -73,7 +74,7 @@ public class StatisticsScreen extends CharacterSubScreen {
 
             PlayerProfileLabelContainer container = this.getProfileLabels(player, tracker);
             List<PlayerProfileLabelContainer.ProfileLabelRow> rows = container.getRows();
-            int top = this.height - 20 - rows.size() * 12;
+            int top = this.height - rows.size() * 12;
             for (int i = 0; i < rows.size(); i++) {
                 PlayerProfileLabelContainer.ProfileLabelRow row = rows.get(i);
                 int y = top + i * 12;
@@ -111,6 +112,15 @@ public class StatisticsScreen extends CharacterSubScreen {
         MutableComponent kdrComponent = Component.literal(kdrLabel);
         Component formattedKdrComponent = Component.translatable("label.tarkovcraft_core.kdr", kdrComponent).withStyle(ChatFormatting.GRAY);
         container.addRow(PlayerProfileLabelContainer.ProfileLabelRow.center(PlayerProfileLabelContainer.ROW_KDR, formattedKdrComponent));
+        container.addEmptyRow(PlayerProfileLabelContainer.ROW_STATUS_SEPARATOR);
+        container.addEmptyRow(PlayerProfileLabelContainer.ROW_STATUS);
+        // weight
+        if (WeightSystem.isEnabled()) {
+            int weight = WeightSystem.getWeight(player);
+            Component weightLabel = WeightSystem.getWeightValueDisplay(weight, WeightSystem.isOverweight(player) ? (w, st) -> st.withColor(ChatFormatting.RED) : WeightSystem.BASE_VALUE_STYLE);
+            Component label = Component.literal("⚖ ").withStyle(ChatFormatting.GRAY).append(weightLabel);
+            container.replaceOrDeleteRow(PlayerProfileLabelContainer.ROW_STATUS, old -> PlayerProfileLabelContainer.ProfileLabelRow.left(old.identifier(), label));
+        }
         // API for custom player labels
         AddPlayerProfileLabelsEvent event = NeoForge.EVENT_BUS.post(new AddPlayerProfileLabelsEvent(player, container));
         return event.getContainer();

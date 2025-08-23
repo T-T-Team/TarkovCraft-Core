@@ -9,15 +9,22 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.UnaryOperator;
 
 public class PlayerProfileLabelContainer {
 
     public static final ResourceLocation ROW_PLAYER_NAME = TarkovCraftCore.createResourceLocation("profile_name");
     public static final ResourceLocation ROW_KDR = TarkovCraftCore.createResourceLocation("kdr");
+    public static final ResourceLocation ROW_STATUS = TarkovCraftCore.createResourceLocation("status");
+    public static final ResourceLocation ROW_STATUS_SEPARATOR = TarkovCraftCore.createResourceLocation("separator/status");
     private final List<ProfileLabelRow> rows = new ArrayList<>();
 
     public void addRow(ProfileLabelRow row) {
         rows.add(row);
+    }
+
+    public void addEmptyRow(ResourceLocation rowId) {
+        this.addRow(new ProfileLabelRow(rowId, null, null, null));
     }
 
     @Nullable
@@ -28,13 +35,15 @@ public class PlayerProfileLabelContainer {
                 .orElse(null);
     }
 
-    public boolean replaceOrDeleteRow(ResourceLocation identifier, @Nullable ProfileLabelRow replacement) {
+    public boolean replaceOrDeleteRow(ResourceLocation identifier, UnaryOperator<ProfileLabelRow> replacement) {
         for (int i = 0; i < rows.size(); i++) {
-            if (rows.get(i).identifier().equals(identifier)) {
-                if (replacement == null) {
+            ProfileLabelRow row = rows.get(i);
+            ProfileLabelRow newRow = replacement.apply(row);
+            if (row.identifier().equals(identifier)) {
+                if (newRow == null) {
                     rows.remove(i);
                 } else {
-                    rows.set(i, replacement);
+                    rows.set(i, newRow);
                 }
                 return true;
             }

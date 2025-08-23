@@ -1,5 +1,7 @@
 package tnt.tarkovcraft.core.common.init;
 
+import com.mojang.serialization.Codec;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -34,6 +36,12 @@ public final class CoreDataAttachments {
     public static final Supplier<AttachmentType<StatisticTracker>> STATISTICS = REGISTRY.register("statistics", () -> AttachmentType.builder(StatisticTracker::new)
             .serialize(StatisticTracker.MAP_CODEC)
             .copyOnDeath()
+            .build()
+    );
+    public static final Supplier<AttachmentType<Integer>> WEIGHT = REGISTRY.register("weight", () -> AttachmentType.builder(() -> 0)
+            .serialize(Codec.INT.fieldOf("value"))
+            .copyOnDeath()
+            .sync(ByteBufCodecs.INT)
             .build()
     );
 }

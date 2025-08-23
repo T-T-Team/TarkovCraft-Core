@@ -4,7 +4,7 @@ import dev.toma.configuration.config.Config;
 import dev.toma.configuration.config.Configurable;
 import dev.toma.configuration.config.FieldVisibility;
 import tnt.tarkovcraft.core.TarkovCraftCore;
-import tnt.tarkovcraft.core.client.config.validate.DevelopmentModeValidator;
+import tnt.tarkovcraft.core.common.config.validate.DevelopmentModeValidator;
 import tnt.tarkovcraft.core.util.HorizontalAlignment;
 import tnt.tarkovcraft.core.util.VerticalAlignment;
 

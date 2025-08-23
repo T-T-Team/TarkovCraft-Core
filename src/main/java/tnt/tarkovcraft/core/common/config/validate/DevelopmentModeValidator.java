@@ -1,4 +1,4 @@
-package tnt.tarkovcraft.core.client.config.validate;
+package tnt.tarkovcraft.core.common.config.validate;
 
 import dev.toma.configuration.config.validate.ValidationResult;
 import dev.toma.configuration.config.validate.Validator;

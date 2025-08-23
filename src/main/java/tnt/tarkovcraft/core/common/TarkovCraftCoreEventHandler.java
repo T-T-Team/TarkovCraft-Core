@@ -4,17 +4,23 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -28,6 +34,8 @@ import tnt.tarkovcraft.core.common.skill.SkillSystem;
 import tnt.tarkovcraft.core.common.statistic.CustomStatTrackerProvider;
 import tnt.tarkovcraft.core.common.statistic.Statistic;
 import tnt.tarkovcraft.core.common.statistic.StatisticTracker;
+import tnt.tarkovcraft.core.common.weight.EntityWeightContainerListener;
+import tnt.tarkovcraft.core.common.weight.WeightSystem;
 import tnt.tarkovcraft.core.network.Synchronizable;
 import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 
@@ -41,6 +49,19 @@ public final class TarkovCraftCoreEventHandler {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
         CommandBuildContext context = event.getBuildContext();
         TarkovCraftCommand.create(dispatcher, context);
+    }
+
+    @SubscribeEvent
+    private void onEntityAdded(EntityJoinLevelEvent event) {
+        if (event.isCanceled())
+            return;
+
+        Entity entity = event.getEntity();
+        if (entity.getType() == EntityType.PLAYER) {
+            Player player = (Player) entity;
+            WeightSystem.applyWeightEffects(player);
+            player.containerMenu.addSlotListener(new EntityWeightContainerListener(player));
+        }
     }
 
     @SubscribeEvent
@@ -129,6 +150,23 @@ public final class TarkovCraftCoreEventHandler {
         ExperienceOrb orb = event.getOrb();
         int value = orb.getValue();
         SkillSystem.triggerAndSynchronize(CoreSkillTriggerEvents.XP_PICKUP, player, value);
+    }
+
+    @SubscribeEvent
+    private void onItemTooltip(ItemTooltipEvent event) {
+        ItemStack stack = event.getItemStack();
+        List<Component> tooltip = event.getToolTip();
+
+        int weight = WeightSystem.getItemWeight(stack);
+        if (weight > 0) {
+            Component component = WeightSystem.getWeightDisplay(weight);
+            tooltip.add(component);
+        }
+    }
+
+    @SubscribeEvent
+    private void onPlayerContainerClosed(PlayerContainerEvent.Close event) {
+        WeightSystem.applyWeightEffects(event.getEntity());
     }
 
     private S2C_SendDataAttachments getSyncPacket(Player player) {

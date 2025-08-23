@@ -2,10 +2,14 @@ package tnt.tarkovcraft.core;
 
 import dev.toma.configuration.Configuration;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.ModifyDefaultComponentsEvent;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import org.apache.logging.log4j.LogManager;
@@ -18,7 +22,10 @@ import tnt.tarkovcraft.core.common.init.*;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 import tnt.tarkovcraft.core.common.skill.SkillSystem;
 import tnt.tarkovcraft.core.common.statistic.DisplayStatistic;
+import tnt.tarkovcraft.core.common.weight.WeightSystem;
 import tnt.tarkovcraft.core.network.TarkovCraftCoreNetwork;
+
+import java.util.function.BiConsumer;
 
 @Mod(TarkovCraftCore.MOD_ID)
 public final class TarkovCraftCore {
@@ -35,9 +42,12 @@ public final class TarkovCraftCore {
         config = Configuration.registerSimpleYmlConfig(TarkovCraftCoreConfig.class);
 
         // Mod event listeners
+        modEventBus.addListener(this::setup);
         modEventBus.addListener(this::registerCustomRegistries);
         modEventBus.addListener(this::registerCustomDatapackRegistries);
         modEventBus.addListener(TarkovCraftCoreNetwork::onRegistration);
+        modEventBus.addListener(WeightSystem.INSTANCE::registerDefaultProviders);
+        modEventBus.addListener(this::assignWeight);
 
         // Neoforge event listeners
         NeoForge.EVENT_BUS.register(new TarkovCraftCoreEventHandler());
@@ -50,6 +60,7 @@ public final class TarkovCraftCore {
         CoreNumberProviders.REGISTRY.register(modEventBus);
         CoreMailMessageAttachments.REGISTRY.register(modEventBus);
         CoreDataAttachments.REGISTRY.register(modEventBus);
+        CoreItemDataComponents.REGISTRY.register(modEventBus);
         CoreSkillTriggerEvents.REGISTRY.register(modEventBus);
         CoreSkillTrackers.REGISTRY.register(modEventBus);
         CoreSkillTriggerConditions.REGISTRY.register(modEventBus);
@@ -88,5 +99,19 @@ public final class TarkovCraftCore {
     private void registerCustomDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
         event.dataPackRegistry(CoreRegistries.DatapackKeys.SKILL_DEFINITION, SkillDefinition.DIRECT_CODEC, SkillDefinition.DIRECT_CODEC);
         event.dataPackRegistry(CoreRegistries.DatapackKeys.DISPLAY_STATISTIC, DisplayStatistic.CODEC, DisplayStatistic.CODEC);
+    }
+
+    private void setup(FMLCommonSetupEvent event) {
+        WeightSystem.INSTANCE.init();
+    }
+
+    private void assignWeight(ModifyDefaultComponentsEvent event) {
+        BiConsumer<ItemLike, Integer> weightSetter = (it, w) -> event.modify(it, builder -> builder.set(CoreItemDataComponents.WEIGHT.get(), w).build());
+
+        weightSetter.accept(Items.BUNDLE, 500);
+        weightSetter.accept(Items.COBBLESTONE, 750);
+        weightSetter.accept(Items.DIAMOND_HELMET, 2500);
+        weightSetter.accept(Items.NETHERITE_SWORD, 3000);
+        weightSetter.accept(Items.ARROW, 500);
     }
 }
