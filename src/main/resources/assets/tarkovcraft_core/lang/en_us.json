@@ -4,6 +4,11 @@
   "skill.tarkovcraft_core.memory.bonus.memory_forget_rate.description": "Lower forget rate by %s",
   "skill.tarkovcraft_core.memory.bonus.memory_forget_amount": "Forget Amount",
   "skill.tarkovcraft_core.memory.bonus.memory_forget_amount.description": "Lower forget amount by %s",
+  "skill.tarkovcraft_core.strength": "Strength",
+  "skill.tarkovcraft_core.strength.bonus.weight_limit": "Weight Limit",
+  "skill.tarkovcraft_core.strength.bonus.weight_limit.description": "Increases weight limit by %s",
+  "skill.tarkovcraft_core.strength.bonus.weight_effects": "Negative Weight Effects",
+  "skill.tarkovcraft_core.strength.bonus.weight_effects.description": "Reduces negative weight effects by %s",
 
   "skill.trigger.tarkovcraft_core.player_tick.info": "On tick",
   "skill.trigger.tarkovcraft_core.xp_pickup.info": "On XP pickup",
@@ -19,6 +24,8 @@
   "attribute.tarkovcraft_core.mental_leveling_multiplier": "Mental skill leveling multiplier",
   "attribute.tarkovcraft_core.memory_forget_time_multiplier": "Skill forget time multiplier",
   "attribute.tarkovcraft_core.memory_forget_amount_multiplier": "Skill forget amount multiplier",
+  "attribute.tarkovcraft_core.weight_limit": "Weight limit",
+  "attribute.tarkovcraft_core.weight_effect_factor": "Weight effect factor",
 
   "stat.tarkovcraft_core.kills": "Total kills",
   "stat.tarkovcraft_core.deaths": "Total deaths",

@@ -14,6 +14,6 @@ public final class CoreAttributes {
     public static final Holder<Attribute> MENTAL_LEVELING_MULTIPLIER = REGISTRY.register("mental_leveling_multiplier", location -> Attribute.create(location, 1.0F));
     public static final Holder<Attribute> MEMORY_FORGET_TIME_MULTIPLIER = REGISTRY.register("memory_forget_time_multiplier", location -> Attribute.create(location, 1.0F));
     public static final Holder<Attribute> MEMORY_FORGET_AMOUNT_MULTIPLIER = REGISTRY.register("memory_forget_amount_multiplier", location -> Attribute.create(location, 1.0F));
-    public static final Holder<Attribute> WEIGHT_LIMIT = REGISTRY.register("weight_limit", location -> Attribute.create(location, 25000));
+    public static final Holder<Attribute> WEIGHT_LIMIT = REGISTRY.register("weight_limit", location -> Attribute.create(location, 20000));
     public static final Holder<Attribute> WEIGHT_EFFECT_FACTOR = REGISTRY.register("weight_effect_factor", location -> Attribute.create(location, 1.0F));
 }
