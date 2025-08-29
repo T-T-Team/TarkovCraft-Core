@@ -10,7 +10,7 @@ import tnt.tarkovcraft.core.compatibility.Component;
 
 public final class EnergySystem {
 
-    public static final Component<MovementStaminaComponent> MOVEMENT_STAMINA = new Component<>("Movement Stamina", NoMovementStaminaComponent.INSTANCE);
+    public static final Component<MovementStaminaComponent> MOVEMENT_STAMINA = new Component<>("Movement Stamina", DefaultMovementStaminaComponent.INSTANCE);
     public static final Component<ArmStaminaComponent> ARM_STAMINA = new Component<>("Arm Stamina", NoArmStaminaComponent.INSTANCE);
 
     public static Boolean canSprint(LivingEntity entity) {
@@ -36,8 +36,8 @@ public final class EnergySystem {
         return Math.abs(event.getConsumeAmount());
     }
 
-    public static int getRecoveryDelay(StaminaComponent component, LivingEntity entity, int recoveryDelay, boolean wasDrained) {
-        StaminaEvent.SetRecoveryDelay event = NeoForge.EVENT_BUS.post(new StaminaEvent.SetRecoveryDelay(component, entity, recoveryDelay, wasDrained));
-        return event.getRecoveryDelay();
+    public static float recoverEnergy(StaminaComponent component, LivingEntity entity, float baseRecovery) {
+        StaminaEvent.Recovering event = NeoForge.EVENT_BUS.post(new StaminaEvent.Recovering(component, entity, baseRecovery));
+        return Math.abs(event.getRecoverAmount());
     }
 }

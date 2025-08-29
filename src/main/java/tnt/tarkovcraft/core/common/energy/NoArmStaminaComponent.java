@@ -8,12 +8,8 @@ public class NoArmStaminaComponent implements ArmStaminaComponent {
     public static final NoArmStaminaComponent INSTANCE = new NoArmStaminaComponent();
 
     @Override
-    public boolean isActiveForEntity(LivingEntity entity) {
+    public boolean shouldRenderOverlay(LivingEntity entity) {
         return false;
-    }
-
-    @Override
-    public void tick(LivingEntity entity) {
     }
 
     @Override
@@ -26,26 +22,8 @@ public class NoArmStaminaComponent implements ArmStaminaComponent {
     }
 
     @Override
-    public void consumeStamina(LivingEntity entity, float amount) {
-    }
-
-    @Override
-    public void recoverStamina(LivingEntity entity, float amount) {
-    }
-
-    @Override
     public float getMaxStamina(LivingEntity entity) {
         return 0;
-    }
-
-    @Override
-    public boolean hasAnyStamina(LivingEntity entity) {
-        return true;
-    }
-
-    @Override
-    public boolean hasStamina(LivingEntity entity, float requiredAmount) {
-        return true;
     }
 
     @Override

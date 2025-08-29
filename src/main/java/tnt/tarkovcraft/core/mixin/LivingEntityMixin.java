@@ -50,14 +50,4 @@ public abstract class LivingEntityMixin extends Entity implements Attackable, IL
             ci.cancel();
         }
     }
-
-    @Inject(
-            method = "tick",
-            at = @At("RETURN")
-    )
-    private void tarkovCraftCore$tick(CallbackInfo ci) {
-        LivingEntity entity = (LivingEntity) (Object) this;
-        MovementStaminaComponent component = EnergySystem.MOVEMENT_STAMINA.getComponent();
-        component.tick(entity);
-    }
 }

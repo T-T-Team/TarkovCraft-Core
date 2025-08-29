@@ -55,7 +55,7 @@ public class DebugLayer implements GuiLayer {
     }
 
     private void renderStaminaInfo(Font font, GuiGraphics graphics, Player player, String name, StaminaComponent component) {
-        if (component.isActiveForEntity(player)) {
+        if (component.shouldRenderOverlay(player)) {
             float current = component.getStamina(player);
             float max = component.getMaxStamina(player);
             String value = String.format(Locale.ROOT, "%s: %.2f/%.2f", name, current, max);

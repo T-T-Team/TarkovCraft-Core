@@ -25,8 +25,6 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
-import tnt.tarkovcraft.core.api.MovementStaminaComponent;
-import tnt.tarkovcraft.core.common.energy.EnergySystem;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreSkillTriggerEvents;
 import tnt.tarkovcraft.core.common.init.CoreStatistics;
@@ -69,9 +67,6 @@ public final class TarkovCraftCoreEventHandler {
         Player player = event.getEntity();
         if (player.level().isClientSide())
             return;
-        // Reset states
-        MovementStaminaComponent stamina = EnergySystem.MOVEMENT_STAMINA.getComponent();
-        stamina.setStamina(player, (float) Integer.MAX_VALUE);
         // Sync payload
         PacketDistributor.sendToPlayer((ServerPlayer) player, this.getSyncPacket(player));
     }

@@ -109,31 +109,21 @@ public abstract class StaminaEvent extends Event {
         }
     }
 
-    public static final class SetRecoveryDelay extends StaminaEvent {
+    public static final class Recovering extends StaminaEvent {
 
-        private int recoveryDelay;
-        private final boolean wasEnergyDrained;
+        private float recoverAmount;
 
-        public SetRecoveryDelay(StaminaComponent stamina, LivingEntity entity, int recoveryDelay, boolean wasEnergyDrained) {
+        public Recovering(StaminaComponent stamina, LivingEntity entity, float recoverAmount) {
             super(stamina, entity);
-            this.recoveryDelay = recoveryDelay;
-            this.wasEnergyDrained = wasEnergyDrained;
+            this.recoverAmount = recoverAmount;
         }
 
-        /**
-         * Set to -1 to disable delay
-         * @param recoveryDelay New recovery delay to be set
-         */
-        public void setRecoveryDelay(int recoveryDelay) {
-            this.recoveryDelay = recoveryDelay;
+        public float getRecoverAmount() {
+            return recoverAmount;
         }
 
-        public int getRecoveryDelay() {
-            return recoveryDelay;
-        }
-
-        public boolean hadFullyDrainedEnergy() {
-            return wasEnergyDrained;
+        public void setRecoverAmount(float recoverAmount) {
+            this.recoverAmount = recoverAmount;
         }
     }
 }

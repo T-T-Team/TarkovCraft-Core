@@ -4,20 +4,13 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import tnt.tarkovcraft.core.api.MovementStaminaComponent;
 
-public final class NoMovementStaminaComponent implements MovementStaminaComponent {
+public class DefaultMovementStaminaComponent implements MovementStaminaComponent {
 
-    public static final NoMovementStaminaComponent INSTANCE = new NoMovementStaminaComponent();
+    public static final DefaultMovementStaminaComponent INSTANCE = new DefaultMovementStaminaComponent();
 
     @Override
-    public boolean isActiveForEntity(LivingEntity entity) {
+    public boolean shouldRenderOverlay(LivingEntity entity) {
         return false;
-    }
-
-    @Override
-    public void tick(LivingEntity entity) {
-        if (entity.getType() == EntityType.PLAYER && entity.isSprinting()) {
-            EnergySystem.onSprinted(entity);
-        }
     }
 
     @Override
@@ -32,24 +25,6 @@ public final class NoMovementStaminaComponent implements MovementStaminaComponen
     @Override
     public float getMaxStamina(LivingEntity entity) {
         return 0.0F;
-    }
-
-    @Override
-    public void consumeStamina(LivingEntity entity, float amount) {
-    }
-
-    @Override
-    public void recoverStamina(LivingEntity entity, float amount) {
-    }
-
-    @Override
-    public boolean hasStamina(LivingEntity entity, float requiredAmount) {
-        return true;
-    }
-
-    @Override
-    public boolean hasAnyStamina(LivingEntity entity) {
-        return true;
     }
 
     @Override

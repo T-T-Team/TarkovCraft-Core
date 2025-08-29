@@ -44,7 +44,7 @@ public class StaminaLayer implements GuiLayer {
         if (!overlay.enabled)
             return;
         StaminaComponent component = intgComponent.getComponent();
-        if (!component.isActiveForEntity(entity))
+        if (!component.shouldRenderOverlay(entity))
             return;
         float stamina = component.getStamina(entity);
         float maxStamina = component.getMaxStamina(entity);
