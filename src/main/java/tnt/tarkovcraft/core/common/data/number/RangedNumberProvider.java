@@ -16,8 +16,8 @@ public class RangedNumberProvider implements NumberProvider {
             Codec.DOUBLE.fieldOf("min").forGetter(t -> t.min),
             Codec.DOUBLE.fieldOf("max").forGetter(t -> t.max)
     ).apply(instance, RangedNumberProvider::new)).validate(provider -> {
-        if (provider.min < provider.max) {
-            return DataResult.error(() -> String.format(Locale.ROOT, "Max value {%f} is greater than min {%f}", provider.max, provider.min));
+        if (provider.max < provider.min) {
+            return DataResult.error(() -> String.format(Locale.ROOT, "Min value {%f} is greater than max {%f}", provider.min, provider.max));
         }
         return DataResult.success(provider);
     });
