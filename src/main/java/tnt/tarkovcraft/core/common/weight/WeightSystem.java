@@ -42,7 +42,7 @@ import java.util.function.BiFunction;
 public class WeightSystem {
 
     public static final WeightSystem INSTANCE = new WeightSystem();
-    public static final DecimalFormat FORMAT = new DecimalFormat("0.0##");
+    public static final DecimalFormat FORMAT = new DecimalFormat("0.###");
     public static final Marker MARKER = MarkerManager.getMarker("WeightSystem");
     public static final ResourceLocation OVERWEIGHT_ATTRIBUTE_MODIFIER = TarkovCraftCore.createResourceLocation("overweight");
     public static final BiFunction<Integer, Style, Style> BASE_LABEL_STYLE = (weight, style) -> style.withColor(ChatFormatting.GRAY);
@@ -105,8 +105,10 @@ public class WeightSystem {
     }
 
     public static Component getWeightValueDisplay(int weight, BiFunction<Integer, Style, Style> weightStyleApplicator) {
-        Component weightComponent = Component.literal(FORMAT.format(weight / 1000.0D)).withStyle(style -> weightStyleApplicator.apply(weight, style));
-        return Component.translatable("label.tarkovcraft_core.weight.unit", weightComponent).withStyle(style -> weightStyleApplicator.apply(weight, style));
+        String unitSuffix = weight < 1000 ? "g" : "kg";
+        float unit = weight < 1000 ? 1.0F : 1000.0F;
+        Component weightComponent = Component.literal(FORMAT.format(weight / unit)).withStyle(style -> weightStyleApplicator.apply(weight, style));
+        return Component.translatable("label.tarkovcraft_core.weight.unit." + unitSuffix, weightComponent).withStyle(style -> weightStyleApplicator.apply(weight, style));
     }
 
     public static Component getWeightDisplay(int weight) {
