@@ -56,6 +56,6 @@ public class ExpiringAttributeModifier extends AttributeModifier {
 
     @Override
     public String toString() {
-        return String.format("Expiring[lifetime=%d,maxLifetime=%d,value=%s]", this.lifetime, this.maxLifetime, this.value);
+        return String.format("%s: Expiring[lifetime=%d,maxLifetime=%d,value=%s]", this.identifier(), this.lifetime, this.maxLifetime, this.value);
     }
 }

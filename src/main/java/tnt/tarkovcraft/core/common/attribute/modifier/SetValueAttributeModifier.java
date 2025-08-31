@@ -47,6 +47,6 @@ public class SetValueAttributeModifier extends AttributeModifier {
 
     @Override
     public String toString() {
-        return String.format("SetValue=[value=%f]", this.value);
+        return String.format("%s: SetValue=[value=%f]", this.identifier(), this.value);
     }
 }

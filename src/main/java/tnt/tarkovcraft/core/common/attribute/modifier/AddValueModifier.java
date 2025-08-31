@@ -47,6 +47,6 @@ public class AddValueModifier extends AttributeModifier {
 
     @Override
     public String toString() {
-        return String.format("AddValue[value=%f]", this.value);
+        return String.format("%s: AddValue[value=%f]", this.identifier(), this.value);
     }
 }

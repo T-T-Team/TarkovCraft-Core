@@ -2,6 +2,7 @@ package tnt.tarkovcraft.core.common.attribute.modifier;
 
 import com.mojang.serialization.Codec;
 import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
+import tnt.tarkovcraft.core.common.data.duration.TickValue;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 
 import java.util.Objects;
@@ -20,6 +21,34 @@ public abstract class AttributeModifier {
 
     protected AttributeModifier(UUID identifier) {
         this.identifier = identifier;
+    }
+
+    public static SetValueAttributeModifier set(UUID id, double value) {
+        return new SetValueAttributeModifier(id, value);
+    }
+
+    public static AddValueModifier add(UUID id, double value) {
+        return new AddValueModifier(id, value);
+    }
+
+    public static AddValueModifier subtract(UUID id, double value) {
+        return new AddValueModifier(id, -value);
+    }
+
+    public static MultiplyValueAttributeModifier multiplier(UUID id, double multiplier) {
+        return new MultiplyValueAttributeModifier(id, multiplier);
+    }
+
+    public static MultiplyValueAttributeModifier multiplyBase(UUID id, double multiplier) {
+        return new MultiplyValueAttributeModifier(id, 1.0F + multiplier);
+    }
+
+    public static ExpiringAttributeModifier temporary(UUID id, AttributeModifier child, int lifetime) {
+        return new ExpiringAttributeModifier(id, child, lifetime);
+    }
+
+    public static ExpiringAttributeModifier temporary(UUID id, AttributeModifier child, TickValue duration) {
+        return new ExpiringAttributeModifier(id, child, duration.tickValue());
     }
 
     public abstract double calculateValue(AttributeInstance source, double value);

@@ -47,6 +47,6 @@ public class MultiplyValueAttributeModifier extends AttributeModifier {
 
     @Override
     public String toString() {
-        return String.format("MultiplyValue=[value=%f]", this.value);
+        return String.format("%s: MultiplyValue=[value=%f]", this.identifier(), this.value);
     }
 }

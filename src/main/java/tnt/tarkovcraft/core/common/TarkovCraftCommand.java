@@ -22,6 +22,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.server.command.EnumArgument;
 import tnt.tarkovcraft.core.common.attribute.Attribute;
 import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
+import tnt.tarkovcraft.core.common.attribute.AttributeSystem;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
 import tnt.tarkovcraft.core.common.attribute.modifier.SetValueAttributeModifier;
@@ -173,9 +174,7 @@ public final class TarkovCraftCommand {
             AttributeModifier modifier = new SetValueAttributeModifier(systemModifierId, value, Integer.MAX_VALUE);
             instance.addModifier(modifier);
         }
-        if (entity instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayer(serverPlayer, new S2C_SendDataAttachments(serverPlayer, CoreDataAttachments.ENTITY_ATTRIBUTES.get()));
-        }
+        AttributeSystem.sync(entity);
         return 0;
     }
 

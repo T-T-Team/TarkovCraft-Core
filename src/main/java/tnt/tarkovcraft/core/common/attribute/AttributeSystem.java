@@ -1,9 +1,12 @@
 package tnt.tarkovcraft.core.common.attribute;
 
 import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.neoforged.neoforge.network.PacketDistributor;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
+import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -65,5 +68,11 @@ public final class AttributeSystem {
             return getter.apply(instance);
         }
         return defaultValue;
+    }
+
+    public static void sync(Entity entity) {
+        if (entity instanceof ServerPlayer serverPlayer) {
+            PacketDistributor.sendToPlayer(serverPlayer, new S2C_SendDataAttachments(serverPlayer, CoreDataAttachments.ENTITY_ATTRIBUTES.get()));
+        }
     }
 }
