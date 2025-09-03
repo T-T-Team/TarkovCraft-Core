@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 
 public final class CoreAttributeModifiers {
 
-    public static final DeferredRegister<AttributeModifierType<?>> REGISTRY = DeferredRegister.create(CoreRegistries.ATTRIBUTE_MODIFIER, TarkovCraftCore.MOD_ID);
+    public static final DeferredRegister<AttributeModifierType<?>> REGISTRY = DeferredRegister.create(CoreRegistries.Keys.ATTRIBUTE_MODIFIER, TarkovCraftCore.MOD_ID);
 
     // Value types
     public static final Supplier<AttributeModifierType<SetValueAttributeModifier>> SET_VALUE = REGISTRY.register("set", k -> new AttributeModifierType<>(k, SetValueAttributeModifier.CODEC));

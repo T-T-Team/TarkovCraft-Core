@@ -6,5 +6,5 @@ import tnt.tarkovcraft.core.common.data.filter.ItemStackFilterType;
 
 public final class CoreItemStackFilters {
 
-    public static final DeferredRegister<ItemStackFilterType<?>> REGISTRY = DeferredRegister.create(CoreRegistries.ITEMSTACK_FILTER, TarkovCraftCore.MOD_ID);
+    public static final DeferredRegister<ItemStackFilterType<?>> REGISTRY = DeferredRegister.create(CoreRegistries.Keys.ITEMSTACK_FILTER, TarkovCraftCore.MOD_ID);
 }

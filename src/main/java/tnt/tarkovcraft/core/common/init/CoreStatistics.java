@@ -7,7 +7,7 @@ import tnt.tarkovcraft.core.common.statistic.Statistic;
 
 public final class CoreStatistics {
 
-    public static final DeferredRegister<Statistic> REGISTRY = DeferredRegister.create(CoreRegistries.STATISTICS, TarkovCraftCore.MOD_ID);
+    public static final DeferredRegister<Statistic> REGISTRY = DeferredRegister.create(CoreRegistries.Keys.STATISTICS, TarkovCraftCore.MOD_ID);
 
     public static final Holder<Statistic> KILLS = REGISTRY.register("kills", Statistic::new);
     public static final Holder<Statistic> PLAYER_KILLS = REGISTRY.register("player_kills", Statistic::new);

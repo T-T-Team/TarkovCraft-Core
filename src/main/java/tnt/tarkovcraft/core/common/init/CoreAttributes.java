@@ -7,7 +7,7 @@ import tnt.tarkovcraft.core.common.attribute.Attribute;
 
 public final class CoreAttributes {
 
-    public static final DeferredRegister<Attribute> REGISTRY = DeferredRegister.create(CoreRegistries.ATTRIBUTE, TarkovCraftCore.MOD_ID);
+    public static final DeferredRegister<Attribute> REGISTRY = DeferredRegister.create(CoreRegistries.Keys.ATTRIBUTE, TarkovCraftCore.MOD_ID);
 
     public static final Holder<Attribute> PHYSICAL_LEVELING_MULTIPLIER = REGISTRY.register("physical_leveling_multiplier", location -> Attribute.create(location, 1.0F));
     public static final Holder<Attribute> PRACTICAL_LEVELING_MULTIPLIER = REGISTRY.register("practical_leveling_multiplier", location -> Attribute.create(location, 1.0F));
