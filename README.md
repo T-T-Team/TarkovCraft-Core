@@ -29,13 +29,13 @@ other player factions, just driving around in custom vehicles, ambushing enemies
 
 # FAQ
 
->**Q: How do I check my skills, statistics, etc.?**
+> **Q: How do I check my skills, statistics, etc.?**
 > 
->**A:** All available screens can be accessed via the `O` key (default). Once opened, use the navigation menu at the top to switch between different views.
+> **A:** All available screens can be accessed via the `O` key (default). Once opened, use the navigation menu at the top to switch between different views.
 
->**Q: I don't want to use the skill system. Can I disable it?**
+> **Q: I don't want to use the skill system. Can I disable it?**
 > 
->**A:** Yes! Skills (and other features) can be disabled through the configuration menu—either from the main menu or directly by editing the config file.
+> **A:** Yes! Skills (and other features) can be disabled through the configuration menu—either from the main menu or directly by editing the config file.
 
 > **Q: Will the mod be backported to older Minecraft versions?**
 > 
