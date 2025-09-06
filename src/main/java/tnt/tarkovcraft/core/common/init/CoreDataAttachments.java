@@ -11,6 +11,7 @@ import tnt.tarkovcraft.core.common.data.CallbackAttachmentSerializer;
 import tnt.tarkovcraft.core.common.mail.MailManager;
 import tnt.tarkovcraft.core.common.skill.SkillData;
 import tnt.tarkovcraft.core.common.statistic.StatisticTracker;
+import tnt.tarkovcraft.core.common.util.OwnerAttachmentSyncHandler;
 
 import java.util.function.Supplier;
 
@@ -36,6 +37,7 @@ public final class CoreDataAttachments {
     public static final Supplier<AttachmentType<StatisticTracker>> STATISTICS = REGISTRY.register("statistics", () -> AttachmentType.builder(StatisticTracker::new)
             .serialize(StatisticTracker.MAP_CODEC)
             .copyOnDeath()
+            .sync(new OwnerAttachmentSyncHandler<>(StatisticTracker.STREAM_CODEC))
             .build()
     );
     public static final Supplier<AttachmentType<Integer>> WEIGHT = REGISTRY.register("weight", () -> AttachmentType.builder(() -> 0)

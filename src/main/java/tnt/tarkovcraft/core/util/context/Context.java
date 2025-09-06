@@ -2,6 +2,7 @@ package tnt.tarkovcraft.core.util.context;
 
 import net.minecraft.util.context.ContextKey;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -19,6 +20,11 @@ public interface Context {
     boolean containsKey(ContextKey<?> key);
 
     boolean containsKeys(Collection<ContextKey<?>> keys);
+
+    @Nullable
+    default <T> T getNullable(ContextKey<T> k) {
+        return this.getOrDefault(k, null);
+    }
 
     default <T> T getOrDefault(ContextKey<T> k, T defaultValue) {
         return this.get(k).orElse(defaultValue);

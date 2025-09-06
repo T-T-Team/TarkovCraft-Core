@@ -6,25 +6,26 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.minecraft.core.Holder;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.context.ContextKey;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import net.neoforged.neoforge.network.PacketDistributor;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
-import tnt.tarkovcraft.core.network.Synchronizable;
-import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 
 import java.util.Map;
 import java.util.function.LongBinaryOperator;
 
-public final class StatisticTracker implements Synchronizable<StatisticTracker> {
+public final class StatisticTracker {
 
     public static final MapCodec<StatisticTracker> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.unboundedMap(CoreRegistries.STATISTICS.byNameCodec(), Codec.LONG).fieldOf("statMap").forGetter(t -> t.stats)
     ).apply(instance, StatisticTracker::new));
-    public static final Codec<StatisticTracker> CODEC = MAP_CODEC.codec();
+    public static final StreamCodec<RegistryFriendlyByteBuf, StatisticTracker> STREAM_CODEC = ByteBufCodecs.map(
+            Object2LongOpenHashMap::new, ByteBufCodecs.registry(CoreRegistries.Keys.STATISTICS), ByteBufCodecs.LONG
+    ).map(StatisticTracker::new, tracker -> (Object2LongOpenHashMap<Statistic>) tracker.stats);
     public static final ContextKey<StatisticTracker> TRACKER = new ContextKey<>(TarkovCraftCore.createResourceLocation("stat_tracker"));
     private final Object2LongMap<Statistic> stats;
 
@@ -50,9 +51,7 @@ public final class StatisticTracker implements Synchronizable<StatisticTracker> 
 
     public static void increment(IAttachmentHolder holder, Statistic stat, long amount) {
         holder.getData(CoreDataAttachments.STATISTICS).increment(stat, amount);
-        if (holder instanceof ServerPlayer player) {
-            PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, CoreDataAttachments.STATISTICS.get()));
-        }
+        holder.syncData(CoreDataAttachments.STATISTICS);
     }
 
     public static boolean incrementOptional(IAttachmentHolder holder, Holder<Statistic> stat) {
@@ -84,9 +83,7 @@ public final class StatisticTracker implements Synchronizable<StatisticTracker> 
         long existing = tracker.get(statistic);
         long newValue = replacer.applyAsLong(existing, amount);
         tracker.set(statistic, newValue);
-        if (holder instanceof ServerPlayer player) {
-            PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, CoreDataAttachments.STATISTICS.get()));
-        }
+        holder.syncData(CoreDataAttachments.STATISTICS);
     }
 
     public static boolean replaceOptional(IAttachmentHolder holder, Holder<Statistic> stat, long amount, LongBinaryOperator replacer) {
@@ -119,10 +116,5 @@ public final class StatisticTracker implements Synchronizable<StatisticTracker> 
 
     public void resetStatistics() {
         this.stats.clear();
-    }
-
-    @Override
-    public Codec<StatisticTracker> networkCodec() {
-        return CODEC;
     }
 }

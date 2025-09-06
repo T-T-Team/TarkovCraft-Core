@@ -170,7 +170,6 @@ public final class TarkovCraftCoreEventHandler {
         List<AttachmentType<? extends Synchronizable<?>>> list = new ArrayList<>();
         list.add(CoreDataAttachments.MAIL_MANAGER.get());
         list.add(CoreDataAttachments.ENTITY_ATTRIBUTES.get());
-        list.add(CoreDataAttachments.STATISTICS.get());
         list.add(CoreDataAttachments.SKILL.get());
         return new S2C_SendDataAttachments(player, list);
     }

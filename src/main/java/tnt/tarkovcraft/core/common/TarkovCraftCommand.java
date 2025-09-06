@@ -302,9 +302,7 @@ public final class TarkovCraftCommand {
         long value = LongArgumentType.getLong(ctx, "value");
         StatisticTracker tracker = target.getData(CoreDataAttachments.STATISTICS);
         tracker.set(statistic, value);
-        if (target instanceof ServerPlayer player) {
-            PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, CoreDataAttachments.STATISTICS.get()));
-        }
+        target.syncData(CoreDataAttachments.STATISTICS);
         return 0;
     }
 
@@ -312,9 +310,7 @@ public final class TarkovCraftCommand {
         Entity target = EntityArgument.getEntity(ctx, "target");
         StatisticTracker tracker = target.getData(CoreDataAttachments.STATISTICS);
         tracker.resetStatistics();
-        if (target instanceof ServerPlayer player) {
-            PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, CoreDataAttachments.STATISTICS.get()));
-        }
+        target.syncData(CoreDataAttachments.STATISTICS);
         return 0;
     }
 }

@@ -25,7 +25,7 @@ public final class CoreRegistries {
     public static final Registry<AttributeModifierType<?>> ATTRIBUTE_MODIFIER = new RegistryBuilder<>(Keys.ATTRIBUTE_MODIFIER).create();
     public static final Registry<ItemStackFilterType<?>> ITEMSTACK_FILTER = new RegistryBuilder<>(Keys.ITEMSTACK_FILTER).create();
     public static final Registry<NumberProviderType<?>> NUMBER_PROVIDER = new RegistryBuilder<>(Keys.NUMBER_PROVIDER).create();
-    public static final Registry<Statistic> STATISTICS = new RegistryBuilder<>(Keys.STATISTICS).create();
+    public static final Registry<Statistic> STATISTICS = new RegistryBuilder<>(Keys.STATISTICS).sync(true).create();
 
     // Mail system
     public static final Registry<MailMessageAttachmentType<?>> MAIL_MESSAGE_ATTACHMENT = new RegistryBuilder<>(Keys.MAIL_MESSAGE_ATTACHMENT).create();
