@@ -29,16 +29,20 @@ other player factions, just driving around in custom vehicles, ambushing enemies
 
 # FAQ
 
-**Q: How do I check my skills, statistics, etc.?**
-**A:** All available screens can be accessed via the `O` key (default). Once opened, use the navigation menu at the top to switch between different views.
+>**Q: How do I check my skills, statistics, etc.?**
+> 
+>**A:** All available screens can be accessed via the `O` key (default). Once opened, use the navigation menu at the top to switch between different views.
 
-**Q: I don't want to use the skill system. Can I disable it?**
-**A:** Yes! Skills (and other features) can be disabled through the configuration menu—either from the main menu or directly by editing the config file.
+>**Q: I don't want to use the skill system. Can I disable it?**
+> 
+>**A:** Yes! Skills (and other features) can be disabled through the configuration menu—either from the main menu or directly by editing the config file.
 
-**Q: Will the mod be backported to older Minecraft versions?**
-**A:** No. The project relies on features only available in newer Minecraft versions. Supporting older versions would require extensive rewrites of core systems, which would slow down overall development.
+> **Q: Will the mod be backported to older Minecraft versions?**
+> 
+> **A:** No. The project relies on features only available in newer Minecraft versions. Supporting older versions would require extensive rewrites of core systems, which would slow down overall development.
 
-**Q: Which Minecraft version is supported?**
-**A:** We're currently targeting Minecraft 1.22 once it's available. We may port to newer versions in the future, unless major rewrites in the Minecraft codebase make it impractical. Once the mod reaches a stable state with robust features, we'll evaluate the best version to continue development on.
+> **Q: Which Minecraft version is supported?**
+> 
+> **A:** We're currently targeting Minecraft 1.22 once it's available. We may port to newer versions in the future, unless major rewrites in the Minecraft codebase make it impractical. Once the mod reaches a stable state with robust features, we'll evaluate the best version to continue development on.
 
 
