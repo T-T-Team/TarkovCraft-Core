@@ -116,7 +116,12 @@ public class StatisticsScreen extends CharacterSubScreen {
         // weight
         if (WeightSystem.isEnabled() && this.isMyProfile) {
             int weight = WeightSystem.getWeight(player);
-            Component weightValue = WeightSystem.getWeightValueDisplay(weight, WeightSystem.isOverweight(player) ? (w, st) -> st.withColor(ChatFormatting.RED) : WeightSystem.BASE_VALUE_STYLE);
+            boolean overweight = WeightSystem.isOverweight(player);
+            float overweightFactor = WeightSystem.getOverweightEffectFactor(player);
+            ChatFormatting weightLabelColor = overweight
+                    ? overweightFactor >= 1.0F ? ChatFormatting.RED : ChatFormatting.YELLOW
+                    : ChatFormatting.GREEN;
+            Component weightValue = WeightSystem.getWeightValueDisplay(weight, (w, st) -> st.withColor(weightLabelColor));
             weightLabel = Component.literal("⚖ ").withStyle(ChatFormatting.GRAY).append(weightValue);
         }
         container.addRow(new PlayerProfileLabelContainer.ProfileLabelRow(PlayerProfileLabelContainer.ROW_STAT, killLabel, deathLabel, weightLabel));
