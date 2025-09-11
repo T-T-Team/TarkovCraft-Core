@@ -130,10 +130,11 @@ public class WeightSystem {
         if (!isEnabled())
             return 0;
         int count = itemStack.getCount();
-        int weight = count * itemStack.getOrDefault(CoreItemDataComponents.WEIGHT, 0);
+        int baseWeight = itemStack.getOrDefault(CoreItemDataComponents.WEIGHT, 0);
+        int weight = count * baseWeight;
         if (isContainerWeightEnabled()) {
             Collection<WeightProvider> additionalWeightProviders = this.typeProviderMap.get(WeightProvider.WeightSource.ITEM);
-            WeightContext itemCtx = WeightContext.itemStack(itemStack, this::getWeight);
+            WeightContext itemCtx = WeightContext.itemStack(baseWeight, itemStack, this::getWeight);
             for (WeightProvider provider : additionalWeightProviders) {
                 weight += (count * provider.getWeight(itemCtx));
             }
