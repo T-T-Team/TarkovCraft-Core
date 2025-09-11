@@ -8,6 +8,7 @@ import tnt.tarkovcraft.core.common.attribute.Attribute;
 import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifierType;
 import tnt.tarkovcraft.core.common.data.filter.ItemStackFilterType;
 import tnt.tarkovcraft.core.common.data.number.NumberProviderType;
+import tnt.tarkovcraft.core.common.item.CurrencyType;
 import tnt.tarkovcraft.core.common.mail.MailMessageAttachmentType;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 import tnt.tarkovcraft.core.common.skill.stat.SkillStatType;
@@ -26,6 +27,7 @@ public final class CoreRegistries {
     public static final Registry<ItemStackFilterType<?>> ITEMSTACK_FILTER = new RegistryBuilder<>(Keys.ITEMSTACK_FILTER).create();
     public static final Registry<NumberProviderType<?>> NUMBER_PROVIDER = new RegistryBuilder<>(Keys.NUMBER_PROVIDER).create();
     public static final Registry<Statistic> STATISTICS = new RegistryBuilder<>(Keys.STATISTICS).sync(true).create();
+    public static final Registry<CurrencyType> CURRENCY = new RegistryBuilder<>(Keys.CURRENCY).sync(true).create();
 
     // Mail system
     public static final Registry<MailMessageAttachmentType<?>> MAIL_MESSAGE_ATTACHMENT = new RegistryBuilder<>(Keys.MAIL_MESSAGE_ATTACHMENT).create();
@@ -50,6 +52,7 @@ public final class CoreRegistries {
         public static final ResourceKey<Registry<SkillTriggerConditionType<?>>> SKILL_TRIGGER_CONDITION_TYPE = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/trigger_condition"));
         public static final ResourceKey<Registry<SkillStatConditionType<?>>> SKILL_STAT_CONDITION_TYPE = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/stat_condition"));
         public static final ResourceKey<Registry<SkillStatType<?>>> SKILL_STAT = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/stat"));
+        public static final ResourceKey<Registry<CurrencyType>> CURRENCY = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("currency"));
     }
 
     public static final class DatapackKeys {

@@ -78,6 +78,7 @@ public final class TarkovCraftCore {
         event.register(CoreRegistries.ITEMSTACK_FILTER);
         event.register(CoreRegistries.NUMBER_PROVIDER);
         event.register(CoreRegistries.STATISTICS);
+        event.register(CoreRegistries.CURRENCY);
 
         // Mail system
         event.register(CoreRegistries.MAIL_MESSAGE_ATTACHMENT);
