@@ -15,7 +15,8 @@ public class IconWithLabelRenderable extends AbstractRenderable {
     private final HorizontalAlignment alignment;
 
     private int iconSize;
-    private int iconOffset = 2;
+    private int horizontalTextOffset = 2;
+    private int verticalTextOffset = 1;
     private boolean textShadow = true;
 
     public IconWithLabelRenderable(Font font, int x, int y, int width, int height, HorizontalAlignment alignment, IconWithLabel iconWithLabel) {
@@ -30,8 +31,12 @@ public class IconWithLabelRenderable extends AbstractRenderable {
         this.iconSize = iconSize;
     }
 
-    public void setIconOffset(int iconOffset) {
-        this.iconOffset = iconOffset;
+    public void setHorizontalTextOffset(int offset) {
+        this.horizontalTextOffset = offset;
+    }
+
+    public void setVerticalTextOffset(int verticalTextOffset) {
+        this.verticalTextOffset = verticalTextOffset;
     }
 
     public void setTextShadow(boolean textShadow) {
@@ -44,14 +49,14 @@ public class IconWithLabelRenderable extends AbstractRenderable {
         Component label = this.iconWithLabel.getLabel();
         int itemWidth = this.font.width(label);
         if (icon != null) {
-            itemWidth += this.iconOffset + this.iconSize;
+            itemWidth += this.horizontalTextOffset + this.iconSize;
         }
         int left = (int) this.alignment.getPosition(this.getX(), this.getRight(), itemWidth);
         if (icon != null) {
             RenderUtils.blitFull(guiGraphics, icon, left, this.y, left + this.iconSize, this.y + this.iconSize, this.iconWithLabel.iconColor());
-            left += this.iconSize + this.iconOffset;
+            left += this.iconSize + this.horizontalTextOffset;
         }
 
-        guiGraphics.drawString(this.font, this.iconWithLabel.getLabel(), left, this.y - (this.height - this.font.lineHeight) / 2 + 1, this.iconWithLabel.labelColor(), this.textShadow);
+        guiGraphics.drawString(this.font, this.iconWithLabel.getLabel(), left, this.y - (this.height - this.font.lineHeight) / 2 + this.verticalTextOffset, this.iconWithLabel.labelColor(), this.textShadow);
     }
 }
