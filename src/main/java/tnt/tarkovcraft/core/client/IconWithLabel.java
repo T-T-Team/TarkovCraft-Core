@@ -8,12 +8,20 @@ import java.util.function.Supplier;
 
 public record IconWithLabel(ResourceLocation icon, Supplier<Component> label, int iconColor, int labelColor) {
 
+    public IconWithLabel(ResourceLocation icon, Supplier<Component> label, int color) {
+        this(icon, label, color, color);
+    }
+
     public IconWithLabel(ResourceLocation icon, Supplier<Component> label) {
-        this(icon, label, ColorPalette.WHITE, ColorPalette.WHITE);
+        this(icon, label, ColorPalette.WHITE);
     }
 
     public IconWithLabel(ResourceLocation icon, Component label, int iconColor, int labelColor) {
         this(icon, () -> label, iconColor, labelColor);
+    }
+
+    public IconWithLabel(ResourceLocation icon, Component label, int color) {
+        this(icon, () -> label, color, color);
     }
 
     public IconWithLabel(ResourceLocation icon, Component label) {

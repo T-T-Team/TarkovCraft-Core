@@ -25,6 +25,11 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
+import tnt.tarkovcraft.core.common.attribute.AttributeSystem;
+import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
+import tnt.tarkovcraft.core.common.attribute.WeightChangeAttributeListener;
+import tnt.tarkovcraft.core.common.init.CoreAttributes;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreSkillTriggerEvents;
 import tnt.tarkovcraft.core.common.init.CoreStatistics;
@@ -59,6 +64,9 @@ public final class TarkovCraftCoreEventHandler {
             Player player = (Player) entity;
             WeightSystem.applyWeightEffects(player);
             player.containerMenu.addSlotListener(new EntityWeightContainerListener(player));
+            EntityAttributeData attributeData = AttributeSystem.getAttributes(player);
+            AttributeInstance instance = attributeData.getAttribute(CoreAttributes.WEIGHT_LIMIT);
+            instance.addListener(new WeightChangeAttributeListener(player));
         }
     }
 
