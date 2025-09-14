@@ -6,6 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
 import java.util.Collection;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -105,7 +106,7 @@ public record Duration(DurationUnit unit, double value) implements TickValue {
 
     @Override
     public String toString() {
-        return String.format("Duration[v=%f,u=%s,t=%d]", this.value(), this.unit(), this.tickValue());
+        return String.format(Locale.ROOT, "Duration[v=%f,u=%s,t=%d]", this.value(), this.unit(), this.tickValue());
     }
 
     @Override

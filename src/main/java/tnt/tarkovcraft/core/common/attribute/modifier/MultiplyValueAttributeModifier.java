@@ -7,6 +7,7 @@ import net.minecraft.core.UUIDUtil;
 import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
 import tnt.tarkovcraft.core.common.init.CoreAttributeModifiers;
 
+import java.util.Locale;
 import java.util.UUID;
 
 public class MultiplyValueAttributeModifier extends AttributeModifier {
@@ -47,6 +48,6 @@ public class MultiplyValueAttributeModifier extends AttributeModifier {
 
     @Override
     public String toString() {
-        return String.format("%s: MultiplyValue=[value=%f]", this.identifier(), this.value);
+        return String.format(Locale.ROOT, "%s: MultiplyValue=[value=%f]", this.identifier(), this.value);
     }
 }

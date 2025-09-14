@@ -2,7 +2,6 @@ package tnt.tarkovcraft.core.common.attribute.modifier;
 
 import com.mojang.serialization.Codec;
 import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
-import tnt.tarkovcraft.core.common.data.duration.TickValue;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 
 import java.util.Objects;
@@ -27,28 +26,40 @@ public abstract class AttributeModifier {
         return new SetValueAttributeModifier(id, value);
     }
 
+    public static SetValueAttributeModifier set(String uuid, double value) {
+        return set(UUID.fromString(uuid), value);
+    }
+
     public static AddValueModifier add(UUID id, double value) {
         return new AddValueModifier(id, value);
+    }
+
+    public static AddValueModifier add(String uuid, double value) {
+        return add(UUID.fromString(uuid), value);
     }
 
     public static AddValueModifier subtract(UUID id, double value) {
         return new AddValueModifier(id, -value);
     }
 
+    public static AddValueModifier subtract(String uuid, double value) {
+        return subtract(UUID.fromString(uuid), value);
+    }
+
     public static MultiplyValueAttributeModifier multiplier(UUID id, double multiplier) {
         return new MultiplyValueAttributeModifier(id, multiplier);
+    }
+
+    public static MultiplyValueAttributeModifier multiply(String uuid, double multiplier) {
+        return multiplier(UUID.fromString(uuid), multiplier);
     }
 
     public static MultiplyValueAttributeModifier multiplyBase(UUID id, double multiplier) {
         return new MultiplyValueAttributeModifier(id, 1.0F + multiplier);
     }
 
-    public static ExpiringAttributeModifier temporary(UUID id, AttributeModifier child, int lifetime) {
-        return new ExpiringAttributeModifier(id, child, lifetime);
-    }
-
-    public static ExpiringAttributeModifier temporary(UUID id, AttributeModifier child, TickValue duration) {
-        return new ExpiringAttributeModifier(id, child, duration.tickValue());
+    public static MultiplyValueAttributeModifier multiplyBase(String uuid, double multiplier) {
+        return multiplyBase(UUID.fromString(uuid), multiplier);
     }
 
     public abstract double calculateValue(AttributeInstance source, double value);
@@ -57,18 +68,14 @@ public abstract class AttributeModifier {
 
     public abstract AttributeModifierType<?> getType();
 
-    public boolean onCancellationTick(AttributeInstance source) {
-        return false;
-    }
-
     public final UUID identifier() {
         return this.identifier;
     }
 
     @Override
     public final boolean equals(Object o) {
-        if (!(o instanceof ExpiringAttributeModifier that)) return false;
-        return Objects.equals(identifier, that.identifier());
+        if (!(o instanceof AttributeModifier modifier)) return false;
+        return Objects.equals(identifier, modifier.identifier);
     }
 
     @Override

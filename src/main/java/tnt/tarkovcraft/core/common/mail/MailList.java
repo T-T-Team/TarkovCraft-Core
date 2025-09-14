@@ -8,6 +8,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 public final class MailList implements Comparable<MailList> {
 
@@ -40,7 +41,7 @@ public final class MailList implements Comparable<MailList> {
     }
 
     public String getMessageCount() {
-        return this.messages.size() > 99 ? "[99+]" : String.format("[%d]", this.messages.size());
+        return this.messages.size() > 99 ? "[99+]" : String.format(Locale.ROOT, "[%d]", this.messages.size());
     }
 
     public void receive(MailMessage message) {

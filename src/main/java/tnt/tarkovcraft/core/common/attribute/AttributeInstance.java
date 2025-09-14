@@ -52,19 +52,6 @@ public final class AttributeInstance {
         return holder;
     }
 
-    public void update() {
-        Iterator<AttributeModifier> iterator = this.modifiers.values().iterator();
-        while (iterator.hasNext()) {
-            AttributeModifier modifier = iterator.next();
-            boolean shouldRemoveModifier = modifier.onCancellationTick(this);
-            if (shouldRemoveModifier) {
-                iterator.remove();
-                this.invokeEvent(t -> t.onAttributeModifierRemoved(this, modifier));
-                this.setChanged();
-            }
-        }
-    }
-
     public void addModifier(AttributeModifier modifier) {
         this.modifiers.put(modifier.identifier(), modifier);
         this.invokeEvent(t -> t.onAttributeModifierAdded(this, modifier));

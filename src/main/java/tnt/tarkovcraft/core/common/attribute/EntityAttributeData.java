@@ -53,12 +53,6 @@ public final class EntityAttributeData implements Synchronizable<EntityAttribute
         return this.attributeMap.containsKey(attribute);
     }
 
-    public void update() {
-        for (AttributeInstance value : this.attributeMap.values()) {
-            value.update();
-        }
-    }
-
     public void setHolder(IAttachmentHolder holder) {
         if (holder instanceof Entity) {
             this.holder = (Entity) holder;
