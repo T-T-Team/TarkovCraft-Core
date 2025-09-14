@@ -25,10 +25,12 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import tnt.tarkovcraft.core.api.MovementStaminaComponent;
 import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
 import tnt.tarkovcraft.core.common.attribute.AttributeSystem;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.attribute.WeightChangeAttributeListener;
+import tnt.tarkovcraft.core.common.energy.EnergySystem;
 import tnt.tarkovcraft.core.common.init.CoreAttributes;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreSkillTriggerEvents;
@@ -103,6 +105,10 @@ public final class TarkovCraftCoreEventHandler {
         player.getData(CoreDataAttachments.ENTITY_ATTRIBUTES).update();
         if (!player.level().isClientSide() && SkillSystem.trigger(CoreSkillTriggerEvents.PLAYER_TICK, player)) {
             SkillSystem.synchronize(player);
+        }
+        if (player.isSprinting()) {
+            MovementStaminaComponent component = EnergySystem.MOVEMENT_STAMINA.getComponent();
+            component.onSprint(player);
         }
     }
 

@@ -36,6 +36,13 @@ public class DefaultMovementStaminaComponent implements MovementStaminaComponent
     }
 
     @Override
+    public void onSprint(LivingEntity entity) {
+        if (entity.getType() != EntityType.PLAYER)
+            return;
+        EnergySystem.onSprinted(entity);
+    }
+
+    @Override
     public boolean canJump(LivingEntity entity) {
         if (entity.getType() != EntityType.PLAYER)
             return true;
