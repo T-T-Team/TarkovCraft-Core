@@ -9,15 +9,14 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.NeoForge;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.api.event.client.AddPlayerProfileLabelsEvent;
+import tnt.tarkovcraft.core.client.IconWithLabel;
 import tnt.tarkovcraft.core.client.screen.navigation.CoreNavigators;
-import tnt.tarkovcraft.core.client.screen.renderable.AbstractTextRenderable;
-import tnt.tarkovcraft.core.client.screen.renderable.HorizontalLineRenderable;
-import tnt.tarkovcraft.core.client.screen.renderable.ShapeRenderable;
-import tnt.tarkovcraft.core.client.screen.renderable.VerticalLineRenderable;
+import tnt.tarkovcraft.core.client.screen.renderable.*;
 import tnt.tarkovcraft.core.client.screen.widget.EntityWidget;
 import tnt.tarkovcraft.core.client.screen.widget.ListWidget;
 import tnt.tarkovcraft.core.client.util.PlayerProfileLabelContainer;
@@ -27,6 +26,7 @@ import tnt.tarkovcraft.core.common.init.CoreStatistics;
 import tnt.tarkovcraft.core.common.statistic.DisplayStatistic;
 import tnt.tarkovcraft.core.common.statistic.StatisticTracker;
 import tnt.tarkovcraft.core.common.weight.WeightSystem;
+import tnt.tarkovcraft.core.util.HorizontalAlignment;
 import tnt.tarkovcraft.core.util.context.Context;
 import tnt.tarkovcraft.core.util.context.ContextImpl;
 import tnt.tarkovcraft.core.util.context.ContextKeys;
@@ -39,6 +39,9 @@ import java.util.List;
 public class StatisticsScreen extends CharacterSubScreen {
 
     public static final Component OVERVIEW_LABEL = TextHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "statistics", "overview").withStyle(ChatFormatting.BOLD);
+    public static final ResourceLocation ICON_KILLS = TarkovCraftCore.createResourceLocation("textures/icons/profile/kills.png");
+    public static final ResourceLocation ICON_DEATHS = TarkovCraftCore.createResourceLocation("textures/icons/profile/deaths.png");
+    public static final ResourceLocation ICON_WEIGHT = TarkovCraftCore.createResourceLocation("textures/icons/profile/weight.png");
     private double textScroll;
 
     public StatisticsScreen(Context context) {
@@ -73,18 +76,18 @@ public class StatisticsScreen extends CharacterSubScreen {
             PlayerProfileLabelContainer container = this.getProfileLabels(player, tracker);
             List<PlayerProfileLabelContainer.ProfileLabelRow> rows = container.getRows();
             int top = this.height - rows.size() * 12;
+            int gridWidth = (left - 9) / 3;
             for (int i = 0; i < rows.size(); i++) {
                 PlayerProfileLabelContainer.ProfileLabelRow row = rows.get(i);
                 int y = top + i * 12;
                 if (row.left() != null) {
-                    this.addRenderableOnly(new AbstractTextRenderable.Component(3, y, left, 10,  ColorPalette.WHITE, true, this.font, row.left()));
+                    this.addRenderableOnly(new IconWithLabelRenderable(this.font, 3, y, gridWidth, 10, HorizontalAlignment.LEFT, row.left()));
                 }
                 if (row.center() != null) {
-                    this.addRenderableOnly(new AbstractTextRenderable.CenteredComponent(0, y, left, 10, ColorPalette.WHITE, true, this.font, row.center()));
+                    this.addRenderableOnly(new IconWithLabelRenderable(this.font, 3 + gridWidth, y, gridWidth, 10, HorizontalAlignment.CENTER, row.center()));
                 }
                 if (row.right() != null) {
-                    int labelWidth = font.width(row.right());
-                    this.addRenderableOnly(new AbstractTextRenderable.Component(left - labelWidth - 3, y, labelWidth, 10, ColorPalette.WHITE, true, this.font, row.right()));
+                    this.addRenderableOnly(new IconWithLabelRenderable(this.font, 3 + 2 * gridWidth, y, gridWidth, 10, HorizontalAlignment.RIGHT, row.right()));
                 }
             }
 
@@ -101,18 +104,16 @@ public class StatisticsScreen extends CharacterSubScreen {
         PlayerProfileLabelContainer container = new PlayerProfileLabelContainer();
         // playername
         Component playerNameLabel = player.getDisplayName().copy().withStyle(ChatFormatting.BOLD, ChatFormatting.GOLD);
-        container.addRow(PlayerProfileLabelContainer.ProfileLabelRow.center(PlayerProfileLabelContainer.ROW_PLAYER_NAME, playerNameLabel));
+        container.addRow(PlayerProfileLabelContainer.ProfileLabelRow.center(PlayerProfileLabelContainer.ROW_PLAYER_NAME, new IconWithLabel(null, playerNameLabel)));
         container.addEmptyRow(PlayerProfileLabelContainer.ROW_STAT_SEPARATOR);
         // Stat row
         // kills
         long kills = tracker.get(CoreStatistics.KILLS.value());
-        Component killCount = Component.literal(String.valueOf(kills)).withStyle(ChatFormatting.YELLOW);
-        Component killLabel = Component.literal("⚔ ").withStyle(ChatFormatting.GRAY).append(killCount);
+        Component killLabel = Component.literal(String.valueOf(kills)).withStyle(ChatFormatting.YELLOW);
         Component weightLabel = null;
         // deaths
         long deaths = tracker.get(CoreStatistics.DEATHS.value());
-        Component deathCount = Component.literal(String.valueOf(deaths)).withStyle(ChatFormatting.YELLOW);
-        Component deathLabel = Component.literal("☠ ").withStyle(ChatFormatting.GRAY).append(deathCount);
+        Component deathLabel = Component.literal(String.valueOf(deaths)).withStyle(ChatFormatting.YELLOW);
         // weight
         if (WeightSystem.isEnabled() && this.isMyProfile) {
             int weight = WeightSystem.getWeight(player);
@@ -121,10 +122,14 @@ public class StatisticsScreen extends CharacterSubScreen {
             ChatFormatting weightLabelColor = overweight
                     ? overweightFactor >= 1.0F ? ChatFormatting.RED : ChatFormatting.YELLOW
                     : ChatFormatting.GREEN;
-            Component weightValue = WeightSystem.getWeightValueDisplay(weight, (w, st) -> st.withColor(weightLabelColor));
-            weightLabel = Component.literal("⚖ ").withStyle(ChatFormatting.GRAY).append(weightValue);
+            weightLabel = WeightSystem.getWeightValueDisplay(weight, (w, st) -> st.withColor(weightLabelColor));
         }
-        container.addRow(new PlayerProfileLabelContainer.ProfileLabelRow(PlayerProfileLabelContainer.ROW_STAT, killLabel, deathLabel, weightLabel));
+        container.addRow(new PlayerProfileLabelContainer.ProfileLabelRow(
+                PlayerProfileLabelContainer.ROW_STAT,
+                new IconWithLabel(ICON_KILLS, killLabel),
+                new IconWithLabel(ICON_DEATHS, deathLabel),
+                new IconWithLabel(ICON_WEIGHT, weightLabel)
+        ));
         // API for custom player labels
         AddPlayerProfileLabelsEvent event = NeoForge.EVENT_BUS.post(new AddPlayerProfileLabelsEvent(player, container));
         return event.getContainer();

@@ -1,9 +1,9 @@
 package tnt.tarkovcraft.core.client.util;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import tnt.tarkovcraft.core.TarkovCraftCore;
+import tnt.tarkovcraft.core.client.IconWithLabel;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public class PlayerProfileLabelContainer {
         return ImmutableList.copyOf(this.rows);
     }
 
-    public record ProfileLabelRow(ResourceLocation identifier, @Nullable Component left, @Nullable Component center, @Nullable Component right) {
+    public record ProfileLabelRow(ResourceLocation identifier, @Nullable IconWithLabel left, @Nullable IconWithLabel center, @Nullable IconWithLabel right) {
 
         @Override
         public boolean equals(Object o) {
@@ -67,15 +67,15 @@ public class PlayerProfileLabelContainer {
             return Objects.hashCode(identifier);
         }
 
-        public static ProfileLabelRow left(ResourceLocation identifier, Component left) {
+        public static ProfileLabelRow left(ResourceLocation identifier, IconWithLabel left) {
             return new ProfileLabelRow(identifier, left, null, null);
         }
 
-        public static ProfileLabelRow center(ResourceLocation identifier, Component center) {
+        public static ProfileLabelRow center(ResourceLocation identifier, IconWithLabel center) {
             return new ProfileLabelRow(identifier, null, center, null);
         }
 
-        public static ProfileLabelRow right(ResourceLocation identifier, Component right) {
+        public static ProfileLabelRow right(ResourceLocation identifier, IconWithLabel right) {
             return new ProfileLabelRow(identifier, null, null, right);
         }
     }
