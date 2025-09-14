@@ -20,6 +20,10 @@ public class ContextImpl implements WritableContext {
         return EMPTY;
     }
 
+    public static ContextImpl emptyMutable() {
+        return new ContextImpl(Collections.emptyMap());
+    }
+
     public static Builder builder(int expectedSize) {
         return new Builder(expectedSize);
     }
@@ -95,7 +99,7 @@ public class ContextImpl implements WritableContext {
     public void copy(Context reader) {
         Set<ContextKey<?>> keys = reader.listKeys();
         for (ContextKey<?> k : keys) {
-            Object value = reader.get(k);
+            Object value = reader.getNullable(k);
             this.data.put(k, value);
         }
     }
@@ -103,7 +107,7 @@ public class ContextImpl implements WritableContext {
     public void copyMissing(Context reader) {
         Set<ContextKey<?>> keys = reader.listKeys();
         for (ContextKey<?> k : keys) {
-            Object value = reader.get(k);
+            Object value = reader.getNullable(k);
             this.data.putIfAbsent(k, value);
         }
     }
