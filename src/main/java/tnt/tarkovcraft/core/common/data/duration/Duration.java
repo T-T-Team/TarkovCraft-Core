@@ -13,24 +13,11 @@ public record Duration(DurationUnit unit, double value) implements TickValue {
 
     public static final Pattern PATTERN = Pattern.compile("(?<value>-?\\d+)(?<unit>[a-zA-Z]+)");
     public static final Codec<Duration> STRING_CODEC = Codec.STRING.comapFlatMap(expr -> {
-        Matcher matcher = PATTERN.matcher(expr);
-        if (!matcher.matches())
-            return DataResult.error(() -> "Invalid duration format: " + expr);
-        String value = matcher.group("value");
-        int intValue;
         try {
-            intValue = Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            return DataResult.error(() -> "Invalid number format: " + e);
+            return DataResult.success(Duration.parse(expr));
+        } catch (Exception e) {
+            return DataResult.error(() -> "Failed to parse duration '" + expr + "': " + e.getMessage());
         }
-        String unit = matcher.group("unit");
-        DurationUnit durationUnit;
-        try {
-            durationUnit = DurationUnit.getBySign(unit);
-        } catch (IllegalArgumentException e) {
-            return DataResult.error(() -> "Invalid duration unit: " + e);
-        }
-        return DataResult.success(new Duration(durationUnit, intValue));
     }, duration -> duration.tickValue() + DurationUnit.TICK.sign());
 
     public static Duration ticks(int ticks) {
@@ -98,6 +85,22 @@ public record Duration(DurationUnit unit, double value) implements TickValue {
 
     public String toDurationString() {
         return value() + unit().sign();
+    }
+
+    public static Duration parse(String inputString) {
+        Matcher matcher = PATTERN.matcher(inputString);
+        int result = 0;
+        while (matcher.find()) {
+            String value = matcher.group("value");
+            String unit = matcher.group("unit");
+            int unitValue = Integer.parseInt(value);
+            DurationUnit durationUnit = DurationUnit.getBySign(unit);
+            result += new Duration(durationUnit, unitValue).tickValue();
+        }
+        if (result <= 0) {
+            throw new IllegalArgumentException("Invalid duration format or value: " + inputString);
+        }
+        return Duration.ticks(result);
     }
 
     @Override
