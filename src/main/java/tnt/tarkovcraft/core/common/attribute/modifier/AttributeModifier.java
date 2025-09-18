@@ -50,7 +50,7 @@ public abstract class AttributeModifier {
         return new MultiplyValueAttributeModifier(id, multiplier);
     }
 
-    public static MultiplyValueAttributeModifier multiply(String uuid, double multiplier) {
+    public static MultiplyValueAttributeModifier multiplier(String uuid, double multiplier) {
         return multiplier(UUID.fromString(uuid), multiplier);
     }
 
