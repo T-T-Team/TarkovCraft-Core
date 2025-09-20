@@ -5,9 +5,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.neoforged.neoforge.network.PacketDistributor;
+import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -68,6 +70,60 @@ public final class AttributeSystem {
             return getter.apply(instance);
         }
         return defaultValue;
+    }
+
+    public static void addModifier(Entity entity, Attribute attribute, AttributeModifier modifier, boolean replace) {
+        if (isEnabledForEntity(entity)) {
+            EntityAttributeData data = getAttributes(entity);
+            AttributeInstance instance = data.getAttribute(attribute);
+            if (replace || !instance.hasModifier(modifier)) {
+                instance.addModifier(modifier);
+            }
+        }
+    }
+
+    public static void addModifier(Entity entity, Holder<Attribute> attribute, AttributeModifier modifier, boolean replace) {
+        addModifier(entity, attribute.value(), modifier, replace);
+    }
+
+    public static void addModifier(Entity entity, Supplier<Attribute> attribute, AttributeModifier modifier, boolean replace) {
+        addModifier(entity, attribute.get(), modifier, replace);
+    }
+
+    public static void removeModifier(Entity entity, Attribute attribute, UUID modifier) {
+        if (isEnabledForEntity(entity)) {
+            EntityAttributeData data = getAttributes(entity);
+            AttributeInstance instance = data.getAttribute(attribute);
+            if (instance.hasModifier(modifier)) {
+                instance.removeModifier(modifier);
+            }
+        }
+    }
+
+    public static void removeModifier(Entity entity, Attribute attribute, AttributeModifier modifier) {
+        if (isEnabledForEntity(entity)) {
+            EntityAttributeData data = getAttributes(entity);
+            AttributeInstance instance = data.getAttribute(attribute);
+            if (instance.hasModifier(modifier)) {
+                instance.removeModifier(modifier);
+            }
+        }
+    }
+
+    public static void removeModifier(Entity entity, Holder<Attribute> attribute, UUID modifier) {
+        removeModifier(entity, attribute.value(), modifier);
+    }
+
+    public static void removeModifier(Entity entity, Supplier<Attribute> attribute, UUID modifier) {
+        removeModifier(entity, attribute.get(), modifier);
+    }
+
+    public static void removeModifier(Entity entity, Holder<Attribute> attribute, AttributeModifier modifier) {
+        removeModifier(entity, attribute.value(), modifier);
+    }
+
+    public static void removeModifier(Entity entity, Supplier<Attribute> attribute, AttributeModifier modifier) {
+        removeModifier(entity, attribute.get(), modifier);
     }
 
     public static void sync(Entity entity) {
