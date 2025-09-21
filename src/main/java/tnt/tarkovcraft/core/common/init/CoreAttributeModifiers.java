@@ -2,7 +2,10 @@ package tnt.tarkovcraft.core.common.init;
 
 import net.neoforged.neoforge.registries.DeferredRegister;
 import tnt.tarkovcraft.core.TarkovCraftCore;
-import tnt.tarkovcraft.core.common.attribute.modifier.*;
+import tnt.tarkovcraft.core.common.attribute.modifier.AddValueModifier;
+import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifierType;
+import tnt.tarkovcraft.core.common.attribute.modifier.MultiplyValueAttributeModifier;
+import tnt.tarkovcraft.core.common.attribute.modifier.SetValueAttributeModifier;
 
 import java.util.function.Supplier;
 

@@ -9,9 +9,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.util.context.ContextKey;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 
@@ -26,7 +24,6 @@ public final class StatisticTracker implements StatisticReader {
     public static final StreamCodec<RegistryFriendlyByteBuf, StatisticTracker> STREAM_CODEC = ByteBufCodecs.map(
             Object2LongOpenHashMap::new, ByteBufCodecs.registry(CoreRegistries.Keys.STATISTICS), ByteBufCodecs.LONG
     ).map(StatisticTracker::new, tracker -> (Object2LongOpenHashMap<Statistic>) tracker.stats);
-    public static final ContextKey<StatisticTracker> TRACKER = new ContextKey<>(TarkovCraftCore.createResourceLocation("stat_tracker"));
     private final Object2LongMap<Statistic> stats;
 
     public StatisticTracker() {

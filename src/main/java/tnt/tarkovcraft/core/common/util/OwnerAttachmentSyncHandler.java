@@ -7,7 +7,6 @@ import net.neoforged.neoforge.attachment.AttachmentSyncHandler;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
 import java.util.function.BiConsumer;
 
 /**
@@ -16,15 +15,15 @@ import java.util.function.BiConsumer;
 public class OwnerAttachmentSyncHandler<T> implements AttachmentSyncHandler<T> {
 
     private final StreamCodec<? super RegistryFriendlyByteBuf, T> codec;
-    private BiConsumer<T, IAttachmentHolder> onRead = (t, holder) -> {};
+    private final BiConsumer<T, IAttachmentHolder> onRead;
 
     public OwnerAttachmentSyncHandler(StreamCodec<? super RegistryFriendlyByteBuf, T> codec) {
-        this.codec = codec;
+        this(codec, (data, holder) -> {});
     }
 
-    public OwnerAttachmentSyncHandler<T> onRead(BiConsumer<T, IAttachmentHolder> onRead) {
-        this.onRead = Objects.requireNonNull(onRead);
-        return this;
+    public OwnerAttachmentSyncHandler(StreamCodec<? super RegistryFriendlyByteBuf, T> codec, BiConsumer<T, IAttachmentHolder> onRead) {
+        this.codec = codec;
+        this.onRead = onRead;
     }
 
     @Override

@@ -43,7 +43,7 @@ public final class CoreDataAttachments {
     public static final Supplier<AttachmentType<Integer>> WEIGHT = REGISTRY.register("weight", () -> AttachmentType.builder(() -> 0)
             .serialize(Codec.INT.fieldOf("value"))
             .copyOnDeath()
-            .sync(ByteBufCodecs.INT)
+            .sync(new OwnerAttachmentSyncHandler<>(ByteBufCodecs.INT))
             .build()
     );
 }
