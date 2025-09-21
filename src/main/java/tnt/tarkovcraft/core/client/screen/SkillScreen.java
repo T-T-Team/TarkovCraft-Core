@@ -20,15 +20,11 @@ import tnt.tarkovcraft.core.client.screen.widget.ScrollbarWidget;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.skill.Skill;
-import tnt.tarkovcraft.core.common.skill.SkillContextKeys;
 import tnt.tarkovcraft.core.common.skill.SkillData;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 import tnt.tarkovcraft.core.common.skill.stat.SkillStatDefinition;
 import tnt.tarkovcraft.core.common.skill.stat.SkillStatDisplayInformation;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTrackerDefinition;
-import tnt.tarkovcraft.core.util.context.Context;
-import tnt.tarkovcraft.core.util.context.ContextImpl;
-import tnt.tarkovcraft.core.util.context.ContextKeys;
 import tnt.tarkovcraft.core.util.helper.Helper;
 import tnt.tarkovcraft.core.util.helper.MathHelper;
 import tnt.tarkovcraft.core.util.helper.RenderUtils;
@@ -69,12 +65,6 @@ public class SkillScreen extends CharacterSubScreen {
     }
 
     private SkillWidget buildSkillWidget(Player player, Skill skill, int index) {
-        Context context = ContextImpl.of(
-                ContextKeys.LEVEL, player.level(),
-                ContextKeys.ENTITY, player,
-                SkillContextKeys.DEFINITION, skill.getDefinition().value(),
-                SkillContextKeys.SKILL, skill
-        );
         SkillWidget widget = new SkillWidget(5, 5 + index * 40, this.width - 15, 35, this.font, skill, player);
         SkillDefinition definition = skill.getDefinition().value();
         Collection<SkillTrackerDefinition> trackers = definition.getTrackers();

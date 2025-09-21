@@ -25,11 +25,10 @@ import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.init.CoreStatistics;
 import tnt.tarkovcraft.core.common.statistic.DisplayStatistic;
+import tnt.tarkovcraft.core.common.statistic.StatisticReader;
 import tnt.tarkovcraft.core.common.statistic.StatisticTracker;
 import tnt.tarkovcraft.core.common.weight.WeightSystem;
 import tnt.tarkovcraft.core.util.HorizontalAlignment;
-import tnt.tarkovcraft.core.util.context.Context;
-import tnt.tarkovcraft.core.util.context.ContextImpl;
 import tnt.tarkovcraft.core.util.helper.RenderUtils;
 import tnt.tarkovcraft.core.util.helper.TextHelper;
 
@@ -68,7 +67,6 @@ public class StatisticsScreen extends CharacterSubScreen {
                     .sorted(Comparator.comparingInt(DisplayStatistic::getOrder))
                     .toList();
 
-            Context context = ContextImpl.of(StatisticTracker.TRACKER, tracker);
             this.addRenderableOnly(new ShapeRenderable(left, 25, this.width - left, 10, ColorPalette.BG_TRANSPARENT_WEAK));
             this.addRenderableOnly(new HorizontalLineRenderable(left, this.width, 35, ColorPalette.WHITE));
             this.addRenderableOnly(new VerticalLineRenderable(left - 1, 25, this.height, ColorPalette.WHITE));
@@ -92,7 +90,7 @@ public class StatisticsScreen extends CharacterSubScreen {
                 }
             }
 
-            ListWidget<TextStatisticWidget> textStats = this.addRenderableWidget(new ListWidget<>(left, 36, this.width - left, this.height - 26, statistics, (it, in) -> this.createTextStatistic(left, this.width - left, context, it, in)));
+            ListWidget<TextStatisticWidget> textStats = this.addRenderableWidget(new ListWidget<>(left, 36, this.width - left, this.height - 26, statistics, (it, in) -> this.createTextStatistic(left, this.width - left, tracker, it, in)));
             textStats.setBackgroundColor(ColorPalette.BG_TRANSPARENT_WEAK);
             textStats.setScroll(this.textScroll);
             textStats.setScrollListener((x, y) -> this.textScroll = y);
@@ -137,8 +135,8 @@ public class StatisticsScreen extends CharacterSubScreen {
         return event.getContainer();
     }
 
-    private TextStatisticWidget createTextStatistic(int left, int width, Context ctx, DisplayStatistic stat, int index) {
-        TextStatisticWidget widget = new TextStatisticWidget(left, index * 10, width, 10, this.font, ctx, stat);
+    private TextStatisticWidget createTextStatistic(int left, int width, StatisticReader reader, DisplayStatistic stat, int index) {
+        TextStatisticWidget widget = new TextStatisticWidget(left, index * 10, width, 10, this.font, reader, stat);
         widget.setBackground(index % 2 != 0 ? 0x22 << 24 : 0x44 << 24);
         return widget;
     }
@@ -146,15 +144,15 @@ public class StatisticsScreen extends CharacterSubScreen {
     public static final class TextStatisticWidget extends AbstractWidget {
 
         private final Font font;
-        private final Context context;
+        private final StatisticReader reader;
         private final DisplayStatistic statistic;
 
         private int background;
 
-        public TextStatisticWidget(int x, int y, int width, int height, Font font, Context context, DisplayStatistic statistic) {
+        public TextStatisticWidget(int x, int y, int width, int height, Font font, StatisticReader reader, DisplayStatistic statistic) {
             super(x, y, width, height, statistic.getLabel());
             this.font = font;
-            this.context = context;
+            this.reader = reader;
             this.statistic = statistic;
         }
 
@@ -168,7 +166,7 @@ public class StatisticsScreen extends CharacterSubScreen {
                 graphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), this.background);
             }
             graphics.drawString(this.font, this.getMessage(), this.getX() + 3, this.getY() + 1, ColorPalette.TEXT_COLOR, true);
-            String value = this.statistic.get(this.context);
+            String value = this.statistic.get(this.reader);
             graphics.drawString(this.font, value, this.getRight() - this.font.width(value) - 3, this.getY() + 1, ColorPalette.YELLOW, true);
         }
 

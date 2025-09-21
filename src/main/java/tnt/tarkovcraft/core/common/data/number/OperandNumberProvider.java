@@ -7,11 +7,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import tnt.tarkovcraft.core.common.data.duration.Duration;
 import tnt.tarkovcraft.core.common.init.CoreNumberProviders;
 import tnt.tarkovcraft.core.util.Codecs;
-import tnt.tarkovcraft.core.util.context.Context;
+import tnt.tarkovcraft.core.util.NumberOperator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.DoubleBinaryOperator;
 
 public class OperandNumberProvider implements NumberProvider {
 
@@ -23,49 +22,28 @@ public class OperandNumberProvider implements NumberProvider {
                         values.forEach(prov -> list.add(Either.left(prov)));
                         return list;
                     }),
-            Codecs.enumCodec(Operator.class).fieldOf("operator").forGetter(t -> t.operator)
+            Codecs.enumCodec(NumberOperator.class).fieldOf("operator").forGetter(t -> t.operator)
     ).apply(instance, OperandNumberProvider::new));
 
     private final List<NumberProvider> values;
-    private final Operator operator;
+    private final NumberOperator operator;
 
-    public OperandNumberProvider(List<Either<NumberProvider, Either<Duration, Double>>> values, Operator operator) {
+    public OperandNumberProvider(List<Either<NumberProvider, Either<Duration, Double>>> values, NumberOperator operator) {
         this.values = values.stream().map(NumberProviderType::resolve).toList();
         this.operator = operator;
     }
 
     @Override
-    public double getNumber(Context context) {
-        double identity = this.values.getFirst().getNumber(context);
+    public double getNumber() {
+        double identity = this.values.getFirst().getNumber();
         return this.values.stream()
                 .skip(1)
-                .mapToDouble(prov -> prov.getNumber(context))
+                .mapToDouble(NumberProvider::getNumber)
                 .reduce(identity, this.operator);
     }
 
     @Override
     public NumberProviderType<?> getType() {
         return CoreNumberProviders.OPERAND.get();
-    }
-
-    public enum Operator implements DoubleBinaryOperator {
-
-        ADD(Double::sum),
-        SUB((l, r) -> l - r),
-        MUL((l ,r) -> l * r),
-        DIV((l ,r) -> l / r),
-        MIN(Math::min),
-        MAX(Math::max);
-
-        private final DoubleBinaryOperator operator;
-
-        Operator(DoubleBinaryOperator operator) {
-            this.operator = operator;
-        }
-
-        @Override
-        public double applyAsDouble(double left, double right) {
-            return this.operator.applyAsDouble(left, right);
-        }
     }
 }

@@ -7,7 +7,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import tnt.tarkovcraft.core.client.screen.navigation.NavigationEntry;
 import tnt.tarkovcraft.core.client.screen.navigation.NavigationProvider;
-import tnt.tarkovcraft.core.util.context.Context;
 
 import java.util.List;
 import java.util.UUID;

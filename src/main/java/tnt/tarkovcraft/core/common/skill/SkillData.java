@@ -20,9 +20,6 @@ import tnt.tarkovcraft.core.common.skill.stat.SkillStatDefinition;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTriggerEvent;
 import tnt.tarkovcraft.core.network.Synchronizable;
 import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
-import tnt.tarkovcraft.core.util.context.Context;
-import tnt.tarkovcraft.core.util.context.ContextImpl;
-import tnt.tarkovcraft.core.util.context.ContextKeys;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,14 +55,6 @@ public final class SkillData implements Synchronizable<SkillData> {
 
     public boolean trigger(SkillTriggerEvent event, SkillDefinition definition, float multiplier, Entity triggerSource) {
         Skill instance = this.getSkill(definition);
-        Context ctx = ContextImpl.builder()
-                .addProperty(SkillContextKeys.EVENT, event)
-                .addProperty(SkillContextKeys.DEFINITION, definition)
-                .addProperty(SkillContextKeys.SKILL, instance)
-                .addProperty(SkillContextKeys.SKILL_GAIN_MULTIPLIER, multiplier)
-                .addProperty(ContextKeys.ENTITY, triggerSource)
-                .addProperty(ContextKeys.LEVEL, triggerSource.level())
-                .build();
         SkillContext context = new SkillContext(event, definition, instance, multiplier, triggerSource);
         float triggerAmount = instance.trigger(context);
         if (triggerAmount > 0) {

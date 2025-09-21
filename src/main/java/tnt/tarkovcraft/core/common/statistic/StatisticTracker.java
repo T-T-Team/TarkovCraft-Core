@@ -18,7 +18,7 @@ import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import java.util.Map;
 import java.util.function.LongBinaryOperator;
 
-public final class StatisticTracker {
+public final class StatisticTracker implements StatisticReader {
 
     public static final MapCodec<StatisticTracker> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.unboundedMap(CoreRegistries.STATISTICS.byNameCodec(), Codec.LONG).fieldOf("statMap").forGetter(t -> t.stats)
@@ -100,6 +100,16 @@ public final class StatisticTracker {
 
     public long get(Statistic stat) {
         return this.stats.getLong(stat);
+    }
+
+    @Override
+    public long get(Holder<Statistic> statistic) {
+        return this.stats.getLong(statistic.value());
+    }
+
+    @Override
+    public long getMinimum(Holder<Statistic> statistic, long minimum) {
+        return Math.max(this.get(statistic), minimum);
     }
 
     public void increment(Statistic stat) {
