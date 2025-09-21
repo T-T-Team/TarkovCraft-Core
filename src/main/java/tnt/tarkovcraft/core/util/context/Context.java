@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
+@Deprecated
 public interface Context {
 
     Context NONE = ContextImpl.empty();

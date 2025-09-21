@@ -5,6 +5,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -29,12 +30,12 @@ import tnt.tarkovcraft.core.common.weight.WeightSystem;
 import tnt.tarkovcraft.core.util.HorizontalAlignment;
 import tnt.tarkovcraft.core.util.context.Context;
 import tnt.tarkovcraft.core.util.context.ContextImpl;
-import tnt.tarkovcraft.core.util.context.ContextKeys;
 import tnt.tarkovcraft.core.util.helper.RenderUtils;
 import tnt.tarkovcraft.core.util.helper.TextHelper;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 public class StatisticsScreen extends CharacterSubScreen {
 
@@ -44,8 +45,8 @@ public class StatisticsScreen extends CharacterSubScreen {
     public static final ResourceLocation ICON_WEIGHT = TarkovCraftCore.createResourceLocation("textures/icons/profile/weight.png");
     private double textScroll;
 
-    public StatisticsScreen(Context context) {
-        super(context.getOrThrow(ContextKeys.UUID), CoreNavigators.STATISTICS_ENTRY);
+    public StatisticsScreen(Screen parent, UUID userId) {
+        super(userId, CoreNavigators.STATISTICS_ENTRY);
     }
 
     @Override

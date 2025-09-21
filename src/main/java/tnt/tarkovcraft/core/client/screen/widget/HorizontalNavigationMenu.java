@@ -3,28 +3,30 @@ package tnt.tarkovcraft.core.client.screen.widget;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import tnt.tarkovcraft.core.client.screen.navigation.NavigationEntry;
 import tnt.tarkovcraft.core.client.screen.navigation.NavigationProvider;
 import tnt.tarkovcraft.core.util.context.Context;
 
 import java.util.List;
+import java.util.UUID;
 
 public class HorizontalNavigationMenu<W extends AbstractWidget> extends AbstractWidget implements Scrollable {
 
     private final List<W> navigationMenuEntries;
     private double pageOffset;
 
-    public HorizontalNavigationMenu(int x, int y, int width, int height, Context context, List<NavigationEntry> navigationMenuEntries, EntryDisplayBuilder<W> builder) {
+    public HorizontalNavigationMenu(int x, int y, int width, int height, Screen parent, UUID userId, List<NavigationEntry> navigationMenuEntries, EntryDisplayBuilder<W> builder) {
         super(x, y, width, height, CommonComponents.EMPTY);
         this.navigationMenuEntries = navigationMenuEntries.stream()
-                .filter(e -> e.isAvailable(context))
-                .map(e -> builder.build(e, context) )
+                .filter(e -> e.isAvailable(parent, userId))
+                .map(e -> builder.build(e, parent, userId) )
                 .toList();
     }
 
-    public HorizontalNavigationMenu(int x, int y, int width, int height, Context context, NavigationProvider provider, EntryDisplayBuilder<W> builder) {
-        this(x, y, width, height, context, provider.getNavigationEntries(), builder);
+    public HorizontalNavigationMenu(int x, int y, int width, int height, Screen parent, UUID userId, NavigationProvider provider, EntryDisplayBuilder<W> builder) {
+        this(x, y, width, height, parent, userId, provider.getNavigationEntries(), builder);
     }
 
     @Override
@@ -94,6 +96,6 @@ public class HorizontalNavigationMenu<W extends AbstractWidget> extends Abstract
 
     @FunctionalInterface
     public interface EntryDisplayBuilder<W extends AbstractWidget> {
-        W build(NavigationEntry entry, Context context);
+        W build(NavigationEntry entry, Screen parent, UUID userId);
     }
 }

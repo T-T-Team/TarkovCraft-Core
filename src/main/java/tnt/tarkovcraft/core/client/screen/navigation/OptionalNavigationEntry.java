@@ -2,20 +2,20 @@ package tnt.tarkovcraft.core.client.screen.navigation;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import tnt.tarkovcraft.core.util.context.Context;
 
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.UUID;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 
-public record OptionalNavigationEntry(Component label, Predicate<Context> available, Function<Context, Screen> screenProvider, int order) implements NavigationEntry {
+public record OptionalNavigationEntry(Component label, BiPredicate<Screen, UUID> available, BiFunction<Screen, UUID, Screen> screenProvider, int order) implements NavigationEntry {
 
     @Override
-    public Screen getScreen(Context context) {
-        return this.screenProvider.apply(context);
+    public Screen getScreen(Screen parent, UUID userId) {
+        return this.screenProvider.apply(parent, userId);
     }
 
     @Override
-    public boolean isAvailable(Context context) {
-        return this.available.test(context);
+    public boolean isAvailable(Screen parent, UUID userId) {
+        return this.available.test(parent, userId);
     }
 }

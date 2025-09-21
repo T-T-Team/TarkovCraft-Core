@@ -5,6 +5,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -40,8 +41,8 @@ public class SkillScreen extends CharacterSubScreen {
 
     private double scroll;
 
-    public SkillScreen(Context context) {
-        super(context.getOrThrow(ContextKeys.UUID), CoreNavigators.SKILL_ENTRY);
+    public SkillScreen(Screen parent, UUID userId) {
+        super(userId, CoreNavigators.SKILL_ENTRY);
     }
 
     @Override

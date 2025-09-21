@@ -4,13 +4,15 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import tnt.tarkovcraft.core.util.context.Context;
 
+import java.util.UUID;
+
 public interface NavigationEntry {
 
     Component label();
 
-    boolean isAvailable(Context context);
+    boolean isAvailable(Screen parent, UUID userId);
 
-    Screen getScreen(Context context);
+    Screen getScreen(Screen parent, UUID userId);
 
     int order();
 }

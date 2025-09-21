@@ -14,7 +14,7 @@ public final class CoreNavigators {
     );
     public static final NavigationEntry SKILL_ENTRY = new OptionalNavigationEntry(
             TextHelper.createScreenTitle(TarkovCraftCore.MOD_ID, "skills"),
-            ctx -> TarkovCraftCore.getConfig().skillSystemConfig.skillSystemEnabled,
+            (parent, userId) -> TarkovCraftCore.getConfig().skillSystemConfig.skillSystemEnabled,
             SkillScreen::new,
             100
     );

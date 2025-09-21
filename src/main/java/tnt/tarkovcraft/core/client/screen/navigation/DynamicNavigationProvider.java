@@ -2,13 +2,13 @@ package tnt.tarkovcraft.core.client.screen.navigation;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import tnt.tarkovcraft.core.util.context.Context;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.UUID;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 
 public class DynamicNavigationProvider implements NavigationProvider {
 
@@ -24,26 +24,26 @@ public class DynamicNavigationProvider implements NavigationProvider {
         return entry;
     }
 
-    public synchronized NavigationEntry registerSimple(Component label, Function<Context, Screen> provider, int order) {
+    public synchronized NavigationEntry registerSimple(Component label, BiFunction<Screen, UUID, Screen> provider, int order) {
         return register(new SimpleNavigationEntry(label, provider, order));
     }
 
-    public synchronized NavigationEntry registerSimple(Component label, Function<Context, Screen> provider) {
+    public synchronized NavigationEntry registerSimple(Component label, BiFunction<Screen, UUID, Screen> provider) {
         return registerSimple(label, provider, Integer.MAX_VALUE);
     }
 
-    public synchronized NavigationEntry registerOptional(Component label, Predicate<Context> context, Function<Context, Screen> provider, int order) {
-        return register(new OptionalNavigationEntry(label, context, provider, order));
+    public synchronized NavigationEntry registerOptional(Component label, BiPredicate<Screen, UUID> filter, BiFunction<Screen, UUID, Screen> provider, int order) {
+        return register(new OptionalNavigationEntry(label, filter, provider, order));
     }
 
-    public synchronized NavigationEntry registerOptional(Component label, Predicate<Context> context, Function<Context, Screen> provider) {
-        return registerOptional(label, context, provider, Integer.MAX_VALUE);
+    public synchronized NavigationEntry registerOptional(Component label, BiPredicate<Screen, UUID> filter, BiFunction<Screen, UUID, Screen> provider) {
+        return registerOptional(label, filter, provider, Integer.MAX_VALUE);
     }
 
-    public synchronized Screen buildInitial(Context context) {
+    public synchronized Screen buildInitial(Screen screen, UUID userId) {
         for (NavigationEntry entry : this.entries) {
-            if (entry.isAvailable(context)) {
-                return entry.getScreen(context);
+            if (entry.isAvailable(screen, userId)) {
+                return entry.getScreen(screen, userId);
             }
         }
         return null;
