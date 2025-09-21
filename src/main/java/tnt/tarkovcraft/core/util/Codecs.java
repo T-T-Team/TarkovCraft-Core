@@ -36,14 +36,17 @@ public final class Codecs {
     public static final Codec<Integer> NON_NEGATIVE_INT = Codec.intRange(0, Integer.MAX_VALUE);
     public static final Codec<Float> NON_NEGATIVE_FLOAT = Codec.floatRange(0.0F, Float.MAX_VALUE);
 
+    @Deprecated
     public static <E extends Enum<E>> Codec<E> simpleEnumCodec(Class<E> type) {
         return enumCodec(type, Function.identity());
     }
 
+    @Deprecated
     public static <E extends Enum<E>> Codec<E> enumCodec(Class<E> type) {
         return enumCodec(type, str -> str.toUpperCase(Locale.ROOT));
     }
 
+    @Deprecated
     public static <E extends Enum<E>> Codec<E> enumCodec(Class<E> type, Function<String, String> inputOp) {
         return Codec.STRING.comapFlatMap(str -> {
             try {
@@ -54,16 +57,19 @@ public final class Codecs {
         }, Enum::name);
     }
 
+    @Deprecated
     public static <R, T> R serialize(DynamicOps<R> ops, Codec<T> codec, T data) {
         DataResult<R> result = codec.encodeStart(ops, data);
         return result.getOrThrow();
     }
 
+    @Deprecated
     public static <R, T> T deserialize(DynamicOps<R> ops, Codec<T> codec, R input) {
         DataResult<T> result = codec.parse(ops, input);
         return result.getOrThrow();
     }
 
+    @Deprecated
     public static <T> CompoundTag serializeNbtCompound(Codec<T> codec, T obj) {
         DataResult<Tag> result = codec.encodeStart(NbtOps.INSTANCE, obj);
         CompoundTag tag = new CompoundTag();
@@ -95,10 +101,12 @@ public final class Codecs {
         return set(elementCodec, LinkedHashSet::new);
     }
 
+    @Deprecated
     public static <E extends Enum<E>> Codec<Set<E>> enumSet(Codec<E> enumCodec) {
         return set(enumCodec, EnumSet::copyOf);
     }
 
+    @Deprecated
     public static <E extends Enum<E>> Codec<Set<E>> enumSet(Class<E> enumType) {
         return enumSet(enumCodec(enumType));
     }
@@ -123,12 +131,14 @@ public final class Codecs {
         return collection(codec, 0, Integer.MAX_VALUE, toCollection, fromCollection);
     }
 
+    @Deprecated
     public static <T> T deserializeNbtCompound(Codec<T> codec, CompoundTag tag) {
         Tag data = tag.get("data");
         DataResult<T> result = codec.parse(NbtOps.INSTANCE, data);
         return result.getOrThrow();
     }
 
+    @Deprecated
     public static <T> Codec<T> dynamicCodec(Encoder<T> encoder, Decoder<T> decoder) {
         return new Codec<T>() {
             @Override
