@@ -1,14 +1,16 @@
 package tnt.tarkovcraft.core.common.skill.stat;
 
-import tnt.tarkovcraft.core.util.context.Context;
+import net.minecraft.world.entity.Entity;
+import tnt.tarkovcraft.core.common.skill.Skill;
+import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 
 public interface SkillStat {
 
-    void apply(Context context);
+    void apply(SkillDefinition definition, Skill skill, Entity entity);
 
-    void clear(Context context);
+    void clear(SkillDefinition definition, Skill skill, Entity entity);
 
-    Object[] getTranslationData(Context context);
+    Object[] getTranslationData(SkillDefinition definition, Skill skill, Entity entity);
 
     SkillStatType<?> getType();
 }

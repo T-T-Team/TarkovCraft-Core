@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Component;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.init.CoreAttributes;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTrackerDefinition;
-import tnt.tarkovcraft.core.util.context.Context;
 
 import java.util.function.IntConsumer;
 
@@ -41,7 +40,7 @@ public final class Skill {
         this(definition, 0, 0.0F, definition.value().getLevelDefinition().getRequiredExperience(0), 0L);
     }
 
-    public float trigger(Context context) {
+    public float trigger(SkillContext context) {
         float triggeredAmount = 0;
         for (SkillTrackerDefinition trackerDefinition : this.definition.value().getTrackers()) {
             triggeredAmount += trackerDefinition.trigger(context);

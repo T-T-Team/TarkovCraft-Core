@@ -7,8 +7,7 @@ import net.minecraft.util.ExtraCodecs;
 import tnt.tarkovcraft.core.common.data.number.NumberProvider;
 import tnt.tarkovcraft.core.common.data.number.NumberProviderType;
 import tnt.tarkovcraft.core.common.init.CoreSkillTrackers;
-import tnt.tarkovcraft.core.common.skill.SkillContextKeys;
-import tnt.tarkovcraft.core.util.context.Context;
+import tnt.tarkovcraft.core.common.skill.SkillContext;
 
 public class SimpleSkillTracker implements SkillTracker {
 
@@ -23,13 +22,13 @@ public class SimpleSkillTracker implements SkillTracker {
     }
 
     @Override
-    public boolean isTriggerable(Context context) {
+    public boolean isTriggerable(SkillContext context) {
         return true;
     }
 
     @Override
-    public float trigger(Context context) {
-        return this.value.floatValue() * context.getOrDefault(SkillContextKeys.SKILL_GAIN_MULTIPLIER, 1.0F);
+    public float trigger(SkillContext context) {
+        return this.value.floatValue() * context.multiplier();
     }
 
     @Override

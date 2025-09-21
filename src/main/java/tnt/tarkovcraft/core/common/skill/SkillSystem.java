@@ -20,8 +20,6 @@ import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTrackerDefinition;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTriggerEvent;
 import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
-import tnt.tarkovcraft.core.util.context.Context;
-import tnt.tarkovcraft.core.util.context.ContextImpl;
 
 import java.util.Collection;
 import java.util.function.Supplier;
@@ -51,38 +49,26 @@ public final class SkillSystem {
         }
     }
 
-    public static boolean trigger(SkillTriggerEvent event, Entity entity, float multiplier, Context context) {
+    public static boolean trigger(SkillTriggerEvent event, Entity entity, float multiplier) {
         if (!isSkillSystemEnabled())
             return false;
         SkillData data = entity.getData(CoreDataAttachments.SKILL);
         Collection<SkillDefinition> definitions = TRIGGER_CACHE.get(event);
         boolean anyTrigger = false;
         for (SkillDefinition definition : definitions) {
-            if (data.trigger(event, definition, multiplier, entity, context)) {
+            if (data.trigger(event, definition, multiplier, entity)) {
                 anyTrigger = true;
             }
         }
         return anyTrigger;
     }
 
-    public static boolean trigger(Supplier<SkillTriggerEvent> event, Entity entity, float multiplier, Context context) {
-        return trigger(event.get(), entity, multiplier, context);
-    }
-
-    public static boolean trigger(Holder<SkillTriggerEvent> event, Entity entity, float multiplier, Context context) {
-        return trigger(event.value(), entity, multiplier, context);
-    }
-
-    public static boolean trigger(SkillTriggerEvent event, Entity entity, float multiplier) {
-        return trigger(event, entity, multiplier, ContextImpl.empty());
-    }
-
     public static boolean trigger(Supplier<SkillTriggerEvent> event, Entity entity, float multiplier) {
-        return trigger(event, entity, multiplier, ContextImpl.empty());
+        return trigger(event.get(), entity, multiplier);
     }
 
     public static boolean trigger(Holder<SkillTriggerEvent> event, Entity entity, float multiplier) {
-        return trigger(event, entity, multiplier, ContextImpl.empty());
+        return trigger(event.value(), entity, multiplier);
     }
 
     public static boolean trigger(SkillTriggerEvent event, Entity entity) {
@@ -97,30 +83,18 @@ public final class SkillSystem {
         return trigger(event, entity, 1.0F);
     }
 
-    public static void triggerAndSynchronize(SkillTriggerEvent event, Entity entity, float multiplier, Context context) {
-        if (trigger(event, entity, multiplier, context)) {
+    public static void triggerAndSynchronize(SkillTriggerEvent event, Entity entity, float multiplier) {
+        if (trigger(event, entity, multiplier)) {
             synchronize(entity);
         }
     }
 
-    public static void triggerAndSynchronize(Supplier<SkillTriggerEvent> event, Entity entity, float multiplier, Context context) {
-        triggerAndSynchronize(event.get(), entity, multiplier, context);
-    }
-
-    public static void triggerAndSynchronize(Holder<SkillTriggerEvent> event, Entity entity, float multiplier, Context context) {
-        triggerAndSynchronize(event.value(), entity, multiplier, context);
-    }
-
-    public static void triggerAndSynchronize(SkillTriggerEvent event, Entity entity, float multiplier) {
-        triggerAndSynchronize(event, entity, multiplier, ContextImpl.empty());
-    }
-
     public static void triggerAndSynchronize(Supplier<SkillTriggerEvent> event, Entity entity, float multiplier) {
-        triggerAndSynchronize(event, entity, multiplier, ContextImpl.empty());
+        triggerAndSynchronize(event.get(), entity, multiplier);
     }
 
     public static void triggerAndSynchronize(Holder<SkillTriggerEvent> event, Entity entity, float multiplier) {
-        triggerAndSynchronize(event, entity, multiplier, ContextImpl.empty());
+        triggerAndSynchronize(event.value(), entity, multiplier);
     }
 
     public static void triggerAndSynchronize(SkillTriggerEvent event, Entity entity) {

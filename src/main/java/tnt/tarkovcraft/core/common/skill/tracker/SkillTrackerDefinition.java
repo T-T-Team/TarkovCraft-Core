@@ -5,9 +5,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
+import tnt.tarkovcraft.core.common.skill.SkillContext;
 import tnt.tarkovcraft.core.common.skill.tracker.condition.SkillTriggerCondition;
 import tnt.tarkovcraft.core.common.skill.tracker.condition.SkillTriggerConditionType;
-import tnt.tarkovcraft.core.util.context.Context;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,7 +33,7 @@ public record SkillTrackerDefinition(SkillTriggerEvent event, List<SkillTriggerC
         return infoComponents;
     }
 
-    public float trigger(Context context) {
+    public float trigger(SkillContext context) {
         for (SkillTriggerCondition condition : this.conditions) {
             if (!condition.isTriggerable(context))
                 return 0.0F;

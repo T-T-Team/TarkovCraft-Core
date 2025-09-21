@@ -1,11 +1,11 @@
 package tnt.tarkovcraft.core.common.skill.tracker.condition;
 
 import net.minecraft.network.chat.Component;
-import tnt.tarkovcraft.core.util.context.Context;
+import tnt.tarkovcraft.core.common.skill.SkillContext;
 
 public interface SkillTriggerCondition {
 
-    boolean isTriggerable(Context context);
+    boolean isTriggerable(SkillContext context);
 
     Component getDescription();
 

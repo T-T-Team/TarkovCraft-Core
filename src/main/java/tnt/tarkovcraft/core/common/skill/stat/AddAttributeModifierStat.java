@@ -6,19 +6,15 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import tnt.tarkovcraft.core.common.attribute.Attribute;
-import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
-import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
-import tnt.tarkovcraft.core.common.attribute.modifier.AddValueModifier;
+import tnt.tarkovcraft.core.common.attribute.AttributeSystem;
 import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
-import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.init.CoreSkillStats;
 import tnt.tarkovcraft.core.common.skill.Skill;
-import tnt.tarkovcraft.core.common.skill.SkillContextKeys;
+import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 import tnt.tarkovcraft.core.util.UnitFormat;
-import tnt.tarkovcraft.core.util.context.Context;
-import tnt.tarkovcraft.core.util.context.ContextKeys;
 
 import java.util.UUID;
 
@@ -47,30 +43,21 @@ public class AddAttributeModifierStat implements SkillStat {
     }
 
     @Override
-    public void clear(Context context) {
-        context.get(ContextKeys.ENTITY).ifPresent(entity -> {
-            if (entity.hasData(CoreDataAttachments.ENTITY_ATTRIBUTES)) {
-                EntityAttributeData attributes = entity.getData(CoreDataAttachments.ENTITY_ATTRIBUTES);
-                attributes.getAttribute(this.target).removeModifier(this.id);
-            }
-        });
+    public void clear(SkillDefinition definition, Skill skill, Entity entity) {
+        AttributeSystem.removeModifier(entity, this.target, this.id);
     }
 
     @Override
-    public void apply(Context context) {
-        context.get(ContextKeys.ENTITY).ifPresent(entity -> {
-            int skillLevel = context.get(SkillContextKeys.SKILL).map(Skill::getLevel).orElse(0);
-            EntityAttributeData attributes = entity.getData(CoreDataAttachments.ENTITY_ATTRIBUTES);
-            AttributeInstance instance = attributes.getAttribute(this.target);
-            AttributeModifier modifier = new AddValueModifier(this.id, this.constant ? this.levelValue : skillLevel * this.levelValue);
-            instance.addModifier(modifier);
-        });
+    public void apply(SkillDefinition definition, Skill skill, Entity entity) {
+        int level = skill.getLevel();
+        AttributeModifier modifier = AttributeModifier.add(this.id, this.getModifierValue(level));
+        AttributeSystem.addModifier(entity, this.target, modifier, true);
     }
 
     @Override
-    public Object[] getTranslationData(Context context) {
-        int skillLevel = context.get(SkillContextKeys.SKILL).map(Skill::getLevel).orElse(0);
-        double value = this.constant ? this.levelValue : skillLevel * this.levelValue;
+    public Object[] getTranslationData(SkillDefinition definition, Skill skill, Entity entity) {
+        int level = skill.getLevel();
+        float value = this.getModifierValue(level);
         Component label = Component.literal(this.displayUnitFormat.format(value)).withStyle(ChatFormatting.GREEN);
         return new Object[]{label};
     }
@@ -78,5 +65,9 @@ public class AddAttributeModifierStat implements SkillStat {
     @Override
     public SkillStatType<?> getType() {
         return CoreSkillStats.ADD_MODIFIER.get();
+    }
+
+    private float getModifierValue(int level) {
+        return this.constant ? this.levelValue : level * this.levelValue;
     }
 }

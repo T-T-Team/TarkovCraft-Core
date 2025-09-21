@@ -56,7 +56,7 @@ public final class SkillData implements Synchronizable<SkillData> {
         this.holder = entity;
     }
 
-    public boolean trigger(SkillTriggerEvent event, SkillDefinition definition, float multiplier, Entity triggerSource, Context reader) {
+    public boolean trigger(SkillTriggerEvent event, SkillDefinition definition, float multiplier, Entity triggerSource) {
         Skill instance = this.getSkill(definition);
         Context ctx = ContextImpl.builder()
                 .addProperty(SkillContextKeys.EVENT, event)
@@ -65,9 +65,9 @@ public final class SkillData implements Synchronizable<SkillData> {
                 .addProperty(SkillContextKeys.SKILL_GAIN_MULTIPLIER, multiplier)
                 .addProperty(ContextKeys.ENTITY, triggerSource)
                 .addProperty(ContextKeys.LEVEL, triggerSource.level())
-                .addMissingFromSource(reader)
                 .build();
-        float triggerAmount = instance.trigger(ctx);
+        SkillContext context = new SkillContext(event, definition, instance, multiplier, triggerSource);
+        float triggerAmount = instance.trigger(context);
         if (triggerAmount > 0) {
             EntityAttributeData attributes = triggerSource.getData(CoreDataAttachments.ENTITY_ATTRIBUTES);
             float experience = triggerAmount * this.getGroupLevelMultiplier(attributes, definition.getGroupLevelingModifiers());
@@ -107,13 +107,7 @@ public final class SkillData implements Synchronizable<SkillData> {
             SkillDefinition definition = entry.getKey();
             Skill instance = entry.getValue();
             List<SkillStatDefinition> stats = definition.getStats();
-            Context context = ContextImpl.of(
-                    ContextKeys.LEVEL, this.holder.level(),
-                    ContextKeys.ENTITY, this.holder,
-                    SkillContextKeys.DEFINITION, definition,
-                    SkillContextKeys.SKILL, instance
-            );
-            stats.forEach(statDef -> statDef.stat().clear(context));
+            stats.forEach(statDef -> statDef.stat().clear(definition, instance, this.holder));
             applyStats(definition, instance);
         }
     }
@@ -127,16 +121,10 @@ public final class SkillData implements Synchronizable<SkillData> {
     }
 
     private void applyStats(SkillDefinition definition, Skill skill) {
-        Context context = ContextImpl.of(
-                ContextKeys.LEVEL, this.holder.level(),
-                ContextKeys.ENTITY, this.holder,
-                SkillContextKeys.DEFINITION, definition,
-                SkillContextKeys.SKILL, skill
-        );
         for (SkillStatDefinition statDefinition : definition.getStats()) {
-            if (statDefinition.isAvailable(context)) {
+            if (statDefinition.isAvailable(definition, skill, this.holder)) {
                 SkillStat stat = statDefinition.stat();
-                stat.apply(context);
+                stat.apply(definition, skill, this.holder);
             }
         }
     }

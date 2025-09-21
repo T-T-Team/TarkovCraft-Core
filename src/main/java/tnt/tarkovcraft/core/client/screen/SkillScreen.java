@@ -75,7 +75,7 @@ public class SkillScreen extends CharacterSubScreen {
                 SkillContextKeys.DEFINITION, skill.getDefinition().value(),
                 SkillContextKeys.SKILL, skill
         );
-        SkillWidget widget = new SkillWidget(5, 5 + index * 40, this.width - 15, 35, this.font, skill, context);
+        SkillWidget widget = new SkillWidget(5, 5 + index * 40, this.width - 15, 35, this.font, skill, player);
         SkillDefinition definition = skill.getDefinition().value();
         Collection<SkillTrackerDefinition> trackers = definition.getTrackers();
         List<Component> tooltip = new ArrayList<>();
@@ -87,17 +87,17 @@ public class SkillScreen extends CharacterSubScreen {
 
     public static final class SkillWidget extends AbstractWidget {
 
-        private final Context context;
+        private final Player player;
         private final Font font;
         private final Skill skill;
         private final ResourceLocation skillIcon;
         private List<Component> description;
 
-        public SkillWidget(int x, int y, int width, int height, Font font, Skill skill, Context context) {
+        public SkillWidget(int x, int y, int width, int height, Font font, Skill skill, Player player) {
             super(x, y, width, height, CommonComponents.EMPTY);
             this.font = font;
             this.skill = skill;
-            this.context = context;
+            this.player = player;
             MutableComponent title = skill.getDefinition().value().getName().copy();
             this.setMessage(title.withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE));
             this.skillIcon = SkillDefinition.getIcon(skill.getDefinition());
@@ -132,7 +132,7 @@ public class SkillScreen extends CharacterSubScreen {
             int index = 0;
             SkillDefinition definition = this.skill.getDefinition().value();
             for (SkillStatDefinition statDefinition : definition.getStats()) {
-                if (!statDefinition.isAvailable(this.context))
+                if (!statDefinition.isAvailable(definition, this.skill, this.player))
                     continue;
                 SkillStatDisplayInformation displayInfo = statDefinition.display();
                 int left = this.getRight() - 10 - index * 12;
@@ -142,7 +142,7 @@ public class SkillScreen extends CharacterSubScreen {
                 RenderUtils.blitFull(guiGraphics, displayInfo.icon(), left + 1, top + 1, right - 1, bottom - 1, -1);
                 if (MathHelper.isWithinBounds(mouseX, mouseY, left, top, right - left, bottom - top)) {
                     Component name = displayInfo.name().copy().withStyle(ChatFormatting.UNDERLINE).withStyle(ChatFormatting.YELLOW);
-                    Component statDescription = displayInfo.getDescription(this.context, statDefinition.stat());
+                    Component statDescription = displayInfo.getDescription(definition, this.skill, this.player, statDefinition.stat());
                     List<Component> tooltip = Arrays.asList(name, statDescription);
                     guiGraphics.setTooltipForNextFrame(this.font, tooltip, Optional.empty(), mouseX, mouseY);
                 }

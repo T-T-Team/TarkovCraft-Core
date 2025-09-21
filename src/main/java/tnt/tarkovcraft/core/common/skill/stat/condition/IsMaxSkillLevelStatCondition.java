@@ -1,10 +1,10 @@
 package tnt.tarkovcraft.core.common.skill.stat.condition;
 
 import com.mojang.serialization.MapCodec;
+import net.minecraft.world.entity.Entity;
 import tnt.tarkovcraft.core.common.init.CoreSkillStatConditions;
 import tnt.tarkovcraft.core.common.skill.Skill;
-import tnt.tarkovcraft.core.common.skill.SkillContextKeys;
-import tnt.tarkovcraft.core.util.context.Context;
+import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 
 public class IsMaxSkillLevelStatCondition implements SkillStatCondition {
 
@@ -14,10 +14,8 @@ public class IsMaxSkillLevelStatCondition implements SkillStatCondition {
     private IsMaxSkillLevelStatCondition() {}
 
     @Override
-    public boolean canApply(Context context) {
-        return context.get(SkillContextKeys.SKILL)
-                .map(Skill::isMaxLevel)
-                .orElse(false);
+    public boolean canApply(SkillDefinition definition, Skill skill, Entity entity) {
+        return skill.isMaxLevel();
     }
 
     @Override

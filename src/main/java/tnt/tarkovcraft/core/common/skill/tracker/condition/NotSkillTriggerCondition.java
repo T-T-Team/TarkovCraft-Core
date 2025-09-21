@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
 import tnt.tarkovcraft.core.common.init.CoreSkillTriggerConditions;
-import tnt.tarkovcraft.core.util.context.Context;
+import tnt.tarkovcraft.core.common.skill.SkillContext;
 
 public class NotSkillTriggerCondition implements SkillTriggerCondition {
 
@@ -19,7 +19,7 @@ public class NotSkillTriggerCondition implements SkillTriggerCondition {
     }
 
     @Override
-    public boolean isTriggerable(Context context) {
+    public boolean isTriggerable(SkillContext context) {
         return this.child.isTriggerable(context);
     }
 

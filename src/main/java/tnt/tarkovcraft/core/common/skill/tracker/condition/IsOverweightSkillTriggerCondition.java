@@ -5,9 +5,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import tnt.tarkovcraft.core.common.init.CoreSkillTriggerConditions;
+import tnt.tarkovcraft.core.common.skill.SkillContext;
 import tnt.tarkovcraft.core.common.weight.WeightSystem;
-import tnt.tarkovcraft.core.util.context.Context;
-import tnt.tarkovcraft.core.util.context.ContextKeys;
 
 public class IsOverweightSkillTriggerCondition implements SkillTriggerCondition {
 
@@ -19,8 +18,8 @@ public class IsOverweightSkillTriggerCondition implements SkillTriggerCondition 
     }
 
     @Override
-    public boolean isTriggerable(Context context) {
-        Entity entity = context.getOrThrow(ContextKeys.ENTITY);
+    public boolean isTriggerable(SkillContext context) {
+        Entity entity = context.entity();
         return entity instanceof LivingEntity livingEntity && WeightSystem.isOverweight(livingEntity);
     }
 

@@ -1,12 +1,12 @@
 package tnt.tarkovcraft.core.common.skill.tracker;
 
-import tnt.tarkovcraft.core.util.context.Context;
+import tnt.tarkovcraft.core.common.skill.SkillContext;
 
 public interface SkillTracker {
 
-    boolean isTriggerable(Context context);
+    boolean isTriggerable(SkillContext context);
 
-    float trigger(Context context);
+    float trigger(SkillContext context);
 
     SkillTrackerType<?> getType();
 }

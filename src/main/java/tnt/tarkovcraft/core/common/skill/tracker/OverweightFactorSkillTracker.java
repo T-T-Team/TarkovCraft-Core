@@ -7,9 +7,8 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import tnt.tarkovcraft.core.common.init.CoreSkillTrackers;
+import tnt.tarkovcraft.core.common.skill.SkillContext;
 import tnt.tarkovcraft.core.common.weight.WeightSystem;
-import tnt.tarkovcraft.core.util.context.Context;
-import tnt.tarkovcraft.core.util.context.ContextKeys;
 
 public class OverweightFactorSkillTracker implements SkillTracker {
 
@@ -30,20 +29,18 @@ public class OverweightFactorSkillTracker implements SkillTracker {
     }
 
     @Override
-    public boolean isTriggerable(Context context) {
-        return context.get(ContextKeys.ENTITY)
-                .filter(entity -> entity instanceof LivingEntity)
-                .map(entity -> WeightSystem.isOverweight((LivingEntity) entity))
-                .orElse(false);
+    public boolean isTriggerable(SkillContext context) {
+        Entity entity = context.entity();
+        return entity instanceof LivingEntity livingEntity && WeightSystem.isOverweight(livingEntity);
     }
 
     @Override
-    public float trigger(Context context) {
-        Entity entity = context.getOrThrow(ContextKeys.ENTITY);
-        if (!(entity instanceof LivingEntity livingEntity)) {
+    public float trigger(SkillContext context) {
+        LivingEntity entity = context.asLivingEntity();
+        if (entity == null) {
             return 0.0F;
         }
-        float factor = WeightSystem.getOverweightEffectFactor(livingEntity);
+        float factor = WeightSystem.getOverweightEffectFactor(entity);
         if (factor <= 0.0) {
             return 0.0F;
         }

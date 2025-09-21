@@ -4,12 +4,13 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.entity.Entity;
 import tnt.tarkovcraft.core.common.data.number.ConstantNumberProvider;
 import tnt.tarkovcraft.core.common.data.number.NumberProvider;
 import tnt.tarkovcraft.core.common.data.number.NumberProviderType;
 import tnt.tarkovcraft.core.common.init.CoreSkillStatConditions;
-import tnt.tarkovcraft.core.common.skill.SkillContextKeys;
-import tnt.tarkovcraft.core.util.context.Context;
+import tnt.tarkovcraft.core.common.skill.Skill;
+import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 
 public class IsSkillLevelRangeStatCondition implements SkillStatCondition {
 
@@ -27,13 +28,13 @@ public class IsSkillLevelRangeStatCondition implements SkillStatCondition {
     }
 
     @Override
-    public boolean canApply(Context context) {
-        return context.get(SkillContextKeys.SKILL).map(skill -> {
-            int skillLevel = skill.getLevel();
-            int from = this.min.intValue();
-            int to = this.max.intValue();
-            return skillLevel >= from && skillLevel <= to;
-        }).orElse(false);
+    public boolean canApply(SkillDefinition definition, Skill skill, Entity entity) {
+        int level = skill.getLevel();
+        int minValue = this.min.intValue();
+        int maxValue = this.max.intValue();
+        int from = Math.min(minValue, maxValue);
+        int to = Math.max(maxValue, minValue);
+        return level >= from && level <= to;
     }
 
     @Override
