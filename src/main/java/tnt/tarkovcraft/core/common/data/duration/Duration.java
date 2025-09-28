@@ -55,6 +55,30 @@ public record Duration(DurationUnit unit, double value) implements TickValue {
         return convertFromTicks(this.tickValue() + duration.tickValue(), this.unit());
     }
 
+    public Duration addTicks(int ticks) {
+        return add(ticks(ticks));
+    }
+
+    public Duration addSeconds(int seconds) {
+        return add(seconds(seconds));
+    }
+
+    public Duration addMinutes(int minutes) {
+        return add(minutes(minutes));
+    }
+
+    public Duration addHours(int hours) {
+        return add(hours(hours));
+    }
+
+    public Duration addDays(int days) {
+        return add(days(days));
+    }
+
+    public Duration addUnits(DurationUnit unit, int value) {
+        return add(new Duration(unit, value));
+    }
+
     public Duration addMany(Collection<Duration> durations) {
         int totalTickValue = this.tickValue() + durations.stream().mapToInt(Duration::tickValue).sum();
         return convertFromTicks(totalTickValue, this.unit());
