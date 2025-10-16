@@ -37,7 +37,14 @@ import static tnt.tarkovcraft.core.util.helper.TextHelper.createKeybindName;
 @Mod(value = TarkovCraftCore.MOD_ID, dist = Dist.CLIENT)
 public final class TarkovCraftCoreClient {
 
-    public static final KeyMapping KEY_CHARACTER = new KeyMapping(createKeybindName(TarkovCraftCore.MOD_ID, "character"), KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_O, TarkovCraftCore.GLOBAL_CATEGORY_KEY);
+    public static final KeyMapping.Category KEY_MAPPING_CATEGORY = new KeyMapping.Category(TarkovCraftCore.createResourceLocation("keymap"));
+    public static final KeyMapping KEY_CHARACTER = new KeyMapping(
+            createKeybindName(TarkovCraftCore.MOD_ID, "character"),
+            KeyConflictContext.IN_GAME,
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_O,
+            KEY_MAPPING_CATEGORY
+    );
 
     private static TarkovCraftCoreClientConfig config;
 
@@ -92,7 +99,7 @@ public final class TarkovCraftCoreClient {
     }
 
     private void registerCustomGuiLayers(RegisterGuiLayersEvent event) {
-        if (!FMLEnvironment.production)
+        if (!FMLEnvironment.isProduction())
             event.registerAboveAll(DebugLayer.LAYER_ID, new DebugLayer());
         event.registerAboveAll(NotificationLayer.LAYER_ID, new NotificationLayer(NotificationChannel.MAIN));
         event.registerAboveAll(StaminaLayer.LAYER_ID, new StaminaLayer());

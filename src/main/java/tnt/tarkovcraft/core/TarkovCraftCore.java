@@ -52,7 +52,6 @@ public final class TarkovCraftCore {
         CoreAttributeModifiers.REGISTRY.register(modEventBus);
         CoreItemStackFilters.REGISTRY.register(modEventBus);
         CoreNumberProviders.REGISTRY.register(modEventBus);
-        CoreMailMessageAttachments.REGISTRY.register(modEventBus);
         CoreDataAttachments.REGISTRY.register(modEventBus);
         CoreItemDataComponents.REGISTRY.register(modEventBus);
         CoreSkillTriggerEvents.REGISTRY.register(modEventBus);
@@ -79,9 +78,6 @@ public final class TarkovCraftCore {
         event.register(CoreRegistries.NUMBER_PROVIDER);
         event.register(CoreRegistries.STATISTICS);
         event.register(CoreRegistries.CURRENCY);
-
-        // Mail system
-        event.register(CoreRegistries.MAIL_MESSAGE_ATTACHMENT);
 
         // Skill system
         event.register(CoreRegistries.SKILL_TRIGGER_EVENT);

@@ -20,10 +20,10 @@ public record ColoredRectangleRenderState(
 ) implements GuiElementRenderState {
 
     @Override
-    public void buildVertices(VertexConsumer consumer, float layer) {
-        consumer.addVertexWith2DPose(this.pose, this.x1, this.y1, layer).setColor(this.primaryColor);
-        consumer.addVertexWith2DPose(this.pose, this.x1, this.y2, layer).setColor(this.secondaryColor);
-        consumer.addVertexWith2DPose(this.pose, this.x2, this.y2, layer).setColor(this.secondaryColor);
-        consumer.addVertexWith2DPose(this.pose, this.x2, this.y1, layer).setColor(this.primaryColor);
+    public void buildVertices(VertexConsumer consumer) {
+        consumer.addVertexWith2DPose(this.pose, this.x1, this.y1).setColor(this.primaryColor);
+        consumer.addVertexWith2DPose(this.pose, this.x1, this.y2).setColor(this.secondaryColor);
+        consumer.addVertexWith2DPose(this.pose, this.x2, this.y2).setColor(this.secondaryColor);
+        consumer.addVertexWith2DPose(this.pose, this.x2, this.y1).setColor(this.primaryColor);
     }
 }

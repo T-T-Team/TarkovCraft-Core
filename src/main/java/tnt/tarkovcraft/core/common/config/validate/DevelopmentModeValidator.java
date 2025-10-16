@@ -12,7 +12,7 @@ public class DevelopmentModeValidator implements Validator<Object> {
 
     @Override
     public ValidationResult validate(Object t, IConfigValueReadable<Object> iConfigValueReadable) {
-        return FMLEnvironment.production
+        return FMLEnvironment.isProduction()
                 ? ValidationResult.warning(WARNING)
                 : ValidationResult.success();
     }

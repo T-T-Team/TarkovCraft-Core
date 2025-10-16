@@ -9,7 +9,6 @@ import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.attachment.AttachmentType;
-import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.client.screen.navigation.CoreNavigators;
 import tnt.tarkovcraft.core.client.screen.navigation.NavigationEntry;
 import tnt.tarkovcraft.core.client.screen.renderable.AbstractTextRenderable;
@@ -18,7 +17,6 @@ import tnt.tarkovcraft.core.client.screen.renderable.VerticalLineRenderable;
 import tnt.tarkovcraft.core.client.screen.widget.HorizontalNavigationMenu;
 import tnt.tarkovcraft.core.client.screen.widget.LabelButton;
 import tnt.tarkovcraft.core.network.Synchronizable;
-import tnt.tarkovcraft.core.util.helper.TextHelper;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -55,20 +53,13 @@ public abstract class CharacterSubScreen extends NotificationScreen implements D
 
     protected void addHeader() {
         PlayerInfo info = this.minecraft.getConnection().getPlayerInfo(this.characterProfileId);
-        String name = info != null ? info.getProfile().getName() : "???";
+        String name = info != null ? info.getProfile().name() : "???";
         Component title = Component.translatable("label.tarkovcraft_core.profile", name);
         int titleWidth = this.font.width(title);
         this.addRenderableOnly(new AbstractTextRenderable.Component(5, 8, titleWidth, 10, ColorPalette.TEXT_COLOR, false, this.font, title));
         this.addRenderableOnly(new VerticalLineRenderable(10 + titleWidth, 5, 19, ARGB.opaque(ColorPalette.TEXT_COLOR)));
-        this.addRenderableOnly(new VerticalLineRenderable(this.width - 60, 5, 19, ARGB.opaque(ColorPalette.TEXT_COLOR)));
 
-        this.addRenderableWidget(new HorizontalNavigationMenu<>(15 + titleWidth, 0, this.width - 80 - titleWidth, 25, this, this.characterProfileId, CoreNavigators.CHARACTER_NAVIGATION_PROVIDER, (entry, parent, userId) -> buildNavItem(entry)));
-
-        Component messageTitle = TextHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "character", "mail");
-        LabelButton messages = addRenderableWidget(new LabelButton(Button.builder(messageTitle, b -> this.minecraft.setScreen(new MailListScreen(this)))
-                .bounds(this.width - 55, 5, 50, 15)
-        ));
-        messages.setBackgroundHoverColor(0);
+        this.addRenderableWidget(new HorizontalNavigationMenu<>(15 + titleWidth, 0, this.width - 30 - titleWidth, 25, this, this.characterProfileId, CoreNavigators.CHARACTER_NAVIGATION_PROVIDER, (entry, parent, userId) -> buildNavItem(entry)));
     }
 
     protected AbstractWidget buildNavItem(NavigationEntry entry) {

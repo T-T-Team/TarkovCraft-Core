@@ -8,6 +8,7 @@ import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 
 import javax.annotation.Nullable;
@@ -112,20 +113,20 @@ public abstract class ContainerWidget extends AbstractWidget implements Containe
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return ContainerEventHandler.super.mouseClicked(mouseX, mouseY, button);
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        return ContainerEventHandler.super.mouseClicked(event, isDoubleClick);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        super.mouseReleased(mouseX, mouseY, button);
-        return ContainerEventHandler.super.mouseReleased(mouseX, mouseY, button);
+    public boolean mouseReleased(MouseButtonEvent event) {
+        super.mouseReleased(event);
+        return ContainerEventHandler.super.mouseReleased(event);
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
-        return ContainerEventHandler.super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    public boolean mouseDragged(MouseButtonEvent event, double mouseX, double mouseY) {
+        super.mouseDragged(event, mouseX, mouseY);
+        return ContainerEventHandler.super.mouseDragged(event, mouseX, mouseY);
     }
 
     @Override

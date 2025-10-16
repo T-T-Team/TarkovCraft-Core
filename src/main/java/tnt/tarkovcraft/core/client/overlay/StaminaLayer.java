@@ -26,7 +26,7 @@ public class StaminaLayer implements GuiLayer {
     public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
         Minecraft client = Minecraft.getInstance();
         Window window = client.getWindow();
-        Entity entity = client.cameraEntity;
+        Entity entity = client.getCameraEntity();
         if (client.options.hideGui) {
             return;
         }

@@ -28,9 +28,6 @@ import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
 import tnt.tarkovcraft.core.common.attribute.modifier.SetValueAttributeModifier;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
-import tnt.tarkovcraft.core.common.mail.MailMessage;
-import tnt.tarkovcraft.core.common.mail.MailSource;
-import tnt.tarkovcraft.core.common.mail.MailSystem;
 import tnt.tarkovcraft.core.common.skill.Skill;
 import tnt.tarkovcraft.core.common.skill.SkillData;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
@@ -50,17 +47,6 @@ public final class TarkovCraftCommand {
     public static void create(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context) {
         dispatcher.register(
                 Commands.literal("tarkovcraft")
-                        .then(
-                                Commands.literal("message")
-                                        .requires(MailSystem::isCommandAllowed)
-                                        .then(
-                                                Commands.argument("target", EntityArgument.player())
-                                                        .then(
-                                                                Commands.argument("content", StringArgumentType.string())
-                                                                        .executes(TarkovCraftCommand::sendMessage)
-                                                        )
-                                        )
-                        )
                         .then(
                                 Commands.literal("notification")
                                         .requires(src -> src.hasPermission(2))
@@ -215,16 +201,6 @@ public final class TarkovCraftCommand {
         String content = StringArgumentType.getString(ctx, "content");
         int lifetime = ctx.getArgument("lifetime", Integer.class);
         createNotificationAndSend(targets, severity, content, lifetime);
-        return 0;
-    }
-
-    private static int sendMessage(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        CommandSourceStack stack = context.getSource();
-        ServerPlayer sender = stack.getPlayer();
-        ServerPlayer target = EntityArgument.getPlayer(context, "target");
-        MailSource source = sender != null ? MailSource.player(sender) : MailSource.SYSTEM;
-        String message = StringArgumentType.getString(context, "content");
-        MailSystem.sendMessage(target, source, MailMessage.simpleChatMessage(source, message));
         return 0;
     }
 

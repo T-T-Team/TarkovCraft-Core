@@ -181,7 +181,6 @@ public final class TarkovCraftCoreEventHandler {
 
     private S2C_SendDataAttachments getSyncPacket(Player player) {
         List<AttachmentType<? extends Synchronizable<?>>> list = new ArrayList<>();
-        list.add(CoreDataAttachments.MAIL_MANAGER.get());
         list.add(CoreDataAttachments.ENTITY_ATTRIBUTES.get());
         list.add(CoreDataAttachments.SKILL.get());
         return new S2C_SendDataAttachments(player, list);

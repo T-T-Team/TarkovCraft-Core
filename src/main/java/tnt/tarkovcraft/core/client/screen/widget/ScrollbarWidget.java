@@ -3,6 +3,8 @@ package tnt.tarkovcraft.core.client.screen.widget;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.network.chat.CommonComponents;
 import tnt.tarkovcraft.core.util.helper.RenderUtils;
 
@@ -62,7 +64,7 @@ public class ScrollbarWidget extends AbstractWidget {
     }
 
     @Override
-    protected boolean isValidClickButton(int button) {
+    protected boolean isValidClickButton(MouseButtonInfo info) {
         return this.canRender() && this.clickable;
     }
 
@@ -71,16 +73,16 @@ public class ScrollbarWidget extends AbstractWidget {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
-        double relativeY = (mouseY - this.getY()) / this.getHeight();
+    public void onClick(MouseButtonEvent event, boolean doubleClick) {
+        double relativeY = (event.y() - this.getY()) / this.getHeight();
         double max = this.scrollable.getMaxScroll();
         double scrollAmount = max * relativeY;
         this.scrollable.setScroll(scrollAmount);
     }
 
     @Override
-    protected void onDrag(double mouseX, double mouseY, double dragX, double dragY) {
-        this.onClick(mouseX, mouseY, 0);
+    protected void onDrag(MouseButtonEvent event, double dragX, double dragY) {
+        this.onClick(event, false);
     }
 
     @Override

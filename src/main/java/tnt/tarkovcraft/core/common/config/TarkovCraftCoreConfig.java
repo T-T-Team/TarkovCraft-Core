@@ -9,19 +9,6 @@ import tnt.tarkovcraft.core.TarkovCraftCore;
 public class TarkovCraftCoreConfig {
 
     @Configurable
-    @Configurable.Synchronized
-    @Configurable.Comment("Allows usage of the mail system to receive items or messages")
-    public boolean enableMailSystem = true;
-
-    @Configurable
-    @Configurable.Synchronized
-    @Configurable.Comment("Allows mail messages between players")
-    @Configurable.DependsOn(
-            configValues = @Configurable.DependsOn.ConfigValue(location = "tarkovcraft_core:enableMailSystem", accepts = "true")
-    )
-    public boolean allowMailPlayerMessages = true;
-
-    @Configurable
     @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
     @Configurable.Comment("Configurations related to skill system")
     public SkillSystemConfig skillSystemConfig = new SkillSystemConfig();

@@ -4,6 +4,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import tnt.tarkovcraft.core.client.screen.navigation.NavigationEntry;
 import tnt.tarkovcraft.core.client.screen.navigation.NavigationProvider;
@@ -48,9 +49,9 @@ public class HorizontalNavigationMenu<W extends AbstractWidget> extends Abstract
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         for (W widget : this.navigationMenuEntries) {
-            if (widget.mouseClicked(mouseX, mouseY, button)) {
+            if (widget.mouseClicked(event, doubleClick)) {
                 return true;
             }
         }
