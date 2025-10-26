@@ -7,23 +7,15 @@ import net.neoforged.neoforge.attachment.AttachmentSyncHandler;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.BiConsumer;
-
 /**
  * Sync handler which sends data only to the attachment holder itself
  */
 public class OwnerAttachmentSyncHandler<T> implements AttachmentSyncHandler<T> {
 
     private final StreamCodec<? super RegistryFriendlyByteBuf, T> codec;
-    private final BiConsumer<T, IAttachmentHolder> onRead;
 
     public OwnerAttachmentSyncHandler(StreamCodec<? super RegistryFriendlyByteBuf, T> codec) {
-        this(codec, (data, holder) -> {});
-    }
-
-    public OwnerAttachmentSyncHandler(StreamCodec<? super RegistryFriendlyByteBuf, T> codec, BiConsumer<T, IAttachmentHolder> onRead) {
         this.codec = codec;
-        this.onRead = onRead;
     }
 
     @Override
@@ -38,8 +30,6 @@ public class OwnerAttachmentSyncHandler<T> implements AttachmentSyncHandler<T> {
 
     @Override
     public @Nullable T read(IAttachmentHolder holder, RegistryFriendlyByteBuf buf, @Nullable T previousValue) {
-        T t = this.codec.decode(buf);
-        this.onRead.accept(t, holder);
-        return t;
+        return this.codec.decode(buf);
     }
 }

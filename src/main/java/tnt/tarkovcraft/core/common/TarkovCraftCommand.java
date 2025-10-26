@@ -18,7 +18,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.server.command.EnumArgument;
 import tnt.tarkovcraft.core.common.attribute.Attribute;
 import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
@@ -28,13 +27,9 @@ import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
 import tnt.tarkovcraft.core.common.attribute.modifier.SetValueAttributeModifier;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
-import tnt.tarkovcraft.core.common.skill.Skill;
-import tnt.tarkovcraft.core.common.skill.SkillData;
-import tnt.tarkovcraft.core.common.skill.SkillDefinition;
-import tnt.tarkovcraft.core.common.skill.SkillMemoryConfiguration;
+import tnt.tarkovcraft.core.common.skill.*;
 import tnt.tarkovcraft.core.common.statistic.Statistic;
 import tnt.tarkovcraft.core.common.statistic.StatisticTracker;
-import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -237,9 +232,7 @@ public final class TarkovCraftCommand {
         Skill instance = skillData.getSkill(skillDefinition);
         instance.forceSetLevel(setLevel);
         skillData.reloadStats();
-        if (target instanceof ServerPlayer player) {
-            PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, CoreDataAttachments.SKILL.get()));
-        }
+        SkillSystem.synchronize(target);
         return 0;
     }
 
@@ -251,9 +244,7 @@ public final class TarkovCraftCommand {
         Skill instance = skillData.getSkill(skillDefinition);
         skillData.addExperience(instance, exp);
         instance.setLastExperienceUpdate(target.level().getGameTime());
-        if (target instanceof ServerPlayer player) {
-            PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, CoreDataAttachments.SKILL.get()));
-        }
+        SkillSystem.synchronize(target);
         return 0;
     }
 
@@ -266,9 +257,7 @@ public final class TarkovCraftCommand {
         SkillMemoryConfiguration memoryCfg = skillDefinition.getMemory();
         instance.loseExperience(exp, memoryCfg, lvl -> skillData.onLevelChange(lvl, instance));
         instance.setLastExperienceUpdate(target.level().getGameTime());
-        if (target instanceof ServerPlayer player) {
-            PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, CoreDataAttachments.SKILL.get()));
-        }
+        SkillSystem.synchronize(target);
         return 0;
     }
 

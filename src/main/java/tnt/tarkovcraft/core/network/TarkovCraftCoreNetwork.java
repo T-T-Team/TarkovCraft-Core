@@ -6,7 +6,6 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.HandlerThread;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import tnt.tarkovcraft.core.TarkovCraftCore;
-import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 import tnt.tarkovcraft.core.network.message.notification.S2C_SendNotification;
 
 import java.util.Locale;
@@ -26,8 +25,5 @@ public final class TarkovCraftCoreNetwork {
 
         // notification
         registry.playToClient(S2C_SendNotification.TYPE, S2C_SendNotification.CODEC, S2C_SendNotification::handleMessage);
-
-        // synchronization
-        registry.playToClient(S2C_SendDataAttachments.TYPE, S2C_SendDataAttachments.CODEC, S2C_SendDataAttachments::handleMessage);
     }
 }

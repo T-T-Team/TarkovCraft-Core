@@ -1,15 +1,16 @@
 package tnt.tarkovcraft.core.common.skill;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import net.neoforged.neoforge.network.PacketDistributor;
 import tnt.tarkovcraft.core.client.util.ClientUtils;
 import tnt.tarkovcraft.core.common.Notification;
 import tnt.tarkovcraft.core.common.attribute.Attribute;
@@ -18,8 +19,7 @@ import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.skill.stat.SkillStat;
 import tnt.tarkovcraft.core.common.skill.stat.SkillStatDefinition;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTriggerEvent;
-import tnt.tarkovcraft.core.network.Synchronizable;
-import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
+import tnt.tarkovcraft.core.common.util.OwnerAttachmentSyncHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,12 +28,11 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public final class SkillData implements Synchronizable<SkillData> {
+public final class SkillData {
 
     public static final MapCodec<SkillData> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Skill.CODEC.listOf().fieldOf("skills").xmap(SkillData::asSkillMap, map -> new ArrayList<>(map.values())).forGetter(t -> t.skillMap)
     ).apply(instance, SkillData::new));
-    public static final Codec<SkillData> CODEC = MAP_CODEC.codec();
 
     private Entity holder;
     private final Map<SkillDefinition, Skill> skillMap;
@@ -79,16 +78,6 @@ public final class SkillData implements Synchronizable<SkillData> {
 
     public Skill getSkill(SkillDefinition skill) {
         return this.skillMap.computeIfAbsent(skill, this::createInstance);
-    }
-
-    @Override
-    public Codec<SkillData> networkCodec() {
-        return CODEC;
-    }
-
-    @Override
-    public void preSyncPrepare() {
-        this.applyStats();
     }
 
     public void reloadStats() {
@@ -158,7 +147,22 @@ public final class SkillData implements Synchronizable<SkillData> {
             }
             this.applyStats();
 
-            PacketDistributor.sendToPlayer(player, new S2C_SendDataAttachments(player, CoreDataAttachments.SKILL.get()));
+            SkillSystem.synchronize(player);
+        }
+    }
+
+    public static final class SyncHandler extends OwnerAttachmentSyncHandler<SkillData> {
+
+        public static final StreamCodec<RegistryFriendlyByteBuf, SkillData> CODEC = ByteBufCodecs.fromCodecWithRegistries(MAP_CODEC.codec());
+
+        public SyncHandler() {
+            super(CODEC);
+        }
+
+        @Override
+        public void write(RegistryFriendlyByteBuf buf, SkillData attachment, boolean initialSync) {
+            attachment.applyStats();
+            super.write(buf, attachment, initialSync);
         }
     }
 }

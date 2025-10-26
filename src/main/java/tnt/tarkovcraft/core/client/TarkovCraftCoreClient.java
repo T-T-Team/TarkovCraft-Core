@@ -6,7 +6,6 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -14,7 +13,6 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
@@ -27,10 +25,8 @@ import tnt.tarkovcraft.core.client.notification.NotificationLayer;
 import tnt.tarkovcraft.core.client.overlay.DebugLayer;
 import tnt.tarkovcraft.core.client.overlay.OnScreenHintLayer;
 import tnt.tarkovcraft.core.client.overlay.StaminaLayer;
-import tnt.tarkovcraft.core.client.screen.DataScreen;
 import tnt.tarkovcraft.core.client.screen.navigation.CoreNavigators;
 import tnt.tarkovcraft.core.common.item.CurrencyItem;
-import tnt.tarkovcraft.core.network.Synchronizable;
 
 import static tnt.tarkovcraft.core.util.helper.TextHelper.createKeybindName;
 
@@ -65,14 +61,6 @@ public final class TarkovCraftCoreClient {
 
     public static TarkovCraftCoreClientConfig getConfig() {
         return config;
-    }
-
-    public static void sendDataSyncEvent(Entity entity, AttachmentType<?> type, Synchronizable<?> data) {
-        Minecraft minecraft = Minecraft.getInstance();
-        Screen screen = minecraft.screen;
-        if (screen instanceof DataScreen dataScreen) {
-            dataScreen.onAttachmentDataReceived(entity, type, data);
-        }
     }
 
     private void dispatchParallelRegistryEvents() {

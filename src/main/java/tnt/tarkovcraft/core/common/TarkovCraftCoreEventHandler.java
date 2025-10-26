@@ -5,7 +5,6 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -14,17 +13,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 import tnt.tarkovcraft.core.api.MovementStaminaComponent;
 import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
 import tnt.tarkovcraft.core.common.attribute.AttributeSystem;
@@ -41,10 +37,7 @@ import tnt.tarkovcraft.core.common.statistic.Statistic;
 import tnt.tarkovcraft.core.common.statistic.StatisticTracker;
 import tnt.tarkovcraft.core.common.weight.EntityWeightContainerListener;
 import tnt.tarkovcraft.core.common.weight.WeightSystem;
-import tnt.tarkovcraft.core.network.Synchronizable;
-import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public final class TarkovCraftCoreEventHandler {
@@ -69,33 +62,6 @@ public final class TarkovCraftCoreEventHandler {
             EntityAttributeData attributeData = AttributeSystem.getAttributes(player);
             AttributeInstance instance = attributeData.getAttribute(CoreAttributes.WEIGHT_LIMIT);
             instance.addListener(new WeightChangeAttributeListener(player));
-        }
-    }
-
-    @SubscribeEvent
-    private void onPlayerLoggingIn(PlayerEvent.PlayerLoggedInEvent event) {
-        Player player = event.getEntity();
-        if (player.level().isClientSide())
-            return;
-        // Sync payload
-        PacketDistributor.sendToPlayer((ServerPlayer) player, this.getSyncPacket(player));
-    }
-
-    @SubscribeEvent
-    private void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        Player player = event.getEntity();
-        if (!player.level().isClientSide()) {
-            S2C_SendDataAttachments packet = this.getSyncPacket(player);
-            PacketDistributor.sendToPlayer((ServerPlayer) player, packet);
-        }
-    }
-
-    @SubscribeEvent
-    private void onDimensionChange(PlayerEvent.PlayerChangedDimensionEvent event) {
-        Player player = event.getEntity();
-        if (!player.level().isClientSide()) {
-            S2C_SendDataAttachments packet = this.getSyncPacket(player);
-            PacketDistributor.sendToPlayer((ServerPlayer) player, packet);
         }
     }
 
@@ -177,12 +143,5 @@ public final class TarkovCraftCoreEventHandler {
     @SubscribeEvent
     private void onPlayerContainerClosed(PlayerContainerEvent.Close event) {
         WeightSystem.applyWeightEffects(event.getEntity());
-    }
-
-    private S2C_SendDataAttachments getSyncPacket(Player player) {
-        List<AttachmentType<? extends Synchronizable<?>>> list = new ArrayList<>();
-        list.add(CoreDataAttachments.ENTITY_ATTRIBUTES.get());
-        list.add(CoreDataAttachments.SKILL.get());
-        return new S2C_SendDataAttachments(player, list);
     }
 }

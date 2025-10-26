@@ -20,11 +20,13 @@ public final class CoreDataAttachments {
 
     public static final Supplier<AttachmentType<EntityAttributeData>> ENTITY_ATTRIBUTES = REGISTRY.register("entity_attributes", () -> AttachmentType.builder(EntityAttributeData::new)
             .serialize(CallbackAttachmentSerializer.create(EntityAttributeData.MAP_CODEC, EntityAttributeData::setHolder))
+            .sync(new EntityAttributeData.SyncHandler())
             .copyOnDeath()
             .build()
     );
     public static final Supplier<AttachmentType<SkillData>> SKILL = REGISTRY.register("skill", () -> AttachmentType.builder(SkillData::new)
             .serialize(CallbackAttachmentSerializer.create(SkillData.MAP_CODEC, SkillData::setHolder))
+            .sync(new SkillData.SyncHandler())
             .copyOnDeath()
             .build()
     );

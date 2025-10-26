@@ -6,10 +6,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.jetbrains.annotations.ApiStatus;
@@ -19,7 +17,6 @@ import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTrackerDefinition;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTriggerEvent;
-import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 
 import java.util.Collection;
 import java.util.function.Supplier;
@@ -44,9 +41,7 @@ public final class SkillSystem {
     }
 
     public static void synchronize(Entity entity) {
-        if (entity instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayer(serverPlayer, new S2C_SendDataAttachments(serverPlayer, CoreDataAttachments.SKILL.get()));
-        }
+        entity.syncData(CoreDataAttachments.SKILL);
     }
 
     public static boolean trigger(SkillTriggerEvent event, Entity entity, float multiplier) {

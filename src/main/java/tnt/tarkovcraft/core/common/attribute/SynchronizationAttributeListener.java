@@ -1,10 +1,7 @@
 package tnt.tarkovcraft.core.common.attribute;
 
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.PacketDistributor;
 import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
-import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
-import tnt.tarkovcraft.core.network.message.S2C_SendDataAttachments;
 
 public class SynchronizationAttributeListener implements AttributeListener {
 
@@ -32,7 +29,7 @@ public class SynchronizationAttributeListener implements AttributeListener {
     @SuppressWarnings("ConstantValue") // IDEA, get your shit together
     public void synchronize() {
         if (this.holder != null && this.holder.connection != null) {
-            PacketDistributor.sendToPlayer(this.holder, new S2C_SendDataAttachments(this.holder, CoreDataAttachments.ENTITY_ATTRIBUTES.get()));
+            AttributeSystem.sync(this.holder);
         }
     }
 }

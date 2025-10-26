@@ -6,9 +6,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import tnt.tarkovcraft.core.client.screen.navigation.CoreNavigators;
 import tnt.tarkovcraft.core.client.screen.navigation.NavigationEntry;
 import tnt.tarkovcraft.core.client.screen.renderable.AbstractTextRenderable;
@@ -16,13 +14,12 @@ import tnt.tarkovcraft.core.client.screen.renderable.NotificationScreen;
 import tnt.tarkovcraft.core.client.screen.renderable.VerticalLineRenderable;
 import tnt.tarkovcraft.core.client.screen.widget.HorizontalNavigationMenu;
 import tnt.tarkovcraft.core.client.screen.widget.LabelButton;
-import tnt.tarkovcraft.core.network.Synchronizable;
 
 import java.util.Optional;
 import java.util.UUID;
 
 // TODO implement profile look-up, possibly by clicking on the current profile name - change it to button and open search dialog
-public abstract class CharacterSubScreen extends NotificationScreen implements DataScreen {
+public abstract class CharacterSubScreen extends NotificationScreen {
 
     protected final UUID characterProfileId;
     protected final NavigationEntry selectedPage;
@@ -32,13 +29,6 @@ public abstract class CharacterSubScreen extends NotificationScreen implements D
         super(selectedPage.label());
         this.characterProfileId = characterProfileId;
         this.selectedPage = selectedPage;
-    }
-
-    @Override
-    public void onAttachmentDataReceived(Entity entity, AttachmentType<?> attachmentType, Synchronizable<?> data) {
-        if (entity.getUUID().equals(this.characterProfileId)) {
-            this.init(this.minecraft, this.width, this.height); // reload data if applicable
-        }
     }
 
     protected Optional<Player> getPlayer() {
