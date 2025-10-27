@@ -9,7 +9,7 @@ import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Player;
 import tnt.tarkovcraft.core.client.screen.navigation.CoreNavigators;
 import tnt.tarkovcraft.core.client.screen.navigation.NavigationEntry;
-import tnt.tarkovcraft.core.client.screen.renderable.AbstractTextRenderable;
+import tnt.tarkovcraft.core.client.screen.renderable.LabelRenderable;
 import tnt.tarkovcraft.core.client.screen.renderable.NotificationScreen;
 import tnt.tarkovcraft.core.client.screen.renderable.VerticalLineRenderable;
 import tnt.tarkovcraft.core.client.screen.widget.HorizontalNavigationMenu;
@@ -46,7 +46,8 @@ public abstract class CharacterSubScreen extends NotificationScreen {
         String name = info != null ? info.getProfile().name() : "???";
         Component title = Component.translatable("label.tarkovcraft_core.profile", name);
         int titleWidth = this.font.width(title);
-        this.addRenderableOnly(new AbstractTextRenderable.Component(5, 8, titleWidth, 10, ColorPalette.TEXT_COLOR, false, this.font, title));
+        LabelRenderable titleLabel = this.addRenderableOnly(LabelRenderable.fromComponent(5, 8, titleWidth, 10, this.font, title));
+        titleLabel.setScrolling(false);
         this.addRenderableOnly(new VerticalLineRenderable(10 + titleWidth, 5, 19, ARGB.opaque(ColorPalette.TEXT_COLOR)));
 
         this.addRenderableWidget(new HorizontalNavigationMenu<>(15 + titleWidth, 0, this.width - 30 - titleWidth, 25, this, this.characterProfileId, CoreNavigators.CHARACTER_NAVIGATION_PROVIDER, (entry, parent, userId) -> buildNavItem(entry)));

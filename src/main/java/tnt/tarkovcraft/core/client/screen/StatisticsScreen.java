@@ -70,7 +70,9 @@ public class StatisticsScreen extends CharacterSubScreen {
             this.addRenderableOnly(new ShapeRenderable(left, 25, this.width - left, 10, ColorPalette.BG_TRANSPARENT_WEAK));
             this.addRenderableOnly(new HorizontalLineRenderable(left, this.width, 35, ColorPalette.WHITE));
             this.addRenderableOnly(new VerticalLineRenderable(left - 1, 25, this.height, ColorPalette.WHITE));
-            this.addRenderableOnly(new AbstractTextRenderable.Component(left + 3, 26, this.width - left, 10, ColorPalette.WHITE, true, this.font, OVERVIEW_LABEL));
+            LabelRenderable overviewLabel = this.addRenderableOnly(LabelRenderable.fromComponent(left + 3, 26, this.width - left, 10, this.font, OVERVIEW_LABEL));
+            overviewLabel.setTextColor(ColorPalette.WHITE);
+            overviewLabel.setShadow(true);
 
             PlayerProfileLabelContainer container = this.getProfileLabels(player, tracker);
             List<PlayerProfileLabelContainer.ProfileLabelRow> rows = container.getRows();

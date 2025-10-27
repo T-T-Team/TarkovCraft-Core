@@ -1,5 +1,6 @@
 package tnt.tarkovcraft.core.client.screen.renderable;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 
 public abstract class AbstractRenderable implements Renderable {
@@ -38,5 +39,13 @@ public abstract class AbstractRenderable implements Renderable {
 
     public int getBottom() {
         return this.getY() + this.getHeight();
+    }
+
+    protected void startScissor(GuiGraphics graphics) {
+        graphics.enableScissor(this.x, this.y, this.getRight(), this.getBottom());
+    }
+
+    protected void endScissor(GuiGraphics graphics) {
+        graphics.disableScissor();
     }
 }
