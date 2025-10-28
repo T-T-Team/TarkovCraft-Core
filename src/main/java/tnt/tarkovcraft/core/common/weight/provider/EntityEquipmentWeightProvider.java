@@ -16,7 +16,7 @@ public class EntityEquipmentWeightProvider implements WeightProvider {
     public static final ResourceLocation IDENTIFIER = TarkovCraftCore.createResourceLocation("weight/entity/equipment");
     public static final Set<EquipmentSlot> EQUIPMENT_SLOTS = EnumSet.of(
             EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD,
-            EquipmentSlot.BODY, EquipmentSlot.SADDLE,
+            EquipmentSlot.BODY,
             EquipmentSlot.OFFHAND
     );
 

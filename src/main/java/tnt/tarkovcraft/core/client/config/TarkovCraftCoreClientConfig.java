@@ -4,7 +4,6 @@ import dev.toma.configuration.config.Config;
 import dev.toma.configuration.config.Configurable;
 import dev.toma.configuration.config.FieldVisibility;
 import tnt.tarkovcraft.core.TarkovCraftCore;
-import tnt.tarkovcraft.core.common.config.validate.DevelopmentModeValidator;
 import tnt.tarkovcraft.core.util.HorizontalAlignment;
 import tnt.tarkovcraft.core.util.VerticalAlignment;
 
@@ -13,7 +12,6 @@ public class TarkovCraftCoreClientConfig {
 
     @Configurable
     @Configurable.Gui.Visibility(FieldVisibility.ADVANCED)
-    @Configurable.Validate(DevelopmentModeValidator.class)
     public boolean renderDebugOverlay = false;
 
     @Configurable
@@ -23,6 +21,6 @@ public class TarkovCraftCoreClientConfig {
     public StaminaConfigurableOverlay armStaminaOverlay = new StaminaConfigurableOverlay(true, HorizontalAlignment.LEFT, VerticalAlignment.BOTTOM, 5, -9, "#FF000000", "#FF00B2C2", "#FF004EC2", "#FFC10000", "#FF780000");
 
     @Configurable
-    @Configurable.Comment("Configure which on screen hint types will be displayed on HUD")
+    @Configurable.Comment(value = "Configure which on screen hint types will be displayed on HUD", localize = true)
     public OnScreenHintDisplay hintDisplayMode = OnScreenHintDisplay.ALL;
 }

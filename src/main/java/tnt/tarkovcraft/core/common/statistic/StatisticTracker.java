@@ -1,7 +1,6 @@
 package tnt.tarkovcraft.core.common.statistic;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
@@ -12,17 +11,18 @@ import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
+import tnt.tarkovcraft.core.util.Codecs;
 
 import java.util.Map;
 import java.util.function.LongBinaryOperator;
 
 public final class StatisticTracker implements StatisticReader {
 
-    public static final MapCodec<StatisticTracker> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+    public static final Codec<StatisticTracker> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.unboundedMap(CoreRegistries.STATISTICS.byNameCodec(), Codec.LONG).fieldOf("statMap").forGetter(t -> t.stats)
     ).apply(instance, StatisticTracker::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, StatisticTracker> STREAM_CODEC = ByteBufCodecs.map(
-            Object2LongOpenHashMap::new, ByteBufCodecs.registry(CoreRegistries.Keys.STATISTICS), ByteBufCodecs.LONG
+            Object2LongOpenHashMap::new, ByteBufCodecs.registry(CoreRegistries.Keys.STATISTICS), Codecs.LONG_STREAM_CODEC
     ).map(StatisticTracker::new, tracker -> (Object2LongOpenHashMap<Statistic>) tracker.stats);
     private final Object2LongMap<Statistic> stats;
 

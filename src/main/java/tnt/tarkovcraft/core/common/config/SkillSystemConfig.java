@@ -6,25 +6,16 @@ public class SkillSystemConfig {
 
     @Configurable
     @Configurable.Synchronized
-    @Configurable.Comment("Enables skill system")
+    @Configurable.Comment(value = "Enables skill system", localize = true)
     public boolean skillSystemEnabled = true;
 
     @Configurable
     @Configurable.Synchronized
-    @Configurable.Comment("Allows you to lose skill experience (but not levels)")
-    @Configurable.DependsOn(
-            configValues = @Configurable.DependsOn.ConfigValue(location = "tarkovcraft_core:skillSystemConfig/skillSystemEnabled", accepts = "true")
-    )
+    @Configurable.Comment(value = "Allows you to lose skill experience (but not levels)", localize = true)
     public boolean enableSkillExperienceLoss = true;
 
     @Configurable
     @Configurable.Synchronized
-    @Configurable.Comment("Allows you to lose skill levels")
-    @Configurable.DependsOn(
-            configValues = {
-                    @Configurable.DependsOn.ConfigValue(location = "tarkovcraft_core:skillSystemConfig/skillSystemEnabled", accepts = "true"),
-                    @Configurable.DependsOn.ConfigValue(location = "tarkovcraft_core:skillSystemConfig/enableSkillExperienceLoss", accepts = "true")
-            }
-    )
+    @Configurable.Comment(value = "Allows you to lose skill levels", localize = true)
     public boolean enableSkillLevelLoss = true;
 }

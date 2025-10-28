@@ -1,17 +1,17 @@
 package tnt.tarkovcraft.core.util.helper;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.client.gui.render.TextureSetup;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ARGB;
-import net.minecraft.util.Mth;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix3x2f;
+import net.minecraft.util.FormattedCharSequence;
+import org.joml.Matrix4f;
 import org.joml.Vector2f;
-import tnt.tarkovcraft.core.client.screen.state.ColoredRectangleRenderState;
 import tnt.tarkovcraft.core.util.ScreenPositionCalculator;
+
+import java.util.List;
 
 public final class RenderUtils {
 
@@ -30,12 +30,15 @@ public final class RenderUtils {
 
     public static void blitFull(GuiGraphics graphics, ResourceLocation icon, int x1, int y1, int x2, int y2, int color) {
         graphics.innerBlit(
-                RenderPipelines.GUI_TEXTURED,
                 icon,
                 x1, x2, y1, y2,
+                0,
                 0.0F, 1.0F,
                 0.0F, 1.0F,
-                color
+                ARGB.redFloat(color),
+                ARGB.greenFloat(color),
+                ARGB.blueFloat(color),
+                ARGB.alphaFloat(color)
         );
     }
 
@@ -44,15 +47,13 @@ public final class RenderUtils {
     }
 
     public static void fillGradient(GuiGraphics graphics, float x1, float y1, float x2, float y2, int colorFrom, int colorTo) {
-        Matrix3x2f pose = new Matrix3x2f(graphics.pose());
-        ScreenRectangle scissor = graphics.peekScissorStack();
-        ScreenRectangle bounds = getBounds(pose, scissor, x1, y1, x2, y2);
-        graphics.submitGuiElementRenderState(new ColoredRectangleRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), pose, x1, y1, x2, y2, colorFrom, colorTo, scissor, bounds));
-    }
-
-    public static ScreenRectangle getBounds(Matrix3x2f pose, @Nullable ScreenRectangle scissor, float x1, float y1, float x2, float y2) {
-        ScreenRectangle screenrectangle = new ScreenRectangle(Mth.floor(x1), Mth.floor(y1), Mth.ceil(x2 - x1), Mth.ceil(y2 - y1)).transformMaxBounds(pose);
-        return scissor != null ? scissor.intersection(screenrectangle) : screenrectangle;
+        VertexConsumer consumer = graphics.bufferSource().getBuffer(RenderType.gui());
+        Matrix4f matrix4f = graphics.pose().last().pose();
+        consumer.addVertex(matrix4f, x1, y1, 0).setColor(colorFrom);
+        consumer.addVertex(matrix4f, x1, y2, 0).setColor(colorTo);
+        consumer.addVertex(matrix4f, x2, y2, 0).setColor(colorTo);
+        consumer.addVertex(matrix4f, x2, y1, 0).setColor(colorFrom);
+        graphics.flushIfUnmanaged();
     }
 
     public static void fillDarkenGradient(GuiGraphics graphics, float x1, float y1, float x2, float y2, int colorFrom, float rgbScale) {
@@ -67,5 +68,9 @@ public final class RenderUtils {
         float x = horizontal.getPosition(x1, x2, width);
         float y = vertical.getPosition(y1, y2, height);
         return new Vector2f(x, y);
+    }
+
+    public static List<FormattedCharSequence> splitTooltip(List<Component> lines, Font font) {
+        return lines.stream().flatMap(text -> font.split(text, 170).stream()).toList();
     }
 }

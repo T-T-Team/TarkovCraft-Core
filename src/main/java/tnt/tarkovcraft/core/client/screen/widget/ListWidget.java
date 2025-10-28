@@ -3,7 +3,6 @@ package tnt.tarkovcraft.core.client.screen.widget;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.util.Mth;
 import tnt.tarkovcraft.core.client.screen.listener.ScrollChangeListener;
@@ -81,9 +80,9 @@ public class ListWidget<T extends AbstractWidget> extends AbstractWidget impleme
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        T item = this.getItemAt(event.x(), event.y());
-        return item != null && item.mouseClicked(event, doubleClick);
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        T item = this.getItemAt(mouseX, mouseY);
+        return item != null && item.mouseClicked(mouseX, mouseY, button);
     }
 
     public T getItemAt(double x, double y) {

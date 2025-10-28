@@ -1,7 +1,6 @@
 package tnt.tarkovcraft.core.common.attribute;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -23,7 +22,7 @@ import java.util.function.Supplier;
 
 public final class EntityAttributeData {
 
-    public static final MapCodec<EntityAttributeData> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+    public static final Codec<EntityAttributeData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.unboundedMap(CoreRegistries.ATTRIBUTE.byNameCodec(), AttributeInstance.CODEC).fieldOf("attributeMap").forGetter(t -> t.attributeMap)
     ).apply(instance, EntityAttributeData::new));
 
@@ -90,7 +89,7 @@ public final class EntityAttributeData {
 
     public static final class SyncHandler extends OwnerAttachmentSyncHandler<EntityAttributeData> {
 
-        public static final StreamCodec<RegistryFriendlyByteBuf, EntityAttributeData> CODEC = ByteBufCodecs.fromCodecWithRegistries(MAP_CODEC.codec());
+        public static final StreamCodec<RegistryFriendlyByteBuf, EntityAttributeData> CODEC = ByteBufCodecs.fromCodecWithRegistries(EntityAttributeData.CODEC);
 
         public SyncHandler() {
             super(CODEC);

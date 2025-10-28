@@ -4,9 +4,9 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.client.gui.GuiLayer;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.api.StaminaComponent;
 import tnt.tarkovcraft.core.client.TarkovCraftCoreClient;
@@ -17,7 +17,7 @@ import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 
 import java.util.Locale;
 
-public class DebugLayer implements GuiLayer {
+public class DebugLayer implements LayeredDraw.Layer {
 
     public static final ResourceLocation LAYER_ID = TarkovCraftCore.createResourceLocation("layer/debug");
     private int line;

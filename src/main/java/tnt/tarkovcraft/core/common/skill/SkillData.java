@@ -1,6 +1,6 @@
 package tnt.tarkovcraft.core.common.skill;
 
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 public final class SkillData {
 
-    public static final MapCodec<SkillData> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+    public static final Codec<SkillData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Skill.CODEC.listOf().fieldOf("skills").xmap(SkillData::asSkillMap, map -> new ArrayList<>(map.values())).forGetter(t -> t.skillMap)
     ).apply(instance, SkillData::new));
 
@@ -153,7 +153,7 @@ public final class SkillData {
 
     public static final class SyncHandler extends OwnerAttachmentSyncHandler<SkillData> {
 
-        public static final StreamCodec<RegistryFriendlyByteBuf, SkillData> CODEC = ByteBufCodecs.fromCodecWithRegistries(MAP_CODEC.codec());
+        public static final StreamCodec<RegistryFriendlyByteBuf, SkillData> CODEC = ByteBufCodecs.fromCodecWithRegistries(SkillData.CODEC);
 
         public SyncHandler() {
             super(CODEC);

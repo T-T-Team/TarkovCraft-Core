@@ -64,7 +64,7 @@ public class EntityWidget extends AbstractWidget {
         this.entity.setYHeadRot(180.0F);
         InventoryScreen.renderEntityInInventory(
                 guiGraphics,
-                this.getX(), this.getY(), this.getRight(), this.getBottom(),
+                this.getX() + this.getWidth() / 2.0F, this.getY() + this.getHeight() / 2.0F,
                 Math.min(this.width, this.height) / 3.0F,
                 this.offset,
                 this.pose,

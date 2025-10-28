@@ -1,9 +1,9 @@
 package tnt.tarkovcraft.core.common.skill.tracker.condition;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.toma.configuration.Configuration;
-import dev.toma.configuration.config.ConfigValueLocation;
 import dev.toma.configuration.config.value.IConfigValueReadable;
 import net.minecraft.network.chat.Component;
 import tnt.tarkovcraft.core.common.init.CoreSkillTriggerConditions;
@@ -12,26 +12,31 @@ import tnt.tarkovcraft.core.common.skill.SkillContext;
 public class ConfigToggleSkillTriggerCondition implements SkillTriggerCondition {
 
     public static final MapCodec<ConfigToggleSkillTriggerCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ConfigValueLocation.CODEC.fieldOf("location").forGetter(t -> t.location)
+            Codec.STRING.fieldOf("config").forGetter(t -> t.namespace),
+            Codec.STRING.fieldOf("field").forGetter(t -> t.path)
     ).apply(instance, ConfigToggleSkillTriggerCondition::new));
 
-    private final ConfigValueLocation location;
+    private final String namespace;
+    private final String path;
 
-    public ConfigToggleSkillTriggerCondition(ConfigValueLocation location) {
-        this.location = location;
+    public ConfigToggleSkillTriggerCondition(String namespace, String path) {
+        this.namespace = namespace;
+        this.path = path;
     }
 
     @Override
     public boolean isTriggerable(SkillContext context) {
-        return Configuration.getConfigValue(this.location, Boolean.class)
+        return Configuration.getConfig(this.namespace)
+                .flatMap(holder -> holder.getValue(this.path, Boolean.class))
                 .orElse(false);
     }
 
     @Override
     public Component getDescription() {
-        Component title = Configuration.getConfigValueHolder(this.location, Boolean.class)
+        Component title = Configuration.getConfig(this.namespace)
+                .flatMap(holder -> holder.getConfigValue(this.path, Boolean.class))
                 .map(IConfigValueReadable::getTitle)
-                .orElse(Component.literal("???"));
+                .orElseGet(() -> Component.literal("???"));
         return Component.translatable("skill.condition.config_toggle", title);
     }
 

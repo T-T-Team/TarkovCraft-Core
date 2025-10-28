@@ -3,7 +3,7 @@ package tnt.tarkovcraft.core.common.skill;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
@@ -109,7 +109,7 @@ public final class SkillSystem {
         TRIGGER_CACHE.clear();
         MinecraftServer server = event.getServer();
         RegistryAccess access = server.registryAccess();
-        Registry<SkillDefinition> registry = access.lookupOrThrow(CoreRegistries.DatapackKeys.SKILL_DEFINITION);
+        HolderLookup.RegistryLookup<SkillDefinition> registry = access.lookupOrThrow(CoreRegistries.DatapackKeys.SKILL_DEFINITION);
         registry.listElements().map(Holder.Reference::value)
                 .filter(SkillDefinition::isEnabled)
                 .forEach(definition -> {

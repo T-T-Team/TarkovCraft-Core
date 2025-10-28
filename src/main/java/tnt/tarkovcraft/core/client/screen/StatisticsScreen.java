@@ -7,7 +7,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -61,7 +61,7 @@ public class StatisticsScreen extends CharacterSubScreen {
             StatisticTracker tracker = player.getData(CoreDataAttachments.STATISTICS);
 
             RegistryAccess access = player.level().registryAccess();
-            Registry<DisplayStatistic> registry = access.lookupOrThrow(CoreRegistries.DatapackKeys.DISPLAY_STATISTIC);
+            HolderLookup.RegistryLookup<DisplayStatistic> registry = access.lookupOrThrow(CoreRegistries.DatapackKeys.DISPLAY_STATISTIC);
             List<DisplayStatistic> statistics = registry.listElements()
                     .map(Holder.Reference::value)
                     .sorted(Comparator.comparingInt(DisplayStatistic::getOrder))

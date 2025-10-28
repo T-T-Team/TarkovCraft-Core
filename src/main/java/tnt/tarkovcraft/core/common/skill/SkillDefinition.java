@@ -3,7 +3,7 @@ package tnt.tarkovcraft.core.common.skill;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
@@ -55,8 +55,10 @@ public class SkillDefinition {
     }
 
     public Skill instance(RegistryAccess access) {
-        Registry<SkillDefinition> registry = access.lookupOrThrow(CoreRegistries.DatapackKeys.SKILL_DEFINITION);
-        Holder<SkillDefinition> reference = registry.wrapAsHolder(this);
+        HolderLookup.RegistryLookup<SkillDefinition> registry = access.lookupOrThrow(CoreRegistries.DatapackKeys.SKILL_DEFINITION);
+        Holder.Reference<SkillDefinition> reference = registry.listElements()
+                .filter(ref -> ref.value() == this)
+                .findFirst().orElseThrow();
         return new Skill(reference);
     }
 

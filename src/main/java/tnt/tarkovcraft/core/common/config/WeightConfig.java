@@ -6,15 +6,15 @@ public final class WeightConfig {
 
     @Configurable
     @Configurable.Synchronized
-    @Configurable.Comment({
+    @Configurable.Comment(value = {
             "Allows you to toggle weight system",
             "Beware as users affected by negative weight effects will be stuck with those effects after disabling"
-    })
+    }, localize = true)
     public boolean enableWeightSystem = true;
 
     @Configurable
     @Configurable.Synchronized
-    @Configurable.Comment("Calculates weight based on item storage too - bundles, shulker boxes, ...")
+    @Configurable.Comment(value = "Calculates weight based on item storage too - bundles, shulker boxes, ...", localize = true)
     public boolean calculateContainerWeight = true;
 
     @Configurable

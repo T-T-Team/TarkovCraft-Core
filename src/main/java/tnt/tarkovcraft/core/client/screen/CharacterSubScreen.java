@@ -5,7 +5,6 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Player;
 import tnt.tarkovcraft.core.client.screen.navigation.CoreNavigators;
 import tnt.tarkovcraft.core.client.screen.navigation.NavigationEntry;
@@ -43,12 +42,12 @@ public abstract class CharacterSubScreen extends NotificationScreen {
 
     protected void addHeader() {
         PlayerInfo info = this.minecraft.getConnection().getPlayerInfo(this.characterProfileId);
-        String name = info != null ? info.getProfile().name() : "???";
+        String name = info != null ? info.getProfile().getName() : "???";
         Component title = Component.translatable("label.tarkovcraft_core.profile", name);
         int titleWidth = this.font.width(title);
         LabelRenderable titleLabel = this.addRenderableOnly(LabelRenderable.fromComponent(5, 8, titleWidth, 10, this.font, title));
         titleLabel.setScrolling(false);
-        this.addRenderableOnly(new VerticalLineRenderable(10 + titleWidth, 5, 19, ARGB.opaque(ColorPalette.TEXT_COLOR)));
+        this.addRenderableOnly(new VerticalLineRenderable(10 + titleWidth, 5, 19, ColorPalette.TEXT_COLOR));
 
         this.addRenderableWidget(new HorizontalNavigationMenu<>(15 + titleWidth, 0, this.width - 30 - titleWidth, 25, this, this.characterProfileId, CoreNavigators.CHARACTER_NAVIGATION_PROVIDER, (entry, parent, userId) -> buildNavItem(entry)));
     }
@@ -71,7 +70,7 @@ public abstract class CharacterSubScreen extends NotificationScreen {
 
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBlurredBackground(guiGraphics);
+        this.renderBlurredBackground(partialTick);
         guiGraphics.fill(0, 0, this.width, this.height, ColorPalette.BG_TRANSPARENT_NORMAL);
         guiGraphics.fill(0, 0, this.width, 25, ColorPalette.BG_TRANSPARENT_WEAK);
     }

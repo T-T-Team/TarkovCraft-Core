@@ -8,27 +8,27 @@ public class StaminaConfigurableOverlay extends ConfigurableOverlay {
 
     @Configurable
     @Configurable.Gui.ColorValue(isARGB = true)
-    @Configurable.Comment("Background color of stamina status bar")
+    @Configurable.Comment(value = "Background color of stamina status bar", localize = true)
     public String backgroundColor;
 
     @Configurable
     @Configurable.Gui.ColorValue(isARGB = true)
-    @Configurable.Comment("Gradient start color of stamina status bar")
+    @Configurable.Comment(value = "Gradient start color of stamina status bar", localize = true)
     public String barGradientStartColor;
 
     @Configurable
     @Configurable.Gui.ColorValue(isARGB = true)
-    @Configurable.Comment("Gradient end color of stamina status bar")
+    @Configurable.Comment(value = "Gradient end color of stamina status bar", localize = true)
     public String barGradientEndColor;
 
     @Configurable
     @Configurable.Gui.ColorValue(isARGB = true)
-    @Configurable.Comment("Gradient start color of stamina status bar when reached critical treshold")
+    @Configurable.Comment(value = "Gradient start color of stamina status bar when reached critical treshold", localize = true)
     public String barGradientStartCriticalColor;
 
     @Configurable
     @Configurable.Gui.ColorValue(isARGB = true)
-    @Configurable.Comment("Gradient end color of stamina status bar when reached critical treshold")
+    @Configurable.Comment(value = "Gradient end color of stamina status bar when reached critical treshold", localize = true)
     public String barGradientEndCriticalColor;
 
     public StaminaConfigurableOverlay(boolean enabled, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, int x, int y, String backgroundColor, String barGradientStartColor, String barGradientEndColor, String barGradientStartCriticalColor, String barGradientEndCriticalColor) {

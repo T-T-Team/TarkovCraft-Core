@@ -8,24 +8,24 @@ import tnt.tarkovcraft.core.util.helper.RenderUtils;
 
 public class ConfigurableOverlay {
 
-    @Configurable("config.option.tarkovcraft_core.global.overlay.enabled")
-    @Configurable.Comment("Toggles overlay rendering")
+    @Configurable
+    @Configurable.Comment(value = "Toggles overlay rendering", localize = true)
     public boolean enabled;
 
-    @Configurable("config.option.tarkovcraft_core.global.overlay.horizontalAlignment")
-    @Configurable.Comment("Horizontal alignment to be used by this overlay")
+    @Configurable
+    @Configurable.Comment(value = "Horizontal alignment to be used by this overlay", localize = true)
     public HorizontalAlignment horizontalAlignment;
 
-    @Configurable("config.option.tarkovcraft_core.global.overlay.verticalAlignment")
-    @Configurable.Comment("Vertical alignment to be used by this overlay")
+    @Configurable
+    @Configurable.Comment(value = "Vertical alignment to be used by this overlay", localize = true)
     public VerticalAlignment verticalAlignment;
 
-    @Configurable("config.option.tarkovcraft_core.global.overlay.x")
-    @Configurable.Comment("X position offset")
+    @Configurable
+    @Configurable.Comment(value = "X position offset", localize = true)
     public int x;
 
-    @Configurable("config.option.tarkovcraft_core.global.overlay.y")
-    @Configurable.Comment("Y position offset")
+    @Configurable
+    @Configurable.Comment(value = "Y position offset", localize = true)
     public int y;
 
     public ConfigurableOverlay() {

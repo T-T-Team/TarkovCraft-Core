@@ -26,7 +26,8 @@
         },
         {
           "type": "tarkovcraft_core:configurable",
-          "location": "tarkovcraft_core:weightConfig/enableWeightSystem"
+          "config": "tarkovcraft_core",
+          "field": "weightConfig.enableWeightSystem"
         }
       ],
       "tracker": {

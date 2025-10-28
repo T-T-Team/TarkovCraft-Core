@@ -2,10 +2,13 @@ package tnt.tarkovcraft.core.util;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
+import tnt.tarkovcraft.core.util.helper.ARGB;
 
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -32,9 +35,24 @@ public final class Codecs {
             return DataResult.error(() -> "Failed to parse hex color due to error " + e.getMessage());
         }
     }, Integer::toHexString);
-    public static final Codec<Integer> RGB_COLOR = Codec.withAlternative(ExtraCodecs.RGB_COLOR_CODEC, HEX_RGB_COLOR_CODEC);
+    public static final Codec<Integer> RGB_COLOR_CODEC = Codec.withAlternative(
+            Codec.INT, ExtraCodecs.VECTOR3F, p_370488_ -> ARGB.colorFromFloat(1.0F, p_370488_.x(), p_370488_.y(), p_370488_.z())
+    );
+    public static final Codec<Integer> RGB_COLOR = Codec.withAlternative(RGB_COLOR_CODEC, HEX_RGB_COLOR_CODEC);
     public static final Codec<Integer> NON_NEGATIVE_INT = Codec.intRange(0, Integer.MAX_VALUE);
     public static final Codec<Float> NON_NEGATIVE_FLOAT = Codec.floatRange(0.0F, Float.MAX_VALUE);
+
+    public static final StreamCodec<ByteBuf, Long> LONG_STREAM_CODEC = new StreamCodec<>() {
+        @Override
+        public Long decode(ByteBuf buffer) {
+            return buffer.readLong();
+        }
+
+        @Override
+        public void encode(ByteBuf buffer, Long value) {
+            buffer.writeLong(value);
+        }
+    };
 
     @Deprecated
     public static <E extends Enum<E>> Codec<E> simpleEnumCodec(Class<E> type) {

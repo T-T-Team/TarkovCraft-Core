@@ -2,6 +2,7 @@ package tnt.tarkovcraft.core.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.toma.configuration.Configuration;
+import dev.toma.configuration.config.format.ConfigFormats;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -33,7 +34,7 @@ import static tnt.tarkovcraft.core.util.helper.TextHelper.createKeybindName;
 @Mod(value = TarkovCraftCore.MOD_ID, dist = Dist.CLIENT)
 public final class TarkovCraftCoreClient {
 
-    public static final KeyMapping.Category KEY_MAPPING_CATEGORY = new KeyMapping.Category(TarkovCraftCore.createResourceLocation("keymap"));
+    public static final String KEY_MAPPING_CATEGORY = "key.category.tarkovcraft_core.keymap";
     public static final KeyMapping KEY_CHARACTER = new KeyMapping(
             createKeybindName(TarkovCraftCore.MOD_ID, "character"),
             KeyConflictContext.IN_GAME,
@@ -47,7 +48,7 @@ public final class TarkovCraftCoreClient {
     private OnScreenHintLayer hintUiLayer;
 
     public TarkovCraftCoreClient(IEventBus modEventBus, ModContainer container) {
-        config = Configuration.registerSimpleYmlConfig(TarkovCraftCoreClientConfig.class);
+        config = Configuration.registerConfig(TarkovCraftCoreClientConfig.class, ConfigFormats.YAML).getConfigInstance();
 
         modEventBus.addListener(this::setup);
         modEventBus.addListener(this::registerKeyBindings);
@@ -87,7 +88,7 @@ public final class TarkovCraftCoreClient {
     }
 
     private void registerCustomGuiLayers(RegisterGuiLayersEvent event) {
-        if (!FMLEnvironment.isProduction())
+        if (!FMLEnvironment.production)
             event.registerAboveAll(DebugLayer.LAYER_ID, new DebugLayer());
         event.registerAboveAll(NotificationLayer.LAYER_ID, new NotificationLayer(NotificationChannel.MAIN));
         event.registerAboveAll(StaminaLayer.LAYER_ID, new StaminaLayer());

@@ -6,13 +6,11 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.core.Registry;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import tnt.tarkovcraft.core.client.screen.navigation.CoreNavigators;
@@ -26,6 +24,7 @@ import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 import tnt.tarkovcraft.core.common.skill.stat.SkillStatDefinition;
 import tnt.tarkovcraft.core.common.skill.stat.SkillStatDisplayInformation;
 import tnt.tarkovcraft.core.common.skill.tracker.SkillTrackerDefinition;
+import tnt.tarkovcraft.core.util.helper.ARGB;
 import tnt.tarkovcraft.core.util.helper.Helper;
 import tnt.tarkovcraft.core.util.helper.MathHelper;
 import tnt.tarkovcraft.core.util.helper.RenderUtils;
@@ -50,7 +49,7 @@ public class SkillScreen extends CharacterSubScreen {
         if (player == null)
             return;
         this.skillData = player.getData(CoreDataAttachments.SKILL);
-        Registry<SkillDefinition> registry = this.minecraft.getConnection().registryAccess().lookupOrThrow(CoreRegistries.DatapackKeys.SKILL_DEFINITION);
+        HolderLookup.RegistryLookup<SkillDefinition> registry = this.minecraft.getConnection().registryAccess().lookupOrThrow(CoreRegistries.DatapackKeys.SKILL_DEFINITION);
         List<Skill> skills = registry.listElements().map(reference -> this.skillData.getSkill(reference.value())).toList();
 
         ListWidget<SkillWidget> skillView = this.addRenderableWidget(new ListWidget<>(0, 25, this.width - 4, this.height - 25, skills, (skill, i) -> this.buildSkillWidget(player, skill, i)));
@@ -66,7 +65,7 @@ public class SkillScreen extends CharacterSubScreen {
     }
 
     private SkillWidget buildSkillWidget(Player player, Skill skill, int index) {
-        SkillWidget widget = new SkillWidget(5, 5 + index * 40, this.width - 15, 35, this.font, skill, player);
+        SkillWidget widget = new SkillWidget(5, 5 + index * 40, this.width - 15, 35, this.font, skill, player, this);
         SkillDefinition definition = skill.getDefinition().value();
         Collection<SkillTrackerDefinition> trackers = definition.getTrackers();
         List<Component> tooltip = new ArrayList<>();
@@ -78,14 +77,16 @@ public class SkillScreen extends CharacterSubScreen {
 
     public static final class SkillWidget extends AbstractWidget {
 
+        private final Screen parent;
         private final Player player;
         private final Font font;
         private final Skill skill;
         private final ResourceLocation skillIcon;
         private List<Component> description;
 
-        public SkillWidget(int x, int y, int width, int height, Font font, Skill skill, Player player) {
+        public SkillWidget(int x, int y, int width, int height, Font font, Skill skill, Player player, Screen parent) {
             super(x, y, width, height, CommonComponents.EMPTY);
+            this.parent = parent;
             this.font = font;
             this.skill = skill;
             this.player = player;
@@ -106,10 +107,10 @@ public class SkillScreen extends CharacterSubScreen {
             // Skill icon
             RenderUtils.blitFull(guiGraphics, this.skillIcon, this.getX() + 1, this.getY() + 1, this.getX() + this.height - 1, this.getY() + this.height - 1, -1);
             // Experience bar
-            guiGraphics.fillGradient(this.getX() + this.height + 2, this.getY() + 13, this.getRight(), this.getBottom() - 11, ARGB.opaque(ColorPalette.TEXT_COLOR_DISABLED), ARGB.scaleRGB(ARGB.opaque(ColorPalette.TEXT_COLOR_DISABLED), 0.6F));
+            guiGraphics.fillGradient(this.getX() + this.height + 2, this.getY() + 13, this.getRight(), this.getBottom() - 11, ColorPalette.TEXT_COLOR_DISABLED, ARGB.scaleRGB(ColorPalette.TEXT_COLOR_DISABLED, 0.6F));
             float experienceProgress = isMaxLevel ? 1.0F : this.skill.getExperience() / this.skill.getRequiredExperience();
             int width = (this.getRight() - 1 - (this.getX() + this.height + 3));
-            int expColor = ARGB.opaque(0xE8CE31);
+            int expColor = 0xFFE8CE31;
             guiGraphics.fillGradient(this.getX() + this.height + 3, this.getY() + 14, this.getX() + this.height + 3 + Mth.ceil(experienceProgress * width), this.getBottom() - 12, expColor, ARGB.scaleRGB(expColor, 0.8F));
             // Experience text
             if (!isMaxLevel) {
@@ -134,19 +135,18 @@ public class SkillScreen extends CharacterSubScreen {
                 if (MathHelper.isWithinBounds(mouseX, mouseY, left, top, right - left, bottom - top)) {
                     Component name = displayInfo.name().copy().withStyle(ChatFormatting.UNDERLINE).withStyle(ChatFormatting.YELLOW);
                     Component statDescription = displayInfo.getDescription(definition, this.skill, this.player, statDefinition.stat());
-                    List<Component> tooltip = Arrays.asList(name, statDescription);
-                    guiGraphics.setTooltipForNextFrame(this.font, tooltip, Optional.empty(), mouseX, mouseY);
+                    this.parent.setTooltipForNextRenderPass(RenderUtils.splitTooltip(Arrays.asList(name, statDescription), this.font));
                 }
                 ++index;
             }
             //noinspection SuspiciousNameCombination
             if (MathHelper.isWithinBounds(mouseX, mouseY, this.getX(), this.getY(), this.height, this.height) && Helper.isNotEmpty(this.description)) {
-                guiGraphics.setTooltipForNextFrame(this.font, this.description, Optional.empty(), mouseX, mouseY);
+                this.parent.setTooltipForNextRenderPass(RenderUtils.splitTooltip(this.description, this.font));
             }
         }
 
         @Override
-        public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        public boolean mouseClicked(double mouseX, double mouseY, int button) {
             return false;
         }
 
