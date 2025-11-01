@@ -22,6 +22,7 @@ public class SkillDefinition {
 
     public static final Codec<SkillDefinition> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.optionalFieldOf("enabled", true).forGetter(t -> t.enabled),
+            ResourceLocation.CODEC.fieldOf("identifier").forGetter(t -> t.identifier),
             ComponentSerialization.CODEC.fieldOf("description").forGetter(t -> t.name),
             SkillLevelDefinition.CODEC.optionalFieldOf("leveling", SkillLevelDefinition.DEFAULT).forGetter(t -> t.levelDefinition),
             SkillMemoryConfiguration.CODEC.optionalFieldOf("memory", SkillMemoryConfiguration.NO_LOSS).forGetter(t -> t.memory),
@@ -32,6 +33,7 @@ public class SkillDefinition {
     public static final Codec<Holder<SkillDefinition>> CODEC = RegistryFixedCodec.create(CoreRegistries.DatapackKeys.SKILL_DEFINITION);
 
     private final boolean enabled;
+    private final ResourceLocation identifier;
     private final Component name;
     private final SkillLevelDefinition levelDefinition;
     private final SkillMemoryConfiguration memory;
@@ -39,8 +41,9 @@ public class SkillDefinition {
     private final List<SkillTrackerDefinition> trackers;
     private final List<SkillStatDefinition> stats;
 
-    public SkillDefinition(boolean enabled, Component name, SkillLevelDefinition levelDefinition, SkillMemoryConfiguration memory, List<Holder<Attribute>> groupLevelingModifiers, List<SkillTrackerDefinition> trackers, List<SkillStatDefinition> stats) {
+    public SkillDefinition(boolean enabled, ResourceLocation identifier, Component name, SkillLevelDefinition levelDefinition, SkillMemoryConfiguration memory, List<Holder<Attribute>> groupLevelingModifiers, List<SkillTrackerDefinition> trackers, List<SkillStatDefinition> stats) {
         this.enabled = enabled;
+        this.identifier = identifier;
         this.name = name;
         this.levelDefinition = levelDefinition;
         this.memory = memory;
@@ -57,13 +60,17 @@ public class SkillDefinition {
     public Skill instance(RegistryAccess access) {
         HolderLookup.RegistryLookup<SkillDefinition> registry = access.lookupOrThrow(CoreRegistries.DatapackKeys.SKILL_DEFINITION);
         Holder.Reference<SkillDefinition> reference = registry.listElements()
-                .filter(ref -> ref.value() == this)
+                .filter(ref -> ref.value().getIdentifier().equals(this.identifier))
                 .findFirst().orElseThrow();
         return new Skill(reference);
     }
 
     public boolean isEnabled() {
         return this.enabled;
+    }
+
+    public ResourceLocation getIdentifier() {
+        return identifier;
     }
 
     public SkillLevelDefinition getLevelDefinition() {

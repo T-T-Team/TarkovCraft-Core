@@ -1,4 +1,5 @@
 {
+  "identifier": "tarkovcraft_core:memory",
   "description": {
     "translate": "skill.tarkovcraft_core.memory"
   },

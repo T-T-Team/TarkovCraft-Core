@@ -1,4 +1,5 @@
 {
+  "identifier": "tarkovcraft_core:strength",
   "description": {
     "translate": "skill.tarkovcraft_core.strength"
   },
