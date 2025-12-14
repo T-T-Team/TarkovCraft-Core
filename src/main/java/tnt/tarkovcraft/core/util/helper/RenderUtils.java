@@ -1,10 +1,12 @@
 package tnt.tarkovcraft.core.util.helper;
 
+import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
@@ -24,11 +26,11 @@ public final class RenderUtils {
         return a > limit;
     }
 
-    public static void blitFull(GuiGraphics graphics, ResourceLocation icon, int x1, int y1, int x2, int y2) {
+    public static void blitFull(GuiGraphics graphics, Identifier icon, int x1, int y1, int x2, int y2) {
         blitFull(graphics, icon, x1, y1, x2, y2, -1);
     }
 
-    public static void blitFull(GuiGraphics graphics, ResourceLocation icon, int x1, int y1, int x2, int y2, int color) {
+    public static void blitFull(GuiGraphics graphics, Identifier icon, int x1, int y1, int x2, int y2, int color) {
         graphics.innerBlit(
                 RenderPipelines.GUI_TEXTURED,
                 icon,
@@ -67,5 +69,11 @@ public final class RenderUtils {
         float x = horizontal.getPosition(x1, x2, width);
         float y = vertical.getPosition(y1, y2, height);
         return new Vector2f(x, y);
+    }
+
+    public static void drawScrollingString(Component text, ActiveTextCollector collector, int left, int right, int top, int bottom, int color) {
+        if (isVisibleColor(color))
+            text = text.copy().withStyle((style) -> style.withColor(color));
+        collector.acceptScrolling(text, left, left, right, top, bottom, collector.defaultParameters());
     }
 }

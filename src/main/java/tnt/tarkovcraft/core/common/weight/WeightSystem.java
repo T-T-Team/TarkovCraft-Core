@@ -6,7 +6,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -41,12 +41,12 @@ public class WeightSystem {
     public static final WeightSystem INSTANCE = new WeightSystem();
     public static final DecimalFormat FORMAT = new DecimalFormat("0.###");
     public static final Marker MARKER = MarkerManager.getMarker("WeightSystem");
-    public static final ResourceLocation OVERWEIGHT_ATTRIBUTE_MODIFIER = TarkovCraftCore.createResourceLocation("overweight");
+    public static final Identifier OVERWEIGHT_ATTRIBUTE_MODIFIER = TarkovCraftCore.createIdentifier("overweight");
     public static final BiFunction<Integer, Style, Style> BASE_LABEL_STYLE = (weight, style) -> style.withColor(ChatFormatting.GRAY);
     public static final BiFunction<Integer, Style, Style> BASE_VALUE_STYLE = (weight, style) -> style.withColor(ChatFormatting.YELLOW);
     public static final BiFunction<Integer, Style, Style> NO_STYLE = (weight, style) -> style;
 
-    private final Map<ResourceLocation, WeightProvider> providerMap = new HashMap<>();
+    private final Map<Identifier, WeightProvider> providerMap = new HashMap<>();
     private final Multimap<WeightProvider.WeightSource, WeightProvider> typeProviderMap = ArrayListMultimap.create();
 
     public static boolean isEnabled() {
@@ -169,7 +169,7 @@ public class WeightSystem {
         event.register(PlayerInventoryWeightProvider.IDENTIFIER, new PlayerInventoryWeightProvider());
     }
 
-    private synchronized void register(ResourceLocation id, WeightProvider provider) {
+    private synchronized void register(Identifier id, WeightProvider provider) {
         if (this.providerMap.putIfAbsent(Objects.requireNonNull(id), Objects.requireNonNull(provider)) != null) {
             TarkovCraftCore.LOGGER.error(MARKER, "Detected attempted weight provider override for ID {}, value '{}', skipping registration!", id, provider.getClass().getCanonicalName());
             return;

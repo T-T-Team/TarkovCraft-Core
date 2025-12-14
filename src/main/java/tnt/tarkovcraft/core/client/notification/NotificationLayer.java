@@ -5,7 +5,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.client.gui.GuiLayer;
 import tnt.tarkovcraft.core.TarkovCraftCore;
@@ -17,7 +17,7 @@ import java.util.function.IntUnaryOperator;
 
 public class NotificationLayer implements GuiLayer {
 
-    public static final ResourceLocation LAYER_ID = TarkovCraftCore.createResourceLocation("layer/notification");
+    public static final Identifier LAYER_ID = TarkovCraftCore.createIdentifier("layer/notification");
     public static final IntUnaryOperator DEFAULT_NOTIFICATION_WIDTH = w -> Mth.ceil(w * 0.45F);
     private final NotificationChannel channel;
 
@@ -45,7 +45,7 @@ public class NotificationLayer implements GuiLayer {
         for (ClientNotification notification : notifications) {
             graphics.fill(left, y, windowWidth, y + 10, ColorPalette.BG_TRANSPARENT_NORMAL);
             RenderUtils.blitFull(graphics, notification.icon(), left, y, left + 10, y + 10);
-            graphics.drawScrollingString(font, notification.label(), left + 12, windowWidth, y + 1, 0xFFFFFFFF);
+            RenderUtils.drawScrollingString(notification.label(), graphics.textRenderer(GuiGraphics.HoveredTextEffects.NONE), left + 12, left + 12 + windowWidth, y + 1, y + 10, 0);
             y -= 11;
         }
     }

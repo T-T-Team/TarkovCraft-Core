@@ -1,6 +1,6 @@
 package tnt.tarkovcraft.core.common.weight.provider;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.item.Currency;
@@ -9,7 +9,7 @@ import tnt.tarkovcraft.core.common.weight.WeightProvider;
 
 public class CurrencyWeightProvider implements WeightProvider {
 
-    public static final ResourceLocation IDENTIFIER = TarkovCraftCore.createResourceLocation("weight/item/currency");
+    public static final Identifier IDENTIFIER = TarkovCraftCore.createIdentifier("weight/item/currency");
 
     @Override
     public WeightSource getSource() {

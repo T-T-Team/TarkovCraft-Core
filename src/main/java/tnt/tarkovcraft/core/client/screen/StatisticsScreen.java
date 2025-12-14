@@ -10,7 +10,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.NeoForge;
 import tnt.tarkovcraft.core.TarkovCraftCore;
@@ -39,9 +39,9 @@ import java.util.UUID;
 public class StatisticsScreen extends CharacterSubScreen {
 
     public static final Component OVERVIEW_LABEL = TextHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "statistics", "overview").withStyle(ChatFormatting.BOLD);
-    public static final ResourceLocation ICON_KILLS = TarkovCraftCore.createResourceLocation("textures/icons/profile/kills.png");
-    public static final ResourceLocation ICON_DEATHS = TarkovCraftCore.createResourceLocation("textures/icons/profile/deaths.png");
-    public static final ResourceLocation ICON_WEIGHT = TarkovCraftCore.createResourceLocation("textures/icons/profile/weight.png");
+    public static final Identifier ICON_KILLS = TarkovCraftCore.createIdentifier("textures/icons/profile/kills.png");
+    public static final Identifier ICON_DEATHS = TarkovCraftCore.createIdentifier("textures/icons/profile/deaths.png");
+    public static final Identifier ICON_WEIGHT = TarkovCraftCore.createIdentifier("textures/icons/profile/weight.png");
     private double textScroll;
 
     public StatisticsScreen(Screen parent, UUID userId) {
@@ -56,7 +56,7 @@ public class StatisticsScreen extends CharacterSubScreen {
             int left = this.width / 3;
             EntityWidget entityWidget = this.addRenderableWidget(new EntityWidget(0, 25, left, this.height - 25, player));
             entityWidget.setBackground(ColorPalette.BG_TRANSPARENT_WEAK);
-            entityWidget.setOffset(0.0F, 0.75F, 0.0F);
+            entityWidget.setOffset(0.0F);
 
             StatisticTracker tracker = player.getData(CoreDataAttachments.STATISTICS);
 

@@ -2,12 +2,12 @@ package tnt.tarkovcraft.core.common.skill.stat.condition;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 
 import java.util.Objects;
 
-public record SkillStatConditionType<S extends SkillStatCondition>(ResourceLocation identifier, MapCodec<S> codec) {
+public record SkillStatConditionType<S extends SkillStatCondition>(Identifier identifier, MapCodec<S> codec) {
 
     public static final Codec<SkillStatCondition> INSTANCE_CODEC = CoreRegistries.SKILL_STAT_CONDITION_TYPE.byNameCodec().dispatch(SkillStatCondition::getType, SkillStatConditionType::codec);
 

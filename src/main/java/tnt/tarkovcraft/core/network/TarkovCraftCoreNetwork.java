@@ -1,7 +1,7 @@
 package tnt.tarkovcraft.core.network;
 
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.HandlerThread;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
@@ -15,9 +15,9 @@ public final class TarkovCraftCoreNetwork {
     public static final int VERSION = 1;
     public static final String NETWORK_ID = "TarkovCraftCoreNetwork@" + VERSION;
 
-    public static ResourceLocation createId(Class<? extends CustomPacketPayload> type) {
+    public static Identifier createId(Class<? extends CustomPacketPayload> type) {
         String name = type.getSimpleName().toLowerCase(Locale.ROOT);
-        return TarkovCraftCore.createResourceLocation("net/" + name);
+        return TarkovCraftCore.createIdentifier("net/" + name);
     }
 
     public static void onRegistration(RegisterPayloadHandlersEvent event) {

@@ -2,12 +2,12 @@ package tnt.tarkovcraft.core.common.skill.tracker;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 
 import java.util.Objects;
 
-public record SkillTrackerType<T extends SkillTracker>(ResourceLocation identifier, MapCodec<T> codec) {
+public record SkillTrackerType<T extends SkillTracker>(Identifier identifier, MapCodec<T> codec) {
 
     public static final Codec<SkillTracker> CODEC = CoreRegistries.SKILL_TRIGGER_TYPE.byNameCodec().dispatch(SkillTracker::getType, SkillTrackerType::codec);
 

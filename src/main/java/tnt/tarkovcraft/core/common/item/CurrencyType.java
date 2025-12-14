@@ -1,12 +1,12 @@
 package tnt.tarkovcraft.core.common.item;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Objects;
 
-public record CurrencyType(ResourceLocation identifier, int stackLimit, int displayColor) {
+public record CurrencyType(Identifier identifier, int stackLimit, int displayColor) {
 
-    public CurrencyType(ResourceLocation identifier, int stackLimit) {
+    public CurrencyType(Identifier identifier, int stackLimit) {
         this(identifier, stackLimit, 0xFF00DD00);
     }
 

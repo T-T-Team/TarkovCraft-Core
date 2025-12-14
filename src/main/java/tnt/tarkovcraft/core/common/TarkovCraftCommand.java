@@ -6,7 +6,6 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -16,6 +15,7 @@ import net.minecraft.commands.arguments.TimeArgument;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.server.command.EnumArgument;
@@ -44,7 +44,7 @@ public final class TarkovCraftCommand {
                 Commands.literal("tarkovcraft")
                         .then(
                                 Commands.literal("notification")
-                                        .requires(src -> src.hasPermission(2))
+                                        .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                                         .then(
                                                 Commands.argument("target", EntityArgument.players())
                                                         .then(
@@ -62,7 +62,7 @@ public final class TarkovCraftCommand {
                         )
                         .then(
                                 Commands.literal("attribute")
-                                        .requires(src -> src.hasPermission(2))
+                                        .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                                         .then(
                                                 Commands.argument("attributeId", ResourceArgument.resource(context, CoreRegistries.Keys.ATTRIBUTE))
                                                         .executes(ctx -> getAttributeInfo(ctx, null, false))
@@ -89,7 +89,7 @@ public final class TarkovCraftCommand {
                         )
                         .then(
                                 Commands.literal("skill")
-                                        .requires(src -> src.hasPermission(2))
+                                        .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                                         .then(
                                                 Commands.argument("skillId", ResourceArgument.resource(context, CoreRegistries.DatapackKeys.SKILL_DEFINITION))
                                                         .then(
@@ -120,7 +120,7 @@ public final class TarkovCraftCommand {
                         )
                         .then(
                                 Commands.literal("stat")
-                                        .requires(src -> src.hasPermission(2))
+                                        .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                                         .then(
                                                 Commands.argument("statId", ResourceArgument.resource(context, CoreRegistries.Keys.STATISTICS))
                                                         .then(

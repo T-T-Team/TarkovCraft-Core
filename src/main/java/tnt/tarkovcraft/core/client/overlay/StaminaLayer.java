@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.client.gui.GuiLayer;
@@ -19,7 +19,7 @@ import tnt.tarkovcraft.core.compatibility.Component;
 
 public class StaminaLayer implements GuiLayer {
 
-    public static final ResourceLocation LAYER_ID = TarkovCraftCore.createResourceLocation("layer/stamina");
+    public static final Identifier LAYER_ID = TarkovCraftCore.createIdentifier("layer/stamina");
     public static final int BAR_WIDTH = 80;
 
     @Override

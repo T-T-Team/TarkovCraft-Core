@@ -7,7 +7,7 @@ import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
@@ -26,7 +26,7 @@ public final class Notification {
     public static final StreamCodec<RegistryFriendlyByteBuf, Notification> STREAM_CODEC = StreamCodec.composite(
             NeoForgeStreamCodecs.enumCodec(Severity.class), Notification::getSeverity,
             ComponentSerialization.STREAM_CODEC, Notification::getLabel,
-            ResourceLocation.STREAM_CODEC, Notification::getIcon,
+            Identifier.STREAM_CODEC, Notification::getIcon,
             ByteBufCodecs.INT, Notification::getLifetime,
             Notification::new
     );
@@ -34,9 +34,9 @@ public final class Notification {
     private final Severity notificationSeverity;
     private final Component label;
     private int lifetime;
-    private ResourceLocation customIcon;
+    private Identifier customIcon;
 
-    private Notification(Severity notificationSeverity, Component label, ResourceLocation icon, int lifetime) {
+    private Notification(Severity notificationSeverity, Component label, Identifier icon, int lifetime) {
         this.notificationSeverity = Objects.requireNonNull(notificationSeverity);
         this.label = Objects.requireNonNull(label);
         this.customIcon = icon;
@@ -88,11 +88,11 @@ public final class Notification {
         return lifetime;
     }
 
-    public void setIcon(ResourceLocation customIcon) {
+    public void setIcon(Identifier customIcon) {
         this.customIcon = customIcon;
     }
 
-    public ResourceLocation getIcon() {
+    public Identifier getIcon() {
         return this.customIcon != null ? this.customIcon : this.notificationSeverity.getIcon();
     }
 
@@ -105,14 +105,14 @@ public final class Notification {
         ERROR(style -> style.applyFormat(ChatFormatting.RED));
 
         private final UnaryOperator<Style> labelStylization;
-        private final ResourceLocation icon;
+        private final Identifier icon;
 
         Severity(UnaryOperator<Style> labelStylization) {
             this.labelStylization = labelStylization;
-            this.icon = TarkovCraftCore.createResourceLocation("textures/icons/notification/" + this.name().toLowerCase() + ".png");
+            this.icon = TarkovCraftCore.createIdentifier("textures/icons/notification/" + this.name().toLowerCase() + ".png");
         }
 
-        public ResourceLocation getIcon() {
+        public Identifier getIcon() {
             return icon;
         }
 

@@ -4,7 +4,8 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.client.gui.GuiLayer;
 import tnt.tarkovcraft.core.TarkovCraftCore;
@@ -19,7 +20,7 @@ import java.util.Locale;
 
 public class DebugLayer implements GuiLayer {
 
-    public static final ResourceLocation LAYER_ID = TarkovCraftCore.createResourceLocation("layer/debug");
+    public static final Identifier LAYER_ID = TarkovCraftCore.createIdentifier("layer/debug");
     private int line;
 
     @Override

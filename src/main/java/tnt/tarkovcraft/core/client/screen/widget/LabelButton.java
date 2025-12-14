@@ -45,7 +45,7 @@ public class LabelButton extends Button {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float renderTick) {
+    protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float renderTick) {
         Font font = Minecraft.getInstance().font;
         int background = this.isActive() ? this.isHoveredOrFocused() ? this.backgroundHoverColor : this.backgroundColor : this.backgroundDisabledColor;
         if (RenderUtils.isVisibleColor(background)) {

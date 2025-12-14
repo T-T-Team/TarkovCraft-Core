@@ -3,7 +3,7 @@ package tnt.tarkovcraft.core.client.screen.renderable;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import tnt.tarkovcraft.core.client.IconWithLabel;
 import tnt.tarkovcraft.core.util.HorizontalAlignment;
 import tnt.tarkovcraft.core.util.helper.RenderUtils;
@@ -45,7 +45,7 @@ public class IconWithLabelRenderable extends AbstractRenderable {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        ResourceLocation icon = this.iconWithLabel.icon();
+        Identifier icon = this.iconWithLabel.icon();
         Component label = this.iconWithLabel.getLabel();
         int itemWidth = this.font.width(label);
         if (icon != null) {

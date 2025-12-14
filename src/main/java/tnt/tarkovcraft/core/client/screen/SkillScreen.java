@@ -11,7 +11,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -81,7 +81,7 @@ public class SkillScreen extends CharacterSubScreen {
         private final Player player;
         private final Font font;
         private final Skill skill;
-        private final ResourceLocation skillIcon;
+        private final Identifier skillIcon;
         private List<Component> description;
 
         public SkillWidget(int x, int y, int width, int height, Font font, Skill skill, Player player) {

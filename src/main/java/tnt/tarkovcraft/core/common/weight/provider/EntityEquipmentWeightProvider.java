@@ -1,6 +1,6 @@
 package tnt.tarkovcraft.core.common.weight.provider;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class EntityEquipmentWeightProvider implements WeightProvider {
 
-    public static final ResourceLocation IDENTIFIER = TarkovCraftCore.createResourceLocation("weight/entity/equipment");
+    public static final Identifier IDENTIFIER = TarkovCraftCore.createIdentifier("weight/entity/equipment");
     public static final Set<EquipmentSlot> EQUIPMENT_SLOTS = EnumSet.of(
             EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD,
             EquipmentSlot.BODY, EquipmentSlot.SADDLE,

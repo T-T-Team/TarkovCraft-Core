@@ -16,7 +16,7 @@ public abstract class LayeredScreen extends NotificationScreen {
     @Override
     protected void init() {
         super.init();
-        this.parent.init(this.minecraft, this.width, this.height);
+        this.parent.init(this.width, this.height);
     }
 
     @Override

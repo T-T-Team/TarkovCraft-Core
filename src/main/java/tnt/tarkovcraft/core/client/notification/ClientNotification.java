@@ -1,7 +1,7 @@
 package tnt.tarkovcraft.core.client.notification;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import tnt.tarkovcraft.core.common.Notification;
 
 public class ClientNotification {
@@ -24,7 +24,7 @@ public class ClientNotification {
         return this.label;
     }
 
-    public ResourceLocation icon() {
+    public Identifier icon() {
         return this.notification.getIcon();
     }
 

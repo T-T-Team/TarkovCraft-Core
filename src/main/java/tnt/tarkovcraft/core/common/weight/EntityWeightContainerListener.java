@@ -1,6 +1,6 @@
 package tnt.tarkovcraft.core.common.weight;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerListener;
@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public final class EntityWeightContainerListener implements ContainerListener {
 
-    public static final ResourceLocation IDENTIFIER = TarkovCraftCore.createResourceLocation("inventory_listener/weight");
+    public static final Identifier IDENTIFIER = TarkovCraftCore.createIdentifier("inventory_listener/weight");
     private final LivingEntity entity;
 
     public EntityWeightContainerListener(LivingEntity entity) {

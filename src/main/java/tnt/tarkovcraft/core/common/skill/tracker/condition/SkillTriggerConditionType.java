@@ -2,12 +2,12 @@ package tnt.tarkovcraft.core.common.skill.tracker.condition;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 
 import java.util.Objects;
 
-public record SkillTriggerConditionType<C extends SkillTriggerCondition>(ResourceLocation identifier, MapCodec<C> codec) {
+public record SkillTriggerConditionType<C extends SkillTriggerCondition>(Identifier identifier, MapCodec<C> codec) {
 
     public static final Codec<SkillTriggerCondition> INSTANCE_CODEC = CoreRegistries.SKILL_TRIGGER_CONDITION_TYPE.byNameCodec().dispatch(SkillTriggerCondition::getType, SkillTriggerConditionType::codec);
 

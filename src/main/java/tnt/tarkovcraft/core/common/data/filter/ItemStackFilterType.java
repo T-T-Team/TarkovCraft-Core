@@ -2,12 +2,12 @@ package tnt.tarkovcraft.core.common.data.filter;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 
 import java.util.Objects;
 
-public record ItemStackFilterType<F extends ItemStackFilter>(ResourceLocation identifier, MapCodec<F> codec) {
+public record ItemStackFilterType<F extends ItemStackFilter>(Identifier identifier, MapCodec<F> codec) {
 
     public static final Codec<ItemStackFilter> ID_CODEC = CoreRegistries.ITEMSTACK_FILTER.byNameCodec().dispatch(ItemStackFilter::getType, ItemStackFilterType::codec);
 

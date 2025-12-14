@@ -3,14 +3,14 @@ package tnt.tarkovcraft.core.common.data.number;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import tnt.tarkovcraft.core.common.data.duration.Duration;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 
 import java.util.Objects;
 import java.util.function.Function;
 
-public record NumberProviderType<N extends NumberProvider>(ResourceLocation identifier, MapCodec<N> codec) {
+public record NumberProviderType<N extends NumberProvider>(Identifier identifier, MapCodec<N> codec) {
 
     public static final Codec<NumberProvider> ID_CODEC = CoreRegistries.NUMBER_PROVIDER.byNameCodec().dispatch(NumberProvider::getType, NumberProviderType::codec);
 

@@ -1,6 +1,6 @@
 package tnt.tarkovcraft.core.common.skill.tracker;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
-public record SkillTriggerEvent(ResourceLocation identifier) {
+public record SkillTriggerEvent(Identifier identifier) {
 }

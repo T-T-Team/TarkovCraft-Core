@@ -33,7 +33,7 @@ import static tnt.tarkovcraft.core.util.helper.TextHelper.createKeybindName;
 @Mod(value = TarkovCraftCore.MOD_ID, dist = Dist.CLIENT)
 public final class TarkovCraftCoreClient {
 
-    public static final KeyMapping.Category KEY_MAPPING_CATEGORY = new KeyMapping.Category(TarkovCraftCore.createResourceLocation("keymap"));
+    public static final KeyMapping.Category KEY_MAPPING_CATEGORY = new KeyMapping.Category(TarkovCraftCore.createIdentifier("keymap"));
     public static final KeyMapping KEY_CHARACTER = new KeyMapping(
             createKeybindName(TarkovCraftCore.MOD_ID, "character"),
             KeyConflictContext.IN_GAME,

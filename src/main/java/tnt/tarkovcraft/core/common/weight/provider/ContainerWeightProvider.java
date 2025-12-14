@@ -1,7 +1,7 @@
 package tnt.tarkovcraft.core.common.weight.provider;
 
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 import tnt.tarkovcraft.core.TarkovCraftCore;
@@ -10,7 +10,7 @@ import tnt.tarkovcraft.core.common.weight.WeightProvider;
 
 public class ContainerWeightProvider implements WeightProvider {
 
-    public static final ResourceLocation IDENTIFIER = TarkovCraftCore.createResourceLocation("weight/item/container");
+    public static final Identifier IDENTIFIER = TarkovCraftCore.createIdentifier("weight/item/container");
 
     @Override
     public int getWeight(WeightContext context) {

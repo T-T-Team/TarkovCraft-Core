@@ -1,6 +1,6 @@
 package tnt.tarkovcraft.core.common.statistic;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
-public record Statistic(ResourceLocation identifier) {
+public record Statistic(Identifier identifier) {
 }

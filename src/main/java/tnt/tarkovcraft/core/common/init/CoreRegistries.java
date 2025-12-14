@@ -37,22 +37,22 @@ public final class CoreRegistries {
 
     public static final class Keys {
 
-        public static final ResourceKey<Registry<Attribute>> ATTRIBUTE = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("attribute/attribute"));
-        public static final ResourceKey<Registry<AttributeModifierType<?>>> ATTRIBUTE_MODIFIER = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("attribute/attribute_modifier"));
-        public static final ResourceKey<Registry<ItemStackFilterType<?>>> ITEMSTACK_FILTER = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("util/itemstack_filter"));
-        public static final ResourceKey<Registry<NumberProviderType<?>>> NUMBER_PROVIDER = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("util/number_provider"));
-        public static final ResourceKey<Registry<Statistic>> STATISTICS = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("util/statistics"));
-        public static final ResourceKey<Registry<SkillTriggerEvent>> SKILL_TRIGGER_EVENT = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/trigger_event"));
-        public static final ResourceKey<Registry<SkillTrackerType<?>>> SKILL_TRIGGER_TYPE = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/trigger_type"));
-        public static final ResourceKey<Registry<SkillTriggerConditionType<?>>> SKILL_TRIGGER_CONDITION_TYPE = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/trigger_condition"));
-        public static final ResourceKey<Registry<SkillStatConditionType<?>>> SKILL_STAT_CONDITION_TYPE = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/stat_condition"));
-        public static final ResourceKey<Registry<SkillStatType<?>>> SKILL_STAT = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/stat"));
-        public static final ResourceKey<Registry<CurrencyType>> CURRENCY = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("currency"));
+        public static final ResourceKey<Registry<Attribute>> ATTRIBUTE = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("attribute/attribute"));
+        public static final ResourceKey<Registry<AttributeModifierType<?>>> ATTRIBUTE_MODIFIER = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("attribute/attribute_modifier"));
+        public static final ResourceKey<Registry<ItemStackFilterType<?>>> ITEMSTACK_FILTER = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("util/itemstack_filter"));
+        public static final ResourceKey<Registry<NumberProviderType<?>>> NUMBER_PROVIDER = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("util/number_provider"));
+        public static final ResourceKey<Registry<Statistic>> STATISTICS = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("util/statistics"));
+        public static final ResourceKey<Registry<SkillTriggerEvent>> SKILL_TRIGGER_EVENT = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("skill/trigger_event"));
+        public static final ResourceKey<Registry<SkillTrackerType<?>>> SKILL_TRIGGER_TYPE = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("skill/trigger_type"));
+        public static final ResourceKey<Registry<SkillTriggerConditionType<?>>> SKILL_TRIGGER_CONDITION_TYPE = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("skill/trigger_condition"));
+        public static final ResourceKey<Registry<SkillStatConditionType<?>>> SKILL_STAT_CONDITION_TYPE = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("skill/stat_condition"));
+        public static final ResourceKey<Registry<SkillStatType<?>>> SKILL_STAT = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("skill/stat"));
+        public static final ResourceKey<Registry<CurrencyType>> CURRENCY = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("currency"));
     }
 
     public static final class DatapackKeys {
 
-        public static final ResourceKey<Registry<SkillDefinition>> SKILL_DEFINITION = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill"));
-        public static final ResourceKey<Registry<DisplayStatistic>> DISPLAY_STATISTIC = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("statistic"));
+        public static final ResourceKey<Registry<SkillDefinition>> SKILL_DEFINITION = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("skill"));
+        public static final ResourceKey<Registry<DisplayStatistic>> DISPLAY_STATISTIC = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("statistic"));
     }
 }

@@ -6,19 +6,19 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import tnt.tarkovcraft.core.client.screen.ColorPalette;
 import tnt.tarkovcraft.core.client.screen.listener.SimpleClickListener;
 
 public class IconButton extends AbstractButton {
 
-    private ResourceLocation icon;
+    private Identifier icon;
     private final SimpleClickListener onClick;
     private Integer hoverBackground = ColorPalette.BG_HOVER_WEAK;
     private int iconOffset = 0;
     private int tint = -1;
 
-    public IconButton(int x, int y, int width, int height, ResourceLocation icon, SimpleClickListener onClick) {
+    public IconButton(int x, int y, int width, int height, Identifier icon, SimpleClickListener onClick) {
         super(x, y, width, height, CommonComponents.EMPTY);
         this.icon = icon;
         this.onClick = onClick;
@@ -32,7 +32,7 @@ public class IconButton extends AbstractButton {
         this.hoverBackground = hoverBackground;
     }
 
-    public void setIcon(ResourceLocation icon) {
+    public void setIcon(Identifier icon) {
         this.icon = icon;
     }
 
@@ -45,7 +45,7 @@ public class IconButton extends AbstractButton {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float renderTick) {
+    protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float renderTick) {
         if (this.isHoveredOrFocused() && this.hoverBackground != null) {
             graphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), this.hoverBackground);
         }
