@@ -14,6 +14,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.*;
+import net.neoforged.neoforge.client.pipeline.RegisterPipelineModifiersEvent;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
 import org.lwjgl.glfw.GLFW;
@@ -26,6 +27,8 @@ import tnt.tarkovcraft.core.client.overlay.DebugLayer;
 import tnt.tarkovcraft.core.client.overlay.OnScreenHintLayer;
 import tnt.tarkovcraft.core.client.overlay.StaminaLayer;
 import tnt.tarkovcraft.core.client.screen.navigation.CoreNavigators;
+import tnt.tarkovcraft.core.client.shader.DynamicTransformsPipelineModifier;
+import tnt.tarkovcraft.core.client.shader.PostEffectShaderProgramProcessor;
 import tnt.tarkovcraft.core.common.item.CurrencyItem;
 
 import static tnt.tarkovcraft.core.util.helper.TextHelper.createKeybindName;
@@ -53,6 +56,7 @@ public final class TarkovCraftCoreClient {
         modEventBus.addListener(this::registerKeyBindings);
         modEventBus.addListener(this::registerCustomGuiLayers);
         modEventBus.addListener(this::registerItemDecorators);
+        modEventBus.addListener(this::registerPipelineModifiers);
 
         NeoForge.EVENT_BUS.addListener(this::onKeyboardInput);
         NeoForge.EVENT_BUS.addListener(this::clientPostTick);
@@ -68,6 +72,7 @@ public final class TarkovCraftCoreClient {
 
     private void setup(FMLClientSetupEvent event) {
         this.dispatchParallelRegistryEvents();
+        PostEffectShaderProgramProcessor.INSTANCE.init();
     }
 
     private void registerKeyBindings(RegisterKeyMappingsEvent event) {
@@ -103,9 +108,13 @@ public final class TarkovCraftCoreClient {
         if (screen == null) {
             NotificationChannel.MAIN.update();
         }
+        // on-screen guide tick
         if (minecraft.level != null) {
             this.hintUiLayer.tick();
         }
+
+        // shader program tick
+        PostEffectShaderProgramProcessor.INSTANCE.tick();
     }
 
     private void clientLoggedOut(ClientPlayerNetworkEvent.LoggingOut event) {
@@ -117,5 +126,9 @@ public final class TarkovCraftCoreClient {
         BuiltInRegistries.ITEM.stream()
                 .filter(item -> item instanceof CurrencyItem)
                 .forEach(item -> event.register(item, decorator));
+    }
+
+    private void registerPipelineModifiers(RegisterPipelineModifiersEvent event) {
+        event.register(DynamicTransformsPipelineModifier.KEY, new DynamicTransformsPipelineModifier());
     }
 }
