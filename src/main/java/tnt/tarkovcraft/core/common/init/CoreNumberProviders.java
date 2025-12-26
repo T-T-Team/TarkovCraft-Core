@@ -14,5 +14,4 @@ public final class CoreNumberProviders {
     public static final Supplier<NumberProviderType<RangedNumberProvider>> RANGED = REGISTRY.register("ranged", key -> new NumberProviderType<>(key, RangedNumberProvider.CODEC));
     public static final Supplier<NumberProviderType<DurationNumberProvider>> DURATION = REGISTRY.register("duration", key -> new NumberProviderType<>(key, DurationNumberProvider.CODEC));
     public static final Supplier<NumberProviderType<ConfigurationNumberProvider>> CONFIG = REGISTRY.register("config", key -> new NumberProviderType<>(key, ConfigurationNumberProvider.CODEC));
-    public static final Supplier<NumberProviderType<OperandNumberProvider>> OPERAND = REGISTRY.register("operand", key -> new NumberProviderType<>(key, OperandNumberProvider.CODEC));
 }

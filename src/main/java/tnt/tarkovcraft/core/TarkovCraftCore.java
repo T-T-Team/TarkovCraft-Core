@@ -50,7 +50,6 @@ public final class TarkovCraftCore {
         // Deferred registries
         CoreAttributes.REGISTRY.register(modEventBus);
         CoreAttributeModifiers.REGISTRY.register(modEventBus);
-        CoreItemStackFilters.REGISTRY.register(modEventBus);
         CoreNumberProviders.REGISTRY.register(modEventBus);
         CoreDataAttachments.REGISTRY.register(modEventBus);
         CoreItemDataComponents.REGISTRY.register(modEventBus);
@@ -74,7 +73,6 @@ public final class TarkovCraftCore {
         // Utils
         event.register(CoreRegistries.ATTRIBUTE);
         event.register(CoreRegistries.ATTRIBUTE_MODIFIER);
-        event.register(CoreRegistries.ITEMSTACK_FILTER);
         event.register(CoreRegistries.NUMBER_PROVIDER);
         event.register(CoreRegistries.STATISTICS);
         event.register(CoreRegistries.CURRENCY);
