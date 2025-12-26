@@ -6,7 +6,6 @@ import net.neoforged.neoforge.registries.RegistryBuilder;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.attribute.Attribute;
 import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifierType;
-import tnt.tarkovcraft.core.common.data.filter.ItemStackFilterType;
 import tnt.tarkovcraft.core.common.data.number.NumberProviderType;
 import tnt.tarkovcraft.core.common.item.CurrencyType;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
@@ -23,7 +22,6 @@ public final class CoreRegistries {
     // Global utilities
     public static final Registry<Attribute> ATTRIBUTE = new RegistryBuilder<>(Keys.ATTRIBUTE).create();
     public static final Registry<AttributeModifierType<?>> ATTRIBUTE_MODIFIER = new RegistryBuilder<>(Keys.ATTRIBUTE_MODIFIER).create();
-    public static final Registry<ItemStackFilterType<?>> ITEMSTACK_FILTER = new RegistryBuilder<>(Keys.ITEMSTACK_FILTER).create();
     public static final Registry<NumberProviderType<?>> NUMBER_PROVIDER = new RegistryBuilder<>(Keys.NUMBER_PROVIDER).create();
     public static final Registry<Statistic> STATISTICS = new RegistryBuilder<>(Keys.STATISTICS).sync(true).create();
     public static final Registry<CurrencyType> CURRENCY = new RegistryBuilder<>(Keys.CURRENCY).sync(true).create();
@@ -39,7 +37,6 @@ public final class CoreRegistries {
 
         public static final ResourceKey<Registry<Attribute>> ATTRIBUTE = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("attribute/attribute"));
         public static final ResourceKey<Registry<AttributeModifierType<?>>> ATTRIBUTE_MODIFIER = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("attribute/attribute_modifier"));
-        public static final ResourceKey<Registry<ItemStackFilterType<?>>> ITEMSTACK_FILTER = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("util/itemstack_filter"));
         public static final ResourceKey<Registry<NumberProviderType<?>>> NUMBER_PROVIDER = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("util/number_provider"));
         public static final ResourceKey<Registry<Statistic>> STATISTICS = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("util/statistics"));
         public static final ResourceKey<Registry<SkillTriggerEvent>> SKILL_TRIGGER_EVENT = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/trigger_event"));
