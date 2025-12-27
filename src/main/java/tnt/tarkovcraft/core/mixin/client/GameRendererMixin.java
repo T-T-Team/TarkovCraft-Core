@@ -1,6 +1,7 @@
 package tnt.tarkovcraft.core.mixin.client;
 
 import com.mojang.blaze3d.resource.CrossFrameResourcePool;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import org.spongepowered.asm.mixin.Final;
@@ -26,7 +27,7 @@ public abstract class GameRendererMixin {
             method = "render",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;doEntityOutline()V", shift = At.Shift.AFTER)
     )
-    private void tarkovCraftCore$render(CallbackInfo ci) {
-        PostEffectShaderProgramProcessor.INSTANCE.render(this.minecraft, this.resourcePool);
+    private void tarkovCraftCore$render(DeltaTracker deltaTracker, boolean renderLevel, CallbackInfo ci) {
+        PostEffectShaderProgramProcessor.INSTANCE.render(this.minecraft, this.resourcePool, deltaTracker);
     }
 }

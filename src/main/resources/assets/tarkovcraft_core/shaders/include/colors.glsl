@@ -1,4 +1,4 @@
-#version 150
+#version 330
 
 vec3 rgb2hsv(vec3 rgb) {
     float maxc = max(rgb.r, max(rgb.g, rgb.b));

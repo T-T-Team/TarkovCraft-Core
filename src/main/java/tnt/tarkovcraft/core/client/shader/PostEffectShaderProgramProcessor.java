@@ -3,6 +3,7 @@ package tnt.tarkovcraft.core.client.shader;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.resource.CrossFrameResourcePool;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelTargetBundle;
 import net.minecraft.client.renderer.PostChain;
@@ -41,10 +42,10 @@ public final class PostEffectShaderProgramProcessor {
         this.registeredPrograms.forEach(program -> program.tickProgram(client, entity));
     }
 
-    public void render(Minecraft client, CrossFrameResourcePool resourcePool) {
+    public void render(Minecraft client, CrossFrameResourcePool resourcePool, DeltaTracker deltaTracker) {
         for (PostEffectShaderProgram program : this.registeredPrograms) {
             if (program.active()) {
-                this.processSingleShader(program, client, resourcePool);
+                this.processSingleShader(program, client, resourcePool, deltaTracker);
             }
         }
     }
@@ -53,11 +54,12 @@ public final class PostEffectShaderProgramProcessor {
         return this.activeDynamicUniformBuffer;
     }
 
-    private void processSingleShader(PostEffectShaderProgram program, Minecraft client, CrossFrameResourcePool resourcePool) {
+    private void processSingleShader(PostEffectShaderProgram program, Minecraft client, CrossFrameResourcePool resourcePool, DeltaTracker deltaTracker) {
         Identifier postChainId = program.postChainId();
         PostChain postChain = client.getShaderManager().getPostChain(postChainId, LevelTargetBundle.MAIN_TARGETS);
         if (postChain != null) {
             RenderSystem.pushPipelineModifier(DynamicTransformsPipelineModifier.KEY);
+            program.onRender(deltaTracker);
             this.activeDynamicUniformBuffer = program.getDynamicUniformBuffer();
             postChain.process(client.getMainRenderTarget(), resourcePool);
             RenderSystem.popPipelineModifier();
