@@ -31,7 +31,7 @@ import tnt.tarkovcraft.core.common.skill.*;
 import tnt.tarkovcraft.core.common.statistic.Statistic;
 import tnt.tarkovcraft.core.common.statistic.StatisticTracker;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 import java.util.UUID;
 

@@ -9,9 +9,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2f;
 import org.joml.Vector2f;
+import org.jspecify.annotations.Nullable;
 import tnt.tarkovcraft.core.client.screen.state.ColoredRectangleRenderState;
 import tnt.tarkovcraft.core.util.ScreenPositionCalculator;
 

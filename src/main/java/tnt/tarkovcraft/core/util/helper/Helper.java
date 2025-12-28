@@ -1,14 +1,14 @@
 package tnt.tarkovcraft.core.util.helper;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 import java.util.Objects;
 
 public final class Helper {
 
-    public static <R> R orDefault(@Nullable R first, @NotNull R second) {
+    public static <R> R orDefault(@Nullable R first, @NonNull R second) {
         return first == null ? Objects.requireNonNull(second) : first;
     }
 

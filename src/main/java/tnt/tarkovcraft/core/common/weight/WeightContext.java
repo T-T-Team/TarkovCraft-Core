@@ -3,7 +3,7 @@ package tnt.tarkovcraft.core.common.weight;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.function.ToIntFunction;
 
 public record WeightContext(WeightProvider.WeightSource source, int baseWeight, ItemStack itemStack, @Nullable LivingEntity entity, ToIntFunction<ItemStack> itemWeight) {
