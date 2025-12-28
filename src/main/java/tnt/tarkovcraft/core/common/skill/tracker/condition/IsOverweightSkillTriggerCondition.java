@@ -8,7 +8,7 @@ import tnt.tarkovcraft.core.common.init.CoreSkillTriggerConditions;
 import tnt.tarkovcraft.core.common.skill.SkillContext;
 import tnt.tarkovcraft.core.common.weight.WeightSystem;
 
-public class IsOverweightSkillTriggerCondition implements SkillTriggerCondition {
+public final class IsOverweightSkillTriggerCondition implements SkillTriggerCondition {
 
     private static final Component DESCRIPTION = Component.translatable("skill.condition.overweight");
     private static final IsOverweightSkillTriggerCondition INSTANCE = new IsOverweightSkillTriggerCondition();

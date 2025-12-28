@@ -14,7 +14,7 @@ public record SkillStatDisplayInformation(Component name, String descriptionKey,
 
     public static final Codec<SkillStatDisplayInformation> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ComponentSerialization.CODEC.fieldOf("name").forGetter(SkillStatDisplayInformation::name),
-            Codec.STRING.fieldOf("descriptionKey").forGetter(SkillStatDisplayInformation::descriptionKey),
+            Codec.STRING.fieldOf("description_key").forGetter(SkillStatDisplayInformation::descriptionKey),
             Identifier.CODEC.fieldOf("icon").forGetter(SkillStatDisplayInformation::icon)
     ).apply(instance, SkillStatDisplayInformation::new));
 

@@ -15,10 +15,10 @@ public record UnitFormat(int decimalPlaces, double multiplier, Component suffix,
     public static final UnitFormat IDENTITY = new UnitFormat(0, 1.0, CommonComponents.EMPTY, RoundingMode.NORMAL);
     public static final UnitFormat PERCENT = new UnitFormat(2, 100.0, Component.literal("%"), RoundingMode.NORMAL);
     public static final Codec<UnitFormat> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.intRange(0, Integer.MAX_VALUE).optionalFieldOf("decimalPlaces", 2).forGetter(UnitFormat::decimalPlaces),
+            Codec.intRange(0, Integer.MAX_VALUE).optionalFieldOf("decimal_places", 2).forGetter(UnitFormat::decimalPlaces),
             Codec.DOUBLE.optionalFieldOf("multiplier", 1.0).forGetter(UnitFormat::multiplier),
             ComponentSerialization.CODEC.optionalFieldOf("suffix", CommonComponents.EMPTY).forGetter(UnitFormat::suffix),
-            Codecs.enumCodec(RoundingMode.class).optionalFieldOf("roundingMode", RoundingMode.NORMAL).forGetter(UnitFormat::roundingMode)
+            Codecs.enumCodec(RoundingMode.class).optionalFieldOf("rounding_mode", RoundingMode.NORMAL).forGetter(UnitFormat::roundingMode)
     ).apply(instance, UnitFormat::new));
 
     public String format(double value) {

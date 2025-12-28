@@ -9,17 +9,10 @@ import net.minecraft.network.chat.Component;
 import tnt.tarkovcraft.core.common.init.CoreSkillTriggerConditions;
 import tnt.tarkovcraft.core.common.skill.SkillContext;
 
-public class ConfigToggleSkillTriggerCondition implements SkillTriggerCondition {
+public record ConfigToggleSkillTriggerCondition(ConfigValueLocation location) implements SkillTriggerCondition {
 
-    public static final MapCodec<ConfigToggleSkillTriggerCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ConfigValueLocation.CODEC.fieldOf("location").forGetter(t -> t.location)
-    ).apply(instance, ConfigToggleSkillTriggerCondition::new));
-
-    private final ConfigValueLocation location;
-
-    public ConfigToggleSkillTriggerCondition(ConfigValueLocation location) {
-        this.location = location;
-    }
+    public static final MapCodec<ConfigToggleSkillTriggerCondition> CODEC = ConfigValueLocation.CODEC
+            .xmap(ConfigToggleSkillTriggerCondition::new, ConfigToggleSkillTriggerCondition::location).fieldOf("location");
 
     @Override
     public boolean isTriggerable(SkillContext context) {

@@ -3,16 +3,16 @@
     "translate": "skill.tarkovcraft_core.strength"
   },
   "leveling": {
-    "maxLevel": 100,
-    "baseExperience": 10,
-    "additionalExperience": 5.0,
-    "maxExperience": 150
+    "max_level": 100,
+    "base_exp": 10,
+    "additional_exp": 5.0,
+    "max_exp": 150
   },
   "memory": {
     "enabled": true,
-    "canLoseLevel": true,
-    "forgetAfter": "1d",
-    "forgetAmount": 5.0
+    "level_loss": true,
+    "forget_after": "1d",
+    "forget_amount": 5.0
   },
   "trackers": [
     {
@@ -41,7 +41,7 @@
         "name": {
           "translate": "skill.tarkovcraft_core.strength.bonus.weight_limit"
         },
-        "descriptionKey": "skill.tarkovcraft_core.strength.bonus.weight_limit.description",
+        "description_key": "skill.tarkovcraft_core.strength.bonus.weight_limit.description",
         "icon": "tarkovcraft_core:textures/icons/skill/bonus/weight_limit.png"
       },
       "conditions": [
@@ -54,9 +54,9 @@
         "type": "tarkovcraft_core:add_attribute_modifier",
         "attribute": "tarkovcraft_core:weight_limit",
         "id": "f464486b-5ab7-4d5e-8eb8-69fad40fb1f2",
-        "levelValue": 300,
-        "displayUnitFormat": {
-          "decimalPlaces": 1,
+        "per_level_value": 300,
+        "display_format": {
+          "decimal_places": 1,
           "multiplier": 0.001,
           "suffix": "kg"
         }
@@ -67,7 +67,7 @@
         "name": {
           "translate": "skill.tarkovcraft_core.strength.bonus.weight_effects"
         },
-        "descriptionKey": "skill.tarkovcraft_core.strength.bonus.weight_effects.description",
+        "description_key": "skill.tarkovcraft_core.strength.bonus.weight_effects.description",
         "icon": "tarkovcraft_core:textures/icons/skill/bonus/weight_effects.png"
       },
       "conditions": [
@@ -80,9 +80,9 @@
         "type": "tarkovcraft_core:add_attribute_modifier",
         "attribute": "tarkovcraft_core:weight_effect_factor",
         "id": "01220f79-2d9d-42c6-a74a-826f953a2c17",
-        "levelValue": -0.0025,
-        "displayUnitFormat": {
-          "decimalPlaces": 2,
+        "per_level_value": -0.0025,
+        "display_format": {
+          "decimal_places": 2,
           "multiplier": -100,
           "suffix": "%"
         }

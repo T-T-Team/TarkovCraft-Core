@@ -111,9 +111,9 @@ public final class SkillSystem {
         RegistryAccess access = server.registryAccess();
         Registry<SkillDefinition> registry = access.lookupOrThrow(CoreRegistries.DatapackKeys.SKILL_DEFINITION);
         registry.listElements().map(Holder.Reference::value)
-                .filter(SkillDefinition::isEnabled)
+                .filter(SkillDefinition::enabled)
                 .forEach(definition -> {
-                    for (SkillTrackerDefinition trackerDefinition : definition.getTrackers()) {
+                    for (SkillTrackerDefinition trackerDefinition : definition.trackers()) {
                         SkillTriggerEvent triggerEvent = trackerDefinition.event();
                         TRIGGER_CACHE.put(triggerEvent, definition);
                     }

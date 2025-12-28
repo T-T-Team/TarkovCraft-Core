@@ -4,7 +4,7 @@
   },
   "source": "tarkovcraft_core:longest_hit",
   "format": {
-    "decimalPlaces": 2,
+    "decimal_places": 2,
     "multiplier": 0.01,
     "suffix": {
       "translate": "distance.unit.meter.short"
