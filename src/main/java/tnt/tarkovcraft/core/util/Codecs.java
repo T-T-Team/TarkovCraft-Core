@@ -1,11 +1,9 @@
 package tnt.tarkovcraft.core.util;
 
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.*;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.StringRepresentable;
 
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -36,47 +34,6 @@ public final class Codecs {
     public static final Codec<Integer> NON_NEGATIVE_INT = Codec.intRange(0, Integer.MAX_VALUE);
     public static final Codec<Float> NON_NEGATIVE_FLOAT = Codec.floatRange(0.0F, Float.MAX_VALUE);
 
-    @Deprecated
-    public static <E extends Enum<E>> Codec<E> simpleEnumCodec(Class<E> type) {
-        return enumCodec(type, Function.identity());
-    }
-
-    @Deprecated
-    public static <E extends Enum<E>> Codec<E> enumCodec(Class<E> type) {
-        return enumCodec(type, str -> str.toUpperCase(Locale.ROOT));
-    }
-
-    @Deprecated
-    public static <E extends Enum<E>> Codec<E> enumCodec(Class<E> type, Function<String, String> inputOp) {
-        return Codec.STRING.comapFlatMap(str -> {
-            try {
-                return DataResult.success(Enum.valueOf(type, inputOp.apply(str)));
-            } catch (IllegalArgumentException e) {
-                return DataResult.error(() -> "Failed to parse enum value due to error " + e.getMessage());
-            }
-        }, Enum::name);
-    }
-
-    @Deprecated
-    public static <R, T> R serialize(DynamicOps<R> ops, Codec<T> codec, T data) {
-        DataResult<R> result = codec.encodeStart(ops, data);
-        return result.getOrThrow();
-    }
-
-    @Deprecated
-    public static <R, T> T deserialize(DynamicOps<R> ops, Codec<T> codec, R input) {
-        DataResult<T> result = codec.parse(ops, input);
-        return result.getOrThrow();
-    }
-
-    @Deprecated
-    public static <T> CompoundTag serializeNbtCompound(Codec<T> codec, T obj) {
-        DataResult<Tag> result = codec.encodeStart(NbtOps.INSTANCE, obj);
-        CompoundTag tag = new CompoundTag();
-        tag.put("data", result.getOrThrow());
-        return tag;
-    }
-
     public static <T> Codec<List<T>> list(Codec<T> elementCodec, int minCount, int maxCount) {
         return Codec.withAlternative(elementCodec.listOf(minCount, maxCount), elementCodec, Collections::singletonList);
     }
@@ -101,14 +58,8 @@ public final class Codecs {
         return set(elementCodec, LinkedHashSet::new);
     }
 
-    @Deprecated
-    public static <E extends Enum<E>> Codec<Set<E>> enumSet(Codec<E> enumCodec) {
-        return set(enumCodec, EnumSet::copyOf);
-    }
-
-    @Deprecated
-    public static <E extends Enum<E>> Codec<Set<E>> enumSet(Class<E> enumType) {
-        return enumSet(enumCodec(enumType));
+    public static <E extends Enum<E> & StringRepresentable> Codec<Set<E>> enumSet(Codec<E> codec) {
+        return set(codec, EnumSet::copyOf);
     }
 
     public static <T> Codec<Set<T>> set(Codec<T> codec, Function<List<T>, Set<T>> setProvider) {
@@ -129,27 +80,5 @@ public final class Codecs {
 
     public static <T, C extends Collection<T>> Codec<C> collection(Codec<T> codec, Function<List<T>, C> toCollection, Function<C, List<T>> fromCollection) {
         return collection(codec, 0, Integer.MAX_VALUE, toCollection, fromCollection);
-    }
-
-    @Deprecated
-    public static <T> T deserializeNbtCompound(Codec<T> codec, CompoundTag tag) {
-        Tag data = tag.get("data");
-        DataResult<T> result = codec.parse(NbtOps.INSTANCE, data);
-        return result.getOrThrow();
-    }
-
-    @Deprecated
-    public static <T> Codec<T> dynamicCodec(Encoder<T> encoder, Decoder<T> decoder) {
-        return new Codec<T>() {
-            @Override
-            public <T1> DataResult<Pair<T, T1>> decode(DynamicOps<T1> ops, T1 input) {
-                return decoder.decode(ops, input);
-            }
-
-            @Override
-            public <T1> DataResult<T1> encode(T input, DynamicOps<T1> ops, T1 prefix) {
-                return encoder.encode(input, ops, prefix);
-            }
-        };
     }
 }
