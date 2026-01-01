@@ -63,26 +63,6 @@ public abstract class DecalParticle extends TextureSheetParticle {
         return this.fadeOutStart > 0.0F ? ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT : ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
-    @Override
-    protected float getU0() {
-        return 0.0F;
-    }
-
-    @Override
-    protected float getU1() {
-        return 1.0F;
-    }
-
-    @Override
-    protected float getV0() {
-        return 0.0F;
-    }
-
-    @Override
-    protected float getV1() {
-        return 1.0F;
-    }
-
     protected void updateColor(float lifetimeLeft) {
 
     }
