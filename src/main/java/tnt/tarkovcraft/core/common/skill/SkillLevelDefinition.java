@@ -13,11 +13,11 @@ public final class SkillLevelDefinition {
 
     public static final SkillLevelDefinition DEFAULT = new SkillLevelDefinition(Either.right(100), Either.right(10.0F), Either.right(15.0F), Either.right((int) Short.MAX_VALUE), Either.right(Float.MAX_VALUE));
     public static final Codec<SkillLevelDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            NumberProviderType.complexCodecNoDuration(ExtraCodecs.POSITIVE_INT).optionalFieldOf("maxLevel", Either.left(DEFAULT.maxLevel)).forGetter(t -> Either.left(t.maxLevel)),
-            NumberProviderType.complexCodecNoDuration(Codecs.NON_NEGATIVE_FLOAT).optionalFieldOf("baseExperience", Either.left(DEFAULT.baseExperience)).forGetter(t -> Either.left(t.baseExperience)),
-            NumberProviderType.complexCodecNoDuration(Codecs.NON_NEGATIVE_FLOAT).optionalFieldOf("additionalExperience", Either.left(DEFAULT.additionalExperience)).forGetter(t -> Either.left(t.additionalExperience)),
-            NumberProviderType.complexCodecNoDuration(Codecs.NON_NEGATIVE_INT).optionalFieldOf("maxStack", Either.left(DEFAULT.maxStack)).forGetter(t -> Either.left(t.maxLevel)),
-            NumberProviderType.complexCodecNoDuration(Codecs.NON_NEGATIVE_FLOAT).optionalFieldOf("maxExperience", Either.left(DEFAULT.maxExperience)).forGetter(t -> Either.left(t.maxExperience))
+            NumberProviderType.complexCodecNoDuration(ExtraCodecs.POSITIVE_INT).optionalFieldOf("max_level", Either.left(DEFAULT.maxLevel)).forGetter(t -> Either.left(t.maxLevel)),
+            NumberProviderType.complexCodecNoDuration(Codecs.NON_NEGATIVE_FLOAT).optionalFieldOf("base_exp", Either.left(DEFAULT.baseExperience)).forGetter(t -> Either.left(t.baseExperience)),
+            NumberProviderType.complexCodecNoDuration(Codecs.NON_NEGATIVE_FLOAT).optionalFieldOf("additional_exp", Either.left(DEFAULT.additionalExperience)).forGetter(t -> Either.left(t.additionalExperience)),
+            NumberProviderType.complexCodecNoDuration(Codecs.NON_NEGATIVE_INT).optionalFieldOf("max_stack", Either.left(DEFAULT.maxStack)).forGetter(t -> Either.left(t.maxLevel)),
+            NumberProviderType.complexCodecNoDuration(Codecs.NON_NEGATIVE_FLOAT).optionalFieldOf("max_exp", Either.left(DEFAULT.maxExperience)).forGetter(t -> Either.left(t.maxExperience))
     ).apply(instance, SkillLevelDefinition::new));
 
     private final NumberProvider maxLevel;

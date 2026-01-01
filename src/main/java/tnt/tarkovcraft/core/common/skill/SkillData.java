@@ -58,7 +58,7 @@ public final class SkillData {
         float triggerAmount = instance.trigger(context);
         if (triggerAmount > 0) {
             EntityAttributeData attributes = triggerSource.getData(CoreDataAttachments.ENTITY_ATTRIBUTES);
-            float experience = triggerAmount * this.getGroupLevelMultiplier(attributes, definition.getGroupLevelingModifiers());
+            float experience = triggerAmount * this.getGroupLevelMultiplier(attributes, definition.groupLevelingModifiers());
             long gameTime = triggerSource.level().getGameTime();
             instance.updateMemory(gameTime, attributes, prevLevel -> this.onLevelChange(prevLevel, instance));
             this.addExperience(instance, experience);
@@ -84,7 +84,7 @@ public final class SkillData {
         for (Map.Entry<SkillDefinition, Skill> entry : this.skillMap.entrySet()) {
             SkillDefinition definition = entry.getKey();
             Skill instance = entry.getValue();
-            List<SkillStatDefinition> stats = definition.getStats();
+            List<SkillStatDefinition> stats = definition.stats();
             stats.forEach(statDef -> statDef.stat().clear(definition, instance, this.holder));
             applyStats(definition, instance);
         }
@@ -99,7 +99,7 @@ public final class SkillData {
     }
 
     private void applyStats(SkillDefinition definition, Skill skill) {
-        for (SkillStatDefinition statDefinition : definition.getStats()) {
+        for (SkillStatDefinition statDefinition : definition.stats()) {
             if (statDefinition.isAvailable(definition, skill, this.holder)) {
                 SkillStat stat = statDefinition.stat();
                 stat.apply(definition, skill, this.holder);
@@ -141,7 +141,7 @@ public final class SkillData {
             if (prevLevel < skill.getLevel()) {
                 Holder<SkillDefinition> definitionHolder = skill.getDefinition();
                 SkillDefinition definition = definitionHolder.value();
-                Notification notification = Notification.success(Component.translatable("label.tarkovcraft_core.skill.level_up", definition.getName(), skill.getLevel()));
+                Notification notification = Notification.success(Component.translatable("label.tarkovcraft_core.skill.level_up", definition.name(), skill.getLevel()));
                 notification.setIcon(SkillDefinition.getIcon(definitionHolder));
                 notification.send(player);
             }

@@ -67,7 +67,7 @@ public class SkillScreen extends CharacterSubScreen {
     private SkillWidget buildSkillWidget(Player player, Skill skill, int index) {
         SkillWidget widget = new SkillWidget(5, 5 + index * 40, this.width - 15, 35, this.font, skill, player, this);
         SkillDefinition definition = skill.getDefinition().value();
-        Collection<SkillTrackerDefinition> trackers = definition.getTrackers();
+        Collection<SkillTrackerDefinition> trackers = definition.trackers();
         List<Component> tooltip = new ArrayList<>();
         tooltip.add(Component.translatable("tooltip.tarkovcraft_core.skill.skill_info").withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
         trackers.stream().flatMap(def -> def.getInfoComponents().stream()).forEach(tooltip::add);
@@ -90,7 +90,7 @@ public class SkillScreen extends CharacterSubScreen {
             this.font = font;
             this.skill = skill;
             this.player = player;
-            MutableComponent title = skill.getDefinition().value().getName().copy();
+            MutableComponent title = skill.getDefinition().value().name().copy();
             this.setMessage(title.withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE));
             this.skillIcon = SkillDefinition.getIcon(skill.getDefinition());
         }
@@ -123,7 +123,7 @@ public class SkillScreen extends CharacterSubScreen {
             // Badges + badge hover
             int index = 0;
             SkillDefinition definition = this.skill.getDefinition().value();
-            for (SkillStatDefinition statDefinition : definition.getStats()) {
+            for (SkillStatDefinition statDefinition : definition.stats()) {
                 if (!statDefinition.isAvailable(definition, this.skill, this.player))
                     continue;
                 SkillStatDisplayInformation displayInfo = statDefinition.display();

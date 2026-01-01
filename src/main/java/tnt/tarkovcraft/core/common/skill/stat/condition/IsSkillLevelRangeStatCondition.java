@@ -12,19 +12,15 @@ import tnt.tarkovcraft.core.common.init.CoreSkillStatConditions;
 import tnt.tarkovcraft.core.common.skill.Skill;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 
-public class IsSkillLevelRangeStatCondition implements SkillStatCondition {
+public record IsSkillLevelRangeStatCondition(NumberProvider min, NumberProvider max) implements SkillStatCondition {
 
     public static final MapCodec<IsSkillLevelRangeStatCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             NumberProviderType.complexCodecNoDuration(ExtraCodecs.POSITIVE_INT).optionalFieldOf("min", Either.left(ConstantNumberProvider.ZERO)).forGetter(t -> Either.left(t.min)),
             NumberProviderType.complexCodecNoDuration(ExtraCodecs.POSITIVE_INT).optionalFieldOf("max", Either.left(ConstantNumberProvider.MAX_INT)).forGetter(t -> Either.left(t.max))
     ).apply(instance, IsSkillLevelRangeStatCondition::new));
 
-    private final NumberProvider min;
-    private final NumberProvider max;
-
     public IsSkillLevelRangeStatCondition(Either<NumberProvider, Integer> min, Either<NumberProvider, Integer> max) {
-        this.min = NumberProviderType.resolveNoDuration(min);
-        this.max = NumberProviderType.resolveNoDuration(max);
+        this(NumberProviderType.resolveNoDuration(min), NumberProviderType.resolveNoDuration(max));
     }
 
     @Override

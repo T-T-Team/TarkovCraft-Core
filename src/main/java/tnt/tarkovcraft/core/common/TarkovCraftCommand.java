@@ -226,7 +226,7 @@ public final class TarkovCraftCommand {
         Entity target = EntityArgument.getEntity(ctx, "target");
         SkillDefinition skillDefinition = ResourceArgument.getResource(ctx, "skillId", CoreRegistries.DatapackKeys.SKILL_DEFINITION).value();
         int level = IntegerArgumentType.getInteger(ctx, "levelValue");
-        int maxLevel = skillDefinition.getLevelDefinition().getMaxLevel();
+        int maxLevel = skillDefinition.levelDefinition().getMaxLevel();
         int setLevel = Math.min(maxLevel, level);
         SkillData skillData = target.getData(CoreDataAttachments.SKILL);
         Skill instance = skillData.getSkill(skillDefinition);
@@ -254,7 +254,7 @@ public final class TarkovCraftCommand {
         float exp = FloatArgumentType.getFloat(ctx, "experienceValue");
         SkillData skillData = target.getData(CoreDataAttachments.SKILL);
         Skill instance = skillData.getSkill(skillDefinition);
-        SkillMemoryConfiguration memoryCfg = skillDefinition.getMemory();
+        SkillMemoryConfiguration memoryCfg = skillDefinition.memory();
         instance.loseExperience(exp, memoryCfg, lvl -> skillData.onLevelChange(lvl, instance));
         instance.setLastExperienceUpdate(target.level().getGameTime());
         SkillSystem.synchronize(target);

@@ -18,29 +18,15 @@ import tnt.tarkovcraft.core.util.UnitFormat;
 
 import java.util.UUID;
 
-public class AddAttributeModifierStat implements SkillStat {
+public record AddAttributeModifierStat(Attribute target, UUID id, float levelValue, boolean constant, UnitFormat displayUnitFormat) implements SkillStat {
 
     public static final MapCodec<AddAttributeModifierStat> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             CoreRegistries.ATTRIBUTE.byNameCodec().fieldOf("attribute").forGetter(t -> t.target),
             UUIDUtil.STRING_CODEC.fieldOf("id").forGetter(t -> t.id),
-            Codec.FLOAT.fieldOf("levelValue").forGetter(t -> t.levelValue),
+            Codec.FLOAT.fieldOf("per_level_value").forGetter(t -> t.levelValue),
             Codec.BOOL.optionalFieldOf("constant", false).forGetter(t -> t.constant),
-            UnitFormat.CODEC.optionalFieldOf("displayUnitFormat", UnitFormat.IDENTITY).forGetter(t -> t.displayUnitFormat)
+            UnitFormat.CODEC.optionalFieldOf("display_format", UnitFormat.IDENTITY).forGetter(t -> t.displayUnitFormat)
     ).apply(instance, AddAttributeModifierStat::new));
-
-    private final Attribute target;
-    private final UUID id;
-    private final float levelValue;
-    private final boolean constant;
-    private final UnitFormat displayUnitFormat;
-
-    public AddAttributeModifierStat(Attribute target, UUID id, float levelValue, boolean constant, UnitFormat displayUnitFormat) {
-        this.target = target;
-        this.id = id;
-        this.levelValue = levelValue;
-        this.constant = constant;
-        this.displayUnitFormat = displayUnitFormat;
-    }
 
     @Override
     public void clear(SkillDefinition definition, Skill skill, Entity entity) {

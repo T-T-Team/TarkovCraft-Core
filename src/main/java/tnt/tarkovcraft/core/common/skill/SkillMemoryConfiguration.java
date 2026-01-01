@@ -13,9 +13,9 @@ public final class SkillMemoryConfiguration {
 
     public static final Codec<SkillMemoryConfiguration> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.optionalFieldOf("enabled", true).forGetter(SkillMemoryConfiguration::isEnabled),
-            Codec.BOOL.optionalFieldOf("canLoseLevel", false).forGetter(SkillMemoryConfiguration::canLoseLevel),
-            NumberProviderType.complexCodec(ExtraCodecs.POSITIVE_INT).fieldOf("forgetAfter").forGetter(t -> Either.left(t.forgetAfter)),
-            NumberProviderType.complexCodecNoDuration(ExtraCodecs.POSITIVE_FLOAT).fieldOf("forgetAmount").forGetter(t -> Either.left(t.forgetAmount))
+            Codec.BOOL.optionalFieldOf("level_loss", false).forGetter(SkillMemoryConfiguration::canLoseLevel),
+            NumberProviderType.complexCodec(ExtraCodecs.POSITIVE_INT).fieldOf("forget_after").forGetter(t -> Either.left(t.forgetAfter)),
+            NumberProviderType.complexCodecNoDuration(ExtraCodecs.POSITIVE_FLOAT).fieldOf("forget_amount").forGetter(t -> Either.left(t.forgetAmount))
     ).apply(instance, SkillMemoryConfiguration::new));
     public static final SkillMemoryConfiguration NO_LOSS = new SkillMemoryConfiguration(false, false, Either.left(ConstantNumberProvider.MAX_INT), Either.left(ConstantNumberProvider.ZERO));
 

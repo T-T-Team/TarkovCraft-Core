@@ -9,16 +9,14 @@ import tnt.tarkovcraft.core.common.data.number.NumberProviderType;
 import tnt.tarkovcraft.core.common.init.CoreSkillTrackers;
 import tnt.tarkovcraft.core.common.skill.SkillContext;
 
-public class SimpleSkillTracker implements SkillTracker {
+public record SimpleSkillTracker(NumberProvider value) implements SkillTracker {
 
     public static final MapCodec<SimpleSkillTracker> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             NumberProviderType.complexCodecNoDuration(ExtraCodecs.POSITIVE_FLOAT).fieldOf("value").forGetter(t -> Either.left(t.value))
     ).apply(instance, SimpleSkillTracker::new));
 
-    private final NumberProvider value;
-
     public SimpleSkillTracker(Either<NumberProvider, Float> value) {
-        this.value = NumberProviderType.resolveNoDuration(value);
+        this(NumberProviderType.resolveNoDuration(value));
     }
 
     @Override

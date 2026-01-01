@@ -37,19 +37,19 @@ public final class Skill {
     }
 
     public Skill(Holder<SkillDefinition> definition) {
-        this(definition, 0, 0.0F, definition.value().getLevelDefinition().getRequiredExperience(0), 0L);
+        this(definition, 0, 0.0F, definition.value().levelDefinition().getRequiredExperience(0), 0L);
     }
 
     public float trigger(SkillContext context) {
         float triggeredAmount = 0;
-        for (SkillTrackerDefinition trackerDefinition : this.definition.value().getTrackers()) {
+        for (SkillTrackerDefinition trackerDefinition : this.definition.value().trackers()) {
             triggeredAmount += trackerDefinition.trigger(context);
         }
         return triggeredAmount;
     }
 
     public void updateMemory(long time, EntityAttributeData attributeData, IntConsumer levelChangeCallback) {
-        SkillMemoryConfiguration memory = this.definition.value().getMemory();
+        SkillMemoryConfiguration memory = this.definition.value().memory();
         if (SkillSystem.isMemoryEnabled() && memory.isEnabled()) {
             long diff = time - this.lastExperienceUpdate;
             float rateMultiplier = attributeData.getAttribute(CoreAttributes.MEMORY_FORGET_TIME_MULTIPLIER).floatValue();
@@ -73,7 +73,7 @@ public final class Skill {
         this.experience -= currentLoss;
         if (SkillSystem.isLevelMemoryEnabled() && overflow > 0 && this.level > 0) {
             this.level--;
-            this.requiredExperience = this.definition.value().getLevelDefinition().getRequiredExperience(this.level);
+            this.requiredExperience = this.definition.value().levelDefinition().getRequiredExperience(this.level);
             this.experience = this.requiredExperience;
             levelChangeCallback.accept(this.level + 1);
             this.loseExperience(overflow, memoryConfig, levelChangeCallback);
@@ -85,12 +85,12 @@ public final class Skill {
     }
 
     public void addExperience(float experience, IntConsumer levelChangeCallback) {
-        if (this.isMaxLevel() || !this.definition.value().isEnabled())
+        if (this.isMaxLevel() || !this.definition.value().enabled())
             return;
         if ((this.experience += experience) >= this.requiredExperience) {
             this.level++;
             float overflow = this.experience - this.requiredExperience;
-            SkillLevelDefinition levelDefinition = this.definition.value().getLevelDefinition();
+            SkillLevelDefinition levelDefinition = this.definition.value().levelDefinition();
             this.requiredExperience = levelDefinition.getRequiredExperience(this.level);
             this.experience = 0.0F;
             levelChangeCallback.accept(this.level - 1);
@@ -101,7 +101,7 @@ public final class Skill {
     public void forceSetLevel(int level) {
         this.level = level;
         this.experience = 0;
-        this.requiredExperience = this.definition.value().getLevelDefinition().getRequiredExperience(this.level);
+        this.requiredExperience = this.definition.value().levelDefinition().getRequiredExperience(this.level);
     }
 
     public int getLevel() {
@@ -109,7 +109,7 @@ public final class Skill {
     }
 
     public int getMaxLevel() {
-        return this.definition.value().getLevelDefinition().getMaxLevel();
+        return this.definition.value().levelDefinition().getMaxLevel();
     }
 
     public float getExperience() {

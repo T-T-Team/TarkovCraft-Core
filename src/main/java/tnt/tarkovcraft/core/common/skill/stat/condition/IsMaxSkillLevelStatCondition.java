@@ -6,7 +6,7 @@ import tnt.tarkovcraft.core.common.init.CoreSkillStatConditions;
 import tnt.tarkovcraft.core.common.skill.Skill;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 
-public class IsMaxSkillLevelStatCondition implements SkillStatCondition {
+public final class IsMaxSkillLevelStatCondition implements SkillStatCondition {
 
     public static final IsMaxSkillLevelStatCondition INSTANCE = new IsMaxSkillLevelStatCondition();
     public static final MapCodec<IsMaxSkillLevelStatCondition> CODEC = MapCodec.unit(INSTANCE);
