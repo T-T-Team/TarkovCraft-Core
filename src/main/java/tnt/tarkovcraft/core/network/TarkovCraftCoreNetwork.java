@@ -6,6 +6,7 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.HandlerThread;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import tnt.tarkovcraft.core.TarkovCraftCore;
+import tnt.tarkovcraft.core.network.message.S2C_MakeParticles;
 import tnt.tarkovcraft.core.network.message.notification.S2C_SendNotification;
 
 import java.util.Locale;
@@ -23,7 +24,7 @@ public final class TarkovCraftCoreNetwork {
     public static void onRegistration(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registry = event.registrar(NETWORK_ID).executesOn(HandlerThread.MAIN);
 
-        // notification
+        registry.playToClient(S2C_MakeParticles.TYPE, S2C_MakeParticles.CODEC, S2C_MakeParticles::handleMessage);
         registry.playToClient(S2C_SendNotification.TYPE, S2C_SendNotification.CODEC, S2C_SendNotification::handleMessage);
     }
 }

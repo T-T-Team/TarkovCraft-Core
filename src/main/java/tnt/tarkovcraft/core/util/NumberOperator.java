@@ -15,6 +15,8 @@ public enum NumberOperator implements DoubleBinaryOperator, StringRepresentable 
     SUBTRACT("subtract", (l, r) -> l - r),
     MULTIPLY("multiply", (l, r) -> l * r),
     DIVIDE("divide", (l, r) -> l / r),
+    POW("pow", Math::pow),
+    POW_INV("pow_inv", (l, r) -> Math.pow(r, l)),
     MIN("min", Math::min),
     MAX("max", Math::max);
 

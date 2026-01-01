@@ -1,5 +1,6 @@
 package tnt.tarkovcraft.core.util.helper;
 
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -31,5 +32,9 @@ public final class PlayerHelper {
                 TarkovCraftCore.LOGGER.error(TarkovCraftCore.MARKER, "Failed to create item drop entity {} for player {}", itemEntity, player);
             }
         }
+    }
+
+    public static boolean isCreativeOrSpectator(Entity entity) {
+        return entity instanceof Player player && (player.isCreative() || player.isSpectator());
     }
 }

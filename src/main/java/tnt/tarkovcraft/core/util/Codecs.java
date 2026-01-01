@@ -1,14 +1,13 @@
 package tnt.tarkovcraft.core.util;
 
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.*;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.phys.Vec3;
 import tnt.tarkovcraft.core.util.helper.ARGB;
 
 import java.time.ZonedDateTime;
@@ -54,6 +53,12 @@ public final class Codecs {
             buffer.writeLong(value);
         }
     };
+    public static final StreamCodec<ByteBuf, Vec3> VEC3_STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.DOUBLE, Vec3::x,
+            ByteBufCodecs.DOUBLE, Vec3::y,
+            ByteBufCodecs.DOUBLE, Vec3::z,
+            Vec3::new
+    );
 
     public static <T> Codec<List<T>> list(Codec<T> elementCodec, int minCount, int maxCount) {
         return Codec.withAlternative(elementCodec.listOf(minCount, maxCount), elementCodec, Collections::singletonList);

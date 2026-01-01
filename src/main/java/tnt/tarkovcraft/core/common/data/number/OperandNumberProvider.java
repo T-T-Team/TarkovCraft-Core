@@ -22,7 +22,7 @@ public class OperandNumberProvider implements NumberProvider {
                         values.forEach(prov -> list.add(Either.left(prov)));
                         return list;
                     }),
-            Codecs.enumCodec(NumberOperator.class).fieldOf("operator").forGetter(t -> t.operator)
+            NumberOperator.CODEC.fieldOf("operator").forGetter(t -> t.operator)
     ).apply(instance, OperandNumberProvider::new));
 
     private final List<NumberProvider> values;
