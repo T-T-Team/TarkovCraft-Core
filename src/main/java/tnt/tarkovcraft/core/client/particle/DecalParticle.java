@@ -14,17 +14,16 @@ import tnt.tarkovcraft.core.common.data.duration.TickValue;
 
 public abstract class DecalParticle extends TextureSheetParticle {
 
+    public static final float MIN_LAYER_OFFSET = 0.005F;
+    protected final Vec3 attachedPosition;
     protected final Direction attachedDirection;
     protected float fadeOutStart = 0.2F;
 
     public DecalParticle(ClientLevel level, Direction attachedDirection, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
         super(level, x, y, z, xSpeed, ySpeed, zSpeed);
         this.attachedDirection = attachedDirection;
-
-        // multiple layers should avoid issues with z-fighting
-        Vec3i normal = attachedDirection.getNormal();
-        Vec3 scaledNormal = new Vec3(normal.getX(), normal.getY(), normal.getZ()).scale(this.random.nextFloat() * 0.01F);
-        this.setPos(x + scaledNormal.x, y + scaledNormal.y, z + scaledNormal.z);
+        this.attachedPosition = new Vec3(x, y, z);
+        this.offsetWithNormal(MIN_LAYER_OFFSET + this.random.nextFloat() * 0.01F);
 
         this.xd = 0;
         this.yd = 0;
@@ -39,6 +38,7 @@ public abstract class DecalParticle extends TextureSheetParticle {
         this.updateColor(lifetimeAmount);
         if (lifetimeAmount <= this.fadeOutStart) {
             this.setAlpha(lifetimeAmount / this.fadeOutStart);
+            this.offsetWithNormal(MIN_LAYER_OFFSET * lifetimeAmount);
         }
     }
 
@@ -78,5 +78,11 @@ public abstract class DecalParticle extends TextureSheetParticle {
     public final void setRoll(float roll) {
         this.roll = roll;
         this.oRoll = roll;
+    }
+
+    private void offsetWithNormal(float amount) {
+        Vec3i normal = this.attachedDirection.getNormal();
+        Vec3 scaledNormal = new Vec3(normal.getX(), normal.getY(), normal.getZ()).scale(amount);
+        this.setPos(this.attachedPosition.x + scaledNormal.x, this.attachedPosition.y + scaledNormal.y, this.attachedPosition.z + scaledNormal.z);
     }
 }
