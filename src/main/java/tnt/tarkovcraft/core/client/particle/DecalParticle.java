@@ -17,16 +17,16 @@ import java.util.Optional;
 public abstract class DecalParticle extends SingleQuadParticle {
 
     public static final ParticleLimit DECAL_INSTANCE_LIMIT = new ParticleLimit(2000);
+    public static final float MIN_LAYER_OFFSET = 0.005F;
+    protected final Vec3 attachedPosition;
     protected final Direction attachedDirection;
     protected float fadeOutStart = 0.2F;
 
     public DecalParticle(ClientLevel level, Direction attachedDirection, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, TextureAtlasSprite sprite) {
         super(level, x, y, z, xSpeed, ySpeed, zSpeed, sprite);
         this.attachedDirection = attachedDirection;
-
-        // multiple layers should avoid issues with z-fighting
-        Vec3 scaledNormal = attachedDirection.getUnitVec3().scale(this.random.nextFloat() * 0.01F);
-        this.setPos(x + scaledNormal.x, y + scaledNormal.y, z + scaledNormal.z);
+        this.attachedPosition = new Vec3(x, y, z);
+        this.offsetWithNormal(MIN_LAYER_OFFSET + this.random.nextFloat() * 0.01F);
 
         this.xd = 0;
         this.yd = 0;
@@ -41,6 +41,7 @@ public abstract class DecalParticle extends SingleQuadParticle {
         this.updateColor(lifetimeAmount);
         if (lifetimeAmount <= this.fadeOutStart) {
             this.setAlpha(lifetimeAmount / this.fadeOutStart);
+            this.offsetWithNormal(MIN_LAYER_OFFSET * lifetimeAmount);
         }
     }
 
@@ -85,5 +86,10 @@ public abstract class DecalParticle extends SingleQuadParticle {
     public final void setRoll(float roll) {
         this.roll = roll;
         this.oRoll = roll;
+    }
+
+    private void offsetWithNormal(float amount) {
+        Vec3 normal = this.attachedDirection.getUnitVec3().scale(amount);
+        this.setPos(this.attachedPosition.x + normal.x, this.attachedPosition.y + normal.y, this.attachedPosition.z + normal.z);
     }
 }
