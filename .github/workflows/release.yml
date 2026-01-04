@@ -80,7 +80,7 @@ jobs:
                     },
                     {
                       name: "Wiki",
-                      value: [Link](<https://github.com/T-T-Team/TarkovCraft-Documentation/wiki>),
+                      value: "[Link](<https://github.com/T-T-Team/TarkovCraft-Documentation/wiki>)",
                       inline: true
                     }
                   ],
