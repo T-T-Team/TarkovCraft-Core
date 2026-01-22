@@ -111,10 +111,9 @@ public final class TarkovCraftCoreClient {
         // on-screen guide tick
         if (minecraft.level != null) {
             this.hintUiLayer.tick();
+            // shader program tick
+            PostEffectShaderProgramProcessor.INSTANCE.tick();
         }
-
-        // shader program tick
-        PostEffectShaderProgramProcessor.INSTANCE.tick();
     }
 
     private void clientLoggedOut(ClientPlayerNetworkEvent.LoggingOut event) {
