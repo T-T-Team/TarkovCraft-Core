@@ -5,9 +5,11 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.renderer.state.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleLimit;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import tnt.tarkovcraft.core.common.data.duration.TickValue;
@@ -16,16 +18,18 @@ import java.util.Optional;
 
 public abstract class DecalParticle extends SingleQuadParticle {
 
-    public static final ParticleLimit DECAL_INSTANCE_LIMIT = new ParticleLimit(2000);
+    public static final ParticleLimit DECAL_INSTANCE_LIMIT = new ParticleLimit(128);
     public static final float MIN_LAYER_OFFSET = 0.005F;
-    protected final Vec3 attachedPosition;
     protected final Direction attachedDirection;
+    protected final BlockPos position;
+    protected final Vec3 initialPosition;
     protected float fadeOutStart = 0.2F;
 
-    public DecalParticle(ClientLevel level, Direction attachedDirection, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, TextureAtlasSprite sprite) {
+    public DecalParticle(ClientLevel level, Direction attachedDirection, BlockPos position, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, TextureAtlasSprite sprite) {
         super(level, x, y, z, xSpeed, ySpeed, zSpeed, sprite);
         this.attachedDirection = attachedDirection;
-        this.attachedPosition = new Vec3(x, y, z);
+        this.position = position;
+        this.initialPosition = new Vec3(x, y, z);
         this.offsetWithNormal(MIN_LAYER_OFFSET + this.random.nextFloat() * 0.01F);
 
         this.xd = 0;
@@ -42,6 +46,12 @@ public abstract class DecalParticle extends SingleQuadParticle {
         if (lifetimeAmount <= this.fadeOutStart) {
             this.setAlpha(lifetimeAmount / this.fadeOutStart);
             this.offsetWithNormal(MIN_LAYER_OFFSET * lifetimeAmount);
+        }
+        if (this.hasAttachedBlockPhysics() && this.age % 20 == 0) {
+            BlockState state = this.level.getBlockState(this.position);
+            if (state.isAir()) {
+                this.handleAttachedBlockRemoved(state);
+            }
         }
     }
 
@@ -66,17 +76,8 @@ public abstract class DecalParticle extends SingleQuadParticle {
         return Optional.of(DECAL_INSTANCE_LIMIT);
     }
 
-    protected void updateColor(float lifetimeLeft) {
-
-    }
-
     public final void setFadeOutStartTime(float fadeOutStart) {
         this.fadeOutStart = fadeOutStart;
-    }
-
-    @Override
-    protected Layer getLayer() {
-        return this.fadeOutStart > 0 ? Layer.TRANSLUCENT : Layer.OPAQUE;
     }
 
     public final void setLifetime(TickValue duration) {
@@ -88,8 +89,25 @@ public abstract class DecalParticle extends SingleQuadParticle {
         this.oRoll = roll;
     }
 
+    @Override
+    protected Layer getLayer() {
+        return this.fadeOutStart > 0 ? Layer.TRANSLUCENT : Layer.OPAQUE;
+    }
+
+    protected void updateColor(float lifetimeLeft) {
+
+    }
+
+    protected boolean hasAttachedBlockPhysics() {
+        return true;
+    }
+
+    protected void handleAttachedBlockRemoved(BlockState state) {
+        this.remove();
+    }
+
     private void offsetWithNormal(float amount) {
         Vec3 normal = this.attachedDirection.getUnitVec3().scale(amount);
-        this.setPos(this.attachedPosition.x + normal.x, this.attachedPosition.y + normal.y, this.attachedPosition.z + normal.z);
+        this.setPos(this.initialPosition.x + normal.x, this.initialPosition.y + normal.y, this.initialPosition.z + normal.z);
     }
 }
