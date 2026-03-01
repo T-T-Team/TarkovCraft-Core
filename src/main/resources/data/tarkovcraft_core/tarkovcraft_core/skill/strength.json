@@ -88,7 +88,7 @@
         "id": "01220f79-2d9d-42c6-a74a-826f953a2c17",
         "per_level_value": -0.0025,
         "formatter": {
-          "format": "%.2f%",
+          "format": "%.2f%%",
           "multiplier": -100
         }
       }
