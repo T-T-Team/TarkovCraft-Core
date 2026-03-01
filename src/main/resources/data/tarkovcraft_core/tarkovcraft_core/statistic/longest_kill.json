@@ -3,12 +3,14 @@
     "translate": "stat.tarkovcraft_core.longest_kill"
   },
   "source": "tarkovcraft_core:longest_kill",
-  "format": {
-    "decimal_places": 2,
+  "formatter": {
+    "format": "%.2f%s",
     "multiplier": 0.01,
-    "suffix": {
-      "translate": "distance.unit.meter.short"
-    }
+    "arguments": [
+      {
+        "translate": "distance.unit.meter.short"
+      }
+    ]
   },
   "order": 174
 }

@@ -2,8 +2,8 @@
   "label": {
     "translate": "stat.tarkovcraft_core.kd_ratio"
   },
-  "format": {
-    "decimal_places": 2
+  "formatter": {
+    "format": "%.2f"
   },
   "order": 300,
   "source": "tarkovcraft_core:kills",
