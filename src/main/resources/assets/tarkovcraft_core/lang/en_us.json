@@ -72,6 +72,8 @@
   "duration.unit.d.short": "d",
   "distance.unit.meter": "meters",
   "distance.unit.meter.short": "m",
+  "weight.unit.kg": "kilograms",
+  "weight.unit.kg.short": "kg",
 
   "tooltip.tarkovcraft_core.skill.skill_info": "Triggers",
   "tooltip.tarkovcraft_core.skill.conditions": "Conditions",

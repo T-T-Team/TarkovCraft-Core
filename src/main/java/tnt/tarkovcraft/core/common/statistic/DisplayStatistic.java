@@ -7,8 +7,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.util.Codecs;
+import tnt.tarkovcraft.core.util.NumberFormatter;
 import tnt.tarkovcraft.core.util.NumberOperator;
-import tnt.tarkovcraft.core.util.UnitFormat;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,19 +17,19 @@ public final class DisplayStatistic {
 
     public static final Codec<DisplayStatistic> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
             ComponentSerialization.CODEC.fieldOf("label").forGetter(t -> t.label),
-            UnitFormat.CODEC.optionalFieldOf("format", UnitFormat.IDENTITY).forGetter(t -> t.format),
+            NumberFormatter.CODEC.optionalFieldOf("formatter", NumberFormatter.IDENTITY).forGetter(t -> t.format),
             CoreRegistries.STATISTICS.holderByNameCodec().fieldOf("source").forGetter(t -> t.source),
             Codecs.NON_NEGATIVE_INT.optionalFieldOf("order", 0).forGetter(t -> t.order),
             Codecs.list(ExtraCalculation.CODEC).optionalFieldOf("extra", Collections.emptyList()).forGetter(t -> t.extra)
     ).apply(instance, DisplayStatistic::new));
 
     private final Component label;
-    private final UnitFormat format;
+    private final NumberFormatter format;
     private final Holder<Statistic> source;
     private final int order;
     private final List<ExtraCalculation> extra;
 
-    public DisplayStatistic(Component label, UnitFormat format, Holder<Statistic> source, int order, List<ExtraCalculation> extra) {
+    public DisplayStatistic(Component label, NumberFormatter format, Holder<Statistic> source, int order, List<ExtraCalculation> extra) {
         this.label = label;
         this.format = format;
         this.source = source;
@@ -51,7 +51,7 @@ public final class DisplayStatistic {
             double stat = reader.getMinimum(calculation.source, calculation.min);
             value = calculation.operator.applyAsDouble(value, stat);
         }
-        return this.format.format(value);
+        return this.format.formatValue(value);
     }
 
     public record ExtraCalculation(Holder<Statistic> source, long min, NumberOperator operator) {

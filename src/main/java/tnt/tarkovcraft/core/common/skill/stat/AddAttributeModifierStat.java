@@ -14,18 +14,18 @@ import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.init.CoreSkillStats;
 import tnt.tarkovcraft.core.common.skill.Skill;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
-import tnt.tarkovcraft.core.util.UnitFormat;
+import tnt.tarkovcraft.core.util.NumberFormatter;
 
 import java.util.UUID;
 
-public record AddAttributeModifierStat(Attribute target, UUID id, float levelValue, boolean constant, UnitFormat displayUnitFormat) implements SkillStat {
+public record AddAttributeModifierStat(Attribute target, UUID id, float levelValue, boolean constant, NumberFormatter formatter) implements SkillStat {
 
     public static final MapCodec<AddAttributeModifierStat> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             CoreRegistries.ATTRIBUTE.byNameCodec().fieldOf("attribute").forGetter(t -> t.target),
             UUIDUtil.STRING_CODEC.fieldOf("id").forGetter(t -> t.id),
             Codec.FLOAT.fieldOf("per_level_value").forGetter(t -> t.levelValue),
             Codec.BOOL.optionalFieldOf("constant", false).forGetter(t -> t.constant),
-            UnitFormat.CODEC.optionalFieldOf("display_format", UnitFormat.IDENTITY).forGetter(t -> t.displayUnitFormat)
+            NumberFormatter.CODEC.optionalFieldOf("formatter", NumberFormatter.IDENTITY).forGetter(t -> t.formatter)
     ).apply(instance, AddAttributeModifierStat::new));
 
     @Override
@@ -44,7 +44,7 @@ public record AddAttributeModifierStat(Attribute target, UUID id, float levelVal
     public Object[] getTranslationData(SkillDefinition definition, Skill skill, Entity entity) {
         int level = skill.getLevel();
         float value = this.getModifierValue(level);
-        Component label = Component.literal(this.displayUnitFormat.format(value)).withStyle(ChatFormatting.GREEN);
+        Component label = Component.literal(this.formatter.formatValue(value)).withStyle(ChatFormatting.GREEN);
         return new Object[]{label};
     }
 

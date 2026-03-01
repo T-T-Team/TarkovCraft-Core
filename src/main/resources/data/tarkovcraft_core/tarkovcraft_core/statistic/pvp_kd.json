@@ -2,8 +2,8 @@
   "label": {
     "translate": "stat.tarkovcraft_core.pvp_kd_ratio"
   },
-  "format": {
-    "decimal_places": 2
+  "formatter": {
+    "format": "%.2f"
   },
   "order": 310,
   "source": "tarkovcraft_core:player_kills",

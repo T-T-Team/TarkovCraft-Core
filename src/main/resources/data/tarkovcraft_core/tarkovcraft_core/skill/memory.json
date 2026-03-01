@@ -47,10 +47,9 @@
         "attribute": "tarkovcraft_core:memory_forget_time_multiplier",
         "id": "09868750-7bd6-4f63-8342-6a9e583213fe",
         "per_level_value": 0.01,
-        "display_format": {
-          "decimal_places": 0,
-          "multiplier": 100,
-          "suffix": "%"
+        "formatter": {
+          "format": "%f%%",
+          "multiplier": 100
         }
       }
     },
@@ -73,10 +72,9 @@
         "attribute": "tarkovcraft_core:memory_forget_amount_multiplier",
         "id": "d6868f12-7502-42d8-a680-1aaca0de9dd9",
         "per_level_value": -0.01,
-        "display_format": {
-          "decimal_places": 0,
-          "multiplier": -100,
-          "suffix": "%"
+        "formatter": {
+          "format": "%f%%",
+          "multiplier": -100
         }
       }
     }
