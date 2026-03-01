@@ -5,9 +5,11 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import tnt.tarkovcraft.core.common.data.duration.TickValue;
@@ -15,14 +17,16 @@ import tnt.tarkovcraft.core.common.data.duration.TickValue;
 public abstract class DecalParticle extends TextureSheetParticle {
 
     public static final float MIN_LAYER_OFFSET = 0.005F;
-    protected final Vec3 attachedPosition;
     protected final Direction attachedDirection;
+    protected final BlockPos position;
+    protected final Vec3 initialPosition;
     protected float fadeOutStart = 0.2F;
 
-    public DecalParticle(ClientLevel level, Direction attachedDirection, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+    public DecalParticle(ClientLevel level, Direction attachedDirection, BlockPos position, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
         super(level, x, y, z, xSpeed, ySpeed, zSpeed);
         this.attachedDirection = attachedDirection;
-        this.attachedPosition = new Vec3(x, y, z);
+        this.position = position;
+        this.initialPosition = new Vec3(x, y, z);
         this.offsetWithNormal(MIN_LAYER_OFFSET + this.random.nextFloat() * 0.01F);
 
         this.xd = 0;
@@ -39,6 +43,12 @@ public abstract class DecalParticle extends TextureSheetParticle {
         if (lifetimeAmount <= this.fadeOutStart) {
             this.setAlpha(lifetimeAmount / this.fadeOutStart);
             this.offsetWithNormal(MIN_LAYER_OFFSET * lifetimeAmount);
+        }
+        if (this.hasAttachedBlockPhysics() && this.age % 20 == 0) {
+            BlockState state = this.level.getBlockState(this.position);
+            if (state.isAir()) {
+                this.handleAttachedBlockRemoved(state);
+            }
         }
     }
 
@@ -63,10 +73,6 @@ public abstract class DecalParticle extends TextureSheetParticle {
         return this.fadeOutStart > 0.0F ? ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT : ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
-    protected void updateColor(float lifetimeLeft) {
-
-    }
-
     public final void setFadeOutStartTime(float fadeOutStart) {
         this.fadeOutStart = fadeOutStart;
     }
@@ -80,9 +86,21 @@ public abstract class DecalParticle extends TextureSheetParticle {
         this.oRoll = roll;
     }
 
+    protected void updateColor(float lifetimeLeft) {
+
+    }
+
+    protected boolean hasAttachedBlockPhysics() {
+        return true;
+    }
+
+    protected void handleAttachedBlockRemoved(BlockState state) {
+        this.remove();
+    }
+
     private void offsetWithNormal(float amount) {
         Vec3i normal = this.attachedDirection.getNormal();
         Vec3 scaledNormal = new Vec3(normal.getX(), normal.getY(), normal.getZ()).scale(amount);
-        this.setPos(this.attachedPosition.x + scaledNormal.x, this.attachedPosition.y + scaledNormal.y, this.attachedPosition.z + scaledNormal.z);
+        this.setPos(this.initialPosition.x + scaledNormal.x, this.initialPosition.y + scaledNormal.y, this.initialPosition.z + scaledNormal.z);
     }
 }
