@@ -2,7 +2,7 @@ package tnt.tarkovcraft.core.common.attribute;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.UUIDUtil;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
@@ -15,14 +15,14 @@ public final class AttributeInstance {
     public static final Codec<AttributeInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             CoreRegistries.ATTRIBUTE.byNameCodec().fieldOf("attribute").forGetter(AttributeInstance::getAttribute),
             Codec.unboundedMap(
-                    UUIDUtil.STRING_CODEC,
+                    ResourceLocation.CODEC,
                     AttributeModifier.CODEC
             ).fieldOf("modifiers").forGetter(t -> t.modifiers)
     ).apply(instance, AttributeInstance::new));
 
     private Entity holder;
     private final Attribute attribute;
-    private final Map<UUID, AttributeModifier> modifiers;
+    private final Map<ResourceLocation, AttributeModifier> modifiers;
     private final List<AttributeListener> listeners;
     private double value;
     private boolean changed;
@@ -36,7 +36,7 @@ public final class AttributeInstance {
         this.changed = true;
     }
 
-    AttributeInstance(Attribute attribute, Map<UUID, AttributeModifier> modifiers) {
+    AttributeInstance(Attribute attribute, Map<ResourceLocation, AttributeModifier> modifiers) {
         this.attribute = attribute;
         this.modifiers = new HashMap<>(modifiers);
         this.listeners = new ArrayList<>();
@@ -62,7 +62,7 @@ public final class AttributeInstance {
         this.removeModifier(modifier.identifier());
     }
 
-    public void removeModifier(UUID identifier) {
+    public void removeModifier(ResourceLocation identifier) {
         AttributeModifier modifier = this.modifiers.remove(identifier);
         if (modifier != null) {
             this.invokeEvent(t -> t.onAttributeModifierRemoved(this, modifier));
@@ -77,7 +77,7 @@ public final class AttributeInstance {
         this.setChanged();
     }
 
-    public boolean hasModifier(UUID identifier) {
+    public boolean hasModifier(ResourceLocation identifier) {
         return this.modifiers.containsKey(identifier);
     }
 
@@ -97,7 +97,7 @@ public final class AttributeInstance {
         return this.listeners.size();
     }
 
-    public Map<UUID, AttributeModifier> listModifiers() {
+    public Map<ResourceLocation, AttributeModifier> listModifiers() {
         return this.modifiers;
     }
 

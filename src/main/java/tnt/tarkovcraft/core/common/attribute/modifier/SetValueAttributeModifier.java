@@ -3,29 +3,27 @@ package tnt.tarkovcraft.core.common.attribute.modifier;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.UUIDUtil;
+import net.minecraft.resources.ResourceLocation;
 import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
 import tnt.tarkovcraft.core.common.init.CoreAttributeModifiers;
 
 import java.util.Locale;
-import java.util.UUID;
 
 public class SetValueAttributeModifier extends AttributeModifier {
 
-    public static final MapCodec<SetValueAttributeModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            UUIDUtil.STRING_CODEC.fieldOf("id").forGetter(AttributeModifier::identifier),
+    public static final MapCodec<SetValueAttributeModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> codec(instance).and(instance.group(
             Codec.DOUBLE.fieldOf("value").forGetter(t -> t.value),
             Codec.INT.optionalFieldOf("order", ORDER_MATH_PARENTHESES).forGetter(t -> t.order)
-    ).apply(instance, SetValueAttributeModifier::new));
+    )).apply(instance, SetValueAttributeModifier::new));
 
     private final double value;
     private final int order;
 
-    public SetValueAttributeModifier(UUID identifier, double value) {
+    public SetValueAttributeModifier(ResourceLocation identifier, double value) {
         this(identifier, value, ORDER_MATH_PARENTHESES);
     }
 
-    public SetValueAttributeModifier(UUID identifier, double value, int order) {
+    public SetValueAttributeModifier(ResourceLocation identifier, double value, int order) {
         super(identifier);
         this.value = value;
         this.order = order;

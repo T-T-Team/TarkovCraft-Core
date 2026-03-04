@@ -1,6 +1,7 @@
 package tnt.tarkovcraft.core.common.attribute;
 
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
@@ -93,7 +94,7 @@ public final class AttributeSystem {
         addModifier(entity, attribute.get(), modifier, replace);
     }
 
-    public static void removeModifier(Entity entity, Attribute attribute, UUID modifier) {
+    public static void removeModifier(Entity entity, Attribute attribute, ResourceLocation modifier) {
         if (isEnabledForEntity(entity)) {
             EntityAttributeData data = getAttributes(entity);
             AttributeInstance instance = data.getAttribute(attribute);
@@ -113,11 +114,11 @@ public final class AttributeSystem {
         }
     }
 
-    public static void removeModifier(Entity entity, Holder<Attribute> attribute, UUID modifier) {
+    public static void removeModifier(Entity entity, Holder<Attribute> attribute, ResourceLocation modifier) {
         removeModifier(entity, attribute.value(), modifier);
     }
 
-    public static void removeModifier(Entity entity, Supplier<Attribute> attribute, UUID modifier) {
+    public static void removeModifier(Entity entity, Supplier<Attribute> attribute, ResourceLocation modifier) {
         removeModifier(entity, attribute.get(), modifier);
     }
 

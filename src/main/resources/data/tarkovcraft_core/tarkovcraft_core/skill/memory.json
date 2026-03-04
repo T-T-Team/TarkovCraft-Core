@@ -46,7 +46,7 @@
       "apply": {
         "type": "tarkovcraft_core:add_attribute_modifier",
         "attribute": "tarkovcraft_core:memory_forget_time_multiplier",
-        "id": "09868750-7bd6-4f63-8342-6a9e583213fe",
+        "id": "tarkovcraft_core:skill/memory_forget_rate_multiplier",
         "per_level_value": 0.01,
         "formatter": {
           "format": "%.0f%%",
@@ -71,7 +71,7 @@
       "apply": {
         "type": "tarkovcraft_core:add_attribute_modifier",
         "attribute": "tarkovcraft_core:memory_forget_amount_multiplier",
-        "id": "d6868f12-7502-42d8-a680-1aaca0de9dd9",
+        "id": "tarkovcraft_core:skill/memory_forget_amount_multiplier",
         "per_level_value": -0.01,
         "formatter": {
           "format": "%.0f%%",
