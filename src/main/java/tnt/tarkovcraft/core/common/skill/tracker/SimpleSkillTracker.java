@@ -1,6 +1,5 @@
 package tnt.tarkovcraft.core.common.skill.tracker;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.ExtraCodecs;
@@ -12,12 +11,8 @@ import tnt.tarkovcraft.core.common.skill.SkillContext;
 public record SimpleSkillTracker(NumberProvider value) implements SkillTracker {
 
     public static final MapCodec<SimpleSkillTracker> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            NumberProviderType.complexCodecNoDuration(ExtraCodecs.POSITIVE_FLOAT).fieldOf("value").forGetter(t -> Either.left(t.value))
+            NumberProviderType.valueCodec(ExtraCodecs.POSITIVE_FLOAT).fieldOf("value").forGetter(t -> t.value)
     ).apply(instance, SimpleSkillTracker::new));
-
-    public SimpleSkillTracker(Either<NumberProvider, Float> value) {
-        this(NumberProviderType.resolveNoDuration(value));
-    }
 
     @Override
     public boolean isTriggerable(SkillContext context) {
