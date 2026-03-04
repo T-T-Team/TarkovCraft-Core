@@ -18,6 +18,14 @@ public class ConstantNumberProvider implements NumberProvider {
         this.value = value;
     }
 
+    public ConstantNumberProvider(Number number) {
+        this(number.doubleValue());
+    }
+
+    public static ConstantNumberProvider of(double value) {
+        return new ConstantNumberProvider(value);
+    }
+
     @Override
     public double getNumber() {
         return this.value;

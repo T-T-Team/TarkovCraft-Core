@@ -7,7 +7,6 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 
 import java.util.Collection;
-import java.util.Locale;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
@@ -51,6 +50,6 @@ public enum LogicalOperator implements StringRepresentable {
 
     @Override
     public String getSerializedName() {
-        return this.name().toLowerCase(Locale.ROOT);
+        return this.serializedName;
     }
 }

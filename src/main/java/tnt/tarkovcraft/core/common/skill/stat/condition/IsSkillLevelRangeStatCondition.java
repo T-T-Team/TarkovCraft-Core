@@ -1,6 +1,5 @@
 package tnt.tarkovcraft.core.common.skill.stat.condition;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.ExtraCodecs;
@@ -15,13 +14,9 @@ import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 public record IsSkillLevelRangeStatCondition(NumberProvider min, NumberProvider max) implements SkillStatCondition {
 
     public static final MapCodec<IsSkillLevelRangeStatCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            NumberProviderType.complexCodecNoDuration(ExtraCodecs.POSITIVE_INT).optionalFieldOf("min", Either.left(ConstantNumberProvider.ZERO)).forGetter(t -> Either.left(t.min)),
-            NumberProviderType.complexCodecNoDuration(ExtraCodecs.POSITIVE_INT).optionalFieldOf("max", Either.left(ConstantNumberProvider.MAX_INT)).forGetter(t -> Either.left(t.max))
+            NumberProviderType.valueCodec(ExtraCodecs.POSITIVE_INT).optionalFieldOf("min", ConstantNumberProvider.ZERO).forGetter(t -> t.min),
+            NumberProviderType.valueCodec(ExtraCodecs.POSITIVE_INT).optionalFieldOf("max", ConstantNumberProvider.MAX_INT).forGetter(t -> t.max)
     ).apply(instance, IsSkillLevelRangeStatCondition::new));
-
-    public IsSkillLevelRangeStatCondition(Either<NumberProvider, Integer> min, Either<NumberProvider, Integer> max) {
-        this(NumberProviderType.resolveNoDuration(min), NumberProviderType.resolveNoDuration(max));
-    }
 
     @Override
     public boolean canApply(SkillDefinition definition, Skill skill, Entity entity) {

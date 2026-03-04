@@ -1,38 +1,32 @@
 package tnt.tarkovcraft.core.common.data.number;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import tnt.tarkovcraft.core.common.init.CoreNumberProviders;
 
-import java.util.Locale;
 import java.util.Random;
 
 public class RangedNumberProvider implements NumberProvider {
 
     public static final MapCodec<RangedNumberProvider> CODEC = RecordCodecBuilder.<RangedNumberProvider>mapCodec(instance -> instance.group(
-            Codec.DOUBLE.fieldOf("min").forGetter(t -> t.min),
-            Codec.DOUBLE.fieldOf("max").forGetter(t -> t.max)
-    ).apply(instance, RangedNumberProvider::new)).validate(provider -> {
-        if (provider.max < provider.min) {
-            return DataResult.error(() -> String.format(Locale.ROOT, "Min value {%f} is greater than max {%f}", provider.min, provider.max));
-        }
-        return DataResult.success(provider);
-    });
+            NumberProviderType.VALUE_CODEC.fieldOf("min").forGetter(t -> t.min),
+            NumberProviderType.VALUE_CODEC.fieldOf("max").forGetter(t -> t.max)
+    ).apply(instance, RangedNumberProvider::new));
     private static final Random RANDOM = new Random();
 
-    private final double min;
-    private final double max;
+    private final NumberProvider min;
+    private final NumberProvider max;
 
-    public RangedNumberProvider(double min, double max) {
+    public RangedNumberProvider(NumberProvider min, NumberProvider max) {
         this.min = min;
         this.max = max;
     }
 
     @Override
     public double getNumber() {
-        return this.min + RANDOM.nextDouble() * (this.max - this.min);
+        double min = this.min.getNumber();
+        double max = this.max.getNumber();
+        return min + RANDOM.nextDouble() * (max - min);
     }
 
     @Override
