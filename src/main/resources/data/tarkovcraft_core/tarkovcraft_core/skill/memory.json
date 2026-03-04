@@ -49,7 +49,7 @@
         "id": "09868750-7bd6-4f63-8342-6a9e583213fe",
         "per_level_value": 0.01,
         "formatter": {
-          "format": "%f%%",
+          "format": "%.0f%%",
           "multiplier": 100
         }
       }
@@ -74,7 +74,7 @@
         "id": "d6868f12-7502-42d8-a680-1aaca0de9dd9",
         "per_level_value": -0.01,
         "formatter": {
-          "format": "%f%%",
+          "format": "%.0f%%",
           "multiplier": -100
         }
       }
