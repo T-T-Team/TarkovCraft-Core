@@ -22,10 +22,10 @@ public abstract class DecalParticle extends TextureSheetParticle {
     protected final Vec3 initialPosition;
     protected float fadeOutStart = 0.2F;
 
-    public DecalParticle(ClientLevel level, Direction attachedDirection, BlockPos position, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+    public DecalParticle(ClientLevel level, DecalParticleOptions options, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
         super(level, x, y, z, xSpeed, ySpeed, zSpeed);
-        this.attachedDirection = attachedDirection;
-        this.position = position;
+        this.attachedDirection = options.attachDirection();
+        this.position = options.position();
         this.initialPosition = new Vec3(x, y, z);
         this.offsetWithNormal(MIN_LAYER_OFFSET + this.random.nextFloat() * 0.01F);
 
