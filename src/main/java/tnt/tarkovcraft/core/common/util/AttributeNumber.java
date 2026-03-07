@@ -26,7 +26,9 @@ public record AttributeNumber(Optional<Double> constant, Optional<Attribute> att
     }
 
     public double getValue(EntityAttributeData data) {
-        return this.attribute.map(att -> data.getAttribute(att).value())
+        return this.attribute
+                .filter(att -> data != null && data.hasAttribute(att))
+                .map(att -> data.getAttribute(att).value())
                 .or(this::constant)
                 .orElseThrow();
     }
