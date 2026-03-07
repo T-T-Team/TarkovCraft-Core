@@ -3,6 +3,7 @@ package tnt.tarkovcraft.core.common.attribute;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import org.jspecify.annotations.Nullable;
 import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 
@@ -18,6 +19,11 @@ public final class AttributeSystem {
 
     public static EntityAttributeData getAttributes(Entity entity) {
         return entity.getData(CoreDataAttachments.ENTITY_ATTRIBUTES);
+    }
+
+    @Nullable
+    public static EntityAttributeData getExistingAttributes(Entity entity) {
+        return isEnabledForEntity(entity) ? getAttributes(entity) : null;
     }
 
     public static boolean getBooleanValue(Entity entity, Holder<Attribute> attribute, boolean defaultValue) {
