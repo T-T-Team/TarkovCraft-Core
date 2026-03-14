@@ -27,4 +27,16 @@ public final class Helper {
     public static boolean isNotEmpty(Object[] array) {
         return !isEmpty(array);
     }
+
+    public static <E extends Enum<E>> E nextEnum(E value) {
+        E[] values = value.getDeclaringClass().getEnumConstants();
+        int index = (value.ordinal() + 1) % values.length;
+        return values[index];
+    }
+
+    public static <E extends Enum<E>> E previousEnum(E value) {
+        E[] values = value.getDeclaringClass().getEnumConstants();
+        int index = (value.ordinal() - 1 + values.length) % values.length;
+        return values[index];
+    }
 }
