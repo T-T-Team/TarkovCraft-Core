@@ -3,20 +3,23 @@ package tnt.tarkovcraft.core.common.util;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
+import net.minecraft.world.entity.Entity;
 import tnt.tarkovcraft.core.common.attribute.Attribute;
+import tnt.tarkovcraft.core.common.attribute.AttributeSystem;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 
 import java.util.Optional;
 
-public record AttributeNumber(Optional<Double> constant, Optional<Attribute> attribute) {
+public record AttributeNumber(Optional<Double> constant, Optional<Holder<Attribute>> attribute) {
 
     public static final Codec<AttributeNumber> CODEC = codec(Codec.DOUBLE);
 
-    public static <N extends Number> Codec<AttributeNumber> codec(Codec<Double> codec) {
+    public static Codec<AttributeNumber> codec(Codec<Double> codec) {
         return RecordCodecBuilder.<AttributeNumber>create(instance -> instance.group(
                 codec.optionalFieldOf("constant").forGetter(AttributeNumber::constant),
-                CoreRegistries.ATTRIBUTE.byNameCodec().optionalFieldOf("attribute").forGetter(AttributeNumber::attribute)
+                CoreRegistries.ATTRIBUTE.holderByNameCodec().optionalFieldOf("attribute").forGetter(AttributeNumber::attribute)
         ).apply(instance, AttributeNumber::new)).validate(an -> {
             if (an.constant.isEmpty() && an.attribute.isEmpty()) {
                 return DataResult.error(() -> "Either constant or attribute must be specified");
@@ -25,9 +28,21 @@ public record AttributeNumber(Optional<Double> constant, Optional<Attribute> att
         });
     }
 
+    public static AttributeNumber constant(double value) {
+        return new AttributeNumber(Optional.of(value), Optional.empty());
+    }
+
+    public static AttributeNumber attribute(Holder<Attribute> attribute) {
+        return new AttributeNumber(Optional.empty(), Optional.of(attribute));
+    }
+
+    public double getValue(Entity entity) {
+        return this.getValue(AttributeSystem.getExistingAttributes(entity));
+    }
+
     public double getValue(EntityAttributeData data) {
         return this.attribute
-                .filter(att -> data != null && data.hasAttribute(att))
+                .filter(att -> data != null)
                 .map(att -> data.getAttribute(att).value())
                 .or(this::constant)
                 .orElseThrow();

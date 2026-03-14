@@ -19,8 +19,10 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import tnt.tarkovcraft.core.api.MovementStaminaComponent;
 import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
 import tnt.tarkovcraft.core.common.attribute.AttributeSystem;
@@ -31,12 +33,14 @@ import tnt.tarkovcraft.core.common.init.CoreAttributes;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreSkillTriggerEvents;
 import tnt.tarkovcraft.core.common.init.CoreStatistics;
+import tnt.tarkovcraft.core.common.item.LeftClickListener;
 import tnt.tarkovcraft.core.common.skill.SkillSystem;
 import tnt.tarkovcraft.core.common.statistic.CustomStatTrackerProvider;
 import tnt.tarkovcraft.core.common.statistic.Statistic;
 import tnt.tarkovcraft.core.common.statistic.StatisticTracker;
 import tnt.tarkovcraft.core.common.weight.EntityWeightContainerListener;
 import tnt.tarkovcraft.core.common.weight.WeightSystem;
+import tnt.tarkovcraft.core.network.message.C2S_ItemLeftClicked;
 
 import java.util.List;
 
@@ -143,5 +147,22 @@ public final class TarkovCraftCoreEventHandler {
     @SubscribeEvent
     private void onPlayerContainerClosed(PlayerContainerEvent.Close event) {
         WeightSystem.applyWeightEffects(event.getEntity());
+    }
+
+    @SubscribeEvent
+    private void onLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
+        ItemStack itemStack = event.getItemStack();
+        if (itemStack.getItem() instanceof LeftClickListener) {
+            PacketDistributor.sendToServer(new C2S_ItemLeftClicked(event.getHand()));
+        }
+    }
+
+    @SubscribeEvent
+    private void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+        ItemStack itemStack = event.getItemStack();
+        if (itemStack.getItem() instanceof LeftClickListener listener) {
+            Player player = event.getEntity();
+            listener.onLeftClick(player, player.level(), itemStack, event.getPos());
+        }
     }
 }

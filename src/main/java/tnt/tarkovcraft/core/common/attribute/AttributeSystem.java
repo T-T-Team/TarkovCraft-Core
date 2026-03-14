@@ -3,10 +3,10 @@ package tnt.tarkovcraft.core.common.attribute;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import org.jspecify.annotations.Nullable;
 import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;

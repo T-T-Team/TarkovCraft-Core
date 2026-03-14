@@ -5,6 +5,9 @@ import com.mojang.serialization.DataResult;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.phys.Vec3;
@@ -106,5 +109,19 @@ public final class Codecs {
 
     public static <T, C extends Collection<T>> Codec<C> collection(Codec<T> codec, Function<List<T>, C> toCollection, Function<C, List<T>> fromCollection) {
         return collection(codec, 0, Integer.MAX_VALUE, toCollection, fromCollection);
+    }
+
+    public static <T> CompoundTag encodeWithCodec(Codec<T> codec, T data) {
+        CompoundTag tag = new CompoundTag();
+        DataResult<Tag> encodeResult = codec.encodeStart(NbtOps.INSTANCE, data);
+        Tag encodedData = encodeResult.getOrThrow();
+        tag.put("data", encodedData);
+        return tag;
+    }
+
+    public static <T> T decodeWithCodec(Codec<T> codec, CompoundTag tag) {
+        Tag data = tag.get("data");
+        DataResult<T> decodeResult = codec.parse(NbtOps.INSTANCE, data);
+        return decodeResult.getOrThrow();
     }
 }

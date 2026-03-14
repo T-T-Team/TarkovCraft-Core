@@ -7,16 +7,17 @@ import net.minecraft.util.Mth;
 import tnt.tarkovcraft.core.common.data.number.ConstantNumberProvider;
 import tnt.tarkovcraft.core.common.data.number.NumberProvider;
 import tnt.tarkovcraft.core.common.data.number.NumberProviderType;
+import tnt.tarkovcraft.core.util.Codecs;
 
 public final class SkillLevelDefinition {
 
     public static final SkillLevelDefinition DEFAULT = new SkillLevelDefinition(ConstantNumberProvider.of(100), ConstantNumberProvider.of(10.0F), ConstantNumberProvider.of(15.0F), ConstantNumberProvider.of((int) Short.MAX_VALUE), ConstantNumberProvider.of(Float.MAX_VALUE));
     public static final Codec<SkillLevelDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             NumberProviderType.valueCodec(ExtraCodecs.POSITIVE_INT).optionalFieldOf("max_level", DEFAULT.maxLevel).forGetter(t -> t.maxLevel),
-            NumberProviderType.valueCodec(ExtraCodecs.NON_NEGATIVE_FLOAT).optionalFieldOf("base_exp", DEFAULT.baseExperience).forGetter(t -> t.baseExperience),
-            NumberProviderType.valueCodec(ExtraCodecs.NON_NEGATIVE_FLOAT).optionalFieldOf("additional_exp", DEFAULT.additionalExperience).forGetter(t -> t.additionalExperience),
+            NumberProviderType.valueCodec(Codecs.NON_NEGATIVE_FLOAT).optionalFieldOf("base_exp", DEFAULT.baseExperience).forGetter(t -> t.baseExperience),
+            NumberProviderType.valueCodec(Codecs.NON_NEGATIVE_FLOAT).optionalFieldOf("additional_exp", DEFAULT.additionalExperience).forGetter(t -> t.additionalExperience),
             NumberProviderType.valueCodec(ExtraCodecs.NON_NEGATIVE_INT).optionalFieldOf("max_stack", DEFAULT.maxStack).forGetter(t -> t.maxLevel),
-            NumberProviderType.valueCodec(ExtraCodecs.NON_NEGATIVE_FLOAT).optionalFieldOf("max_exp", DEFAULT.maxExperience).forGetter(t -> t.maxExperience)
+            NumberProviderType.valueCodec(Codecs.NON_NEGATIVE_FLOAT).optionalFieldOf("max_exp", DEFAULT.maxExperience).forGetter(t -> t.maxExperience)
     ).apply(instance, SkillLevelDefinition::new));
 
     private final NumberProvider maxLevel;
