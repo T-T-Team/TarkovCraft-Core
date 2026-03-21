@@ -1,6 +1,7 @@
 package tnt.tarkovcraft.core.client.shader;
 
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.resource.CrossFrameResourcePool;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.DeltaTracker;
@@ -16,13 +17,16 @@ import tnt.tarkovcraft.core.api.event.client.RegisterPostShaderProgramsEvent;
 import tnt.tarkovcraft.core.api.shader.PostEffectShaderProgram;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public final class PostEffectShaderProgramProcessor {
 
     public static final PostEffectShaderProgramProcessor INSTANCE = new PostEffectShaderProgramProcessor();
 
     private final List<PostEffectShaderProgram> registeredPrograms = new ArrayList<>();
+    private final Set<Identifier> dynamicPipelines = new HashSet<>();
     private GpuBufferSlice activeDynamicUniformBuffer;
 
     private PostEffectShaderProgramProcessor() {
@@ -30,7 +34,14 @@ public final class PostEffectShaderProgramProcessor {
 
     public void init() {
         RegisterPostShaderProgramsEvent event = ModLoader.postEventWithReturn(new RegisterPostShaderProgramsEvent());
-        this.registeredPrograms.addAll(event.getPrograms());
+        synchronized (INSTANCE) {
+            this.registeredPrograms.addAll(event.getPrograms());
+            this.dynamicPipelines.addAll(event.getDynamicPipelines());
+        }
+    }
+
+    public boolean isDynamicPipeline(RenderPipeline renderPipeline) {
+        return this.dynamicPipelines.contains(renderPipeline.getLocation());
     }
 
     public void tick() {
