@@ -12,6 +12,10 @@ public interface NumberProvider {
         return map(Double::intValue);
     }
 
+    default long longValue() {
+        return map(Double::longValue);
+    }
+
     default float floatValue() {
         return map(Double::floatValue);
     }

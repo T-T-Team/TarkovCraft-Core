@@ -40,6 +40,10 @@ public final class Attribute {
         return create(identifier, 0);
     }
 
+    public static Attribute createMultiplier(Identifier identifier) {
+        return create(identifier, 1);
+    }
+
     public Identifier identifier() {
         return identifier;
     }

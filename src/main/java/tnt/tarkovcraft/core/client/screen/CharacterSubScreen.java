@@ -18,7 +18,6 @@ import tnt.tarkovcraft.core.client.screen.widget.LabelButton;
 import java.util.Optional;
 import java.util.UUID;
 
-// TODO implement profile look-up, possibly by clicking on the current profile name - change it to button and open search dialog
 public abstract class CharacterSubScreen extends NotificationScreen {
 
     protected final UUID characterProfileId;

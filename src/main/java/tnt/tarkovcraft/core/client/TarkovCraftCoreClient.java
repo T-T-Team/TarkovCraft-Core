@@ -5,7 +5,10 @@ import dev.toma.configuration.Configuration;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.sounds.AbstractSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -14,11 +17,13 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.*;
+import net.neoforged.neoforge.client.event.sound.PlaySoundEvent;
 import net.neoforged.neoforge.client.pipeline.RegisterPipelineModifiersEvent;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
 import org.lwjgl.glfw.GLFW;
 import tnt.tarkovcraft.core.TarkovCraftCore;
+import tnt.tarkovcraft.core.api.event.client.RegisterPostShaderProgramsEvent;
 import tnt.tarkovcraft.core.client.config.TarkovCraftCoreClientConfig;
 import tnt.tarkovcraft.core.client.decoration.CurrencyItemDecorator;
 import tnt.tarkovcraft.core.client.notification.NotificationChannel;
@@ -27,8 +32,12 @@ import tnt.tarkovcraft.core.client.overlay.DebugLayer;
 import tnt.tarkovcraft.core.client.overlay.OnScreenHintLayer;
 import tnt.tarkovcraft.core.client.overlay.StaminaLayer;
 import tnt.tarkovcraft.core.client.screen.navigation.CoreNavigators;
+import tnt.tarkovcraft.core.client.shader.BlindnessPostShaderProgram;
 import tnt.tarkovcraft.core.client.shader.DynamicTransformsPipelineModifier;
 import tnt.tarkovcraft.core.client.shader.PostEffectShaderProgramProcessor;
+import tnt.tarkovcraft.core.common.attribute.Attribute;
+import tnt.tarkovcraft.core.common.attribute.AttributeSystem;
+import tnt.tarkovcraft.core.common.init.CoreAttributes;
 import tnt.tarkovcraft.core.common.item.CurrencyItem;
 
 import static tnt.tarkovcraft.core.util.helper.TextHelper.createKeybindName;
@@ -57,10 +66,12 @@ public final class TarkovCraftCoreClient {
         modEventBus.addListener(this::registerCustomGuiLayers);
         modEventBus.addListener(this::registerItemDecorators);
         modEventBus.addListener(this::registerPipelineModifiers);
+        modEventBus.addListener(this::registerShaderPrograms);
 
         NeoForge.EVENT_BUS.addListener(this::onKeyboardInput);
         NeoForge.EVENT_BUS.addListener(this::clientPostTick);
         NeoForge.EVENT_BUS.addListener(this::clientLoggedOut);
+        NeoForge.EVENT_BUS.addListener(this::onPlaySound);
     }
 
     public static TarkovCraftCoreClientConfig getConfig() {
@@ -129,5 +140,29 @@ public final class TarkovCraftCoreClient {
 
     private void registerPipelineModifiers(RegisterPipelineModifiersEvent event) {
         event.register(DynamicTransformsPipelineModifier.KEY, new DynamicTransformsPipelineModifier());
+    }
+
+    private void registerShaderPrograms(RegisterPostShaderProgramsEvent event) {
+        event.registerWithDynamicPipeline(BlindnessPostShaderProgram.INSTANCE, BlindnessPostShaderProgram.DYNAMIC_PIPELINE);
+    }
+
+    private void onPlaySound(PlaySoundEvent event) {
+        Minecraft client = Minecraft.getInstance();
+        Entity cameraEntity = client.getCameraEntity();
+        if (cameraEntity == null)
+            return;
+        float hearing = AttributeSystem.getFloatValue(cameraEntity, CoreAttributes.HEARING, 1.0F);
+        if (hearing <= 0.0F) {
+            event.setSound(null);
+            return;
+        }
+        float distortion = AttributeSystem.getFloatValue(cameraEntity, CoreAttributes.HEARING_DISTORTION, 1.0F);
+        if (hearing == 1.0F && distortion == 1.0F)
+            return;
+        SoundInstance instance = event.getSound();
+        if (instance instanceof AbstractSoundInstance abstractSoundInstance) {
+            abstractSoundInstance.volume = abstractSoundInstance.volume * hearing;
+            abstractSoundInstance.pitch = abstractSoundInstance.pitch * distortion;
+        }
     }
 }

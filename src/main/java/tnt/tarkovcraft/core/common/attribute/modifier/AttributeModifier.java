@@ -1,11 +1,13 @@
 package tnt.tarkovcraft.core.common.attribute.modifier;
 
+import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.resources.Identifier;
 import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 
 import java.util.Objects;
-import java.util.UUID;
 
 public abstract class AttributeModifier {
 
@@ -16,50 +18,30 @@ public abstract class AttributeModifier {
     public static final int ORDER_MATH_MULTIPLICATION = 300;
     public static final int ORDER_MATH_ADDITION = 400;
 
-    private final UUID identifier;
+    private final Identifier identifier;
 
-    protected AttributeModifier(UUID identifier) {
+    protected AttributeModifier(Identifier identifier) {
         this.identifier = identifier;
     }
 
-    public static SetValueAttributeModifier set(UUID id, double value) {
-        return new SetValueAttributeModifier(id, value);
+    public static SetValueAttributeModifier set(Identifier identifier, double value) {
+        return new SetValueAttributeModifier(identifier, value);
     }
 
-    public static SetValueAttributeModifier set(String uuid, double value) {
-        return set(UUID.fromString(uuid), value);
+    public static AddValueModifier add(Identifier identifier, double value) {
+        return new AddValueModifier(identifier, value);
     }
 
-    public static AddValueModifier add(UUID id, double value) {
-        return new AddValueModifier(id, value);
+    public static AddValueModifier subtract(Identifier identifier, double value) {
+        return new AddValueModifier(identifier, -value);
     }
 
-    public static AddValueModifier add(String uuid, double value) {
-        return add(UUID.fromString(uuid), value);
+    public static MultiplyValueAttributeModifier multiplier(Identifier identifier, double multiplier) {
+        return new MultiplyValueAttributeModifier(identifier, multiplier);
     }
 
-    public static AddValueModifier subtract(UUID id, double value) {
-        return new AddValueModifier(id, -value);
-    }
-
-    public static AddValueModifier subtract(String uuid, double value) {
-        return subtract(UUID.fromString(uuid), value);
-    }
-
-    public static MultiplyValueAttributeModifier multiplier(UUID id, double multiplier) {
-        return new MultiplyValueAttributeModifier(id, multiplier);
-    }
-
-    public static MultiplyValueAttributeModifier multiplier(String uuid, double multiplier) {
-        return multiplier(UUID.fromString(uuid), multiplier);
-    }
-
-    public static MultiplyValueAttributeModifier multiplyBase(UUID id, double multiplier) {
-        return new MultiplyValueAttributeModifier(id, 1.0F + multiplier);
-    }
-
-    public static MultiplyValueAttributeModifier multiplyBase(String uuid, double multiplier) {
-        return multiplyBase(UUID.fromString(uuid), multiplier);
+    public static MultiplyValueAttributeModifier multiplyBase(Identifier identifier, double multiplier) {
+        return new MultiplyValueAttributeModifier(identifier, 1.0F + multiplier);
     }
 
     public abstract double calculateValue(AttributeInstance source, double value);
@@ -68,7 +50,7 @@ public abstract class AttributeModifier {
 
     public abstract AttributeModifierType<?> getType();
 
-    public final UUID identifier() {
+    public final Identifier identifier() {
         return this.identifier;
     }
 
@@ -81,5 +63,11 @@ public abstract class AttributeModifier {
     @Override
     public final int hashCode() {
         return Objects.hashCode(identifier);
+    }
+
+    public static <A extends AttributeModifier> Products.P1<RecordCodecBuilder.Mu<A>, Identifier> codec(RecordCodecBuilder.Instance<A> instance) {
+        return instance.group(
+                Identifier.CODEC.fieldOf("id").forGetter(AttributeModifier::identifier)
+        );
     }
 }

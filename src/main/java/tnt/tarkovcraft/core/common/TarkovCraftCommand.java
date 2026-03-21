@@ -10,10 +10,12 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.IdentifierArgument;
 import net.minecraft.commands.arguments.ResourceArgument;
 import net.minecraft.commands.arguments.TimeArgument;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.Entity;
@@ -76,13 +78,19 @@ public final class TarkovCraftCommand {
                                                                         .then(
                                                                                 Commands.literal("addModifier")
                                                                                         .then(
-                                                                                                Commands.argument("setValue", DoubleArgumentType.doubleArg())
-                                                                                                        .executes(ctx -> updateAttributeModifier(ctx, false))
+                                                                                                Commands.argument("modifierId", IdentifierArgument.id())
+                                                                                                        .then(
+                                                                                                                Commands.argument("setValue", DoubleArgumentType.doubleArg())
+                                                                                                                        .executes(ctx -> updateAttributeModifier(ctx, false))
+                                                                                                        )
                                                                                         )
                                                                         )
                                                                         .then(
                                                                                 Commands.literal("removeModifier")
-                                                                                        .executes(ctx -> updateAttributeModifier(ctx, true))
+                                                                                        .then(
+                                                                                                Commands.argument("modifierId", IdentifierArgument.id())
+                                                                                                        .executes(ctx -> updateAttributeModifier(ctx, true))
+                                                                                        )
                                                                         )
                                                         )
                                         )
@@ -146,13 +154,13 @@ public final class TarkovCraftCommand {
         Entity entity = EntityArgument.getEntity(ctx, "target");
         Holder.Reference<Attribute> reference = ResourceArgument.getResource(ctx, "attributeId", CoreRegistries.Keys.ATTRIBUTE);
         Attribute attribute = reference.value();
-        UUID systemModifierId = Util.NIL_UUID;
+        Identifier id = IdentifierArgument.getId(ctx, "modifierId");
         EntityAttributeData attributeData = entity.getData(CoreDataAttachments.ENTITY_ATTRIBUTES);
         AttributeInstance instance = attributeData.getAttribute(attribute);
-        instance.removeModifier(systemModifierId);
+        instance.removeModifier(id);
         if (!remove) {
             double value = DoubleArgumentType.getDouble(ctx, "setValue");
-            AttributeModifier modifier = new SetValueAttributeModifier(systemModifierId, value, Integer.MAX_VALUE);
+            AttributeModifier modifier = new SetValueAttributeModifier(id, value, Integer.MAX_VALUE);
             instance.addModifier(modifier);
         }
         AttributeSystem.sync(entity);
