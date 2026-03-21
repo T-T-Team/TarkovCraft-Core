@@ -1,13 +1,13 @@
 package tnt.tarkovcraft.core.common.attribute;
 
 import net.minecraft.core.Holder;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import org.jspecify.annotations.Nullable;
 import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 
-import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -93,7 +93,7 @@ public final class AttributeSystem {
         addModifier(entity, attribute.get(), modifier, replace);
     }
 
-    public static void removeModifier(Entity entity, Attribute attribute, UUID modifier) {
+    public static void removeModifier(Entity entity, Attribute attribute, Identifier modifier) {
         if (isEnabledForEntity(entity)) {
             EntityAttributeData data = getAttributes(entity);
             AttributeInstance instance = data.getAttribute(attribute);
@@ -113,11 +113,11 @@ public final class AttributeSystem {
         }
     }
 
-    public static void removeModifier(Entity entity, Holder<Attribute> attribute, UUID modifier) {
+    public static void removeModifier(Entity entity, Holder<Attribute> attribute, Identifier modifier) {
         removeModifier(entity, attribute.value(), modifier);
     }
 
-    public static void removeModifier(Entity entity, Supplier<Attribute> attribute, UUID modifier) {
+    public static void removeModifier(Entity entity, Supplier<Attribute> attribute, Identifier modifier) {
         removeModifier(entity, attribute.get(), modifier);
     }
 

@@ -3,29 +3,27 @@ package tnt.tarkovcraft.core.common.attribute.modifier;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.UUIDUtil;
+import net.minecraft.resources.Identifier;
 import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
 import tnt.tarkovcraft.core.common.init.CoreAttributeModifiers;
 
 import java.util.Locale;
-import java.util.UUID;
 
 public class AddValueModifier extends AttributeModifier {
 
-    public static final MapCodec<AddValueModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            UUIDUtil.STRING_CODEC.fieldOf("id").forGetter(AttributeModifier::identifier),
+    public static final MapCodec<AddValueModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> codec(instance).and(instance.group(
             Codec.DOUBLE.fieldOf("value").forGetter(t -> t.value),
             Codec.INT.optionalFieldOf("order", ORDER_MATH_ADDITION).forGetter(t -> t.ordering)
-    ).apply(instance, AddValueModifier::new));
+    )).apply(instance, AddValueModifier::new));
 
     private final double value;
     private final int ordering;
 
-    public AddValueModifier(UUID identifier, double value) {
+    public AddValueModifier(Identifier identifier, double value) {
         this(identifier, value, ORDER_MATH_ADDITION);
     }
 
-    public AddValueModifier(UUID identifier, double value, int ordering) {
+    public AddValueModifier(Identifier identifier, double value, int ordering) {
         super(identifier);
         this.value = value;
         this.ordering = ordering;

@@ -4,8 +4,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import tnt.tarkovcraft.core.common.attribute.Attribute;
 import tnt.tarkovcraft.core.common.attribute.AttributeSystem;
@@ -18,11 +18,11 @@ import tnt.tarkovcraft.core.util.NumberFormatter;
 
 import java.util.UUID;
 
-public record AddAttributeModifierStat(Attribute target, UUID id, float levelValue, boolean constant, NumberFormatter formatter) implements SkillStat {
+public record AddAttributeModifierStat(Attribute target, Identifier id, float levelValue, boolean constant, NumberFormatter formatter) implements SkillStat {
 
     public static final MapCodec<AddAttributeModifierStat> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             CoreRegistries.ATTRIBUTE.byNameCodec().fieldOf("attribute").forGetter(t -> t.target),
-            UUIDUtil.STRING_CODEC.fieldOf("id").forGetter(t -> t.id),
+            Identifier.CODEC.fieldOf("id").forGetter(t -> t.id),
             Codec.FLOAT.fieldOf("per_level_value").forGetter(t -> t.levelValue),
             Codec.BOOL.optionalFieldOf("constant", false).forGetter(t -> t.constant),
             NumberFormatter.CODEC.optionalFieldOf("formatter", NumberFormatter.IDENTITY).forGetter(t -> t.formatter)
