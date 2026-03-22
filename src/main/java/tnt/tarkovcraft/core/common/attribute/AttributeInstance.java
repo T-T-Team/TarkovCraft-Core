@@ -6,9 +6,9 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
+import tnt.tarkovcraft.core.util.EventHandler;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 public final class AttributeInstance {
 
@@ -23,7 +23,7 @@ public final class AttributeInstance {
     private Entity holder;
     private final Attribute attribute;
     private final Map<Identifier, AttributeModifier> modifiers;
-    private final List<AttributeListener> listeners;
+    private final EventHandler<AttributeListener> eventHandler;
     private double value;
     private boolean changed;
 
@@ -31,7 +31,7 @@ public final class AttributeInstance {
         this.attribute = attribute;
         this.holder = holder;
         this.modifiers = new HashMap<>();
-        this.listeners = new ArrayList<>();
+        this.eventHandler = EventHandler.create();
         this.value = this.attribute.getBaseValue();
         this.changed = true;
     }
@@ -39,7 +39,7 @@ public final class AttributeInstance {
     AttributeInstance(Attribute attribute, Map<Identifier, AttributeModifier> modifiers) {
         this.attribute = attribute;
         this.modifiers = new HashMap<>(modifiers);
-        this.listeners = new ArrayList<>();
+        this.eventHandler = EventHandler.create();
         this.value = this.attribute.getBaseValue();
         this.changed = true;
     }
@@ -54,7 +54,7 @@ public final class AttributeInstance {
 
     public void addModifier(AttributeModifier modifier) {
         this.modifiers.put(modifier.identifier(), modifier);
-        this.invokeEvent(t -> t.onAttributeModifierAdded(this, modifier));
+        this.eventHandler.dispatch(t -> t.onAttributeModifierAdded(this, modifier));
         this.setChanged();
     }
 
@@ -65,7 +65,7 @@ public final class AttributeInstance {
     public void removeModifier(Identifier identifier) {
         AttributeModifier modifier = this.modifiers.remove(identifier);
         if (modifier != null) {
-            this.invokeEvent(t -> t.onAttributeModifierRemoved(this, modifier));
+            this.eventHandler.dispatch(t -> t.onAttributeModifierRemoved(this, modifier));
             this.setChanged();
         }
     }
@@ -73,7 +73,7 @@ public final class AttributeInstance {
     public void removeModifiers() {
         List<AttributeModifier> modifiers = new ArrayList<>(this.modifiers.values());
         this.modifiers.clear();
-        modifiers.forEach(mod -> this.invokeEvent(t -> t.onAttributeModifierRemoved(this, mod)));
+        modifiers.forEach(mod -> this.eventHandler.dispatch(t -> t.onAttributeModifierRemoved(this, mod)));
         this.setChanged();
     }
 
@@ -86,15 +86,15 @@ public final class AttributeInstance {
     }
 
     public void addListener(AttributeListener listener) {
-        this.listeners.add(listener);
+        this.eventHandler.subscribe(listener);
     }
 
     public void removeListener(AttributeListener listener) {
-        this.listeners.remove(listener);
+        this.eventHandler.unsubscribe(listener);
     }
 
     public int getActiveListenerCount() {
-        return this.listeners.size();
+        return this.eventHandler.subscriberCount();
     }
 
     public Map<Identifier, AttributeModifier> listModifiers() {
@@ -124,12 +124,8 @@ public final class AttributeInstance {
     public void setChanged() {
         if (!this.changed) {
             this.changed = true;
-            this.invokeEvent(t -> t.onAttributeSetChanged(this));
+            this.eventHandler.dispatch(t -> t.onAttributeSetChanged(this));
         }
-    }
-
-    public void invokeEvent(Consumer<AttributeListener> event) {
-        this.listeners.forEach(event);
     }
 
     public Attribute getAttribute() {
@@ -146,7 +142,7 @@ public final class AttributeInstance {
         if (this.value != result) {
             double oldValue = this.value;
             this.value = result;
-            this.invokeEvent(t -> t.onAttributeValueChanged(this, oldValue));
+            this.eventHandler.dispatch(t -> t.onAttributeValueChanged(this, oldValue));
         }
     }
 }

@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 public final class EntityAttributeData {
 
     public static final MapCodec<EntityAttributeData> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.unboundedMap(CoreRegistries.ATTRIBUTE.byNameCodec(), AttributeInstance.CODEC).fieldOf("attributeMap").forGetter(t -> t.attributeMap)
+            Codec.unboundedMap(CoreRegistries.ATTRIBUTE.byNameCodec(), AttributeInstance.CODEC).fieldOf("attribute_map").forGetter(t -> t.attributeMap)
     ).apply(instance, EntityAttributeData::new));
 
     private Entity holder;
