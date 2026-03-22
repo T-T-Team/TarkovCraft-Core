@@ -8,6 +8,9 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.data.CallbackAttachmentSerializer;
+import tnt.tarkovcraft.core.common.pose.EntityPose;
+import tnt.tarkovcraft.core.common.pose.EntityPoseType;
+import tnt.tarkovcraft.core.common.pose.NoEntityPose;
 import tnt.tarkovcraft.core.common.skill.SkillData;
 import tnt.tarkovcraft.core.common.statistic.StatisticTracker;
 import tnt.tarkovcraft.core.common.util.OwnerAttachmentSyncHandler;
@@ -40,6 +43,11 @@ public final class CoreDataAttachments {
             .serialize(Codec.INT)
             .copyOnDeath()
             .sync(new OwnerAttachmentSyncHandler<>(ByteBufCodecs.INT))
+            .build()
+    );
+    public static final Supplier<AttachmentType<EntityPose>> ENTITY_POSE = REGISTRY.register("entity_pose", () -> AttachmentType.builder(NoEntityPose::instance)
+            .serialize(EntityPoseType.CODEC)
+            .sync(ByteBufCodecs.fromCodecWithRegistries(EntityPoseType.CODEC))
             .build()
     );
 }

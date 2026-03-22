@@ -8,9 +8,13 @@
   },
   "mixins": [
     "LivingEntityMixin",
-    "ServerPlayerMixin"
+    "ServerPlayerMixin",
+    "InventoryMixin"
   ],
   "client": [
-    "client.GameRendererMixin"
+    "client.GameRendererMixin",
+    "client.CameraMixin",
+    "client.MouseHandlerMixin",
+    "client.LocalPlayerMixin"
   ]
 }

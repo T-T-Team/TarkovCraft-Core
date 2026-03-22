@@ -10,8 +10,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tnt.tarkovcraft.core.api.MovementStaminaComponent;
 import tnt.tarkovcraft.core.common.energy.EnergySystem;
+import tnt.tarkovcraft.core.common.pose.CoreEntityPoseFlags;
+import tnt.tarkovcraft.core.common.pose.EntityPoseManager;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity implements Attackable, ILivingEntityExtension {
@@ -48,6 +51,30 @@ public abstract class LivingEntityMixin extends Entity implements Attackable, IL
             component.onJump(entity);
         } else {
             ci.cancel();
+        }
+    }
+
+    @Inject(
+            method = "swing(Lnet/minecraft/world/InteractionHand;Z)V",
+            at = @At("HEAD"),
+            cancellable = true
+    )
+    private void tarkovCraftCore$swing(CallbackInfo ci) {
+        LivingEntity livingEntity = (LivingEntity) (Object) this;
+        if (EntityPoseManager.isTagged(livingEntity, CoreEntityPoseFlags.NO_INTERACTION)) {
+            ci.cancel();
+        }
+    }
+
+    @Inject(
+            method = "isPushable",
+            at = @At("HEAD"),
+            cancellable = true
+    )
+    private void tarkovCraftCore$isPushable(CallbackInfoReturnable<Boolean> cir) {
+        LivingEntity livingEntity = (LivingEntity) (Object) this;
+        if (EntityPoseManager.isTagged(livingEntity, CoreEntityPoseFlags.NO_KNOCKBACK)) {
+            cir.setReturnValue(false);
         }
     }
 }

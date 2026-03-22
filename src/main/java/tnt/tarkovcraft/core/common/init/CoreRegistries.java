@@ -8,6 +8,7 @@ import tnt.tarkovcraft.core.common.attribute.Attribute;
 import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifierType;
 import tnt.tarkovcraft.core.common.data.number.NumberProviderType;
 import tnt.tarkovcraft.core.common.item.CurrencyType;
+import tnt.tarkovcraft.core.common.pose.EntityPoseType;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 import tnt.tarkovcraft.core.common.skill.stat.SkillStatType;
 import tnt.tarkovcraft.core.common.skill.stat.condition.SkillStatConditionType;
@@ -24,7 +25,9 @@ public final class CoreRegistries {
     public static final Registry<AttributeModifierType<?>> ATTRIBUTE_MODIFIER = new RegistryBuilder<>(Keys.ATTRIBUTE_MODIFIER).create();
     public static final Registry<NumberProviderType<?>> NUMBER_PROVIDER = new RegistryBuilder<>(Keys.NUMBER_PROVIDER).create();
     public static final Registry<Statistic> STATISTICS = new RegistryBuilder<>(Keys.STATISTICS).sync(true).create();
+    @Deprecated
     public static final Registry<CurrencyType> CURRENCY = new RegistryBuilder<>(Keys.CURRENCY).sync(true).create();
+    public static final Registry<EntityPoseType<?>> ENTITY_POSE = new RegistryBuilder<>(Keys.ENTITY_POSE).sync(true).create();
 
     // Skill system
     public static final Registry<SkillTriggerEvent> SKILL_TRIGGER_EVENT = new RegistryBuilder<>(Keys.SKILL_TRIGGER_EVENT).create();
@@ -44,7 +47,9 @@ public final class CoreRegistries {
         public static final ResourceKey<Registry<SkillTriggerConditionType<?>>> SKILL_TRIGGER_CONDITION_TYPE = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/trigger_condition"));
         public static final ResourceKey<Registry<SkillStatConditionType<?>>> SKILL_STAT_CONDITION_TYPE = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/stat_condition"));
         public static final ResourceKey<Registry<SkillStatType<?>>> SKILL_STAT = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("skill/stat"));
+        @Deprecated
         public static final ResourceKey<Registry<CurrencyType>> CURRENCY = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("currency"));
+        public static final ResourceKey<Registry<EntityPoseType<?>>> ENTITY_POSE = ResourceKey.createRegistryKey(TarkovCraftCore.createResourceLocation("entity_pose"));
     }
 
     public static final class DatapackKeys {

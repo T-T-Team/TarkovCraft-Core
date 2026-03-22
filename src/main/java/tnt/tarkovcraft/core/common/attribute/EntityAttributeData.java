@@ -16,6 +16,7 @@ import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.util.OwnerAttachmentSyncHandler;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -23,7 +24,7 @@ import java.util.function.Supplier;
 public final class EntityAttributeData {
 
     public static final Codec<EntityAttributeData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.unboundedMap(CoreRegistries.ATTRIBUTE.byNameCodec(), AttributeInstance.CODEC).fieldOf("attribute_map").forGetter(t -> t.attributeMap)
+            Codec.unboundedMap(CoreRegistries.ATTRIBUTE.byNameCodec(), AttributeInstance.CODEC).optionalFieldOf("attribute_map", Collections.emptyMap()).forGetter(t -> t.attributeMap)
     ).apply(instance, EntityAttributeData::new));
 
     private Entity holder;

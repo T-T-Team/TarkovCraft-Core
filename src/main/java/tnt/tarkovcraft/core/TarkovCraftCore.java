@@ -17,6 +17,7 @@ import org.apache.logging.log4j.MarkerManager;
 import tnt.tarkovcraft.core.common.TarkovCraftCoreEventHandler;
 import tnt.tarkovcraft.core.common.config.TarkovCraftCoreConfig;
 import tnt.tarkovcraft.core.common.init.*;
+import tnt.tarkovcraft.core.common.pose.EntityPoseEventHandler;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 import tnt.tarkovcraft.core.common.skill.SkillSystem;
 import tnt.tarkovcraft.core.common.statistic.DisplayStatistic;
@@ -46,6 +47,7 @@ public final class TarkovCraftCore {
 
         // Neoforge event listeners
         NeoForge.EVENT_BUS.register(new TarkovCraftCoreEventHandler());
+        NeoForge.EVENT_BUS.register(new EntityPoseEventHandler());
         NeoForge.EVENT_BUS.addListener(SkillSystem::onServerStarted);
 
         // Deferred registries
@@ -60,6 +62,7 @@ public final class TarkovCraftCore {
         CoreSkillStatConditions.REGISTRY.register(modEventBus);
         CoreSkillStats.REGISTRY.register(modEventBus);
         CoreStatistics.REGISTRY.register(modEventBus);
+        CoreEntityPoses.REGISTRY.register(modEventBus);
     }
 
     public static TarkovCraftCoreConfig getConfig() {
@@ -77,6 +80,7 @@ public final class TarkovCraftCore {
         event.register(CoreRegistries.NUMBER_PROVIDER);
         event.register(CoreRegistries.STATISTICS);
         event.register(CoreRegistries.CURRENCY);
+        event.register(CoreRegistries.ENTITY_POSE);
 
         // Skill system
         event.register(CoreRegistries.SKILL_TRIGGER_EVENT);

@@ -1,0 +1,34 @@
+package tnt.tarkovcraft.core.mixin;
+
+import net.minecraft.world.Container;
+import net.minecraft.world.Nameable;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import tnt.tarkovcraft.core.common.pose.CoreEntityPoseFlags;
+import tnt.tarkovcraft.core.common.pose.EntityPoseManager;
+
+@Mixin(Inventory.class)
+public abstract class InventoryMixin implements Container, Nameable {
+
+    @Shadow
+    @Final
+    public Player player;
+
+    // won't work with keybinds, too much effort is needed to block all possible paths to item switch in 1.21.1
+    @Inject(
+            method = "swapPaint",
+            at = @At("HEAD"),
+            cancellable = true
+    )
+    private void tarkovcraftCore$swapPaint(double direction, CallbackInfo ci) {
+        if (EntityPoseManager.isTagged(this.player, CoreEntityPoseFlags.NO_INTERACTION)) {
+            ci.cancel();
+        }
+    }
+}
