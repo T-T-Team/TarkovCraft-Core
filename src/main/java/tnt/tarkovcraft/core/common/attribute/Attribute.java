@@ -40,6 +40,10 @@ public final class Attribute {
         return create(identifier, 0);
     }
 
+    public static Attribute createMultiplier(ResourceLocation identifier) {
+        return create(identifier, 1);
+    }
+
     public ResourceLocation identifier() {
         return identifier;
     }

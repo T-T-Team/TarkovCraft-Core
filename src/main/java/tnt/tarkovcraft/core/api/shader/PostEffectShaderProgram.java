@@ -10,9 +10,9 @@ public interface PostEffectShaderProgram {
 
     void tickProgram(Minecraft client, LivingEntity cameraEntity);
 
-    boolean shouldRender();
+    boolean active();
 
-    void renderTick(float delta, UniformSetter uniformSetter);
+    void onRender(float delta, UniformSetter uniformSetter);
 
     @FunctionalInterface
     interface UniformSetter {

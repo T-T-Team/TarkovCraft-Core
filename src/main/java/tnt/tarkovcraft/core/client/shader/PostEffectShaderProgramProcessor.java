@@ -48,7 +48,7 @@ public final class PostEffectShaderProgramProcessor {
         }
         this.registeredShaders.forEach(program -> {
             program.tickProgram(client, entity);
-            if (!this.activeShaderIds.contains(program.postChainId()) && program.shouldRender()) {
+            if (!this.activeShaderIds.contains(program.postChainId()) && program.active()) {
                 TarkovCraftCore.LOGGER.debug(MARKER, "Activating shader {}", program.postChainId());
                 this.pendingActivation.add(program);
             }
@@ -102,11 +102,11 @@ public final class PostEffectShaderProgramProcessor {
     private record ShaderInstanceHolder(PostEffectShaderProgram program, PostChain postChain) {
 
         boolean canRender() {
-            return this.program.shouldRender();
+            return this.program.active();
         }
 
         void render(float delta) {
-            this.program.renderTick(delta, this.postChain::setUniform);
+            this.program.onRender(delta, this.postChain::setUniform);
             this.postChain.process(delta);
         }
 

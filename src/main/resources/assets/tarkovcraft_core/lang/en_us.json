@@ -26,6 +26,9 @@
   "attribute.tarkovcraft_core.memory_forget_amount_multiplier": "Skill forget amount multiplier",
   "attribute.tarkovcraft_core.weight_limit": "Weight limit",
   "attribute.tarkovcraft_core.weight_effect_factor": "Weight effect factor",
+  "attribute.tarkovcraft_core.vision": "Vision",
+  "attribute.tarkovcraft_core.hearing": "Hearing",
+  "attribute.tarkovcraft_core.hearing_distortion": "Hearing distortion",
 
   "stat.tarkovcraft_core.kills": "Total kills",
   "stat.tarkovcraft_core.deaths": "Total deaths",

@@ -11,6 +11,6 @@
     "ServerPlayerMixin"
   ],
   "client": [
-
+    "client.GameRendererMixin"
   ]
 }
