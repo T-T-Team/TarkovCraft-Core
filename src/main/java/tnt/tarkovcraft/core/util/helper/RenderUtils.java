@@ -1,7 +1,7 @@
 package tnt.tarkovcraft.core.util.helper;
 
 import net.minecraft.client.gui.ActiveTextCollector;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -26,11 +26,11 @@ public final class RenderUtils {
         return a > limit;
     }
 
-    public static void blitFull(GuiGraphics graphics, Identifier icon, int x1, int y1, int x2, int y2) {
+    public static void blitFull(GuiGraphicsExtractor graphics, Identifier icon, int x1, int y1, int x2, int y2) {
         blitFull(graphics, icon, x1, y1, x2, y2, -1);
     }
 
-    public static void blitFull(GuiGraphics graphics, Identifier icon, int x1, int y1, int x2, int y2, int color) {
+    public static void blitFull(GuiGraphicsExtractor graphics, Identifier icon, int x1, int y1, int x2, int y2, int color) {
         graphics.innerBlit(
                 RenderPipelines.GUI_TEXTURED,
                 icon,
@@ -41,11 +41,11 @@ public final class RenderUtils {
         );
     }
 
-    public static void fill(GuiGraphics graphics, float x1, float y1, float x2, float y2, int color) {
+    public static void fill(GuiGraphicsExtractor graphics, float x1, float y1, float x2, float y2, int color) {
         fillGradient(graphics, x1, y1, x2, y2, color, color);
     }
 
-    public static void fillGradient(GuiGraphics graphics, float x1, float y1, float x2, float y2, int colorFrom, int colorTo) {
+    public static void fillGradient(GuiGraphicsExtractor graphics, float x1, float y1, float x2, float y2, int colorFrom, int colorTo) {
         Matrix3x2f pose = new Matrix3x2f(graphics.pose());
         ScreenRectangle scissor = graphics.peekScissorStack();
         ScreenRectangle bounds = getBounds(pose, scissor, x1, y1, x2, y2);
@@ -57,11 +57,11 @@ public final class RenderUtils {
         return scissor != null ? scissor.intersection(screenrectangle) : screenrectangle;
     }
 
-    public static void fillDarkenGradient(GuiGraphics graphics, float x1, float y1, float x2, float y2, int colorFrom, float rgbScale) {
+    public static void fillDarkenGradient(GuiGraphicsExtractor graphics, float x1, float y1, float x2, float y2, int colorFrom, float rgbScale) {
         fillGradient(graphics, x1, y1, x2, y2, colorFrom, ARGB.scaleRGB(colorFrom, rgbScale));
     }
 
-    public static void fillDarkenGradient(GuiGraphics graphics, float x1, float y1, float x2, float y2, int colorFrom) {
+    public static void fillDarkenGradient(GuiGraphicsExtractor graphics, float x1, float y1, float x2, float y2, int colorFrom) {
         fillDarkenGradient(graphics, x1, y1, x2, y2, colorFrom, 0.8F);
     }
 

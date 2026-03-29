@@ -1,11 +1,11 @@
 package tnt.tarkovcraft.core.client.screen.renderable;
 
-import net.minecraft.util.Util;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 import tnt.tarkovcraft.core.client.screen.ColorPalette;
 import tnt.tarkovcraft.core.util.HorizontalAlignment;
 import tnt.tarkovcraft.core.util.VerticalAlignment;
@@ -74,7 +74,7 @@ public class LabelRenderable extends AbstractRenderable {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         int textWidth = this.font.width(this.text);
         int xText = Mth.floor(this.horizontalAlignment.getPosition(this.x, this.getRight(), textWidth));
         int yText = Mth.floor(this.verticalAlignment.getPosition(this.y, this.getBottom(), this.font.lineHeight));
@@ -85,7 +85,7 @@ public class LabelRenderable extends AbstractRenderable {
         }
     }
 
-    protected void renderScrollingText(GuiGraphics graphics, int x, int y, int textWidth) {
+    protected void renderScrollingText(GuiGraphicsExtractor graphics, int x, int y, int textWidth) {
         if (textWidth > this.width) {
             int overflow = textWidth - this.width;
             double timer = Util.getMillis() / this.scrollingSpeed;
@@ -93,14 +93,14 @@ public class LabelRenderable extends AbstractRenderable {
             double d2 = Math.sin((Math.PI / 2) * Math.cos((Math.PI / 2) * timer / d1)) / 2.0 + 0.5;
             double d3 = Mth.lerp(d2, 0.0, overflow);
             this.startScissor(graphics);
-            graphics.drawString(this.font, this.text, this.xOffset + this.x - (int) d3, this.yOffset + y, this.textColor, this.shadow);
+            graphics.text(this.font, this.text, this.xOffset + this.x - (int) d3, this.yOffset + y, this.textColor, this.shadow);
             this.endScissor(graphics);
         } else {
             this.renderStaticText(graphics, x, y);
         }
     }
 
-    protected void renderStaticText(GuiGraphics graphics, int x, int y) {
-        graphics.drawString(this.font, this.text, this.xOffset + x, this.yOffset + y, this.textColor, this.shadow);
+    protected void renderStaticText(GuiGraphicsExtractor graphics, int x, int y) {
+        graphics.text(this.font, this.text, this.xOffset + x, this.yOffset + y, this.textColor, this.shadow);
     }
 }

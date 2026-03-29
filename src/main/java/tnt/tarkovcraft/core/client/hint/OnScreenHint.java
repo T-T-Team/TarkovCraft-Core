@@ -2,14 +2,11 @@ package tnt.tarkovcraft.core.client.hint;
 
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
-/**
- * Register custom hints using {@link tnt.tarkovcraft.core.client.overlay.OnScreenHintLayer#register(OnScreenHint)}
- */
 public interface OnScreenHint {
 
-    void render(GuiGraphics graphics, Font font, Window window, int x, int y, int width, int height, float delta);
+    void extract(GuiGraphicsExtractor graphics, Font font, Window window, int x, int y, int width, int height, float delta);
 
     void onHintUpdate();
 

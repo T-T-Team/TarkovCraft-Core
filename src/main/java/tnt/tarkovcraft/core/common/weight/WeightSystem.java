@@ -12,7 +12,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemInstance;
 import net.neoforged.fml.ModLoader;
 import net.neoforged.neoforge.common.NeoForge;
 import org.apache.logging.log4j.Marker;
@@ -57,8 +57,8 @@ public class WeightSystem {
         return TarkovCraftCore.getConfig().weightConfig.calculateContainerWeight;
     }
 
-    public static int getItemWeight(ItemStack itemStack) {
-        return INSTANCE.getWeight(itemStack);
+    public static int getItemWeight(ItemInstance instance) {
+        return INSTANCE.getWeight(instance);
     }
 
     public static int getWeight(LivingEntity entity) {
@@ -124,15 +124,15 @@ public class WeightSystem {
         }
     }
 
-    public int getWeight(ItemStack itemStack) {
+    public int getWeight(ItemInstance instance) {
         if (!isEnabled())
             return 0;
-        int count = itemStack.getCount();
-        int baseWeight = itemStack.getOrDefault(CoreItemDataComponents.WEIGHT, 0);
+        int count = instance.count();
+        int baseWeight = instance.getOrDefault(CoreItemDataComponents.WEIGHT, 0);
         int weight = count * baseWeight;
         if (isContainerWeightEnabled()) {
             Collection<WeightProvider> additionalWeightProviders = this.typeProviderMap.get(WeightProvider.WeightSource.ITEM);
-            WeightContext itemCtx = WeightContext.itemStack(baseWeight, itemStack, this::getWeight);
+            WeightContext itemCtx = WeightContext.itemStack(baseWeight, instance, this::getWeight);
             for (WeightProvider provider : additionalWeightProviders) {
                 weight += (count * provider.getWeight(itemCtx));
             }

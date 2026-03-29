@@ -9,6 +9,7 @@ import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
+@Deprecated
 public class CallbackAttachmentSerializer<V> implements IAttachmentSerializer<V> {
 
     private final MapCodec<V> codec;

@@ -2,7 +2,8 @@ package tnt.tarkovcraft.core.common.weight.provider;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemInstance;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.component.BundleContents;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.weight.WeightContext;
@@ -14,12 +15,12 @@ public class BundleWeightProvider implements WeightProvider {
 
     @Override
     public int getWeight(WeightContext context) {
-        ItemStack itemStack = context.itemStack();
-        if (!itemStack.has(DataComponents.BUNDLE_CONTENTS))
+        ItemInstance instance = context.item();
+        if (!instance.has(DataComponents.BUNDLE_CONTENTS))
             return 0;
-        BundleContents contents = itemStack.get(DataComponents.BUNDLE_CONTENTS);
+        BundleContents contents = instance.get(DataComponents.BUNDLE_CONTENTS);
         int weight = 0;
-        for (ItemStack bundleItemStack : contents.items()) {
+        for (ItemStackTemplate bundleItemStack : contents.items()) {
             weight += context.getWeight(bundleItemStack);
         }
         return weight;

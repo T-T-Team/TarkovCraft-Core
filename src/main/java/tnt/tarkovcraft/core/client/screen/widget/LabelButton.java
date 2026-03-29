@@ -2,7 +2,7 @@ package tnt.tarkovcraft.core.client.screen.widget;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import tnt.tarkovcraft.core.client.screen.ColorPalette;
 import tnt.tarkovcraft.core.util.helper.RenderUtils;
@@ -45,14 +45,14 @@ public class LabelButton extends Button {
     }
 
     @Override
-    protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float renderTick) {
+    protected void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float renderTick) {
         Font font = Minecraft.getInstance().font;
         int background = this.isActive() ? this.isHoveredOrFocused() ? this.backgroundHoverColor : this.backgroundColor : this.backgroundDisabledColor;
         if (RenderUtils.isVisibleColor(background)) {
             guiGraphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), background);
         }
         int color = this.isActive() ? this.isHoveredOrFocused() ? this.colorSelected : this.color : this.colorDisabled;
-        guiGraphics.drawString(
+        guiGraphics.text(
                 font,
                 this.getMessage().getString(),
                 (int) (this.getX() + (this.getWidth() - font.width(this.getMessage())) / 2.0F),

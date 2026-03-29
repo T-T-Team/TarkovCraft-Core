@@ -1,6 +1,6 @@
 package tnt.tarkovcraft.core.client.screen.renderable;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 
 public class VerticalLineRenderable implements Renderable {
@@ -18,7 +18,7 @@ public class VerticalLineRenderable implements Renderable {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int i, int i1, float v) {
-        guiGraphics.vLine(this.x, this.minY, this.maxY, this.color);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int i, int i1, float v) {
+        guiGraphics.verticalLine(this.x, this.minY, this.maxY, this.color);
     }
 }

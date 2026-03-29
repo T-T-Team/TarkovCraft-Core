@@ -8,10 +8,12 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import tnt.tarkovcraft.core.common.init.CoreItemDataComponents;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 
+@Deprecated
 public record Currency(Holder<CurrencyType> type, int amount) {
 
     public static final Codec<Currency> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -60,7 +62,7 @@ public record Currency(Holder<CurrencyType> type, int amount) {
         itemStack.set(CoreItemDataComponents.CURRENCY, this);
     }
 
-    public static Currency getFromItemStack(ItemStack stack) {
-        return !stack.isEmpty() ? stack.get(CoreItemDataComponents.CURRENCY) : null;
+    public static Currency getFromItemStack(ItemInstance instance) {
+        return instance != null ? instance.get(CoreItemDataComponents.CURRENCY) : null;
     }
 }

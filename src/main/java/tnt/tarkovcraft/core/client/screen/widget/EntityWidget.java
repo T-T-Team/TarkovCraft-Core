@@ -1,6 +1,6 @@
 package tnt.tarkovcraft.core.client.screen.widget;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -29,12 +29,12 @@ public class EntityWidget extends AbstractWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         guiGraphics.enableScissor(this.getX(), this.getY(), this.getRight(), this.getBottom());
         if (RenderUtils.isVisibleColor(this.background)) {
             guiGraphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), this.background);
         }
-        InventoryScreen.renderEntityInInventoryFollowsMouse(
+        InventoryScreen.extractEntityInInventoryFollowsMouse(
                 guiGraphics,
                 this.getX(), this.getY(), this.getRight(), this.getBottom(),
                 Mth.floor(Math.min(this.width, this.height) / 3.0F),

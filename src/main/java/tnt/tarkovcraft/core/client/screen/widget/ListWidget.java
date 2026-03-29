@@ -1,6 +1,6 @@
 package tnt.tarkovcraft.core.client.screen.widget;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -44,7 +44,7 @@ public class ListWidget<T extends AbstractWidget> extends AbstractWidget impleme
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         guiGraphics.enableScissor(this.getX(), this.getY(), this.getRight(), this.getBottom());
         if (RenderUtils.isVisibleColor(this.backgroundColor)) {
             guiGraphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), this.backgroundColor);
@@ -60,7 +60,7 @@ public class ListWidget<T extends AbstractWidget> extends AbstractWidget impleme
                 continue;
             }
             wasVisible = true;
-            item.render(guiGraphics, mouseX, mouseY, partialTick);
+            item.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
             item.setY(oldY);
         }
         guiGraphics.disableScissor();

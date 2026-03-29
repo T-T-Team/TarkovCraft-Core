@@ -2,7 +2,7 @@ package tnt.tarkovcraft.core.client.hint;
 
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import tnt.tarkovcraft.core.client.screen.ColorPalette;
 
@@ -17,8 +17,8 @@ public class LabelOnScreenHint implements OnScreenHint {
     }
 
     @Override
-    public void render(GuiGraphics graphics, Font font, Window window, int x, int y, int width, int height, float delta) {
-        graphics.drawString(font, this.label, x, y + this.getHeightOffset(), this.getTextColor(), this.enableTextShadow());
+    public void extract(GuiGraphicsExtractor graphics, Font font, Window window, int x, int y, int width, int height, float delta) {
+        graphics.text(font, this.label, x, y + this.getHeightOffset(), this.getTextColor(), this.enableTextShadow());
     }
 
     @Override

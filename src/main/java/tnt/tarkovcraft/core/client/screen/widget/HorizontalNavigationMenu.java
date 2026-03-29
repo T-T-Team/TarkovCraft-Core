@@ -1,6 +1,6 @@
 package tnt.tarkovcraft.core.client.screen.widget;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
@@ -30,12 +30,12 @@ public class HorizontalNavigationMenu<W extends AbstractWidget> extends Abstract
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         guiGraphics.enableScissor(this.getX(), this.getY(), this.getRight(), this.getBottom());
         int offset = 0;
         for (W widget : this.navigationMenuEntries) {
             widget.setX(this.getX() + offset + 2 - (int) this.pageOffset);
-            widget.render(guiGraphics, mouseX, mouseY, partialTicks);
+            widget.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
             offset += widget.getWidth() + 2;
         }
         guiGraphics.disableScissor();

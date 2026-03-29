@@ -1,7 +1,7 @@
 package tnt.tarkovcraft.core.client.screen.renderable;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import tnt.tarkovcraft.core.client.notification.NotificationChannel;
 import tnt.tarkovcraft.core.client.notification.NotificationLayer;
@@ -28,7 +28,7 @@ public class NotificationChannelRenderable implements Renderable {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         NotificationLayer.drawNotifications(guiGraphics, this.font, this.windowWidth, this.windowHeight, this.getChannel(), this.maxWidth.applyAsInt(this.windowWidth));
     }
 

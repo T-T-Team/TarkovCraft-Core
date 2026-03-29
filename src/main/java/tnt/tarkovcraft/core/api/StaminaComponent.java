@@ -4,7 +4,7 @@ import net.minecraft.world.entity.LivingEntity;
 
 public interface StaminaComponent {
 
-    boolean shouldRenderOverlay(LivingEntity entity);
+    boolean isOverlayVisible(LivingEntity entity);
 
     float getStamina(LivingEntity entity);
 

@@ -1,7 +1,7 @@
 package tnt.tarkovcraft.core.client.screen.renderable;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import tnt.tarkovcraft.core.client.IconWithLabel;
@@ -44,7 +44,7 @@ public class IconWithLabelRenderable extends AbstractRenderable {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         Identifier icon = this.iconWithLabel.icon();
         Component label = this.iconWithLabel.getLabel();
         int itemWidth = this.font.width(label);
@@ -57,6 +57,6 @@ public class IconWithLabelRenderable extends AbstractRenderable {
             left += this.iconSize + this.horizontalTextOffset;
         }
 
-        guiGraphics.drawString(this.font, this.iconWithLabel.getLabel(), left, this.y - (this.height - this.font.lineHeight) / 2 + this.verticalTextOffset, this.iconWithLabel.labelColor(), this.textShadow);
+        guiGraphics.text(this.font, this.iconWithLabel.getLabel(), left, this.y - (this.height - this.font.lineHeight) / 2 + this.verticalTextOffset, this.iconWithLabel.labelColor(), this.textShadow);
     }
 }

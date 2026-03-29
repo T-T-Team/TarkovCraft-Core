@@ -16,11 +16,11 @@ import tnt.tarkovcraft.core.TarkovCraftCore;
 public final class EntityHelper {
 
     /**
-     * Gives specified itemStack to player, either as a mail attachment or as a direct inventory transfer. If the
+     * Gives specified template to player, either as a mail attachment or as a direct inventory transfer. If the
      * player inventory is full and cannot accept the itemstack, it is dropped as entity in world. And in case the
      * entity creation fails, it can be sent to mail instead.
      *
-     * @param itemstack Sent itemStack instance to be received by player
+     * @param itemstack Sent template instance to be received by player
      * @param player Target player entity
      */
     public static void giveItem(ItemStack itemstack, Player player) {
@@ -65,11 +65,15 @@ public final class EntityHelper {
         }
     }
 
-    public static void displayClientMessage(Entity entity, Component message, boolean actionBar) {
+    public static void displayClientMessage(Entity entity, Component message, boolean overlay) {
         if (!(entity instanceof ServerPlayer player)) {
             return;
         }
-        player.displayClientMessage(message, actionBar);
+        if (overlay) {
+            player.sendOverlayMessage(message);
+        } else {
+            player.sendSystemMessage(message);
+        }
     }
 
     public static void displayClientMessage(Entity entity, Component message) {

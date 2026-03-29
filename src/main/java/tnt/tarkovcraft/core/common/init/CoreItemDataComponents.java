@@ -18,6 +18,7 @@ public final class CoreItemDataComponents {
             .persistent(Codecs.NON_NEGATIVE_INT)
             .networkSynchronized(ByteBufCodecs.INT)
     );
+    @Deprecated
     public static final Supplier<DataComponentType<Currency>> CURRENCY = REGISTRY.registerComponentType("currency", builder -> builder
             .persistent(Currency.CODEC)
             .networkSynchronized(Currency.STREAM_CODEC)

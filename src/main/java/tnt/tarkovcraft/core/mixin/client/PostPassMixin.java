@@ -14,7 +14,7 @@ import tnt.tarkovcraft.core.client.shader.PostEffectShaderProgramProcessor;
 public abstract class PostPassMixin {
 
     @Inject(
-            method = "lambda$addToFrame$5",
+            method = "lambda$addToFrame$1",
             at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;bindDefaultUniforms(Lcom/mojang/blaze3d/systems/RenderPass;)V")
     )
     private void tarkovCraftCore$lambda$addToFrame$5(CallbackInfo ci, @Local RenderPass pass) {

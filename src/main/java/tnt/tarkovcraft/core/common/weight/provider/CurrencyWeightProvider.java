@@ -1,6 +1,7 @@
 package tnt.tarkovcraft.core.common.weight.provider;
 
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.item.Currency;
@@ -18,8 +19,8 @@ public class CurrencyWeightProvider implements WeightProvider {
 
     @Override
     public int getWeight(WeightContext weightContext) {
-        ItemStack itemStack = weightContext.itemStack();
-        Currency currency = Currency.getFromItemStack(itemStack);
+        ItemInstance instance = weightContext.item();
+        Currency currency = Currency.getFromItemStack(instance);
         if (currency == null)
             return 0;
         int baseWeight = weightContext.baseWeight();

@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import net.neoforged.fml.ModLoader;
 import net.neoforged.neoforge.client.gui.GuiLayer;
@@ -31,7 +31,7 @@ public final class OnScreenHintLayer implements GuiLayer {
         HINTS.forEach(OnScreenHint::onHintUpdate);
     }
 
-    public void render(GuiGraphics graphics, DeltaTracker deltaTracker) {
+    public void render(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
         OnScreenHintDisplay displayMode = TarkovCraftCoreClient.getConfig().hintDisplayMode;
         if (displayMode == OnScreenHintDisplay.NONE)
             return;
@@ -50,7 +50,7 @@ public final class OnScreenHintLayer implements GuiLayer {
                 int height = hint.getHintHeight(window, font);
                 int y = top - offset - height;
                 graphics.enableScissor(left, y, left + width, y + height);
-                hint.render(graphics, font, window, left, y, width, height, delta);
+                hint.extract(graphics, font, window, left, y, width, height, delta);
                 graphics.disableScissor();
                 offset += height;
             }

@@ -9,7 +9,7 @@ public class DefaultMovementStaminaComponent implements MovementStaminaComponent
     public static final DefaultMovementStaminaComponent INSTANCE = new DefaultMovementStaminaComponent();
 
     @Override
-    public boolean shouldRenderOverlay(LivingEntity entity) {
+    public boolean isOverlayVisible(LivingEntity entity) {
         return false;
     }
 

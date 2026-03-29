@@ -3,7 +3,7 @@ package tnt.tarkovcraft.core.client.hint;
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import tnt.tarkovcraft.core.client.screen.ColorPalette;
 
@@ -16,7 +16,7 @@ public class KeybindOnScreenHint implements OnScreenHint {
     }
 
     @Override
-    public void render(GuiGraphics graphics, Font font, Window window, int x, int y, int width, int height, float delta) {
+    public void extract(GuiGraphicsExtractor graphics, Font font, Window window, int x, int y, int width, int height, float delta) {
         Component eventLabel = this.bind.getDisplayName();
         Component keyLabel = this.bind.getTranslatedKeyMessage();
 
@@ -24,9 +24,9 @@ public class KeybindOnScreenHint implements OnScreenHint {
         int bgHeight = height - 3;
         graphics.fill(x, y + 2, x + keyWidth + 5, y + 2 + bgHeight, ColorPalette.BLACK);
         graphics.fill(x + 1, y + 3, x + keyWidth + 4, y + 1 + bgHeight, ColorPalette.GOLD);
-        graphics.drawString(font, keyLabel, x + 3, y + 5, this.bind.isDown() ? ColorPalette.WHITE : ColorPalette.BLACK, false);
+        graphics.text(font, keyLabel, x + 3, y + 5, this.bind.isDown() ? ColorPalette.WHITE : ColorPalette.BLACK, false);
 
-        graphics.drawString(font, eventLabel, x + keyWidth + 9, y + 5, ColorPalette.WHITE, true);
+        graphics.text(font, eventLabel, x + keyWidth + 9, y + 5, ColorPalette.WHITE, true);
     }
 
     @Override

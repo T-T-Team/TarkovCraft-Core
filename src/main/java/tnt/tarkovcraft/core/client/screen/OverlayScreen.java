@@ -1,6 +1,6 @@
 package tnt.tarkovcraft.core.client.screen;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -11,7 +11,7 @@ public abstract class OverlayScreen extends LayeredScreen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.parent.render(guiGraphics, -1, -1, partialTick);
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        this.parent.extractRenderState(guiGraphics, -1, -1, partialTick);
     }
 }

@@ -8,7 +8,7 @@ public class NoArmStaminaComponent implements ArmStaminaComponent {
     public static final NoArmStaminaComponent INSTANCE = new NoArmStaminaComponent();
 
     @Override
-    public boolean shouldRenderOverlay(LivingEntity entity) {
+    public boolean isOverlayVisible(LivingEntity entity) {
         return false;
     }
 

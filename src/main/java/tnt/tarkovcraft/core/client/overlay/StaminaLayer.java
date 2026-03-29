@@ -3,7 +3,7 @@ package tnt.tarkovcraft.core.client.overlay;
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,7 +23,7 @@ public class StaminaLayer implements GuiLayer {
     public static final int BAR_WIDTH = 80;
 
     @Override
-    public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+    public void render(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
         Minecraft client = Minecraft.getInstance();
         Window window = client.getWindow();
         Entity entity = client.getCameraEntity();
@@ -40,11 +40,11 @@ public class StaminaLayer implements GuiLayer {
         }
     }
 
-    private void renderStaminaOverlay(GuiGraphics graphics, Window window, StaminaConfigurableOverlay overlay, LivingEntity entity, Component<? extends StaminaComponent> intgComponent) {
+    private void renderStaminaOverlay(GuiGraphicsExtractor graphics, Window window, StaminaConfigurableOverlay overlay, LivingEntity entity, Component<? extends StaminaComponent> intgComponent) {
         if (!overlay.enabled)
             return;
         StaminaComponent component = intgComponent.getComponent();
-        if (!component.shouldRenderOverlay(entity))
+        if (!component.isOverlayVisible(entity))
             return;
         float stamina = component.getStamina(entity);
         float maxStamina = component.getMaxStamina(entity);

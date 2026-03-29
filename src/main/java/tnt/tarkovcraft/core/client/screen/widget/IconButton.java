@@ -1,6 +1,6 @@
 package tnt.tarkovcraft.core.client.screen.widget;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.InputWithModifiers;
@@ -45,7 +45,7 @@ public class IconButton extends AbstractButton {
     }
 
     @Override
-    protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float renderTick) {
+    protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float renderTick) {
         if (this.isHoveredOrFocused() && this.hoverBackground != null) {
             graphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), this.hoverBackground);
         }
