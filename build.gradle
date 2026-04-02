@@ -66,7 +66,7 @@ configurations {
 }
 
 dependencies {
-    implementation "dev.toma.configuration:configuration-${project.minecraft_version}:${project.configuration}-neoforge"
+    implementation "dev.toma.configuration:configuration-${project.libraries_mc_version}:${project.configuration}-neoforge"
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
