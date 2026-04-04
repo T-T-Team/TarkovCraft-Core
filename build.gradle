@@ -13,7 +13,7 @@ tasks.named('wrapper', Wrapper).configure {
     distributionType = Wrapper.DistributionType.BIN
 }
 
-version = mod_version
+version = "${mod_version}+${minecraft_version}"
 group = mod_group_id
 
 repositories {
@@ -22,10 +22,6 @@ repositories {
         name 'Configuration'
         url 'https://repo.repsy.io/mvn/toma/public/'
     }
-}
-
-base {
-    archivesName = "${mod_id}-${minecraft_version}"
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
@@ -67,6 +63,10 @@ configurations {
 
 dependencies {
     implementation "dev.toma.configuration:configuration-${project.minecraft_version}:${project.configuration}-neoforge"
+}
+
+jar {
+    archiveFileName = "${mod_id}-neoforge-${project.version}.jar"
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
