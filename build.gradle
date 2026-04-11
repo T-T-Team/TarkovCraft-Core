@@ -62,11 +62,7 @@ configurations {
 }
 
 dependencies {
-    implementation "dev.toma.configuration:configuration-${project.minecraft_version}:${project.configuration}-neoforge"
-}
-
-jar {
-    archiveFileName = "${mod_id}-neoforge-${project.version}.jar"
+    implementation "dev.toma.configuration:configuration-neoforge:${project.configuration}"
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
@@ -94,21 +90,12 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
 sourceSets.main.resources.srcDir generateModMetadata
 neoForge.ideSyncTask generateModMetadata
 
-publishing {
-    publications {
-        register('mavenJava', MavenPublication) {
-            from components.java
-        }
-    }
-    repositories {
-        maven {
-            url "file://${project.projectDir}/repo"
-        }
-    }
-}
-
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+}
+
+tasks.withType(Jar).configureEach {
+    archiveBaseName = "${mod_id}-neoforge"
 }
 
 tasks.register('publishToCurseForge', TaskPublishCurseForge) {
