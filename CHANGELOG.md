@@ -1,4 +1,2 @@
-# Release 1.21.11-2.1.0
-- Improved number formatters
-- Decal logic improvements
-- More common API extensions
+# Release 2.3.0+1.21.11
+- Backport of 2.3.0 features to 1.21.11
