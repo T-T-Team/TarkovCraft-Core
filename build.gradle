@@ -191,7 +191,8 @@ def getReleaseChannel() {
     } else if (versionString.contains("alpha")) {
         return Constants.RELEASE_TYPE_ALPHA
     } else if (versionString.contains("dev")) {
-        if (isPublishing())
+        boolean devChannelAllowed = project.hasProperty("IGNORE_CHANNEL") ? Boolean.parseBoolean(project.findProperty("IGNORE_CHANNEL").toString()) : false
+        if (isPublishing() && !devChannelAllowed)
             throw new GradleException("Attempted to publish development version: " + versionString)
         return null
     } else {
