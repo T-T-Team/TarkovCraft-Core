@@ -68,8 +68,9 @@ public class ListWidget<T extends AbstractWidget> extends AbstractWidget impleme
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        T item = this.getItemAt(mouseX, mouseY);
-        if (item != null && item.isMouseOver(mouseX, mouseY) && item.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) {
+        double adjustedPositionY = mouseY - this.getY() - this.scroll;
+        T item = this.getItemAt(mouseX, adjustedPositionY);
+        if (item != null && item.isMouseOver(mouseX, adjustedPositionY) && item.mouseScrolled(mouseX, adjustedPositionY, scrollX, scrollY)) {
             return true;
         }
         double oldScroll = this.scroll;
@@ -82,13 +83,14 @@ public class ListWidget<T extends AbstractWidget> extends AbstractWidget impleme
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        T item = this.getItemAt(event.x(), event.y());
-        return item != null && item.mouseClicked(event, doubleClick);
+        double eventY = event.y() - this.getY() - this.scroll;
+        T item = this.getItemAt(event.x(), eventY);
+        return item != null && item.mouseClicked(new MouseButtonEvent(event.x(), eventY, event.buttonInfo()), doubleClick);
     }
 
     public T getItemAt(double x, double y) {
         for (T item : this.getItems()) {
-            if (item.isMouseOver(x, y - this.scroll)) {
+            if (item.isMouseOver(x, y)) {
                 return item;
             }
         }
