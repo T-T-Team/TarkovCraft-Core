@@ -73,7 +73,7 @@ configurations {
 }
 
 dependencies {
-    implementation "dev.toma.configuration:configuration-${project.minecraft_version}:${project.configuration}"
+    implementation "dev.toma.configuration:configuration-${project.minecraft_version}:${project.configuration}-neoforge"
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
@@ -101,21 +101,12 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
 sourceSets.main.resources.srcDir generateModMetadata
 neoForge.ideSyncTask generateModMetadata
 
-publishing {
-    publications {
-        register('mavenJava', MavenPublication) {
-            from components.java
-        }
-    }
-    repositories {
-        maven {
-            url "file://${project.projectDir}/repo"
-        }
-    }
-}
-
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+}
+
+tasks.withType(Jar).configureEach {
+    archiveBaseName = "${mod_id}-neoforge"
 }
 
 tasks.register('publishToCurseForge', TaskPublishCurseForge) {
@@ -185,8 +176,9 @@ publishing {
     }
 
     repositories {
+        String mavenType = getReleaseChannel() == null ? "MAVEN_PRIVATE_URL" : "MAVEN_PUBLIC_URL"
         maven {
-            url = uri(project.findProperty("MAVEN_PUBLIC_URL").toString() ?: "")
+            url = uri(project.findProperty(mavenType).toString() ?: "")
             credentials {
                 username project.findProperty("MAVEN_USERNAME").toString() ?: ""
                 password project.findProperty("MAVEN_PASSWORD").toString() ?: ""
