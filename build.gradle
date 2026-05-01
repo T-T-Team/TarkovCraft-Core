@@ -170,8 +170,9 @@ publishing {
     }
 
     repositories {
+        String mavenType = getReleaseChannel() == null ? "MAVEN_PRIVATE_URL" : "MAVEN_PUBLIC_URL"
         maven {
-            url = uri(project.findProperty("MAVEN_PUBLIC_URL").toString() ?: "")
+            url = uri(project.findProperty(mavenType).toString() ?: "")
             credentials {
                 username project.findProperty("MAVEN_USERNAME").toString() ?: ""
                 password project.findProperty("MAVEN_PASSWORD").toString() ?: ""

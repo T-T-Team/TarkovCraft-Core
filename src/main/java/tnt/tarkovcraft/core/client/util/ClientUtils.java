@@ -3,10 +3,13 @@ package tnt.tarkovcraft.core.client.util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.Identifier;
 
 import java.util.Objects;
 
 public final class ClientUtils {
+
+    public static final Identifier SLOT_SPRITE = Identifier.withDefaultNamespace("container/slot");
 
     public static RegistryAccess getClientRegistryAccess() {
         Minecraft mc = Minecraft.getInstance();
