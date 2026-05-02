@@ -1,80 +1,143 @@
 package tnt.tarkovcraft.core.client.shader;
 
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.resource.CrossFrameResourcePool;
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelTargetBundle;
 import net.minecraft.client.renderer.PostChain;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.fml.ModLoader;
-import org.jspecify.annotations.Nullable;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
+import org.jetbrains.annotations.NotNull;
+import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.api.event.client.RegisterPostShaderProgramsEvent;
 import tnt.tarkovcraft.core.api.shader.PostEffectShaderProgram;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public final class PostEffectShaderProgramProcessor {
 
+    public static final Marker MARKER = MarkerManager.getMarker("Shaders");
     public static final PostEffectShaderProgramProcessor INSTANCE = new PostEffectShaderProgramProcessor();
+    private final List<PostEffectShaderProgram> registeredShaders = new ArrayList<>();
+    private final Set<PostEffectShaderProgram> pendingActivation = new HashSet<>();
+    private final Set<ResourceLocation> activeShaderIds = new HashSet<>();
+    private final Set<ShaderInstanceHolder> activeShaders = new HashSet<>();
 
-    private final List<PostEffectShaderProgram> registeredPrograms = new ArrayList<>();
-    private final Set<Identifier> dynamicPipelines = new HashSet<>();
-    private GpuBufferSlice activeDynamicUniformBuffer;
-
-    private PostEffectShaderProgramProcessor() {
-    }
+    private PostEffectShaderProgramProcessor() {}
 
     public void init() {
         RegisterPostShaderProgramsEvent event = ModLoader.postEventWithReturn(new RegisterPostShaderProgramsEvent());
         synchronized (INSTANCE) {
-            this.registeredPrograms.addAll(event.getPrograms());
-            this.dynamicPipelines.addAll(event.getDynamicPipelines());
+            this.registeredShaders.addAll(event.getPrograms());
         }
-    }
-
-    public boolean isDynamicPipeline(RenderPipeline renderPipeline) {
-        return this.dynamicPipelines.contains(renderPipeline.getLocation());
     }
 
     public void tick() {
         Minecraft client = Minecraft.getInstance();
-        Entity camera = client.getCameraEntity();
-        if (camera == null || !camera.isAlive() || !(camera instanceof LivingEntity entity)) {
+        Entity cameraEntity = client.getCameraEntity();
+        if (
+                client.level == null ||
+                        cameraEntity == null ||
+                        !cameraEntity.isAlive() ||
+                        !(cameraEntity instanceof LivingEntity entity)
+        ) {
             return;
         }
-        this.registeredPrograms.forEach(program -> program.tickProgram(client, entity));
-    }
-
-    public void render(Minecraft client, CrossFrameResourcePool resourcePool, DeltaTracker deltaTracker) {
-        for (PostEffectShaderProgram program : this.registeredPrograms) {
-            if (program.active()) {
-                this.processSingleShader(program, client, resourcePool, deltaTracker);
+        this.registeredShaders.forEach(program -> {
+            program.tickProgram(client, entity);
+            if (!this.activeShaderIds.contains(program.postChainId()) && program.shouldRender()) {
+                TarkovCraftCore.LOGGER.debug(MARKER, "Activating shader {}", program.postChainId());
+                this.pendingActivation.add(program);
             }
+        });
+    }
+
+    public void render(float delta) {
+        RenderSystem.disableBlend();
+        RenderSystem.disableDepthTest();
+        RenderSystem.resetTextureMatrix();
+        this.loadPendingShaders();
+        Iterator<ShaderInstanceHolder> iterator = this.activeShaders.iterator();
+        while (iterator.hasNext()) {
+            ShaderInstanceHolder shader = iterator.next();
+            if (!shader.canRender()) {
+                TarkovCraftCore.LOGGER.debug(MARKER, "Disabling shader {}", shader);
+                shader.close();
+                this.activeShaderIds.remove(shader.program.postChainId());
+                iterator.remove();
+                return;
+            }
+            shader.render(delta);
         }
     }
 
-    public @Nullable GpuBufferSlice getActiveDynamicUniformBuffer() {
-        return this.activeDynamicUniformBuffer;
+    public void resize(int width, int height) {
+        this.activeShaders.forEach(shader -> shader.resize(width, height));
     }
 
-    private void processSingleShader(PostEffectShaderProgram program, Minecraft client, CrossFrameResourcePool resourcePool, DeltaTracker deltaTracker) {
-        Identifier postChainId = program.postChainId();
-        PostChain postChain = client.getShaderManager().getPostChain(postChainId, LevelTargetBundle.MAIN_TARGETS);
-        if (postChain != null) {
-            RenderSystem.pushPipelineModifier(DynamicTransformsPipelineModifier.KEY);
-            program.onRender(deltaTracker);
-            this.activeDynamicUniformBuffer = program.getDynamicUniformBuffer();
-            postChain.process(client.getMainRenderTarget(), resourcePool);
-            RenderSystem.popPipelineModifier();
+    private void loadPendingShaders() {
+        Minecraft minecraft = Minecraft.getInstance();
+        Iterator<PostEffectShaderProgram> iterator = this.pendingActivation.iterator();
+        while (iterator.hasNext()) {
+            PostEffectShaderProgram program = iterator.next();
+            ResourceLocation shaderLocation = program.postChainId().withPath(id -> "shaders/post/" + id + ".json");
+            TarkovCraftCore.LOGGER.debug(MARKER, "Loading post effect shader {}", shaderLocation);
+            try {
+                PostChain postChain = new PostChain(minecraft.getTextureManager(), minecraft.getResourceManager(), minecraft.getMainRenderTarget(), shaderLocation);
+                Window window = minecraft.getWindow();
+                ShaderInstanceHolder shader = new ShaderInstanceHolder(program, postChain);
+                shader.resize(window);
+                this.activeShaders.add(shader);
+                this.activeShaderIds.add(program.postChainId());
+            } catch (Exception e) {
+                TarkovCraftCore.LOGGER.error(MARKER, "Failed to load post effect shader {}", shaderLocation, e);
+            }
+            iterator.remove();
         }
-        this.activeDynamicUniformBuffer = null;
+    }
+
+    private record ShaderInstanceHolder(PostEffectShaderProgram program, PostChain postChain) {
+
+        boolean canRender() {
+            return this.program.shouldRender();
+        }
+
+        void render(float delta) {
+            this.program.renderTick(delta, this.postChain::setUniform);
+            this.postChain.process(delta);
+        }
+
+        void resize(Window window) {
+            this.resize(window.getWidth(), window.getHeight());
+        }
+
+        void resize(int width, int height) {
+            this.postChain.resize(width, height);
+        }
+
+        void close() {
+            this.postChain.close();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof PostEffectShaderProgram shaderProgram) {
+                return Objects.equals(this.program.postChainId(), shaderProgram.postChainId());
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(program.postChainId());
+        }
+
+        @Override
+        public @NotNull String toString() {
+            return this.program.postChainId().toString();
+        }
     }
 }

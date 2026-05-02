@@ -27,6 +27,7 @@ import tnt.tarkovcraft.core.client.overlay.DebugLayer;
 import tnt.tarkovcraft.core.client.overlay.OnScreenHintLayer;
 import tnt.tarkovcraft.core.client.overlay.StaminaLayer;
 import tnt.tarkovcraft.core.client.screen.navigation.CoreNavigators;
+import tnt.tarkovcraft.core.client.shader.PostEffectShaderProgramProcessor;
 import tnt.tarkovcraft.core.common.item.CurrencyItem;
 
 import static tnt.tarkovcraft.core.util.helper.TextHelper.createKeybindName;
@@ -69,6 +70,7 @@ public final class TarkovCraftCoreClient {
 
     private void setup(FMLClientSetupEvent event) {
         this.dispatchParallelRegistryEvents();
+        PostEffectShaderProgramProcessor.INSTANCE.init();
     }
 
     private void registerKeyBindings(RegisterKeyMappingsEvent event) {
@@ -104,8 +106,11 @@ public final class TarkovCraftCoreClient {
         if (screen == null) {
             NotificationChannel.MAIN.update();
         }
+        // on-screen guide tick
         if (minecraft.level != null) {
             this.hintUiLayer.tick();
+            // shader program tick
+            PostEffectShaderProgramProcessor.INSTANCE.tick();
         }
     }
 
