@@ -10,6 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
 import org.jspecify.annotations.Nullable;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.api.shader.PostEffectShaderProgram;
+import tnt.tarkovcraft.core.api.shader.ShaderType;
 import tnt.tarkovcraft.core.common.attribute.AttributeSystem;
 import tnt.tarkovcraft.core.common.init.CoreAttributes;
 
@@ -50,6 +51,11 @@ public final class BlindnessPostShaderProgram implements PostEffectShaderProgram
     @Override
     public Identifier postChainId() {
         return IDENTIFIER;
+    }
+
+    @Override
+    public ShaderType getShaderType() {
+        return ShaderType.GAME;
     }
 
     @Override

@@ -5,6 +5,7 @@ import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.Event;
 import net.neoforged.fml.event.IModBusEvent;
 import org.jetbrains.annotations.ApiStatus;
+import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.api.shader.PostEffectShaderProgram;
 
 import java.util.*;
@@ -14,18 +15,31 @@ public class RegisterPostShaderProgramsEvent extends Event implements IModBusEve
     private final List<PostEffectShaderProgram> programs = new ArrayList<>();
     private final Set<Identifier> dynamicPipelines = new HashSet<>();
 
-    public RegisterPostShaderProgramsEvent() {
+    private final boolean allowCosmeticShaderPrograms;
+
+    public RegisterPostShaderProgramsEvent(boolean allowCosmeticShaderPrograms) {
+        this.allowCosmeticShaderPrograms = allowCosmeticShaderPrograms;
     }
 
     public void register(PostEffectShaderProgram program) {
+        if (!this.allowCosmeticShaderPrograms && program.getShaderType().isCosmetic()) {
+            TarkovCraftCore.LOGGER.debug("Skipping registration of cosmetic shader program '{}'", program.postChainId());
+            return;
+        }
         this.programs.add(program);
     }
 
     public void registerMany(PostEffectShaderProgram... programs) {
-        this.programs.addAll(Arrays.asList(programs));
+        for (PostEffectShaderProgram program : programs) {
+            this.register(program);
+        }
     }
 
     public void registerWithDynamicPipeline(PostEffectShaderProgram program, Identifier... pipelines) {
+        if (!this.allowCosmeticShaderPrograms && program.getShaderType().isCosmetic()) {
+            TarkovCraftCore.LOGGER.debug("Skipping registration of cosmetic pipeline and shader program '{}'", program.postChainId());
+            return;
+        }
         this.programs.add(program);
         this.dynamicPipelines.addAll(Arrays.asList(pipelines));
     }

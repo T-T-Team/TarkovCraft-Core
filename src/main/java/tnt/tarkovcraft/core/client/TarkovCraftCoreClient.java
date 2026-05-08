@@ -83,7 +83,7 @@ public final class TarkovCraftCoreClient {
 
     private void setup(FMLClientSetupEvent event) {
         this.dispatchParallelRegistryEvents();
-        PostEffectShaderProgramProcessor.INSTANCE.init();
+        PostEffectShaderProgramProcessor.INSTANCE.init(config.enableCustomShaders);
     }
 
     private void registerKeyBindings(RegisterKeyMappingsEvent event) {

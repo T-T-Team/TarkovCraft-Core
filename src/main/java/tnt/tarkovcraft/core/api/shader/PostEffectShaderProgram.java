@@ -17,6 +17,8 @@ public interface PostEffectShaderProgram {
 
     Identifier postChainId();
 
+    ShaderType getShaderType();
+
     @Nullable default GpuBufferSlice getDynamicUniformBuffer() {
         return null;
     }
