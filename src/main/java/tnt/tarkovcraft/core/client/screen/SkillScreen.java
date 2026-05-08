@@ -69,7 +69,8 @@ public class SkillScreen extends CharacterSubScreen {
         SkillDefinition definition = skill.getDefinition().value();
         Collection<SkillTrackerDefinition> trackers = definition.trackers();
         List<Component> tooltip = new ArrayList<>();
-        tooltip.add(Component.translatable("tooltip.tarkovcraft_core.skill.skill_info").withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
+        tooltip.add(definition.getFormattedName(style -> style.applyFormats(ChatFormatting.BOLD, ChatFormatting.YELLOW)));
+        tooltip.add(Component.translatable("tooltip.tarkovcraft_core.skill.skill_info").withStyle(ChatFormatting.GRAY, ChatFormatting.UNDERLINE));
         trackers.stream().flatMap(def -> def.getInfoComponents().stream()).forEach(tooltip::add);
         widget.setDescription(tooltip);
         return widget;

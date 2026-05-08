@@ -10,14 +10,14 @@
   "skill.tarkovcraft_core.strength.bonus.weight_effects": "Negative Weight Effects",
   "skill.tarkovcraft_core.strength.bonus.weight_effects.description": "Reduces negative weight effects by %s",
 
-  "skill.trigger.tarkovcraft_core.player_tick.info": "On tick",
-  "skill.trigger.tarkovcraft_core.xp_pickup.info": "On XP pickup",
+  "skill.trigger.tarkovcraft_core.player_tick.info": "Passive",
+  "skill.trigger.tarkovcraft_core.xp_pickup.info": "On XP collection",
 
-  "skill.condition.sprinting": "Player must be sprinting",
-  "skill.condition.not_sprinting": "Player cannot be sprinting",
-  "skill.condition.config_toggle": "Config option '%s' must be enabled",
-  "skill.condition.overweight": "Player must be overweight",
-  "skill.condition.not": "Inverted: %s",
+  "skill.condition.sprinting": "Sprinting",
+  "skill.condition.not_sprinting": "Not sprinting",
+  "skill.condition.config_toggle": "Enabled '%s' in config",
+  "skill.condition.overweight": "Overweight",
+  "skill.condition.not": "Not: %s",
 
   "attribute.tarkovcraft_core.physical_leveling_multiplier": "Physical skill leveling multiplier",
   "attribute.tarkovcraft_core.practical_leveling_multiplier": "Practical skill leveling multiplier",
@@ -78,8 +78,8 @@
   "weight.unit.kg": "kilograms",
   "weight.unit.kg.short": "kg",
 
-  "tooltip.tarkovcraft_core.skill.skill_info": "Triggers",
-  "tooltip.tarkovcraft_core.skill.conditions": "Conditions",
+  "tooltip.tarkovcraft_core.skill.skill_info": "Leveling:",
+  "tooltip.tarkovcraft_core.skill.conditions": "When:",
 
   "config.screen.tarkovcraft_core": "TarkovCraft",
   "config.tarkovcraft_core.option.skillSystemConfig": "Skill system configuration",
