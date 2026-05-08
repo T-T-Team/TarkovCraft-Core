@@ -3,6 +3,7 @@ package tnt.tarkovcraft.core.common.skill.tracker;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.skill.SkillContext;
@@ -23,11 +24,11 @@ public record SkillTrackerDefinition(SkillTriggerEvent event, List<SkillTriggerC
 
     public List<Component> getInfoComponents() {
         List<Component> infoComponents = new ArrayList<>();
-        infoComponents.add(Component.translatable(event.identifier().toLanguageKey("skill.trigger", "info")).withStyle(ChatFormatting.GREEN));
+        infoComponents.add(CommonComponents.space().append(Component.translatable(event.identifier().toLanguageKey("skill.trigger", "info"))).withStyle(ChatFormatting.GREEN));
         if (!conditions.isEmpty()) {
-            infoComponents.add(Component.literal(" ").append(Component.translatable("tooltip.tarkovcraft_core.skill.conditions")).withStyle(ChatFormatting.GRAY));
+            infoComponents.add(Component.literal("  ").append(Component.translatable("tooltip.tarkovcraft_core.skill.conditions")).withStyle(ChatFormatting.YELLOW));
             for (SkillTriggerCondition condition : conditions) {
-                infoComponents.add(Component.literal(" - ").append(condition.getDescription()).withStyle(ChatFormatting.GRAY));
+                infoComponents.add(Component.literal("  - ").append(condition.getDescription()).withStyle(ChatFormatting.DARK_GRAY));
             }
         }
         return infoComponents;
