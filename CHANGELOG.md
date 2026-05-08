@@ -1,2 +1,4 @@
-# Release 2.3.0+1.21.1
-- Backport of latest features to 1.21.1
+# Release 2.4.0+1.21.1
+- Extended Shader API to allow distinction between core and cosmetic shaders
+- Improved skill detail tooltips
+- Added config option to disable cosmetic shaders
