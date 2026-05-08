@@ -16,7 +16,7 @@ public class TarkovCraftCoreClientConfig {
     public boolean renderDebugOverlay = false;
 
     @Configurable
-    @Configurable.Comment("Enables all non-essential shaders. Having this option enabled might cause issues with other rendering mods such as Distant Horizons")
+    @Configurable.Comment(value = "Enables all non-essential shaders. Having this option enabled might cause issues with other rendering mods such as Distant Horizons", localize = true)
     @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
     public boolean enableCustomShaders = true;
 
