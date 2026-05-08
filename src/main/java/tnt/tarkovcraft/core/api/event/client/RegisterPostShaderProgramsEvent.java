@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import net.neoforged.bus.api.Event;
 import net.neoforged.fml.event.IModBusEvent;
 import org.jetbrains.annotations.ApiStatus;
+import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.api.shader.PostEffectShaderProgram;
 
 import java.util.*;
@@ -12,15 +13,24 @@ public class RegisterPostShaderProgramsEvent extends Event implements IModBusEve
 
     private final List<PostEffectShaderProgram> programs = new ArrayList<>();
 
-    public RegisterPostShaderProgramsEvent() {
+    private final boolean allowCosmeticShaderPrograms;
+
+    public RegisterPostShaderProgramsEvent(boolean allowCosmeticShaderPrograms) {
+        this.allowCosmeticShaderPrograms = allowCosmeticShaderPrograms;
     }
 
     public void register(PostEffectShaderProgram program) {
+        if (!this.allowCosmeticShaderPrograms && program.getShaderType().isCosmetic()) {
+            TarkovCraftCore.LOGGER.debug("Skipping registration of cosmetic shader program '{}'", program.postChainId());
+            return;
+        }
         this.programs.add(program);
     }
 
     public void registerMany(PostEffectShaderProgram... programs) {
-        this.programs.addAll(Arrays.asList(programs));
+        for (PostEffectShaderProgram program : programs) {
+            this.register(program);
+        }
     }
 
     @ApiStatus.Internal

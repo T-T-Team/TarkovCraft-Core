@@ -28,8 +28,8 @@ public final class PostEffectShaderProgramProcessor {
 
     private PostEffectShaderProgramProcessor() {}
 
-    public void init() {
-        RegisterPostShaderProgramsEvent event = ModLoader.postEventWithReturn(new RegisterPostShaderProgramsEvent());
+    public void init(boolean allowCosmeticShaders) {
+        RegisterPostShaderProgramsEvent event = ModLoader.postEventWithReturn(new RegisterPostShaderProgramsEvent(allowCosmeticShaders));
         synchronized (INSTANCE) {
             this.registeredShaders.addAll(event.getPrograms());
         }

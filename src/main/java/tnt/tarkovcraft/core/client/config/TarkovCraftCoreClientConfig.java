@@ -3,6 +3,7 @@ package tnt.tarkovcraft.core.client.config;
 import dev.toma.configuration.config.Config;
 import dev.toma.configuration.config.Configurable;
 import dev.toma.configuration.config.FieldVisibility;
+import dev.toma.configuration.config.UpdateRestrictions;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.util.HorizontalAlignment;
 import tnt.tarkovcraft.core.util.VerticalAlignment;
@@ -13,6 +14,11 @@ public class TarkovCraftCoreClientConfig {
     @Configurable
     @Configurable.Gui.Visibility(FieldVisibility.ADVANCED)
     public boolean renderDebugOverlay = false;
+
+    @Configurable
+    @Configurable.Comment("Enables all non-essential shaders. Having this option enabled might cause issues with other rendering mods such as Distant Horizons")
+    @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+    public boolean enableCustomShaders = true;
 
     @Configurable
     public StaminaConfigurableOverlay moveStaminaOverlay = new StaminaConfigurableOverlay(true, HorizontalAlignment.LEFT, VerticalAlignment.BOTTOM, 5, -5, "#FF000000", "#FF00CE14", "#FF007F0E", "#FFC10000", "#FF780000");

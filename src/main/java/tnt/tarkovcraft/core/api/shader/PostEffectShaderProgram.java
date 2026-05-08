@@ -14,6 +14,8 @@ public interface PostEffectShaderProgram {
 
     void onRender(float delta, UniformSetter uniformSetter);
 
+    ShaderType getShaderType();
+
     @FunctionalInterface
     interface UniformSetter {
         void setUniform(String uniformName, float value);

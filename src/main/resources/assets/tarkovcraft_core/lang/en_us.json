@@ -104,6 +104,8 @@
 
   "config.screen.tarkovcraft_core-client": "Tarkovcraft Client",
   "config.tarkovcraft_core-client.option.renderDebugOverlay": "Debug overlay",
+  "config.tarkovcraft_core-client.option.enableCustomShaders": "Custom shaders",
+  "config.tarkovcraft_core-client.option.enableCustomShaders.comment.0": "Enables all non-essential shaders. Having this option enabled might cause issues with other rendering mods such as Distant Horizons",
   "config.tarkovcraft_core-client.option.moveStaminaOverlay": "Movement stamina overlay",
   "config.tarkovcraft_core-client.option.armStaminaOverlay": "Arm stamina overlay",
   "config.tarkovcraft_core-client.option.backgroundColor": "Background color",
