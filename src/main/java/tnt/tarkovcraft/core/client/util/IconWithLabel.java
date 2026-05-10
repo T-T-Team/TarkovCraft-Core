@@ -1,9 +1,10 @@
-package tnt.tarkovcraft.core.client;
+package tnt.tarkovcraft.core.client.util;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import tnt.tarkovcraft.core.client.screen.ColorPalette;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public record IconWithLabel(ResourceLocation icon, Supplier<Component> label, int iconColor, int labelColor) {
@@ -29,6 +30,6 @@ public record IconWithLabel(ResourceLocation icon, Supplier<Component> label, in
     }
 
     public Component getLabel() {
-        return label.get();
+        return Objects.requireNonNull(this.label.get(), "Label cannot be null");
     }
 }
