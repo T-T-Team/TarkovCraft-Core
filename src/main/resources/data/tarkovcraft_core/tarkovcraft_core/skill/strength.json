@@ -33,7 +33,7 @@
       ],
       "tracker": {
         "type": "tarkovcraft_core:overweight_factor",
-        "value": 0.001
+        "value": 0.007
       }
     }
   ],
