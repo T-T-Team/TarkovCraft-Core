@@ -1,5 +1,6 @@
 package tnt.tarkovcraft.core.client.screen;
 
+import com.google.common.collect.ImmutableList;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -14,13 +15,13 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.NeoForge;
 import tnt.tarkovcraft.core.TarkovCraftCore;
+import tnt.tarkovcraft.core.api.client.LabelContainer;
 import tnt.tarkovcraft.core.api.event.client.AddPlayerProfileLabelsEvent;
-import tnt.tarkovcraft.core.client.IconWithLabel;
 import tnt.tarkovcraft.core.client.screen.navigation.CoreNavigators;
 import tnt.tarkovcraft.core.client.screen.renderable.*;
 import tnt.tarkovcraft.core.client.screen.widget.EntityWidget;
 import tnt.tarkovcraft.core.client.screen.widget.ListWidget;
-import tnt.tarkovcraft.core.client.util.PlayerProfileLabelContainer;
+import tnt.tarkovcraft.core.client.util.IconWithLabel;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.init.CoreStatistics;
@@ -32,6 +33,7 @@ import tnt.tarkovcraft.core.util.HorizontalAlignment;
 import tnt.tarkovcraft.core.util.helper.RenderUtils;
 import tnt.tarkovcraft.core.util.helper.TextHelper;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -74,23 +76,13 @@ public class StatisticsScreen extends CharacterSubScreen {
             overviewLabel.setTextColor(ColorPalette.WHITE);
             overviewLabel.setShadow(true);
 
-            PlayerProfileLabelContainer container = this.getProfileLabels(player, tracker);
-            List<PlayerProfileLabelContainer.ProfileLabelRow> rows = container.getRows();
-            int top = this.height - rows.size() * 12;
-            int gridWidth = (left - 9) / 3;
-            for (int i = 0; i < rows.size(); i++) {
-                PlayerProfileLabelContainer.ProfileLabelRow row = rows.get(i);
-                int y = top + i * 12;
-                if (row.left() != null) {
-                    this.addRenderableOnly(new IconWithLabelRenderable(this.font, 3, y, gridWidth, 10, HorizontalAlignment.LEFT, row.left()));
-                }
-                if (row.center() != null) {
-                    this.addRenderableOnly(new IconWithLabelRenderable(this.font, 3 + gridWidth, y, gridWidth, 10, HorizontalAlignment.CENTER, row.center()));
-                }
-                if (row.right() != null) {
-                    this.addRenderableOnly(new IconWithLabelRenderable(this.font, 3 + 2 * gridWidth, y, gridWidth, 10, HorizontalAlignment.RIGHT, row.right()));
-                }
-            }
+            ProfileLabelContainer container = this.getProfileLabels(player, tracker);
+            int top = this.height - container.getRows() * 12;
+            container.compile(this.font, 0, top, left, 3)
+                    .forEach(this::addRenderableOnly);
+
+            Component playerName = player.getDisplayName().copy().withStyle(ChatFormatting.BOLD, ChatFormatting.GOLD);
+            this.addRenderableOnly(new IconWithLabelRenderable(this.font, 0, top - 24, left, 12, HorizontalAlignment.CENTER, new IconWithLabel(null, playerName)));
 
             ListWidget<TextStatisticWidget> textStats = this.addRenderableWidget(new ListWidget<>(left, 36, this.width - left, this.height - 26, statistics, (it, in) -> this.createTextStatistic(left, this.width - left, tracker, it, in)));
             textStats.setBackgroundColor(ColorPalette.BG_TRANSPARENT_WEAK);
@@ -101,13 +93,8 @@ public class StatisticsScreen extends CharacterSubScreen {
         this.initNotificationLayer();
     }
 
-    private PlayerProfileLabelContainer getProfileLabels(Player player, StatisticTracker tracker) {
-        PlayerProfileLabelContainer container = new PlayerProfileLabelContainer();
-        // playername
-        Component playerNameLabel = player.getDisplayName().copy().withStyle(ChatFormatting.BOLD, ChatFormatting.GOLD);
-        container.addRow(PlayerProfileLabelContainer.ProfileLabelRow.center(PlayerProfileLabelContainer.ROW_PLAYER_NAME, new IconWithLabel(null, playerNameLabel)));
-        container.addEmptyRow(PlayerProfileLabelContainer.ROW_STAT_SEPARATOR);
-        // Stat row
+    private ProfileLabelContainer getProfileLabels(Player player, StatisticTracker tracker) {
+        ProfileLabelContainer container = new ProfileLabelContainer();
         // kills
         long kills = tracker.get(CoreStatistics.KILLS.value());
         Component killLabel = Component.literal(String.valueOf(kills));
@@ -126,15 +113,12 @@ public class StatisticsScreen extends CharacterSubScreen {
             weightLabel = WeightSystem.getWeightValueDisplay(weight, WeightSystem.NO_STYLE);
             weightColor = overweight ? (overweightFactor >= 1.0F ? 0xFFFF5555 : textColor) : 0xFF55FF55;
         }
-        container.addRow(new PlayerProfileLabelContainer.ProfileLabelRow(
-                PlayerProfileLabelContainer.ROW_STAT,
-                new IconWithLabel(ICON_KILLS, killLabel, iconColor, textColor),
-                new IconWithLabel(ICON_DEATHS, deathLabel, iconColor, textColor),
-                new IconWithLabel(ICON_WEIGHT, weightLabel, iconColor, weightColor)
-        ));
+        container.addLabel(HorizontalAlignment.LEFT, new IconWithLabel(ICON_KILLS, killLabel, iconColor, textColor));
+        container.addLabel(HorizontalAlignment.CENTER, new IconWithLabel(ICON_DEATHS, deathLabel, iconColor, textColor));
+        container.addLabel(HorizontalAlignment.RIGHT, new IconWithLabel(ICON_WEIGHT, weightLabel, iconColor, weightColor));
         // API for custom player labels
-        AddPlayerProfileLabelsEvent event = NeoForge.EVENT_BUS.post(new AddPlayerProfileLabelsEvent(player, container));
-        return event.getContainer();
+        NeoForge.EVENT_BUS.post(new AddPlayerProfileLabelsEvent(player, container));
+        return container;
     }
 
     private TextStatisticWidget createTextStatistic(int left, int width, StatisticReader reader, DisplayStatistic stat, int index) {
@@ -174,6 +158,75 @@ public class StatisticsScreen extends CharacterSubScreen {
 
         @Override
         protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
+        }
+    }
+
+    private static final class ProfileLabelContainer implements LabelContainer {
+
+        private final List<IconWithLabel> left;
+        private final List<IconWithLabel> center;
+        private final List<IconWithLabel> right;
+
+        public ProfileLabelContainer() {
+            this.left = new ArrayList<>();
+            this.center = new ArrayList<>();
+            this.right = new ArrayList<>();
+        }
+
+        @Override
+        public List<IconWithLabel> getLabels(HorizontalAlignment alignment) {
+            return ImmutableList.copyOf(this.get(alignment));
+        }
+
+        @Override
+        public void removeLabelAt(HorizontalAlignment alignment, int index) {
+            List<IconWithLabel> list = this.get(alignment);
+            if (index >= 0 && index < list.size()) {
+                list.remove(index);
+            }
+        }
+
+        @Override
+        public void addLabel(HorizontalAlignment alignment, IconWithLabel label) {
+            List<IconWithLabel> list = this.get(alignment);
+            list.add(label);
+        }
+
+        @Override
+        public void addLabel(HorizontalAlignment alignment, IconWithLabel label, int index) {
+            List<IconWithLabel> list = this.get(alignment);
+            list.add(index, label);
+        }
+
+        public int getRows() {
+            return Math.max(this.left.size(), Math.max(this.center.size(), this.right.size()));
+        }
+
+        public List<IconWithLabelRenderable> compile(Font font, int x, int y, int width, int margin) {
+            int cellWidth = (width - 3 * margin) / 3;
+            List<IconWithLabelRenderable> output = new ArrayList<>(this.left.size() + this.center.size() + this.right.size());
+            output.addAll(this.compileColumn(font, this.left, HorizontalAlignment.LEFT, x + margin, y, cellWidth));
+            output.addAll(this.compileColumn(font, this.center, HorizontalAlignment.CENTER, x + margin + cellWidth, y, cellWidth));
+            output.addAll(this.compileColumn(font, this.right, HorizontalAlignment.RIGHT, x + margin + 2 * cellWidth, y, cellWidth));
+            return output;
+        }
+
+        private List<IconWithLabelRenderable> compileColumn(Font font, List<IconWithLabel> column, HorizontalAlignment alignment, int x, int y, int cellWidth) {
+            List<IconWithLabelRenderable> list = new ArrayList<>(column.size());
+            for (int i = 0; i < column.size(); i++) {
+                IconWithLabel label = column.get(i);
+                IconWithLabelRenderable renderable = new IconWithLabelRenderable(font, x, y + i * 12, cellWidth, 10, alignment, label);
+                list.add(renderable);
+            }
+            return list;
+        }
+
+        private List<IconWithLabel> get(HorizontalAlignment alignment) {
+            return switch (alignment) {
+                case LEFT -> this.left;
+                case CENTER -> this.center;
+                case RIGHT -> this.right;
+            };
         }
     }
 }

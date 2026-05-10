@@ -4,7 +4,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import tnt.tarkovcraft.core.client.IconWithLabel;
+import tnt.tarkovcraft.core.client.util.IconWithLabel;
 import tnt.tarkovcraft.core.util.HorizontalAlignment;
 import tnt.tarkovcraft.core.util.helper.RenderUtils;
 
@@ -57,6 +57,6 @@ public class IconWithLabelRenderable extends AbstractRenderable {
             left += this.iconSize + this.horizontalTextOffset;
         }
 
-        guiGraphics.text(this.font, this.iconWithLabel.getLabel(), left, this.y - (this.height - this.font.lineHeight) / 2 + this.verticalTextOffset, this.iconWithLabel.labelColor(), this.textShadow);
+        guiGraphics.text(this.font, label, left, this.y - (this.height - this.font.lineHeight) / 2 + this.verticalTextOffset, this.iconWithLabel.labelColor(), this.textShadow);
     }
 }
