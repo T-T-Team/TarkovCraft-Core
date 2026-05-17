@@ -1,3 +1,2 @@
-# Release 2.4.1+26.1.2
-- Rebalanced strength skill progression
-- Improvements to label rendering
+# Release 2.5.0+26.1.2
+- Action result API changes
