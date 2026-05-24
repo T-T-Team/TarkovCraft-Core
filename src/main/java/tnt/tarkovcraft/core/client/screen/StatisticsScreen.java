@@ -95,27 +95,25 @@ public class StatisticsScreen extends CharacterSubScreen {
 
     private ProfileLabelContainer getProfileLabels(Player player, StatisticTracker tracker) {
         ProfileLabelContainer container = new ProfileLabelContainer();
+        int iconColor = 0xFFAAAAAA;
+        int textColor = 0xFFFFFF55;
         // kills
         long kills = tracker.get(CoreStatistics.KILLS.value());
         Component killLabel = Component.literal(String.valueOf(kills));
-        Component weightLabel = null;
+        container.addLabel(HorizontalAlignment.LEFT, new IconWithLabel(ICON_KILLS, killLabel, iconColor, textColor));
         // deaths
         long deaths = tracker.get(CoreStatistics.DEATHS.value());
         Component deathLabel = Component.literal(String.valueOf(deaths));
+        container.addLabel(HorizontalAlignment.CENTER, new IconWithLabel(ICON_DEATHS, deathLabel, iconColor, textColor));
         // weight
-        int iconColor = 0xFFAAAAAA;
-        int textColor = 0xFFFFFF55;
-        int weightColor = textColor;
         if (WeightSystem.isEnabled() && this.isMyProfile) {
             int weight = WeightSystem.getWeight(player);
             boolean overweight = WeightSystem.isOverweight(player);
             float overweightFactor = WeightSystem.getOverweightEffectFactor(player);
-            weightLabel = WeightSystem.getWeightValueDisplay(weight, WeightSystem.NO_STYLE);
-            weightColor = overweight ? (overweightFactor >= 1.0F ? 0xFFFF5555 : textColor) : 0xFF55FF55;
+            Component weightLabel = WeightSystem.getWeightValueDisplay(weight, WeightSystem.NO_STYLE);
+            int weightColor = overweight ? (overweightFactor >= 1.0F ? 0xFFFF5555 : textColor) : 0xFF55FF55;
+            container.addLabel(HorizontalAlignment.RIGHT, new IconWithLabel(ICON_WEIGHT, weightLabel, iconColor, weightColor));
         }
-        container.addLabel(HorizontalAlignment.LEFT, new IconWithLabel(ICON_KILLS, killLabel, iconColor, textColor));
-        container.addLabel(HorizontalAlignment.CENTER, new IconWithLabel(ICON_DEATHS, deathLabel, iconColor, textColor));
-        container.addLabel(HorizontalAlignment.RIGHT, new IconWithLabel(ICON_WEIGHT, weightLabel, iconColor, weightColor));
         // API for custom player labels
         NeoForge.EVENT_BUS.post(new AddPlayerProfileLabelsEvent(player, container));
         return container;
