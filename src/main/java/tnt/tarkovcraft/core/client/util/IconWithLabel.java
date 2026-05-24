@@ -1,13 +1,15 @@
 package tnt.tarkovcraft.core.client.util;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import tnt.tarkovcraft.core.client.screen.ColorPalette;
 
-import java.util.Objects;
 import java.util.function.Supplier;
 
 public record IconWithLabel(ResourceLocation icon, Supplier<Component> label, int iconColor, int labelColor) {
+
+    public static final Component MISSING_LABEL = Component.translatable("label.tarkovcraft_core.missing_text").withStyle(ChatFormatting.RED);
 
     public IconWithLabel(ResourceLocation icon, Supplier<Component> label, int color) {
         this(icon, label, color, color);
@@ -30,6 +32,9 @@ public record IconWithLabel(ResourceLocation icon, Supplier<Component> label, in
     }
 
     public Component getLabel() {
-        return Objects.requireNonNull(this.label.get(), "Label cannot be null");
+        Component label = this.label.get();
+        return label != null
+                ? label
+                : MISSING_LABEL;
     }
 }
