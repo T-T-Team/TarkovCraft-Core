@@ -9,7 +9,10 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
+import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 import net.neoforged.neoforge.common.NeoForge;
 import org.jspecify.annotations.Nullable;
 import tnt.tarkovcraft.core.api.event.EntityAttributeEvent;
@@ -87,6 +90,23 @@ public final class EntityAttributeData {
             instance.addListener(new SynchronizationAttributeListener(serverPlayer));
         }
         NeoForge.EVENT_BUS.post(new EntityAttributeEvent.AttributeInstanceConstructing(this, instance.getAttribute(), instance));
+    }
+
+    public static final class Serializer implements IAttachmentSerializer<EntityAttributeData> {
+
+        @Override
+        public EntityAttributeData read(IAttachmentHolder holder, ValueInput input) {
+            EntityAttributeData attachment = input.read(MAP_CODEC)
+                    .orElseThrow(() -> new IllegalStateException("Failed to deserialize data attachment"));
+            attachment.setHolder(holder);
+            return attachment;
+        }
+
+        @Override
+        public boolean write(EntityAttributeData attachment, ValueOutput output) {
+            output.store(MAP_CODEC, attachment);
+            return true;
+        }
     }
 
     public static final class SyncHandler extends OwnerAttachmentSyncHandler<EntityAttributeData> {

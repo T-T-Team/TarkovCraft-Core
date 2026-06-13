@@ -10,7 +10,10 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
+import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 import tnt.tarkovcraft.core.client.util.ClientUtils;
 import tnt.tarkovcraft.core.common.Notification;
 import tnt.tarkovcraft.core.common.attribute.Attribute;
@@ -148,6 +151,23 @@ public final class SkillData {
             this.applyStats();
 
             SkillSystem.synchronize(player);
+        }
+    }
+
+    public static final class Serializer implements IAttachmentSerializer<SkillData> {
+
+        @Override
+        public SkillData read(IAttachmentHolder holder, ValueInput input) {
+            SkillData attachment = input.read(MAP_CODEC)
+                    .orElseThrow(() -> new IllegalStateException("Failed to deserialize data attachment"));
+            attachment.setHolder(holder);
+            return attachment;
+        }
+
+        @Override
+        public boolean write(SkillData attachment, ValueOutput output) {
+            output.store(MAP_CODEC, attachment);
+            return true;
         }
     }
 
