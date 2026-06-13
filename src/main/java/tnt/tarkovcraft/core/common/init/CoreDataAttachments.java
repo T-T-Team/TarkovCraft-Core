@@ -7,7 +7,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
-import tnt.tarkovcraft.core.common.data.CallbackAttachmentSerializer;
 import tnt.tarkovcraft.core.common.pose.EntityPose;
 import tnt.tarkovcraft.core.common.pose.NoEntityPose;
 import tnt.tarkovcraft.core.common.skill.SkillData;
@@ -21,13 +20,13 @@ public final class CoreDataAttachments {
     public static final DeferredRegister<AttachmentType<?>> REGISTRY = DeferredRegister.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, TarkovCraftCore.MOD_ID);
 
     public static final Supplier<AttachmentType<EntityAttributeData>> ENTITY_ATTRIBUTES = REGISTRY.register("entity_attributes", () -> AttachmentType.builder(EntityAttributeData::new)
-            .serialize(CallbackAttachmentSerializer.create(EntityAttributeData.CODEC, EntityAttributeData::setHolder))
+            .serialize(new EntityAttributeData.Serializer())
             .sync(new EntityAttributeData.SyncHandler())
             .copyOnDeath()
             .build()
     );
     public static final Supplier<AttachmentType<SkillData>> SKILL = REGISTRY.register("skill", () -> AttachmentType.builder(SkillData::new)
-            .serialize(CallbackAttachmentSerializer.create(SkillData.CODEC, SkillData::setHolder))
+            .serialize(new SkillData.Serializer())
             .sync(new SkillData.SyncHandler())
             .copyOnDeath()
             .build()

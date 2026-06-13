@@ -1,14 +1,21 @@
 package tnt.tarkovcraft.core.common.attribute;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
+import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.Nullable;
 import tnt.tarkovcraft.core.api.event.EntityAttributeEvent;
@@ -86,6 +93,26 @@ public final class EntityAttributeData {
             instance.addListener(new SynchronizationAttributeListener(serverPlayer));
         }
         NeoForge.EVENT_BUS.post(new EntityAttributeEvent.AttributeInstanceConstructing(this, instance.getAttribute(), instance));
+    }
+
+    public static final class Serializer implements IAttachmentSerializer<CompoundTag, EntityAttributeData> {
+
+        @Override
+        public EntityAttributeData read(IAttachmentHolder iAttachmentHolder, CompoundTag compoundTag, HolderLookup.Provider provider) {
+            RegistryOps<Tag> context = provider.createSerializationContext(NbtOps.INSTANCE);
+            DataResult<EntityAttributeData> result = CODEC.parse(context, compoundTag);
+            EntityAttributeData attachment = result.getOrThrow();
+            attachment.setHolder(iAttachmentHolder);
+            return attachment;
+        }
+
+        @Override
+        public @Nullable CompoundTag write(EntityAttributeData entityAttributeData, HolderLookup.Provider provider) {
+            RegistryOps<Tag> context = provider.createSerializationContext(NbtOps.INSTANCE);
+            DataResult<Tag> result = CODEC.encodeStart(context, entityAttributeData);
+            Tag tag = result.getOrThrow();
+            return (CompoundTag) tag;
+        }
     }
 
     public static final class SyncHandler extends OwnerAttachmentSyncHandler<EntityAttributeData> {

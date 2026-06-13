@@ -1,16 +1,24 @@
 package tnt.tarkovcraft.core.common.skill;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
+import net.neoforged.neoforge.attachment.IAttachmentSerializer;
+import org.jetbrains.annotations.Nullable;
 import tnt.tarkovcraft.core.client.util.ClientUtils;
 import tnt.tarkovcraft.core.common.Notification;
 import tnt.tarkovcraft.core.common.attribute.Attribute;
@@ -148,6 +156,26 @@ public final class SkillData {
             this.applyStats();
 
             SkillSystem.synchronize(player);
+        }
+    }
+
+    public static final class Serializer implements IAttachmentSerializer<CompoundTag, SkillData> {
+
+        @Override
+        public SkillData read(IAttachmentHolder iAttachmentHolder, CompoundTag compoundTag, HolderLookup.Provider provider) {
+            RegistryOps<Tag> context = provider.createSerializationContext(NbtOps.INSTANCE);
+            DataResult<SkillData> result = CODEC.parse(context, compoundTag);
+            SkillData attachment = result.getOrThrow();
+            attachment.setHolder(iAttachmentHolder);
+            return attachment;
+        }
+
+        @Override
+        public @Nullable CompoundTag write(SkillData skillData, HolderLookup.Provider provider) {
+            RegistryOps<Tag> context = provider.createSerializationContext(NbtOps.INSTANCE);
+            DataResult<Tag> result = CODEC.encodeStart(context, skillData);
+            Tag tag = result.getOrThrow();
+            return (CompoundTag) tag;
         }
     }
 
