@@ -133,6 +133,6 @@
   "config.option.tarkovcraft_core.global.overlay.y": "Position Y",
   "config.option.tarkovcraft_core.global.overlay.y.comment.0": "Y position offset",
 
-  "key.category.tarkovcraft_core.keymap": "TarkovCraft: Core",
+  "key.category.tarkovcraft.keymap": "TarkovCraft",
   "key.tarkovcraft_core.character": "Character info"
 }

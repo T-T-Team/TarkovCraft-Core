@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.AbstractSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
@@ -36,18 +37,20 @@ import tnt.tarkovcraft.core.client.shader.PostEffectShaderProgramProcessor;
 import tnt.tarkovcraft.core.common.attribute.AttributeSystem;
 import tnt.tarkovcraft.core.common.init.CoreAttributes;
 
+import javax.swing.text.Keymap;
+
 import static tnt.tarkovcraft.core.util.helper.TextHelper.createKeybindName;
 
 @Mod(value = TarkovCraftCore.MOD_ID, dist = Dist.CLIENT)
 public final class TarkovCraftCoreClient {
 
-    public static final KeyMapping.Category KEY_MAPPING_CATEGORY = new KeyMapping.Category(TarkovCraftCore.createIdentifier("keymap"));
+    public static final KeyMapping.Category SHARED_CATEGORY = new KeyMapping.Category(Identifier.fromNamespaceAndPath("tarkovcraft", "keymap"));
     public static final KeyMapping KEY_CHARACTER = new KeyMapping(
             createKeybindName(TarkovCraftCore.MOD_ID, "character"),
             KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_O,
-            KEY_MAPPING_CATEGORY
+            SHARED_CATEGORY
     );
 
     private static TarkovCraftCoreClientConfig config;
