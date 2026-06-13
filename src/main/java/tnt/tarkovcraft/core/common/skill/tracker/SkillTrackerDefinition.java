@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Component;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.skill.SkillContext;
 import tnt.tarkovcraft.core.common.skill.tracker.condition.SkillTriggerCondition;
-import tnt.tarkovcraft.core.common.skill.tracker.condition.SkillTriggerConditionType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,8 +17,8 @@ public record SkillTrackerDefinition(SkillTriggerEvent event, List<SkillTriggerC
 
     public static final Codec<SkillTrackerDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             CoreRegistries.SKILL_TRIGGER_EVENT.byNameCodec().fieldOf("event").forGetter(SkillTrackerDefinition::event),
-            SkillTriggerConditionType.INSTANCE_CODEC.listOf().optionalFieldOf("conditions", Collections.emptyList()).forGetter(SkillTrackerDefinition::conditions),
-            SkillTrackerType.CODEC.fieldOf("tracker").forGetter(SkillTrackerDefinition::tracker)
+            SkillTriggerCondition.CODEC.listOf().optionalFieldOf("conditions", Collections.emptyList()).forGetter(SkillTrackerDefinition::conditions),
+            SkillTracker.CODEC.fieldOf("tracker").forGetter(SkillTrackerDefinition::tracker)
     ).apply(instance, SkillTrackerDefinition::new));
 
     public List<Component> getInfoComponents() {

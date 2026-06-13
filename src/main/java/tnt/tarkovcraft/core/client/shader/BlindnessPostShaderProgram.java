@@ -13,7 +13,7 @@ import tnt.tarkovcraft.core.common.init.CoreAttributes;
 public final class BlindnessPostShaderProgram implements PostEffectShaderProgram {
 
     public static final BlindnessPostShaderProgram INSTANCE = new BlindnessPostShaderProgram();
-    public static final ResourceLocation IDENTIFIER = TarkovCraftCore.createResourceLocation("blindness");
+    public static final ResourceLocation IDENTIFIER = TarkovCraftCore.createIdentifier("blindness");
 
     private float strength = 1.0F;
     private float lastStrength = 1.0F;

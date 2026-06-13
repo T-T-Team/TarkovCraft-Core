@@ -12,7 +12,7 @@ import tnt.tarkovcraft.core.common.weight.WeightProvider;
 
 public class PlayerInventoryWeightProvider implements WeightProvider {
 
-    public static final ResourceLocation IDENTIFIER = TarkovCraftCore.createResourceLocation("weight/entity/player_inventory");
+    public static final ResourceLocation IDENTIFIER = TarkovCraftCore.createIdentifier("weight/entity/player_inventory");
 
     @Override
     public int getWeight(WeightContext context) {

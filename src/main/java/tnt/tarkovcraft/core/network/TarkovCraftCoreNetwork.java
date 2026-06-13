@@ -19,7 +19,7 @@ public final class TarkovCraftCoreNetwork {
 
     public static ResourceLocation createId(Class<? extends CustomPacketPayload> type) {
         String name = type.getSimpleName().toLowerCase(Locale.ROOT);
-        return TarkovCraftCore.createResourceLocation("net/" + name);
+        return TarkovCraftCore.createIdentifier("net/" + name);
     }
 
     public static void onRegistration(RegisterPayloadHandlersEvent event) {

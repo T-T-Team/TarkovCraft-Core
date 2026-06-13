@@ -17,7 +17,7 @@ import java.util.function.IntUnaryOperator;
 
 public class NotificationLayer implements LayeredDraw.Layer {
 
-    public static final ResourceLocation LAYER_ID = TarkovCraftCore.createResourceLocation("layer/notification");
+    public static final ResourceLocation LAYER_ID = TarkovCraftCore.createIdentifier("layer/notification");
     public static final IntUnaryOperator DEFAULT_NOTIFICATION_WIDTH = w -> Mth.ceil(w * 0.45F);
     public static final int NOTIFICATION_Z_LAYER = 1000;
     private final NotificationChannel channel;

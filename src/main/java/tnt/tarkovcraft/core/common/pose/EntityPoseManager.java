@@ -14,16 +14,16 @@ public final class EntityPoseManager {
 
     public static final Marker MARKER = MarkerManager.getMarker("EntityPoseManager");
 
-    public static boolean isInPose(LivingEntity entity, EntityPoseType<?> type) {
+    public static boolean isInPose(LivingEntity entity, EntityPose.Type<?> type) {
         EntityPose pose = getEntityPose(entity);
         return pose != null && pose.getType().equals(type);
     }
 
-    public static boolean isInPose(LivingEntity entity, Holder<EntityPoseType<?>> type) {
+    public static boolean isInPose(LivingEntity entity, Holder<EntityPose.Type<?>> type) {
         return isInPose(entity, type.value());
     }
 
-    public static boolean isInPose(LivingEntity entity, Supplier<EntityPoseType<?>> type) {
+    public static boolean isInPose(LivingEntity entity, Supplier<EntityPose.Type<?>> type) {
         return isInPose(entity, type.get());
     }
 

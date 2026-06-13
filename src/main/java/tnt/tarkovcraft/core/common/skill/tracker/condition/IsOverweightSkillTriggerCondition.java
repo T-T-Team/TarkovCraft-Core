@@ -4,7 +4,6 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import tnt.tarkovcraft.core.common.init.CoreSkillTriggerConditions;
 import tnt.tarkovcraft.core.common.skill.SkillContext;
 import tnt.tarkovcraft.core.common.weight.WeightSystem;
 
@@ -29,7 +28,7 @@ public final class IsOverweightSkillTriggerCondition implements SkillTriggerCond
     }
 
     @Override
-    public SkillTriggerConditionType<?> getType() {
-        return CoreSkillTriggerConditions.IS_OVERWEIGHT.get();
+    public MapCodec<? extends SkillTriggerCondition> codec() {
+        return CODEC;
     }
 }

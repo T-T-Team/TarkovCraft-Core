@@ -10,7 +10,7 @@ import tnt.tarkovcraft.core.common.weight.WeightProvider;
 
 public class BundleWeightProvider implements WeightProvider {
 
-    public static final ResourceLocation IDENTIFIER = TarkovCraftCore.createResourceLocation("weight/item/bundle");
+    public static final ResourceLocation IDENTIFIER = TarkovCraftCore.createIdentifier("weight/item/bundle");
 
     @Override
     public int getWeight(WeightContext context) {

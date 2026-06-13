@@ -26,7 +26,10 @@ import tnt.tarkovcraft.core.common.config.WeightConfig;
 import tnt.tarkovcraft.core.common.init.CoreAttributes;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreItemDataComponents;
-import tnt.tarkovcraft.core.common.weight.provider.*;
+import tnt.tarkovcraft.core.common.weight.provider.BundleWeightProvider;
+import tnt.tarkovcraft.core.common.weight.provider.ContainerWeightProvider;
+import tnt.tarkovcraft.core.common.weight.provider.EntityEquipmentWeightProvider;
+import tnt.tarkovcraft.core.common.weight.provider.PlayerInventoryWeightProvider;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -41,7 +44,7 @@ public class WeightSystem {
     public static final WeightSystem INSTANCE = new WeightSystem();
     public static final DecimalFormat FORMAT = new DecimalFormat("0.###");
     public static final Marker MARKER = MarkerManager.getMarker("WeightSystem");
-    public static final ResourceLocation OVERWEIGHT_ATTRIBUTE_MODIFIER = TarkovCraftCore.createResourceLocation("overweight");
+    public static final ResourceLocation OVERWEIGHT_ATTRIBUTE_MODIFIER = TarkovCraftCore.createIdentifier("overweight");
     public static final BiFunction<Integer, Style, Style> BASE_LABEL_STYLE = (weight, style) -> style.withColor(ChatFormatting.GRAY);
     public static final BiFunction<Integer, Style, Style> BASE_VALUE_STYLE = (weight, style) -> style.withColor(ChatFormatting.YELLOW);
     public static final BiFunction<Integer, Style, Style> NO_STYLE = (weight, style) -> style;
@@ -162,7 +165,6 @@ public class WeightSystem {
     @ApiStatus.Internal
     public void registerDefaultProviders(RegisterWeightProvidersEvent event) {
         event.register(BundleWeightProvider.IDENTIFIER, new BundleWeightProvider());
-        event.register(CurrencyWeightProvider.IDENTIFIER, new CurrencyWeightProvider());
         event.register(ContainerWeightProvider.IDENTIFIER, new ContainerWeightProvider());
 
         event.register(EntityEquipmentWeightProvider.IDENTIFIER, new EntityEquipmentWeightProvider());

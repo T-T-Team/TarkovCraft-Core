@@ -3,7 +3,6 @@ package tnt.tarkovcraft.core.common.data.number;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import tnt.tarkovcraft.core.common.data.duration.Duration;
-import tnt.tarkovcraft.core.common.init.CoreNumberProviders;
 
 public class DurationNumberProvider implements NumberProvider {
 
@@ -23,7 +22,7 @@ public class DurationNumberProvider implements NumberProvider {
     }
 
     @Override
-    public NumberProviderType<?> getType() {
-        return CoreNumberProviders.DURATION.get();
+    public MapCodec<? extends NumberProvider> codec() {
+        return CODEC;
     }
 }

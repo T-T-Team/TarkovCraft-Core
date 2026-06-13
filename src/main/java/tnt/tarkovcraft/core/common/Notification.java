@@ -109,7 +109,7 @@ public final class Notification {
 
         Severity(UnaryOperator<Style> labelStylization) {
             this.labelStylization = labelStylization;
-            this.icon = TarkovCraftCore.createResourceLocation("textures/icons/notification/" + this.name().toLowerCase() + ".png");
+            this.icon = TarkovCraftCore.createIdentifier("textures/icons/notification/" + this.name().toLowerCase() + ".png");
         }
 
         public ResourceLocation getIcon() {

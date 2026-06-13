@@ -19,7 +19,7 @@ import tnt.tarkovcraft.core.compatibility.Component;
 
 public class StaminaLayer implements LayeredDraw.Layer {
 
-    public static final ResourceLocation LAYER_ID = TarkovCraftCore.createResourceLocation("layer/stamina");
+    public static final ResourceLocation LAYER_ID = TarkovCraftCore.createIdentifier("layer/stamina");
     public static final int BAR_WIDTH = 80;
 
     @Override

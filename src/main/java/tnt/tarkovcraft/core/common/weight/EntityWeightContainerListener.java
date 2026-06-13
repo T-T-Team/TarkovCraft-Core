@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public final class EntityWeightContainerListener implements ContainerListener {
 
-    public static final ResourceLocation IDENTIFIER = TarkovCraftCore.createResourceLocation("inventory_listener/weight");
+    public static final ResourceLocation IDENTIFIER = TarkovCraftCore.createIdentifier("inventory_listener/weight");
     private final LivingEntity entity;
 
     public EntityWeightContainerListener(LivingEntity entity) {

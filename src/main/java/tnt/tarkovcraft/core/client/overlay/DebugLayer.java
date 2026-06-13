@@ -19,7 +19,7 @@ import java.util.Locale;
 
 public class DebugLayer implements LayeredDraw.Layer {
 
-    public static final ResourceLocation LAYER_ID = TarkovCraftCore.createResourceLocation("layer/debug");
+    public static final ResourceLocation LAYER_ID = TarkovCraftCore.createIdentifier("layer/debug");
     private int line;
 
     @Override

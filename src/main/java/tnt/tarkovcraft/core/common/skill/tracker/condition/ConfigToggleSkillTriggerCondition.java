@@ -6,7 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.toma.configuration.Configuration;
 import dev.toma.configuration.config.value.IConfigValueReadable;
 import net.minecraft.network.chat.Component;
-import tnt.tarkovcraft.core.common.init.CoreSkillTriggerConditions;
 import tnt.tarkovcraft.core.common.skill.SkillContext;
 
 public class ConfigToggleSkillTriggerCondition implements SkillTriggerCondition {
@@ -41,7 +40,7 @@ public class ConfigToggleSkillTriggerCondition implements SkillTriggerCondition 
     }
 
     @Override
-    public SkillTriggerConditionType<?> getType() {
-        return CoreSkillTriggerConditions.CONFIG_TOGGLE.get();
+    public MapCodec<? extends SkillTriggerCondition> codec() {
+        return CODEC;
     }
 }

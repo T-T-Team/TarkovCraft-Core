@@ -20,7 +20,7 @@ import java.util.Objects;
 
 public final class OnScreenHintLayer implements LayeredDraw.Layer {
 
-    public static final ResourceLocation LAYER_ID = TarkovCraftCore.createResourceLocation("layer/hint");
+    public static final ResourceLocation LAYER_ID = TarkovCraftCore.createIdentifier("layer/hint");
     private static final List<OnScreenHint> HINTS = new ArrayList<>();
 
     public OnScreenHintLayer() {

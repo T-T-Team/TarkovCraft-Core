@@ -11,12 +11,9 @@ import tnt.tarkovcraft.core.common.attribute.Attribute;
 import tnt.tarkovcraft.core.common.attribute.AttributeSystem;
 import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
-import tnt.tarkovcraft.core.common.init.CoreSkillStats;
 import tnt.tarkovcraft.core.common.skill.Skill;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 import tnt.tarkovcraft.core.util.NumberFormatter;
-
-import java.util.UUID;
 
 public record AddAttributeModifierStat(Attribute target, ResourceLocation id, float levelValue, boolean constant, NumberFormatter formatter) implements SkillStat {
 
@@ -49,8 +46,8 @@ public record AddAttributeModifierStat(Attribute target, ResourceLocation id, fl
     }
 
     @Override
-    public SkillStatType<?> getType() {
-        return CoreSkillStats.ADD_MODIFIER.get();
+    public MapCodec<? extends SkillStat> codec() {
+        return CODEC;
     }
 
     private float getModifierValue(int level) {

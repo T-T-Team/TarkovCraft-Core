@@ -41,9 +41,9 @@ import java.util.UUID;
 public class StatisticsScreen extends CharacterSubScreen {
 
     public static final Component OVERVIEW_LABEL = TextHelper.createScreenComponent(TarkovCraftCore.MOD_ID, "statistics", "overview").withStyle(ChatFormatting.BOLD);
-    public static final ResourceLocation ICON_KILLS = TarkovCraftCore.createResourceLocation("textures/icons/profile/kills.png");
-    public static final ResourceLocation ICON_DEATHS = TarkovCraftCore.createResourceLocation("textures/icons/profile/deaths.png");
-    public static final ResourceLocation ICON_WEIGHT = TarkovCraftCore.createResourceLocation("textures/icons/profile/weight.png");
+    public static final ResourceLocation ICON_KILLS = TarkovCraftCore.createIdentifier("textures/icons/profile/kills.png");
+    public static final ResourceLocation ICON_DEATHS = TarkovCraftCore.createIdentifier("textures/icons/profile/deaths.png");
+    public static final ResourceLocation ICON_WEIGHT = TarkovCraftCore.createIdentifier("textures/icons/profile/weight.png");
     private double textScroll;
 
     public StatisticsScreen(Screen parent, UUID userId) {
