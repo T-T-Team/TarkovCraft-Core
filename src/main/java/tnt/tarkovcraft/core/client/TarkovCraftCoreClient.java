@@ -40,13 +40,13 @@ import static tnt.tarkovcraft.core.util.helper.TextHelper.createKeybindName;
 @Mod(value = TarkovCraftCore.MOD_ID, dist = Dist.CLIENT)
 public final class TarkovCraftCoreClient {
 
-    public static final String KEY_MAPPING_CATEGORY = "key.category.tarkovcraft_core.keymap";
+    public static final String SHARED_CATEGORY = "key.category.tarkovcraft.keymap";
     public static final KeyMapping KEY_CHARACTER = new KeyMapping(
             createKeybindName(TarkovCraftCore.MOD_ID, "character"),
             KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_O,
-            KEY_MAPPING_CATEGORY
+            SHARED_CATEGORY
     );
 
     private static TarkovCraftCoreClientConfig config;

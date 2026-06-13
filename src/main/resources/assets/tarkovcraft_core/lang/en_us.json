@@ -133,6 +133,6 @@
   "config.tarkovcraft_core-client.option.y": "Position Y",
   "config.tarkovcraft_core-client.option.y.comment.0": "Y position offset",
 
-  "key.category.tarkovcraft_core.keymap": "TarkovCraft: Core",
+  "key.category.tarkovcraft.keymap": "TarkovCraft",
   "key.tarkovcraft_core.character": "Character info"
 }
