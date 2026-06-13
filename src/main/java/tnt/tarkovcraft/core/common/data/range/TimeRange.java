@@ -4,24 +4,21 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.RandomSource;
 import tnt.tarkovcraft.core.common.data.number.NumberProvider;
-import tnt.tarkovcraft.core.common.data.number.NumberProviderType;
 
-public record TimeRange(NumberProvider from, NumberProvider to) implements Range {
+public record TimeRange(int from, int to) implements Range {
 
     public static final Codec<TimeRange> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            NumberProviderType.CODEC.fieldOf("from").forGetter(TimeRange::from),
-            NumberProviderType.CODEC.fieldOf("to").forGetter(TimeRange::to)
+            NumberProvider.NON_NEGATIVE_INT.fieldOf("from").forGetter(TimeRange::from),
+            NumberProvider.NON_NEGATIVE_INT.fieldOf("to").forGetter(TimeRange::to)
     ).apply(instance, TimeRange::new));
 
     @Override
     public boolean isWithinRange(Mode mode, double input) {
-        return mode.compare(input, this.from.getNumber(), this.to.getNumber());
+        return mode.compare(input, this.from, this.to);
     }
 
     @Override
     public double getRandomInRange(RandomSource random) {
-        double from = this.from.getNumber();
-        double to = this.to.getNumber();
-        return from + (to - from) * random.nextDouble();
+        return this.from + (this.to - this.from) * random.nextDouble();
     }
 }

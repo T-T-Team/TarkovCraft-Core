@@ -5,7 +5,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.Identifier;
 import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
-import tnt.tarkovcraft.core.common.init.CoreAttributeModifiers;
 
 import java.util.Locale;
 
@@ -40,8 +39,8 @@ public class AddValueModifier extends AttributeModifier {
     }
 
     @Override
-    public AttributeModifierType<?> getType() {
-        return CoreAttributeModifiers.ADD_VALUE.get();
+    public MapCodec<? extends AttributeModifier> codec() {
+        return CODEC;
     }
 
     @Override

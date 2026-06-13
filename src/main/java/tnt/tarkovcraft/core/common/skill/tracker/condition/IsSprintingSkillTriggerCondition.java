@@ -5,7 +5,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
-import tnt.tarkovcraft.core.common.init.CoreSkillTriggerConditions;
 import tnt.tarkovcraft.core.common.skill.SkillContext;
 
 public record IsSprintingSkillTriggerCondition(boolean invert) implements SkillTriggerCondition {
@@ -27,7 +26,7 @@ public record IsSprintingSkillTriggerCondition(boolean invert) implements SkillT
     }
 
     @Override
-    public SkillTriggerConditionType<?> getType() {
-        return CoreSkillTriggerConditions.IS_SPRINTING.get();
+    public MapCodec<? extends SkillTriggerCondition> codec() {
+        return CODEC;
     }
 }

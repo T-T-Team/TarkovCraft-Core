@@ -9,7 +9,6 @@ import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.data.CallbackAttachmentSerializer;
 import tnt.tarkovcraft.core.common.pose.EntityPose;
-import tnt.tarkovcraft.core.common.pose.EntityPoseType;
 import tnt.tarkovcraft.core.common.pose.NoEntityPose;
 import tnt.tarkovcraft.core.common.skill.SkillData;
 import tnt.tarkovcraft.core.common.statistic.StatisticTracker;
@@ -46,8 +45,8 @@ public final class CoreDataAttachments {
             .build()
     );
     public static final Supplier<AttachmentType<EntityPose>> ENTITY_POSE = REGISTRY.register("entity_pose", () -> AttachmentType.builder(NoEntityPose::instance)
-            .serialize(EntityPoseType.CODEC.optionalFieldOf("pose", NoEntityPose.instance()))
-            .sync(ByteBufCodecs.fromCodecWithRegistries(EntityPoseType.CODEC))
+            .serialize(EntityPose.Type.CODEC.optionalFieldOf("pose", NoEntityPose.instance()))
+            .sync(ByteBufCodecs.fromCodecWithRegistries(EntityPose.Type.CODEC))
             .build()
     );
 }

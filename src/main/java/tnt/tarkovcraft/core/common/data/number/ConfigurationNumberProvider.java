@@ -5,7 +5,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.toma.configuration.Configuration;
 import dev.toma.configuration.config.ConfigValueLocation;
-import tnt.tarkovcraft.core.common.init.CoreNumberProviders;
 
 public class ConfigurationNumberProvider implements NumberProvider {
 
@@ -30,7 +29,7 @@ public class ConfigurationNumberProvider implements NumberProvider {
     }
 
     @Override
-    public NumberProviderType<?> getType() {
-        return CoreNumberProviders.CONFIG.get();
+    public MapCodec<? extends NumberProvider> codec() {
+        return CODEC;
     }
 }

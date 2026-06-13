@@ -26,7 +26,10 @@ import tnt.tarkovcraft.core.common.config.WeightConfig;
 import tnt.tarkovcraft.core.common.init.CoreAttributes;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreItemDataComponents;
-import tnt.tarkovcraft.core.common.weight.provider.*;
+import tnt.tarkovcraft.core.common.weight.provider.BundleWeightProvider;
+import tnt.tarkovcraft.core.common.weight.provider.ContainerWeightProvider;
+import tnt.tarkovcraft.core.common.weight.provider.EntityEquipmentWeightProvider;
+import tnt.tarkovcraft.core.common.weight.provider.PlayerInventoryWeightProvider;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -162,7 +165,6 @@ public class WeightSystem {
     @ApiStatus.Internal
     public void registerDefaultProviders(RegisterWeightProvidersEvent event) {
         event.register(BundleWeightProvider.IDENTIFIER, new BundleWeightProvider());
-        event.register(CurrencyWeightProvider.IDENTIFIER, new CurrencyWeightProvider());
         event.register(ContainerWeightProvider.IDENTIFIER, new ContainerWeightProvider());
 
         event.register(EntityEquipmentWeightProvider.IDENTIFIER, new EntityEquipmentWeightProvider());

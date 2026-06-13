@@ -9,6 +9,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
@@ -39,6 +40,7 @@ public final class TarkovCraftCore {
 
         // Mod event listeners
         modEventBus.addListener(this::setup);
+        modEventBus.addListener(this::registerData);
         modEventBus.addListener(this::registerCustomRegistries);
         modEventBus.addListener(this::registerCustomDatapackRegistries);
         modEventBus.addListener(TarkovCraftCoreNetwork::onRegistration);
@@ -51,15 +53,9 @@ public final class TarkovCraftCore {
 
         // Deferred registries
         CoreAttributes.REGISTRY.register(modEventBus);
-        CoreAttributeModifiers.REGISTRY.register(modEventBus);
-        CoreNumberProviders.REGISTRY.register(modEventBus);
         CoreDataAttachments.REGISTRY.register(modEventBus);
         CoreItemDataComponents.REGISTRY.register(modEventBus);
         CoreSkillTriggerEvents.REGISTRY.register(modEventBus);
-        CoreSkillTrackers.REGISTRY.register(modEventBus);
-        CoreSkillTriggerConditions.REGISTRY.register(modEventBus);
-        CoreSkillStatConditions.REGISTRY.register(modEventBus);
-        CoreSkillStats.REGISTRY.register(modEventBus);
         CoreStatistics.REGISTRY.register(modEventBus);
         CoreEntityPoses.REGISTRY.register(modEventBus);
     }
@@ -72,13 +68,25 @@ public final class TarkovCraftCore {
         return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
 
+    public static <T> void registerObject(RegisterEvent.RegisterHelper<T> helper, String name, T object) {
+        helper.register(Identifier.fromNamespaceAndPath(TarkovCraftCore.MOD_ID, name), object);
+    }
+
+    private void registerData(RegisterEvent event) {
+        event.register(CoreRegistries.Keys.ATTRIBUTE_MODIFIER, CoreRegistries::registerAttributeModifiers);
+        event.register(CoreRegistries.Keys.NUMBER_PROVIDER, CoreRegistries::registerNumberProviders);
+        event.register(CoreRegistries.Keys.SKILL_TRIGGER_TYPE, CoreRegistries::registerSkillTriggerTypes);
+        event.register(CoreRegistries.Keys.SKILL_TRIGGER_CONDITION_TYPE, CoreRegistries::registerSkillTriggerConditionTypes);
+        event.register(CoreRegistries.Keys.SKILL_STAT_CONDITION_TYPE, CoreRegistries::registerSkillStatConditionTypes);
+        event.register(CoreRegistries.Keys.SKILL_STAT, CoreRegistries::registerSkillStats);
+    }
+
     private void registerCustomRegistries(NewRegistryEvent event) {
         // Utils
         event.register(CoreRegistries.ATTRIBUTE);
         event.register(CoreRegistries.ATTRIBUTE_MODIFIER);
         event.register(CoreRegistries.NUMBER_PROVIDER);
         event.register(CoreRegistries.STATISTICS);
-        event.register(CoreRegistries.CURRENCY);
         event.register(CoreRegistries.ENTITY_POSE);
 
         // Skill system

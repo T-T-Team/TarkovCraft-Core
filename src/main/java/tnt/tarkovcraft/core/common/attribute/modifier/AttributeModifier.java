@@ -2,16 +2,20 @@ package tnt.tarkovcraft.core.common.attribute.modifier;
 
 import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.Identifier;
 import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 public abstract class AttributeModifier {
 
-    public static final Codec<AttributeModifier> CODEC = CoreRegistries.ATTRIBUTE_MODIFIER.byNameCodec().dispatch(AttributeModifier::getType, AttributeModifierType::codec);
+    public static final Codec<AttributeModifier> CODEC = CoreRegistries.ATTRIBUTE_MODIFIER
+            .byNameCodec()
+            .dispatch(AttributeModifier::codec, Function.identity());
 
     public static final int ORDER_MATH_PARENTHESES = 100;
     public static final int ORDER_MATH_EXP = 200;
@@ -48,7 +52,7 @@ public abstract class AttributeModifier {
 
     public abstract int ordering();
 
-    public abstract AttributeModifierType<?> getType();
+    public abstract MapCodec<? extends AttributeModifier> codec();
 
     public final Identifier identifier() {
         return this.identifier;

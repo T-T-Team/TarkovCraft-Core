@@ -24,7 +24,7 @@ public final class NoEntityPose extends EntityStatusPose {
     }
 
     @Override
-    public EntityPoseType<?> getType() {
+    public Type<?> getType() {
         return CoreEntityPoses.NO_POSE.get();
     }
 }

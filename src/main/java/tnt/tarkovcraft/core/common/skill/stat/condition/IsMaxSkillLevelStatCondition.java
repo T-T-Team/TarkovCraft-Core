@@ -2,7 +2,6 @@ package tnt.tarkovcraft.core.common.skill.stat.condition;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.world.entity.Entity;
-import tnt.tarkovcraft.core.common.init.CoreSkillStatConditions;
 import tnt.tarkovcraft.core.common.skill.Skill;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 
@@ -19,7 +18,7 @@ public final class IsMaxSkillLevelStatCondition implements SkillStatCondition {
     }
 
     @Override
-    public SkillStatConditionType<?> getType() {
-        return CoreSkillStatConditions.MAX_SKILL_LEVEL.get();
+    public MapCodec<? extends SkillStatCondition> codec() {
+        return CODEC;
     }
 }

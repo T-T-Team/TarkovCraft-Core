@@ -1,12 +1,10 @@
 package tnt.tarkovcraft.core.common.skill.tracker.condition;
 
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.toma.configuration.Configuration;
 import dev.toma.configuration.config.ConfigValueLocation;
 import dev.toma.configuration.config.value.IConfigValueReadable;
 import net.minecraft.network.chat.Component;
-import tnt.tarkovcraft.core.common.init.CoreSkillTriggerConditions;
 import tnt.tarkovcraft.core.common.skill.SkillContext;
 
 public record ConfigToggleSkillTriggerCondition(ConfigValueLocation location) implements SkillTriggerCondition {
@@ -29,7 +27,7 @@ public record ConfigToggleSkillTriggerCondition(ConfigValueLocation location) im
     }
 
     @Override
-    public SkillTriggerConditionType<?> getType() {
-        return CoreSkillTriggerConditions.CONFIG_TOGGLE.get();
+    public MapCodec<? extends SkillTriggerCondition> codec() {
+        return CODEC;
     }
 }

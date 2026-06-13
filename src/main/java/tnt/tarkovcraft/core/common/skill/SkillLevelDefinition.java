@@ -6,26 +6,25 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Mth;
 import tnt.tarkovcraft.core.common.data.number.ConstantNumberProvider;
 import tnt.tarkovcraft.core.common.data.number.NumberProvider;
-import tnt.tarkovcraft.core.common.data.number.NumberProviderType;
 
 public final class SkillLevelDefinition {
 
-    public static final SkillLevelDefinition DEFAULT = new SkillLevelDefinition(ConstantNumberProvider.of(100), ConstantNumberProvider.of(10.0F), ConstantNumberProvider.of(15.0F), ConstantNumberProvider.of((int) Short.MAX_VALUE), ConstantNumberProvider.of(Float.MAX_VALUE));
+    public static final SkillLevelDefinition DEFAULT = new SkillLevelDefinition(100, 10.0F, 15.0F, Short.MAX_VALUE, Float.MAX_VALUE);
     public static final Codec<SkillLevelDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            NumberProviderType.valueCodec(ExtraCodecs.POSITIVE_INT).optionalFieldOf("max_level", DEFAULT.maxLevel).forGetter(t -> t.maxLevel),
-            NumberProviderType.valueCodec(ExtraCodecs.NON_NEGATIVE_FLOAT).optionalFieldOf("base_exp", DEFAULT.baseExperience).forGetter(t -> t.baseExperience),
-            NumberProviderType.valueCodec(ExtraCodecs.NON_NEGATIVE_FLOAT).optionalFieldOf("additional_exp", DEFAULT.additionalExperience).forGetter(t -> t.additionalExperience),
-            NumberProviderType.valueCodec(ExtraCodecs.NON_NEGATIVE_INT).optionalFieldOf("max_stack", DEFAULT.maxStack).forGetter(t -> t.maxLevel),
-            NumberProviderType.valueCodec(ExtraCodecs.NON_NEGATIVE_FLOAT).optionalFieldOf("max_exp", DEFAULT.maxExperience).forGetter(t -> t.maxExperience)
+            NumberProvider.POSITIVE_INT.optionalFieldOf("max_level", DEFAULT.maxLevel).forGetter(t -> t.maxLevel),
+            NumberProvider.NON_NEGATIVE_FLOAT.optionalFieldOf("base_exp", DEFAULT.baseExperience).forGetter(t -> t.baseExperience),
+            NumberProvider.NON_NEGATIVE_FLOAT.optionalFieldOf("additional_exp", DEFAULT.additionalExperience).forGetter(t -> t.additionalExperience),
+            NumberProvider.NON_NEGATIVE_INT.optionalFieldOf("max_stack", DEFAULT.maxStack).forGetter(t -> t.maxLevel),
+            NumberProvider.NON_NEGATIVE_FLOAT.optionalFieldOf("max_exp", DEFAULT.maxExperience).forGetter(t -> t.maxExperience)
     ).apply(instance, SkillLevelDefinition::new));
 
-    private final NumberProvider maxLevel;
-    private final NumberProvider baseExperience;
-    private final NumberProvider additionalExperience;
-    private final NumberProvider maxStack;
-    private final NumberProvider maxExperience;
+    private final int maxLevel;
+    private final float baseExperience;
+    private final float additionalExperience;
+    private final int maxStack;
+    private final float maxExperience;
 
-    public SkillLevelDefinition(NumberProvider maxLevel, NumberProvider baseExperience, NumberProvider additionalExperience, NumberProvider maxStack, NumberProvider maxExperience) {
+    public SkillLevelDefinition(int maxLevel, float baseExperience, float additionalExperience, int maxStack, float maxExperience) {
         this.maxLevel = maxLevel;
         this.baseExperience = baseExperience;
         this.additionalExperience = additionalExperience;
@@ -34,13 +33,13 @@ public final class SkillLevelDefinition {
     }
 
     public int getMaxLevel() {
-        return Math.max(0, this.maxLevel.intValue());
+        return Math.max(0, this.maxLevel);
     }
 
     public float getRequiredExperience(int level) {
-        int stackMultiplier = Mth.clamp(level, 0, this.maxStack.intValue());
-        float baseExperience = Math.max(0.0F, this.baseExperience.floatValue());
-        float additionalExperience = Math.max(0.0F, this.additionalExperience.floatValue());
-        return Math.min(baseExperience + additionalExperience * stackMultiplier, this.maxExperience.floatValue());
+        int stackMultiplier = Mth.clamp(level, 0, this.maxStack);
+        float baseExperience = Math.max(0.0F, this.baseExperience);
+        float additionalExperience = Math.max(0.0F, this.additionalExperience);
+        return Math.min(baseExperience + additionalExperience * stackMultiplier, this.maxExperience);
     }
 }

@@ -6,7 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import tnt.tarkovcraft.core.common.init.CoreSkillTrackers;
 import tnt.tarkovcraft.core.common.skill.SkillContext;
 import tnt.tarkovcraft.core.common.weight.WeightSystem;
 
@@ -41,7 +40,7 @@ public record OverweightFactorSkillTracker(float value, float limit, boolean cou
     }
 
     @Override
-    public SkillTrackerType<?> getType() {
-        return CoreSkillTrackers.OVERWEIGHT_FACTOR.get();
+    public MapCodec<? extends SkillTracker> codec() {
+        return CODEC;
     }
 }
