@@ -39,14 +39,14 @@ public class NotificationLayer implements GuiLayer {
         if (notifications.isEmpty()) {
             return;
         }
-        int y = windowHeight - 11;
+        int y = windowHeight - 10;
         int left = windowWidth - maxWidth;
         graphics.nextStratum();
         for (ClientNotification notification : notifications) {
             graphics.fill(left, y, windowWidth, y + 10, ColorPalette.BG_TRANSPARENT_NORMAL);
             RenderUtils.blitFull(graphics, notification.icon(), left, y, left + 10, y + 10);
-            RenderUtils.drawScrollingString(notification.label(), graphics.textRenderer(GuiGraphicsExtractor.HoveredTextEffects.NONE), left + 12, left + 12 + windowWidth, y + 1, y + 10, 0);
-            y -= 11;
+            RenderUtils.drawScrollingString(notification.label(), graphics.textRenderer(GuiGraphicsExtractor.HoveredTextEffects.NONE), left + 12, left + 12 + windowWidth, y, y + 10, 0);
+            y -= 10;
         }
     }
 }
