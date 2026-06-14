@@ -37,8 +37,6 @@ import tnt.tarkovcraft.core.client.shader.PostEffectShaderProgramProcessor;
 import tnt.tarkovcraft.core.common.attribute.AttributeSystem;
 import tnt.tarkovcraft.core.common.init.CoreAttributes;
 
-import javax.swing.text.Keymap;
-
 import static tnt.tarkovcraft.core.util.helper.TextHelper.createKeybindName;
 
 @Mod(value = TarkovCraftCore.MOD_ID, dist = Dist.CLIENT)

@@ -2,11 +2,10 @@ package tnt.tarkovcraft.core.api.event;
 
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.Event;
+import org.jspecify.annotations.Nullable;
 import tnt.tarkovcraft.core.common.attribute.Attribute;
 import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
-
-import org.jspecify.annotations.Nullable;
 
 public abstract class EntityAttributeEvent extends Event {
 

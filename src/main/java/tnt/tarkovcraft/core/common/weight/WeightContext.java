@@ -3,7 +3,6 @@ package tnt.tarkovcraft.core.common.weight;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.ToIntFunction;

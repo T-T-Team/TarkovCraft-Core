@@ -7,15 +7,15 @@
     "defaultRequire": 1
   },
   "mixins": [
+    "InventoryMixin",
     "LivingEntityMixin",
-    "ServerPlayerMixin",
-    "InventoryMixin"
+    "ServerPlayerMixin"
   ],
   "client": [
-    "client.GameRendererMixin",
-    "client.PostPassMixin",
     "client.CameraMixin",
+    "client.GameRendererMixin",
+    "client.LocalPlayerMixin",
     "client.MouseHandlerMixin",
-    "client.LocalPlayerMixin"
+    "client.PostPassMixin"
   ]
 }
