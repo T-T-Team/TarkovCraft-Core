@@ -22,7 +22,9 @@ import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
 import org.lwjgl.glfw.GLFW;
 import tnt.tarkovcraft.core.TarkovCraftCore;
+import tnt.tarkovcraft.core.api.client.SynchronizableScreen;
 import tnt.tarkovcraft.core.api.event.client.RegisterPostShaderProgramsEvent;
+import tnt.tarkovcraft.core.api.event.client.ScreenSynchronizeEvent;
 import tnt.tarkovcraft.core.client.config.TarkovCraftCoreClientConfig;
 import tnt.tarkovcraft.core.client.notification.NotificationChannel;
 import tnt.tarkovcraft.core.client.notification.NotificationLayer;
@@ -69,6 +71,15 @@ public final class TarkovCraftCoreClient {
 
     public static TarkovCraftCoreClientConfig getConfig() {
         return config;
+    }
+
+    public static void synchronizeCurrentScreen(SynchronizableScreen.DataSource dataSource) {
+        Minecraft minecraft = Minecraft.getInstance();
+        Screen screen = minecraft.screen;
+        if (screen instanceof SynchronizableScreen synchronizableScreen) {
+            synchronizableScreen.sync(dataSource);
+            NeoForge.EVENT_BUS.post(new ScreenSynchronizeEvent(screen, dataSource));
+        }
     }
 
     private void dispatchParallelRegistryEvents() {

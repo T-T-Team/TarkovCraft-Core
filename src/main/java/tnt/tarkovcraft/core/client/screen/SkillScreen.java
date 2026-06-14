@@ -64,6 +64,13 @@ public class SkillScreen extends CharacterSubScreen {
         this.initNotificationLayer();
     }
 
+    @Override
+    public void sync(DataSource source) {
+        if (!source.equals(SKILLS))
+            return;
+        this.init(this.minecraft, this.width, this.height);
+    }
+
     private SkillWidget buildSkillWidget(Player player, Skill skill, int index) {
         SkillWidget widget = new SkillWidget(5, 5 + index * 40, this.width - 15, 35, this.font, skill, player, this);
         SkillDefinition definition = skill.getDefinition().value();

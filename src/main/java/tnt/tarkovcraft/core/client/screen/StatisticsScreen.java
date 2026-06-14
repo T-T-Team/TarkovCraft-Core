@@ -93,6 +93,13 @@ public class StatisticsScreen extends CharacterSubScreen {
         this.initNotificationLayer();
     }
 
+    @Override
+    public void sync(DataSource source) {
+        if (!source.equals(STATISTICS))
+            return;
+        this.init(this.minecraft, this.width, this.height);
+    }
+
     private ProfileLabelContainer getProfileLabels(Player player, StatisticTracker tracker) {
         ProfileLabelContainer container = new ProfileLabelContainer();
         int iconColor = 0xFFAAAAAA;
