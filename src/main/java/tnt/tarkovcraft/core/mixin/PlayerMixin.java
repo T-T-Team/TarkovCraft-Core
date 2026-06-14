@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import tnt.tarkovcraft.core.api.event.CoreEventDispatcher;
+import tnt.tarkovcraft.core.api.event.CoreEventHooks;
 
 @Mixin(Player.class)
 public abstract class PlayerMixin extends Avatar implements ContainerUser {
@@ -27,6 +27,6 @@ public abstract class PlayerMixin extends Avatar implements ContainerUser {
     )
     private void tarkovCraftCore$actuallyHurt(ServerLevel level, DamageSource source, float amount, CallbackInfo ci) {
         Player player = (Player) (Object) this;
-        CoreEventDispatcher.onLivingApplyDamage(player, damageContainers);
+        CoreEventHooks.onLivingApplyDamage(player, damageContainers);
     }
 }

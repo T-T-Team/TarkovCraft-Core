@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tnt.tarkovcraft.core.api.MovementStaminaComponent;
-import tnt.tarkovcraft.core.api.event.CoreEventDispatcher;
+import tnt.tarkovcraft.core.api.event.CoreEventHooks;
 import tnt.tarkovcraft.core.common.energy.EnergySystem;
 import tnt.tarkovcraft.core.common.pose.CoreEntityPoseFlags;
 import tnt.tarkovcraft.core.common.pose.EntityPoseManager;
@@ -96,6 +96,6 @@ public abstract class LivingEntityMixin extends Entity implements Attackable, IL
     )
     private void tarkovCraftCore$actuallyHurt(ServerLevel level, DamageSource source, float amount, CallbackInfo ci) {
         LivingEntity entity = (LivingEntity) (Object) this;
-        CoreEventDispatcher.onLivingApplyDamage(entity, damageContainers);
+        CoreEventHooks.onLivingApplyDamage(entity, damageContainers);
     }
 }

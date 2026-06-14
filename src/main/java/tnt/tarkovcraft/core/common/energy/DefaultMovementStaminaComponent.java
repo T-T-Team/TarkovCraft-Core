@@ -31,8 +31,7 @@ public class DefaultMovementStaminaComponent implements MovementStaminaComponent
     public boolean canSprint(LivingEntity entity) {
         if (entity.getType() != EntityType.PLAYER)
             return true;
-        Boolean sprintResult = EnergySystem.canSprint(entity);
-        return sprintResult != null ? sprintResult : true;
+        return EnergySystem.canSprint(entity);
     }
 
     @Override
@@ -46,8 +45,7 @@ public class DefaultMovementStaminaComponent implements MovementStaminaComponent
     public boolean canJump(LivingEntity entity) {
         if (entity.getType() != EntityType.PLAYER)
             return true;
-        Boolean jumpResult = EnergySystem.canJump(entity);
-        return jumpResult != null ? jumpResult : true;
+        return EnergySystem.canJump(entity);
     }
 
     @Override

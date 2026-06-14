@@ -11,9 +11,8 @@ import net.minecraft.client.renderer.PostChain;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.fml.ModLoader;
 import org.jspecify.annotations.Nullable;
-import tnt.tarkovcraft.core.api.event.client.RegisterPostShaderProgramsEvent;
+import tnt.tarkovcraft.core.api.event.client.ClientCoreEventHooks;
 import tnt.tarkovcraft.core.api.shader.PostEffectShaderProgram;
 
 import java.util.ArrayList;
@@ -33,10 +32,10 @@ public final class PostEffectShaderProgramProcessor {
     }
 
     public void init(boolean allowCosmeticShaders) {
-        RegisterPostShaderProgramsEvent event = ModLoader.postEventWithReturn(new RegisterPostShaderProgramsEvent(allowCosmeticShaders));
+        var registryResult = ClientCoreEventHooks.onPostChainShaderRegister(allowCosmeticShaders);
         synchronized (INSTANCE) {
-            this.registeredPrograms.addAll(event.getPrograms());
-            this.dynamicPipelines.addAll(event.getDynamicPipelines());
+            this.registeredPrograms.addAll(registryResult.getFirst());
+            this.dynamicPipelines.addAll(registryResult.getSecond());
         }
     }
 

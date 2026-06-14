@@ -13,10 +13,9 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.common.NeoForge;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.api.client.LabelContainer;
-import tnt.tarkovcraft.core.api.event.client.AddPlayerProfileLabelsEvent;
+import tnt.tarkovcraft.core.api.event.client.ClientCoreEventHooks;
 import tnt.tarkovcraft.core.client.screen.navigation.CoreNavigators;
 import tnt.tarkovcraft.core.client.screen.renderable.*;
 import tnt.tarkovcraft.core.client.screen.widget.EntityWidget;
@@ -115,7 +114,7 @@ public class StatisticsScreen extends CharacterSubScreen {
             container.addLabel(HorizontalAlignment.RIGHT, new IconWithLabel(ICON_WEIGHT, weightLabel, iconColor, weightColor));
         }
         // API for custom player labels
-        NeoForge.EVENT_BUS.post(new AddPlayerProfileLabelsEvent(player, container));
+        ClientCoreEventHooks.onAddCustomProfileLabels(player, container);
         return container;
     }
 

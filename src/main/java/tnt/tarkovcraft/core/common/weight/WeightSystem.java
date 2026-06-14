@@ -13,13 +13,11 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemInstance;
-import net.neoforged.fml.ModLoader;
-import net.neoforged.neoforge.common.NeoForge;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.jetbrains.annotations.ApiStatus;
 import tnt.tarkovcraft.core.TarkovCraftCore;
-import tnt.tarkovcraft.core.api.event.EntityWeightUpdateEvent;
+import tnt.tarkovcraft.core.api.event.CoreEventHooks;
 import tnt.tarkovcraft.core.api.event.RegisterWeightProvidersEvent;
 import tnt.tarkovcraft.core.common.attribute.AttributeSystem;
 import tnt.tarkovcraft.core.common.config.WeightConfig;
@@ -97,7 +95,7 @@ public class WeightSystem {
         updateVanillaAttributeModifier(entity, Attributes.JUMP_STRENGTH, config.overweightJumpReduction, factor,  AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
         updateVanillaAttributeModifier(entity, Attributes.SAFE_FALL_DISTANCE, config.overweightSafeFallDistanceReduction, factor, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
         updateVanillaAttributeModifier(entity, Attributes.STEP_HEIGHT, config.overweightStepHeightReduction, factor, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-        NeoForge.EVENT_BUS.post(new EntityWeightUpdateEvent(entity, originalWeight, weight, factor));
+        CoreEventHooks.onWeightUpdate(entity, originalWeight, weight, factor);
     }
 
     public static Component getWeightDisplay(int weight, BiFunction<Integer, Style, Style> baseStyleApplicator, BiFunction<Integer, Style, Style> weightStyleApplicator) {
@@ -159,7 +157,7 @@ public class WeightSystem {
     public void init() {
         if (!this.providerMap.isEmpty())
             throw new IllegalStateException("Already initialized");
-        ModLoader.postEvent(new RegisterWeightProvidersEvent(this::register));
+        CoreEventHooks.onWeightProviderRegistration(this::register);
     }
 
     @ApiStatus.Internal

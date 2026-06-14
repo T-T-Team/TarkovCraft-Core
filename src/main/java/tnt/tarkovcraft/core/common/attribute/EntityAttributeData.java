@@ -13,9 +13,8 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.attachment.IAttachmentSerializer;
-import net.neoforged.neoforge.common.NeoForge;
 import org.jspecify.annotations.Nullable;
-import tnt.tarkovcraft.core.api.event.EntityAttributeEvent;
+import tnt.tarkovcraft.core.api.event.CoreEventHooks;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.util.OwnerAttachmentSyncHandler;
 
@@ -89,7 +88,7 @@ public final class EntityAttributeData {
         if (this.holder instanceof ServerPlayer serverPlayer) {
             instance.addListener(new SynchronizationAttributeListener(serverPlayer));
         }
-        NeoForge.EVENT_BUS.post(new EntityAttributeEvent.AttributeInstanceConstructing(this, instance.getAttribute(), instance));
+        CoreEventHooks.onAttributeConstructing(this, instance.getAttribute(), instance);
     }
 
     public static final class Serializer implements IAttachmentSerializer<EntityAttributeData> {

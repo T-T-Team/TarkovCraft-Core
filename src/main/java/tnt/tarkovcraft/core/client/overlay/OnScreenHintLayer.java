@@ -9,6 +9,7 @@ import net.minecraft.resources.Identifier;
 import net.neoforged.fml.ModLoader;
 import net.neoforged.neoforge.client.gui.GuiLayer;
 import tnt.tarkovcraft.core.TarkovCraftCore;
+import tnt.tarkovcraft.core.api.event.client.ClientCoreEventHooks;
 import tnt.tarkovcraft.core.api.event.client.RegisterOnScreenHintEvent;
 import tnt.tarkovcraft.core.client.TarkovCraftCoreClient;
 import tnt.tarkovcraft.core.client.config.OnScreenHintDisplay;
@@ -24,7 +25,7 @@ public final class OnScreenHintLayer implements GuiLayer {
     private static final List<OnScreenHint> HINTS = new ArrayList<>();
 
     public OnScreenHintLayer() {
-        ModLoader.postEvent(new RegisterOnScreenHintEvent(hint -> HINTS.add(Objects.requireNonNull(hint))));
+        ClientCoreEventHooks.onScreenHintRegister(HINTS::add);
     }
 
     public void tick() {

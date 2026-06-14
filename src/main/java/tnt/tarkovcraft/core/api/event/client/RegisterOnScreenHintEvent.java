@@ -4,6 +4,7 @@ import net.neoforged.bus.api.Event;
 import net.neoforged.fml.event.IModBusEvent;
 import tnt.tarkovcraft.core.client.hint.OnScreenHint;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class RegisterOnScreenHintEvent extends Event implements IModBusEvent {
@@ -15,6 +16,6 @@ public class RegisterOnScreenHintEvent extends Event implements IModBusEvent {
     }
 
     public void register(OnScreenHint hint) {
-        this.consumer.accept(hint);
+        this.consumer.accept(Objects.requireNonNull(hint, "OnScreenHint cannot be null"));
     }
 }
