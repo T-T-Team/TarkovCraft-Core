@@ -27,8 +27,6 @@ import tnt.tarkovcraft.core.common.skill.tracker.condition.*;
 import tnt.tarkovcraft.core.common.statistic.DisplayStatistic;
 import tnt.tarkovcraft.core.common.statistic.Statistic;
 
-import static tnt.tarkovcraft.core.TarkovCraftCore.registerObject;
-
 public final class CoreRegistries {
 
     // Global utilities
@@ -77,6 +75,10 @@ public final class CoreRegistries {
 
     public static void registerSkillStats(RegisterEvent.RegisterHelper<MapCodec<? extends SkillStat>> helper) {
         registerObject(helper, "add_attribute_modifier", AddAttributeModifierStat.CODEC);
+    }
+
+    private static <T> void registerObject(RegisterEvent.RegisterHelper<T> helper, String name, T object) {
+        helper.register(TarkovCraftCore.createIdentifier(name), object);
     }
 
     public static final class Keys {

@@ -69,10 +69,6 @@ public final class TarkovCraftCore {
         return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 
-    public static <T> void registerObject(RegisterEvent.RegisterHelper<T> helper, String name, T object) {
-        helper.register(createIdentifier(name), object);
-    }
-
     private void registerData(RegisterEvent event) {
         event.register(CoreRegistries.Keys.ATTRIBUTE_MODIFIER, CoreRegistries::registerAttributeModifiers);
         event.register(CoreRegistries.Keys.NUMBER_PROVIDER, CoreRegistries::registerNumberProviders);
