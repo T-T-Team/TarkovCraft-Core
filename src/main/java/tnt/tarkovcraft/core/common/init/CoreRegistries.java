@@ -2,6 +2,7 @@ package tnt.tarkovcraft.core.common.init;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
@@ -26,8 +27,6 @@ import tnt.tarkovcraft.core.common.skill.tracker.SkillTriggerEvent;
 import tnt.tarkovcraft.core.common.skill.tracker.condition.*;
 import tnt.tarkovcraft.core.common.statistic.DisplayStatistic;
 import tnt.tarkovcraft.core.common.statistic.Statistic;
-
-import static tnt.tarkovcraft.core.TarkovCraftCore.registerObject;
 
 public final class CoreRegistries {
 
@@ -77,6 +76,10 @@ public final class CoreRegistries {
 
     public static void registerSkillStats(RegisterEvent.RegisterHelper<MapCodec<? extends SkillStat>> helper) {
         registerObject(helper, "add_attribute_modifier", AddAttributeModifierStat.CODEC);
+    }
+
+    private static <T> void registerObject(RegisterEvent.RegisterHelper<T> helper, String name, T object) {
+        helper.register(Identifier.fromNamespaceAndPath(TarkovCraftCore.MOD_ID, name), object);
     }
 
     public static final class Keys {
