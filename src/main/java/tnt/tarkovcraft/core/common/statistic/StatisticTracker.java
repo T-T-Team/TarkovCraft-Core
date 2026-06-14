@@ -9,9 +9,14 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
+import tnt.tarkovcraft.core.api.AttachmentSyncCallbackListener;
+import tnt.tarkovcraft.core.api.client.SynchronizableScreen;
+import tnt.tarkovcraft.core.client.TarkovCraftCoreClient;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
+import tnt.tarkovcraft.core.common.util.OwnerAttachmentSyncHandler;
 
 import java.util.Map;
 import java.util.function.LongBinaryOperator;
@@ -123,5 +128,17 @@ public final class StatisticTracker implements StatisticReader {
 
     public void resetStatistics() {
         this.stats.clear();
+    }
+
+    public static final class SyncHandler extends OwnerAttachmentSyncHandler<StatisticTracker> implements AttachmentSyncCallbackListener<StatisticTracker> {
+
+        public SyncHandler() {
+            super(StatisticTracker.STREAM_CODEC);
+        }
+
+        @Override
+        public void onDataSynced(IAttachmentHolder holder, AttachmentType<StatisticTracker> attachmentType, StatisticTracker attachment) {
+            TarkovCraftCoreClient.synchronizeCurrentScreen(SynchronizableScreen.STATISTICS);
+        }
     }
 }

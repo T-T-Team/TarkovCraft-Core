@@ -34,7 +34,7 @@ public final class CoreDataAttachments {
     public static final Supplier<AttachmentType<StatisticTracker>> STATISTICS = REGISTRY.register("statistics", () -> AttachmentType.builder(StatisticTracker::new)
             .serialize(StatisticTracker.MAP_CODEC)
             .copyOnDeath()
-            .sync(new OwnerAttachmentSyncHandler<>(StatisticTracker.STREAM_CODEC))
+            .sync(new StatisticTracker.SyncHandler())
             .build()
     );
     public static final Supplier<AttachmentType<Integer>> WEIGHT = REGISTRY.register("weight", () -> AttachmentType.builder(() -> 0)

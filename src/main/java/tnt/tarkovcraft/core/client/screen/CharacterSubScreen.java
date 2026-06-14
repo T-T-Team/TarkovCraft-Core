@@ -7,6 +7,7 @@ import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Player;
+import tnt.tarkovcraft.core.api.client.SynchronizableScreen;
 import tnt.tarkovcraft.core.client.screen.navigation.CoreNavigators;
 import tnt.tarkovcraft.core.client.screen.navigation.NavigationEntry;
 import tnt.tarkovcraft.core.client.screen.renderable.LabelRenderable;
@@ -18,7 +19,7 @@ import tnt.tarkovcraft.core.client.screen.widget.LabelButton;
 import java.util.Optional;
 import java.util.UUID;
 
-public abstract class CharacterSubScreen extends NotificationScreen {
+public abstract class CharacterSubScreen extends NotificationScreen implements SynchronizableScreen {
 
     protected final UUID characterProfileId;
     protected final NavigationEntry selectedPage;

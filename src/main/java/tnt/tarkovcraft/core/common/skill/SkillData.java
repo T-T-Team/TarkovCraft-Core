@@ -12,8 +12,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.attachment.IAttachmentSerializer;
+import tnt.tarkovcraft.core.api.AttachmentSyncCallbackListener;
+import tnt.tarkovcraft.core.api.client.SynchronizableScreen;
+import tnt.tarkovcraft.core.client.TarkovCraftCoreClient;
 import tnt.tarkovcraft.core.client.util.ClientUtils;
 import tnt.tarkovcraft.core.common.Notification;
 import tnt.tarkovcraft.core.common.attribute.Attribute;
@@ -171,7 +175,7 @@ public final class SkillData {
         }
     }
 
-    public static final class SyncHandler extends OwnerAttachmentSyncHandler<SkillData> {
+    public static final class SyncHandler extends OwnerAttachmentSyncHandler<SkillData> implements AttachmentSyncCallbackListener<SkillData> {
 
         public static final StreamCodec<RegistryFriendlyByteBuf, SkillData> CODEC = ByteBufCodecs.fromCodecWithRegistries(MAP_CODEC.codec());
 
@@ -183,6 +187,11 @@ public final class SkillData {
         public void write(RegistryFriendlyByteBuf buf, SkillData attachment, boolean initialSync) {
             attachment.applyStats();
             super.write(buf, attachment, initialSync);
+        }
+
+        @Override
+        public void onDataSynced(IAttachmentHolder holder, AttachmentType<SkillData> attachmentType, SkillData attachment) {
+            TarkovCraftCoreClient.synchronizeCurrentScreen(SynchronizableScreen.SKILLS);
         }
     }
 }

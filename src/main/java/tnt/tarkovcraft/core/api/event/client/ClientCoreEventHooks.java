@@ -1,11 +1,13 @@
 package tnt.tarkovcraft.core.api.event.client;
 
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.fml.ModLoader;
 import net.neoforged.neoforge.common.NeoForge;
 import tnt.tarkovcraft.core.api.client.LabelContainer;
+import tnt.tarkovcraft.core.api.client.SynchronizableScreen;
 import tnt.tarkovcraft.core.api.shader.PostEffectShaderProgram;
 import tnt.tarkovcraft.core.client.hint.OnScreenHint;
 
@@ -29,5 +31,9 @@ public class ClientCoreEventHooks {
 
     public static void onAddCustomProfileLabels(Player player, LabelContainer container) {
         NeoForge.EVENT_BUS.post(new AddPlayerProfileLabelsEvent(player, container));
+    }
+
+    public static void onScreenSynchronization(Screen screen, SynchronizableScreen.DataSource dataSource) {
+        NeoForge.EVENT_BUS.post(new ScreenSynchronizeEvent(screen, dataSource));
     }
 }
