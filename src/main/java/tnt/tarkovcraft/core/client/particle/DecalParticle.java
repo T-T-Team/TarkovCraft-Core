@@ -29,7 +29,7 @@ public abstract class DecalParticle extends SingleQuadParticle {
         super(level, x, y, z, xSpeed, ySpeed, zSpeed, sprite);
         this.attachedDirection = options.attachDirection();
         this.position = options.position();
-        this.initialPosition = new Vec3(x, y, z);
+        this.initialPosition = new Vec3(x, y + this.random.nextFloat() * this.randomizeHeightOffsetFactor(), z);
         this.offsetWithNormal(MIN_LAYER_OFFSET + this.random.nextFloat() * 0.01F);
 
         this.xd = 0;
@@ -104,6 +104,10 @@ public abstract class DecalParticle extends SingleQuadParticle {
 
     protected void handleAttachedBlockRemoved(BlockState state) {
         this.remove();
+    }
+
+    protected float randomizeHeightOffsetFactor() {
+        return 0.001F;
     }
 
     private void offsetWithNormal(float amount) {
