@@ -9,6 +9,7 @@
   "mixins": [
     "InventoryMixin",
     "LivingEntityMixin",
+    "PlayerMixin",
     "ServerPlayerMixin"
   ],
   "client": [
