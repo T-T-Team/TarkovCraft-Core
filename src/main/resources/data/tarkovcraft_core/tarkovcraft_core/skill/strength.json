@@ -24,11 +24,6 @@
         },
         {
           "type": "tarkovcraft_core:overweight"
-        },
-        {
-          "type": "tarkovcraft_core:configurable",
-          "config": "tarkovcraft_core",
-          "field": "weightConfig.enableWeightSystem"
         }
       ],
       "tracker": {
