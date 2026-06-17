@@ -49,7 +49,7 @@ public final class TarkovCraftCoreClient {
             createKeybindName(TarkovCraftCore.MOD_ID, "character"),
             KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_O,
+            InputConstants.KEY_P,
             SHARED_CATEGORY
     );
 
