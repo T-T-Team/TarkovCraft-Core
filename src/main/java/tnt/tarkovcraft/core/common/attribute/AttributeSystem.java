@@ -4,6 +4,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import org.jspecify.annotations.Nullable;
 import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
@@ -14,7 +15,7 @@ import java.util.function.Supplier;
 public final class AttributeSystem {
 
     public static boolean isEnabledForEntity(Entity entity) {
-        return entity != null && (entity.getType() == EntityType.PLAYER || entity.hasData(CoreDataAttachments.ENTITY_ATTRIBUTES));
+        return entity != null && (entity.getType() == EntityTypes.PLAYER || entity.hasData(CoreDataAttachments.ENTITY_ATTRIBUTES));
     }
 
     public static EntityAttributeData getAttributes(Entity entity) {

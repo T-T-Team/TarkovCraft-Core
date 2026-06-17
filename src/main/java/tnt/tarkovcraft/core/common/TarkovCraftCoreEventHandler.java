@@ -6,10 +6,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.ExperienceOrb;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -59,7 +56,7 @@ public final class TarkovCraftCoreEventHandler {
             return;
 
         Entity entity = event.getEntity();
-        if (entity.getType() == EntityType.PLAYER) {
+        if (entity.getType() == EntityTypes.PLAYER) {
             Player player = (Player) entity;
             WeightSystem.applyWeightEffects(player);
             player.containerMenu.addSlotListener(new EntityWeightContainerListener(player));

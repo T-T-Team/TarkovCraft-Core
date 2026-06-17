@@ -6,6 +6,7 @@ import com.mojang.blaze3d.resource.CrossFrameResourcePool;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelTargetBundle;
 import net.minecraft.client.renderer.PostChain;
 import net.minecraft.resources.Identifier;
@@ -71,7 +72,8 @@ public final class PostEffectShaderProgramProcessor {
             RenderSystem.pushPipelineModifier(DynamicTransformsPipelineModifier.KEY);
             program.onRender(deltaTracker);
             this.activeDynamicUniformBuffer = program.getDynamicUniformBuffer();
-            postChain.process(client.getMainRenderTarget(), resourcePool);
+            GameRenderer gameRenderer = client.gameRenderer;
+            postChain.process(gameRenderer.mainRenderTarget(), resourcePool);
             RenderSystem.popPipelineModifier();
         }
         this.activeDynamicUniformBuffer = null;

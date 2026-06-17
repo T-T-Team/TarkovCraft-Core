@@ -26,7 +26,7 @@ public abstract class LayeredScreen extends NotificationScreen {
     }
 
     public void openParentScreen() {
-        this.minecraft.setScreen(this.parent);
+        this.minecraft.gui.setScreen(this.parent);
     }
 
     public boolean displayParentOnClose() {

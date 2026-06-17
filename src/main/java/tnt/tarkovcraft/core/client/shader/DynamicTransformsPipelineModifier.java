@@ -1,7 +1,7 @@
 package tnt.tarkovcraft.core.client.shader;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.shaders.UniformType;
+import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.neoforge.client.pipeline.PipelineModifier;
@@ -16,7 +16,7 @@ public final class DynamicTransformsPipelineModifier implements PipelineModifier
         if (PostEffectShaderProgramProcessor.INSTANCE.isDynamicPipeline(renderPipeline)) {
             return renderPipeline.toBuilder()
                     .withLocation(identifier)
-                    .withUniform("DynamicTransforms", UniformType.UNIFORM_BUFFER)
+                    .withBindGroupLayout(BindGroupLayouts.DYNAMIC_TRANSFORMS)
                     .build();
         }
         return renderPipeline;

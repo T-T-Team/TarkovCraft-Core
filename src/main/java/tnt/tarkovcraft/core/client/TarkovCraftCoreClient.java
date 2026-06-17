@@ -78,7 +78,7 @@ public final class TarkovCraftCoreClient {
 
     public static void synchronizeCurrentScreen(SynchronizableScreen.DataSource dataSource) {
         Minecraft minecraft = Minecraft.getInstance();
-        Screen screen = minecraft.screen;
+        Screen screen = minecraft.gui.screen();
         if (screen instanceof SynchronizableScreen synchronizableScreen) {
             synchronizableScreen.sync(dataSource);
             ClientCoreEventHooks.onScreenSynchronization(screen, dataSource);
@@ -104,7 +104,7 @@ public final class TarkovCraftCoreClient {
         // Game keybinds
         if (player != null) {
             if (KEY_CHARACTER.consumeClick()) {
-                client.setScreen(CoreNavigators.CHARACTER_NAVIGATION_PROVIDER.buildInitial(null, player.getUUID()));
+                client.gui.setScreen(CoreNavigators.CHARACTER_NAVIGATION_PROVIDER.buildInitial(null, player.getUUID()));
             }
         }
     }
@@ -120,7 +120,7 @@ public final class TarkovCraftCoreClient {
 
     private void clientPostTick(ClientTickEvent.Post event) {
         Minecraft minecraft = Minecraft.getInstance();
-        Screen screen = minecraft.screen;
+        Screen screen = minecraft.gui.screen();
 
         // notification tick
         if (screen == null) {

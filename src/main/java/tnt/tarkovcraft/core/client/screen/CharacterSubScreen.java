@@ -57,7 +57,7 @@ public abstract class CharacterSubScreen extends NotificationScreen implements S
         Component title = entry.label();
         int itemWidth = this.font.width(title);
         LabelButton button = new LabelButton(
-                Button.builder(title, b -> this.minecraft.setScreen(entry.getScreen(this, this.characterProfileId)))
+                Button.builder(title, b -> this.minecraft.gui.setScreen(entry.getScreen(this, this.characterProfileId)))
                         .size(itemWidth + 4, 15)
                         .pos(0, 5)
         );

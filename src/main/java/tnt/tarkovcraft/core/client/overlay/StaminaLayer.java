@@ -27,7 +27,7 @@ public class StaminaLayer implements GuiLayer {
         Minecraft client = Minecraft.getInstance();
         Window window = client.getWindow();
         Entity entity = client.getCameraEntity();
-        if (client.options.hideGui) {
+        if (client.gui.hud.isHidden()) {
             return;
         }
         if (client.player.isSpectator() && client.player == entity) {

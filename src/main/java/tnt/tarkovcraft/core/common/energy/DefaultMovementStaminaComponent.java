@@ -1,6 +1,7 @@
 package tnt.tarkovcraft.core.common.energy;
 
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import tnt.tarkovcraft.core.api.MovementStaminaComponent;
 
@@ -29,28 +30,28 @@ public class DefaultMovementStaminaComponent implements MovementStaminaComponent
 
     @Override
     public boolean canSprint(LivingEntity entity) {
-        if (entity.getType() != EntityType.PLAYER)
+        if (entity.getType() != EntityTypes.PLAYER)
             return true;
         return EnergySystem.canSprint(entity);
     }
 
     @Override
     public void onSprint(LivingEntity entity) {
-        if (entity.getType() != EntityType.PLAYER)
+        if (entity.getType() != EntityTypes.PLAYER)
             return;
         EnergySystem.onSprinted(entity);
     }
 
     @Override
     public boolean canJump(LivingEntity entity) {
-        if (entity.getType() != EntityType.PLAYER)
+        if (entity.getType() != EntityTypes.PLAYER)
             return true;
         return EnergySystem.canJump(entity);
     }
 
     @Override
     public void onJump(LivingEntity entity) {
-        if (entity.getType() == EntityType.PLAYER) {
+        if (entity.getType() == EntityTypes.PLAYER) {
             EnergySystem.onJumped(entity);
         }
     }

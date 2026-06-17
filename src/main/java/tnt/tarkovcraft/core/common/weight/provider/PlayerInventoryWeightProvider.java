@@ -2,6 +2,7 @@ package tnt.tarkovcraft.core.common.weight.provider;
 
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -17,7 +18,7 @@ public class PlayerInventoryWeightProvider implements WeightProvider {
     @Override
     public int getWeight(WeightContext context) {
         LivingEntity entity = context.entity();
-        if (entity.getType() != EntityType.PLAYER) {
+        if (entity.getType() != EntityTypes.PLAYER) {
             return 0;
         }
         Player player = (Player) entity;
