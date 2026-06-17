@@ -22,6 +22,8 @@
     "26.1.1-latest": "2.5.2",
     "26.1.1-recommended": "2.5.2",
     "26.1.2-latest": "2.5.2",
-    "26.1.2-recommended": "2.5.2"
+    "26.1.2-recommended": "2.5.2",
+    "26.2-latest": "2.6.0",
+    "26.2-recommended": "2.6.0"
   }
 }
