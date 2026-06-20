@@ -14,6 +14,8 @@ import tnt.tarkovcraft.core.api.shader.ShaderType;
 import tnt.tarkovcraft.core.common.attribute.AttributeSystem;
 import tnt.tarkovcraft.core.common.init.CoreAttributes;
 
+import java.util.function.Consumer;
+
 // TODO light effects to support flash grenades?
 public final class BlindnessPostShaderProgram implements PostEffectShaderProgram {
 
@@ -61,5 +63,10 @@ public final class BlindnessPostShaderProgram implements PostEffectShaderProgram
     @Override
     public @Nullable GpuBufferSlice getDynamicUniformBuffer() {
         return ShaderHelper.scaleTransform(1.0F - this.interpolatedStrength);
+    }
+
+    @Override
+    public void applyDynamicUniforms(Consumer<Identifier> passIdentifierConsumer) {
+        passIdentifierConsumer.accept(DYNAMIC_PIPELINE);
     }
 }

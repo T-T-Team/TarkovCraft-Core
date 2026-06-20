@@ -3,7 +3,7 @@ package tnt.tarkovcraft.core.client.shader;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.resource.CrossFrameResourcePool;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.shaders.UniformType;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelTargetBundle;
@@ -34,13 +34,11 @@ public final class PostEffectShaderProgramProcessor {
     public void init(boolean allowCosmeticShaders) {
         var registryResult = ClientCoreEventHooks.onPostChainShaderRegister(allowCosmeticShaders);
         synchronized (INSTANCE) {
-            this.registeredPrograms.addAll(registryResult.getFirst());
-            this.dynamicPipelines.addAll(registryResult.getSecond());
+            this.registeredPrograms.addAll(registryResult);
+            for (PostEffectShaderProgram program : this.registeredPrograms) {
+                program.applyDynamicUniforms(this.dynamicPipelines::add);
+            }
         }
-    }
-
-    public boolean isDynamicPipeline(RenderPipeline renderPipeline) {
-        return this.dynamicPipelines.contains(renderPipeline.getLocation());
     }
 
     public void tick() {
@@ -60,6 +58,16 @@ public final class PostEffectShaderProgramProcessor {
         }
     }
 
+    public RenderPipeline modifyDynamicPipeline(RenderPipeline pipeline) {
+        Identifier pipelineId = pipeline.getLocation();
+        if (this.dynamicPipelines.contains(pipelineId)) {
+            RenderPipeline.Builder builder = pipeline.toBuilder();
+            return builder.withUniform("DynamicTransforms", UniformType.UNIFORM_BUFFER)
+                    .build();
+        }
+        return pipeline;
+    }
+
     public @Nullable GpuBufferSlice getActiveDynamicUniformBuffer() {
         return this.activeDynamicUniformBuffer;
     }
@@ -68,11 +76,9 @@ public final class PostEffectShaderProgramProcessor {
         Identifier postChainId = program.postChainId();
         PostChain postChain = client.getShaderManager().getPostChain(postChainId, LevelTargetBundle.MAIN_TARGETS);
         if (postChain != null) {
-            RenderSystem.pushPipelineModifier(DynamicTransformsPipelineModifier.KEY);
             program.onRender(deltaTracker);
             this.activeDynamicUniformBuffer = program.getDynamicUniformBuffer();
             postChain.process(client.getMainRenderTarget(), resourcePool);
-            RenderSystem.popPipelineModifier();
         }
         this.activeDynamicUniformBuffer = null;
     }

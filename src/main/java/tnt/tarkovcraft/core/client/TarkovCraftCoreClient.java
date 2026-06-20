@@ -18,10 +18,8 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.event.sound.PlaySoundEvent;
-import net.neoforged.neoforge.client.pipeline.RegisterPipelineModifiersEvent;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
-import org.lwjgl.glfw.GLFW;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.api.client.SynchronizableScreen;
 import tnt.tarkovcraft.core.api.event.client.ClientCoreEventHooks;
@@ -34,7 +32,6 @@ import tnt.tarkovcraft.core.client.overlay.OnScreenHintLayer;
 import tnt.tarkovcraft.core.client.overlay.StaminaLayer;
 import tnt.tarkovcraft.core.client.screen.navigation.CoreNavigators;
 import tnt.tarkovcraft.core.client.shader.BlindnessPostShaderProgram;
-import tnt.tarkovcraft.core.client.shader.DynamicTransformsPipelineModifier;
 import tnt.tarkovcraft.core.client.shader.PostEffectShaderProgramProcessor;
 import tnt.tarkovcraft.core.common.attribute.AttributeSystem;
 import tnt.tarkovcraft.core.common.init.CoreAttributes;
@@ -49,7 +46,7 @@ public final class TarkovCraftCoreClient {
             createKeybindName(TarkovCraftCore.MOD_ID, "character"),
             KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_O,
+            InputConstants.KEY_O,
             SHARED_CATEGORY
     );
 
@@ -63,7 +60,6 @@ public final class TarkovCraftCoreClient {
         modEventBus.addListener(this::setup);
         modEventBus.addListener(this::registerKeyBindings);
         modEventBus.addListener(this::registerCustomGuiLayers);
-        modEventBus.addListener(this::registerPipelineModifiers);
         modEventBus.addListener(this::registerShaderPrograms);
 
         NeoForge.EVENT_BUS.addListener(this::onKeyboardInput);
@@ -138,12 +134,8 @@ public final class TarkovCraftCoreClient {
         NotificationChannel.MAIN.clearAllNotifications();
     }
 
-    private void registerPipelineModifiers(RegisterPipelineModifiersEvent event) {
-        event.register(DynamicTransformsPipelineModifier.KEY, new DynamicTransformsPipelineModifier());
-    }
-
     private void registerShaderPrograms(RegisterPostShaderProgramsEvent event) {
-        event.registerWithDynamicPipeline(BlindnessPostShaderProgram.INSTANCE, BlindnessPostShaderProgram.DYNAMIC_PIPELINE);
+        event.register(BlindnessPostShaderProgram.INSTANCE);
     }
 
     private void onPlaySound(PlaySoundEvent event) {

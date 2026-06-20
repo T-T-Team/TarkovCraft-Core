@@ -1,6 +1,8 @@
 package tnt.tarkovcraft.core.api.event.client;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.Event;
 import net.neoforged.fml.event.IModBusEvent;
@@ -13,7 +15,6 @@ import java.util.*;
 public class RegisterPostShaderProgramsEvent extends Event implements IModBusEvent {
 
     private final List<PostEffectShaderProgram> programs = new ArrayList<>();
-    private final Set<Identifier> dynamicPipelines = new HashSet<>();
 
     private final boolean allowCosmeticShaderPrograms;
 
@@ -35,26 +36,8 @@ public class RegisterPostShaderProgramsEvent extends Event implements IModBusEve
         }
     }
 
-    public void registerWithDynamicPipeline(PostEffectShaderProgram program, Identifier... pipelines) {
-        if (!this.allowCosmeticShaderPrograms && program.getShaderType().isCosmetic()) {
-            TarkovCraftCore.LOGGER.debug("Skipping registration of cosmetic pipeline and shader program '{}'", program.postChainId());
-            return;
-        }
-        this.programs.add(program);
-        this.dynamicPipelines.addAll(Arrays.asList(pipelines));
-    }
-
-    public void registerDynamicPipeline(Identifier identifier) {
-        this.dynamicPipelines.add(identifier);
-    }
-
     @ApiStatus.Internal
     public List<PostEffectShaderProgram> getPrograms() {
         return ImmutableList.copyOf(this.programs);
-    }
-
-    @ApiStatus.Internal
-    public Set<Identifier> getDynamicPipelines() {
-        return Set.copyOf(this.dynamicPipelines);
     }
 }
