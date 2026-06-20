@@ -3,9 +3,9 @@ package tnt.tarkovcraft.core.client.shader;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.resource.CrossFrameResourcePool;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelTargetBundle;
 import net.minecraft.client.renderer.PostChain;
@@ -29,19 +29,18 @@ public final class PostEffectShaderProgramProcessor {
     private final Set<Identifier> dynamicPipelines = new HashSet<>();
     private GpuBufferSlice activeDynamicUniformBuffer;
 
+
     private PostEffectShaderProgramProcessor() {
     }
 
     public void init(boolean allowCosmeticShaders) {
         var registryResult = ClientCoreEventHooks.onPostChainShaderRegister(allowCosmeticShaders);
         synchronized (INSTANCE) {
-            this.registeredPrograms.addAll(registryResult.getFirst());
-            this.dynamicPipelines.addAll(registryResult.getSecond());
+            this.registeredPrograms.addAll(registryResult);
+            for (PostEffectShaderProgram program : this.registeredPrograms) {
+                program.applyDynamicUniforms(this.dynamicPipelines::add);
+            }
         }
-    }
-
-    public boolean isDynamicPipeline(RenderPipeline renderPipeline) {
-        return this.dynamicPipelines.contains(renderPipeline.getLocation());
     }
 
     public void tick() {
@@ -61,6 +60,16 @@ public final class PostEffectShaderProgramProcessor {
         }
     }
 
+    public RenderPipeline modifyDynamicPipeline(RenderPipeline pipeline) {
+        Identifier pipelineId = pipeline.getLocation();
+        if (this.dynamicPipelines.contains(pipelineId)) {
+            RenderPipeline.Builder builder = pipeline.toBuilder();
+            return builder.withBindGroupLayout(BindGroupLayouts.DYNAMIC_TRANSFORMS)
+                    .build();
+        }
+        return pipeline;
+    }
+
     public @Nullable GpuBufferSlice getActiveDynamicUniformBuffer() {
         return this.activeDynamicUniformBuffer;
     }
@@ -69,12 +78,10 @@ public final class PostEffectShaderProgramProcessor {
         Identifier postChainId = program.postChainId();
         PostChain postChain = client.getShaderManager().getPostChain(postChainId, LevelTargetBundle.MAIN_TARGETS);
         if (postChain != null) {
-            RenderSystem.pushPipelineModifier(DynamicTransformsPipelineModifier.KEY);
             program.onRender(deltaTracker);
             this.activeDynamicUniformBuffer = program.getDynamicUniformBuffer();
             GameRenderer gameRenderer = client.gameRenderer;
             postChain.process(gameRenderer.mainRenderTarget(), resourcePool);
-            RenderSystem.popPipelineModifier();
         }
         this.activeDynamicUniformBuffer = null;
     }

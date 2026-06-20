@@ -7,6 +7,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import org.jspecify.annotations.Nullable;
 
+import java.util.function.Consumer;
+
 public interface PostEffectShaderProgram {
 
     void tickProgram(Minecraft client, LivingEntity cameraEntity);
@@ -21,5 +23,8 @@ public interface PostEffectShaderProgram {
 
     @Nullable default GpuBufferSlice getDynamicUniformBuffer() {
         return null;
+    }
+
+    default void applyDynamicUniforms(Consumer<Identifier> passIdentifierConsumer) {
     }
 }
