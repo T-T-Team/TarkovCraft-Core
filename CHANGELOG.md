@@ -1,2 +1,3 @@
-# Release 2.5.2+26.1.2
-- Upgraded to a stable version of NeoForge - 26.1.2.71+
+# Release 2.7.0+26.1.2
+- Complete registry overhaul and clean up
+- Fixed a minor memory leak
