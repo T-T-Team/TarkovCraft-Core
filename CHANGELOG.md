@@ -1,3 +1,4 @@
-# Release 2.5.1+1.21.1
-- Improved text handling in statistics UI. Should no longer crash when any label is missing
-- Fixed crash in statistics UI when weight system was disabled
+# Release 2.7.0+1.21.1
+- Backport to 1.21.1
+- Complete registry overhaul and clean up
+- Shared keybind category
