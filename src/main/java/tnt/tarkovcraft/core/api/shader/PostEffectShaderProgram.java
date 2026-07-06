@@ -27,4 +27,6 @@ public interface PostEffectShaderProgram {
 
     default void applyDynamicUniforms(Consumer<Identifier> passIdentifierConsumer) {
     }
+
+    default void resetShader() {}
 }

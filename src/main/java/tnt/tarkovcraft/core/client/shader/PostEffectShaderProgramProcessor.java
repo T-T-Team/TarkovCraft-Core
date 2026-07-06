@@ -72,6 +72,10 @@ public final class PostEffectShaderProgramProcessor {
         return this.activeDynamicUniformBuffer;
     }
 
+    public void resetShaders() {
+        this.registeredPrograms.forEach(PostEffectShaderProgram::resetShader);
+    }
+
     private void processSingleShader(PostEffectShaderProgram program, Minecraft client, CrossFrameResourcePool resourcePool, DeltaTracker deltaTracker) {
         Identifier postChainId = program.postChainId();
         PostChain postChain = client.getShaderManager().getPostChain(postChainId, LevelTargetBundle.MAIN_TARGETS);

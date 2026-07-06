@@ -5,6 +5,7 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -18,11 +19,9 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
-import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
+import net.neoforged.neoforge.event.entity.player.*;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import tnt.tarkovcraft.core.api.MovementStaminaComponent;
 import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
 import tnt.tarkovcraft.core.common.attribute.AttributeSystem;
@@ -41,6 +40,7 @@ import tnt.tarkovcraft.core.common.statistic.StatisticTracker;
 import tnt.tarkovcraft.core.common.weight.EntityWeightContainerListener;
 import tnt.tarkovcraft.core.common.weight.WeightSystem;
 import tnt.tarkovcraft.core.network.message.C2S_ItemLeftClicked;
+import tnt.tarkovcraft.core.network.message.S2C_ResetShaders;
 
 import java.util.List;
 
@@ -164,5 +164,14 @@ public final class TarkovCraftCoreEventHandler {
             Player player = event.getEntity();
             listener.onLeftClick(player, player.level(), itemStack, event.getPos());
         }
+    }
+
+    @SubscribeEvent
+    private void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        Player player = event.getEntity();
+        if (event.isEndConquered() || player.level().isClientSide())
+            return;
+        ServerPlayer serverPlayer = (ServerPlayer) player;
+        PacketDistributor.sendToPlayer(serverPlayer, new S2C_ResetShaders());
     }
 }

@@ -17,6 +17,7 @@
     "client.CameraMixin",
     "client.GameRendererMixin",
     "client.LocalPlayerMixin",
+    "client.MinecraftMixin",
     "client.MouseHandlerMixin",
     "client.PostChainMixin",
     "client.PostPassMixin"
