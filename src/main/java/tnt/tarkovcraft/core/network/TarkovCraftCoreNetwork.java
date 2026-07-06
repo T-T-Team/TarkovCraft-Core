@@ -8,6 +8,7 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.network.message.C2S_ItemLeftClicked;
 import tnt.tarkovcraft.core.network.message.S2C_MakeParticles;
+import tnt.tarkovcraft.core.network.message.S2C_ResetShaders;
 import tnt.tarkovcraft.core.network.message.notification.S2C_SendNotification;
 
 import java.util.Locale;
@@ -27,6 +28,7 @@ public final class TarkovCraftCoreNetwork {
 
         registry.playToClient(S2C_MakeParticles.TYPE, S2C_MakeParticles.CODEC, S2C_MakeParticles::handleMessage);
         registry.playToClient(S2C_SendNotification.TYPE, S2C_SendNotification.CODEC, S2C_SendNotification::handleMessage);
+        registry.playToClient(S2C_ResetShaders.TYPE, S2C_ResetShaders.CODEC, S2C_ResetShaders::handleMessage);
 
         registry.playToServer(C2S_ItemLeftClicked.TYPE, C2S_ItemLeftClicked.CODEC, C2S_ItemLeftClicked::handleMessage);
     }

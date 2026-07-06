@@ -99,6 +99,10 @@ public final class PostEffectShaderProgramProcessor {
         }
     }
 
+    public void resetShaders() {
+        this.registeredShaders.forEach(PostEffectShaderProgram::resetShader);
+    }
+
     private record ShaderInstanceHolder(PostEffectShaderProgram program, PostChain postChain) {
 
         boolean canRender() {

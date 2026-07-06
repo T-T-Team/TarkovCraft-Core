@@ -52,4 +52,9 @@ public final class BlindnessPostShaderProgram implements PostEffectShaderProgram
     public ShaderType getShaderType() {
         return ShaderType.GAME;
     }
+
+    @Override
+    public void resetShader() {
+        this.strength = 1.0F;
+    }
 }

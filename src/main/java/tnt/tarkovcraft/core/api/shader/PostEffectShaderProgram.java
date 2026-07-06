@@ -20,4 +20,6 @@ public interface PostEffectShaderProgram {
     interface UniformSetter {
         void setUniform(String uniformName, float value);
     }
+
+    default void resetShader() {}
 }

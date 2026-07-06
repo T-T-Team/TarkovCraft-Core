@@ -15,6 +15,7 @@
   "client": [
     "client.GameRendererMixin",
     "client.CameraMixin",
+    "client.MinecraftMixin",
     "client.MouseHandlerMixin",
     "client.LocalPlayerMixin"
   ]
