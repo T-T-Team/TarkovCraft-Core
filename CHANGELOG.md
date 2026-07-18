@@ -1,3 +1,3 @@
-# Release 2.7.0+26.2
-- Vulkan support for shaders
-- Fixed a minor memory leak
+# Release 2.8.0+26.2
+- Shader event support
+  - Allows resetting shaders on respawn for example
