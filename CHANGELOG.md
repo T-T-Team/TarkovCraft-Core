@@ -1,3 +1,3 @@
-# Release 2.7.0+26.1.2
-- Complete registry overhaul and clean up
-- Fixed a minor memory leak
+# Release 2.8.0+26.1.2
+- Shader event support
+  - Allows resetting shaders on respawn for example
