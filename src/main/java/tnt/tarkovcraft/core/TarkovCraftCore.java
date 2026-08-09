@@ -71,6 +71,7 @@ public final class TarkovCraftCore {
     private void registerData(RegisterEvent event) {
         event.register(CoreRegistries.Keys.ATTRIBUTE_MODIFIER, CoreRegistries::registerAttributeModifiers);
         event.register(CoreRegistries.Keys.NUMBER_PROVIDER, CoreRegistries::registerNumberProviders);
+        event.register(CoreRegistries.Keys.SKILL_PROGRESSION_STRATEGY, CoreRegistries::registerSkillProgressionStrategies);
         event.register(CoreRegistries.Keys.SKILL_TRIGGER_TYPE, CoreRegistries::registerSkillTriggerTypes);
         event.register(CoreRegistries.Keys.SKILL_TRIGGER_CONDITION_TYPE, CoreRegistries::registerSkillTriggerConditionTypes);
         event.register(CoreRegistries.Keys.SKILL_STAT_CONDITION_TYPE, CoreRegistries::registerSkillStatConditionTypes);
@@ -86,6 +87,7 @@ public final class TarkovCraftCore {
         event.register(CoreRegistries.ENTITY_POSE);
 
         // Skill system
+        event.register(CoreRegistries.SKILL_PROGRESSION_STRATEGY);
         event.register(CoreRegistries.SKILL_TRIGGER_EVENT);
         event.register(CoreRegistries.SKILL_TRIGGER_TYPE);
         event.register(CoreRegistries.SKILL_TRIGGER_CONDITION_TYPE);

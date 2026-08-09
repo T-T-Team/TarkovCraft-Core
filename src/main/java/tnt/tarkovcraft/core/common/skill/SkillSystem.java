@@ -15,8 +15,8 @@ import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.config.SkillSystemConfig;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
-import tnt.tarkovcraft.core.common.skill.tracker.SkillTrackerDefinition;
-import tnt.tarkovcraft.core.common.skill.tracker.SkillTriggerEvent;
+import tnt.tarkovcraft.core.common.skill.trigger.SkillTriggerDefinition;
+import tnt.tarkovcraft.core.common.skill.trigger.SkillTrigger;
 
 import java.util.Collection;
 import java.util.function.Supplier;
@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 public final class SkillSystem {
 
     public static final Marker MARKER = MarkerManager.getMarker("SkillSystem");
-    private static final Multimap<SkillTriggerEvent, SkillDefinition> TRIGGER_CACHE = ArrayListMultimap.create();
+    private static final Multimap<SkillTrigger, SkillDefinition> TRIGGER_CACHE = ArrayListMultimap.create();
 
     public static boolean isSkillSystemEnabled() {
         return TarkovCraftCore.getConfig().skillSystemConfig.skillSystemEnabled;
@@ -44,7 +44,7 @@ public final class SkillSystem {
         entity.syncData(CoreDataAttachments.SKILL);
     }
 
-    public static boolean trigger(SkillTriggerEvent event, Entity entity, float multiplier) {
+    public static boolean trigger(SkillTrigger event, Entity entity, float multiplier) {
         if (!isSkillSystemEnabled())
             return false;
         SkillData data = entity.getData(CoreDataAttachments.SKILL);
@@ -58,49 +58,49 @@ public final class SkillSystem {
         return anyTrigger;
     }
 
-    public static boolean trigger(Supplier<SkillTriggerEvent> event, Entity entity, float multiplier) {
+    public static boolean trigger(Supplier<SkillTrigger> event, Entity entity, float multiplier) {
         return trigger(event.get(), entity, multiplier);
     }
 
-    public static boolean trigger(Holder<SkillTriggerEvent> event, Entity entity, float multiplier) {
+    public static boolean trigger(Holder<SkillTrigger> event, Entity entity, float multiplier) {
         return trigger(event.value(), entity, multiplier);
     }
 
-    public static boolean trigger(SkillTriggerEvent event, Entity entity) {
+    public static boolean trigger(SkillTrigger event, Entity entity) {
         return trigger(event, entity, 1.0F);
     }
 
-    public static boolean trigger(Supplier<SkillTriggerEvent> event, Entity entity) {
+    public static boolean trigger(Supplier<SkillTrigger> event, Entity entity) {
         return trigger(event, entity, 1.0F);
     }
 
-    public static boolean trigger(Holder<SkillTriggerEvent> event, Entity entity) {
+    public static boolean trigger(Holder<SkillTrigger> event, Entity entity) {
         return trigger(event, entity, 1.0F);
     }
 
-    public static void triggerAndSynchronize(SkillTriggerEvent event, Entity entity, float multiplier) {
+    public static void triggerAndSynchronize(SkillTrigger event, Entity entity, float multiplier) {
         if (trigger(event, entity, multiplier)) {
             synchronize(entity);
         }
     }
 
-    public static void triggerAndSynchronize(Supplier<SkillTriggerEvent> event, Entity entity, float multiplier) {
+    public static void triggerAndSynchronize(Supplier<SkillTrigger> event, Entity entity, float multiplier) {
         triggerAndSynchronize(event.get(), entity, multiplier);
     }
 
-    public static void triggerAndSynchronize(Holder<SkillTriggerEvent> event, Entity entity, float multiplier) {
+    public static void triggerAndSynchronize(Holder<SkillTrigger> event, Entity entity, float multiplier) {
         triggerAndSynchronize(event.value(), entity, multiplier);
     }
 
-    public static void triggerAndSynchronize(SkillTriggerEvent event, Entity entity) {
+    public static void triggerAndSynchronize(SkillTrigger event, Entity entity) {
         triggerAndSynchronize(event, entity, 1.0F);
     }
 
-    public static void triggerAndSynchronize(Supplier<SkillTriggerEvent> event, Entity entity) {
+    public static void triggerAndSynchronize(Supplier<SkillTrigger> event, Entity entity) {
         triggerAndSynchronize(event, entity, 1.0F);
     }
 
-    public static void triggerAndSynchronize(Holder<SkillTriggerEvent> event, Entity entity) {
+    public static void triggerAndSynchronize(Holder<SkillTrigger> event, Entity entity) {
         triggerAndSynchronize(event, entity, 1.0F);
     }
 
@@ -111,10 +111,9 @@ public final class SkillSystem {
         RegistryAccess access = server.registryAccess();
         Registry<SkillDefinition> registry = access.lookupOrThrow(CoreRegistries.DatapackKeys.SKILL_DEFINITION);
         registry.listElements().map(Holder.Reference::value)
-                .filter(SkillDefinition::enabled)
                 .forEach(definition -> {
-                    for (SkillTrackerDefinition trackerDefinition : definition.trackers()) {
-                        SkillTriggerEvent triggerEvent = trackerDefinition.event();
+                    for (SkillTriggerDefinition triggerDefinition : definition.triggers()) {
+                        SkillTrigger triggerEvent = triggerDefinition.trigger();
                         TRIGGER_CACHE.put(triggerEvent, definition);
                     }
                 });

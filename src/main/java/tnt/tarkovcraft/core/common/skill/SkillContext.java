@@ -4,9 +4,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
-import tnt.tarkovcraft.core.common.skill.tracker.SkillTriggerEvent;
+import tnt.tarkovcraft.core.common.skill.trigger.SkillTrigger;
 
-public record SkillContext(SkillTriggerEvent event, SkillDefinition definition, Skill skill, float multiplier, Entity entity) {
+public record SkillContext(SkillTrigger event, SkillDefinition definition, Skill skill, float multiplier, Entity entity) {
 
     @Nullable
     public LivingEntity asLivingEntity() {

@@ -23,9 +23,9 @@ import tnt.tarkovcraft.core.common.Notification;
 import tnt.tarkovcraft.core.common.attribute.Attribute;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
-import tnt.tarkovcraft.core.common.skill.stat.SkillStat;
-import tnt.tarkovcraft.core.common.skill.stat.SkillStatDefinition;
-import tnt.tarkovcraft.core.common.skill.tracker.SkillTriggerEvent;
+import tnt.tarkovcraft.core.common.skill.bonus.SkillBonus;
+import tnt.tarkovcraft.core.common.skill.bonus.SkillBonusDefinition;
+import tnt.tarkovcraft.core.common.skill.trigger.SkillTrigger;
 import tnt.tarkovcraft.core.common.util.OwnerAttachmentSyncHandler;
 
 import java.util.ArrayList;
@@ -51,6 +51,7 @@ public final class SkillData {
 
     private SkillData(Map<SkillDefinition, Skill> map) {
         this.skillMap = new HashMap<>(map);
+        this.skillMap.values().forEach(skill -> skill.setLevelChangeListener(this::onLevelChange));
     }
 
     public void setHolder(IAttachmentHolder holder) {
@@ -59,15 +60,16 @@ public final class SkillData {
         this.holder = entity;
     }
 
-    public boolean trigger(SkillTriggerEvent event, SkillDefinition definition, float multiplier, Entity triggerSource) {
+    public boolean trigger(SkillTrigger event, SkillDefinition definition, float multiplier, Entity triggerSource) {
         Skill instance = this.getSkill(definition);
         SkillContext context = new SkillContext(event, definition, instance, multiplier, triggerSource);
         float triggerAmount = instance.trigger(context);
         if (triggerAmount > 0) {
             EntityAttributeData attributes = triggerSource.getData(CoreDataAttachments.ENTITY_ATTRIBUTES);
-            float experience = triggerAmount * this.getGroupLevelMultiplier(attributes, definition.groupLevelingModifiers());
+            float experience = triggerAmount * this.getGroupLevelMultiplier(attributes, definition.category());
             long gameTime = triggerSource.level().getGameTime();
-            instance.updateMemory(gameTime, attributes, prevLevel -> this.onLevelChange(prevLevel, instance));
+            // TODO change memory handling
+            instance.updateMemory(gameTime, attributes);
             this.addExperience(instance, experience);
             return true;
         }
@@ -80,7 +82,7 @@ public final class SkillData {
     }
 
     public void addExperience(Skill instance, float experience) {
-        instance.addExperience(experience, (previousLevel) -> this.onLevelChange(previousLevel, instance));
+        instance.addExperience(experience);
     }
 
     public Skill getSkill(SkillDefinition skill) {
@@ -91,8 +93,8 @@ public final class SkillData {
         for (Map.Entry<SkillDefinition, Skill> entry : this.skillMap.entrySet()) {
             SkillDefinition definition = entry.getKey();
             Skill instance = entry.getValue();
-            List<SkillStatDefinition> stats = definition.stats();
-            stats.forEach(statDef -> statDef.stat().clear(definition, instance, this.holder));
+            List<SkillBonusDefinition> bonuses = definition.bonuses();
+            bonuses.forEach(bonusDef -> bonusDef.bonus().clear(definition, instance, this.holder));
             applyStats(definition, instance);
         }
     }
@@ -106,9 +108,9 @@ public final class SkillData {
     }
 
     private void applyStats(SkillDefinition definition, Skill skill) {
-        for (SkillStatDefinition statDefinition : definition.stats()) {
-            if (statDefinition.isAvailable(definition, skill, this.holder)) {
-                SkillStat stat = statDefinition.stat();
+        for (SkillBonusDefinition bonus : definition.bonuses()) {
+            if (bonus.isAvailable(definition, skill, this.holder)) {
+                SkillBonus stat = bonus.bonus();
                 stat.apply(definition, skill, this.holder);
             }
         }
@@ -116,6 +118,7 @@ public final class SkillData {
 
     private Skill createInstance(SkillDefinition definition) {
         Skill instance = definition.instance(this.getRegistryAccess());
+        instance.setLevelChangeListener(this::onLevelChange);
         if (this.holder != null) {
             this.applyStats(definition, instance);
         }
@@ -134,21 +137,18 @@ public final class SkillData {
         }
     }
 
-    private float getGroupLevelMultiplier(EntityAttributeData data, List<Holder<Attribute>> group) {
-        float multiplier = 1.0F;
-        for (Holder<Attribute> holder : group) {
-            float attributeValue = data.getAttribute(holder).floatValue();
-            multiplier *= attributeValue;
-        }
-        return Math.max(0.0F, multiplier);
+    private float getGroupLevelMultiplier(EntityAttributeData data, SkillCategory category) {
+        Holder<Attribute> attribute = category.getGroupAttribute();
+        float value = data.getAttribute(attribute).floatValue();
+        return Math.max(0.0F, value);
     }
 
-    public void onLevelChange(int prevLevel, Skill skill) {
+    private void onLevelChange(Skill skill, int currentLevel, int previousLevel) {
         if (this.holder instanceof ServerPlayer player) {
-            if (prevLevel < skill.getLevel()) {
+            if (previousLevel < skill.getLevel()) {
                 Holder<SkillDefinition> definitionHolder = skill.getDefinition();
                 SkillDefinition definition = definitionHolder.value();
-                Notification notification = Notification.success(Component.translatable("label.tarkovcraft_core.skill.level_up", definition.name(), skill.getLevel()));
+                Notification notification = Notification.success(Component.translatable("label.tarkovcraft_core.skill.level_up", definition.displayName(), skill.getLevel()));
                 notification.setIcon(SkillDefinition.getIcon(definitionHolder));
                 notification.send(player);
             }

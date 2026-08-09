@@ -1,4 +1,4 @@
-package tnt.tarkovcraft.core.common.skill.stat.condition;
+package tnt.tarkovcraft.core.common.skill.bonus.condition;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.world.entity.Entity;

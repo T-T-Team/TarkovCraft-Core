@@ -1,22 +1,25 @@
 {
-  "description": {
+  "display_name": {
     "translate": "skill.tarkovcraft_core.strength"
   },
-  "leveling": {
+  "category": "physical",
+  "configuration": {
     "max_level": 100,
-    "base_exp": 10,
-    "additional_exp": 5.0,
-    "max_exp": 150
+    "progression_strategy": {
+      "type": "tarkovcraft_core:incremental",
+      "initial_experience": 10.0,
+      "per_level_experience": 5.0,
+      "max_experience": 150.0
+    },
+    "memory": {
+      "level_loss": true,
+      "start_after": "1d",
+      "experience_loss": 5.0
+    }
   },
-  "memory": {
-    "enabled": true,
-    "level_loss": true,
-    "forget_after": "1d",
-    "forget_amount": 5.0
-  },
-  "trackers": [
+  "triggers": [
     {
-      "event": "tarkovcraft_core:player_tick",
+      "trigger": "tarkovcraft_core:player_tick",
       "conditions": [
         {
           "type": "tarkovcraft_core:sprinting"
@@ -25,28 +28,16 @@
           "type": "tarkovcraft_core:overweight"
         }
       ],
-      "tracker": {
+      "configuration": {
         "type": "tarkovcraft_core:overweight_factor",
         "value": 0.007
       }
     }
   ],
-  "stats": [
+  "bonuses": [
     {
-      "display": {
-        "name": {
-          "translate": "skill.tarkovcraft_core.strength.bonus.weight_limit"
-        },
-        "description_key": "skill.tarkovcraft_core.strength.bonus.weight_limit.description",
-        "icon": "tarkovcraft_core:textures/icons/skill/bonus/weight_limit.png"
-      },
-      "conditions": [
-        {
-          "type": "tarkovcraft_core:skill_level_range",
-          "min": 1
-        }
-      ],
-      "apply": {
+      "name": "weight_limit",
+      "bonus": {
         "type": "tarkovcraft_core:add_attribute_modifier",
         "attribute": "tarkovcraft_core:weight_limit",
         "id": "tarkovcraft_core:skill/weight_limit",
@@ -63,20 +54,8 @@
       }
     },
     {
-      "display": {
-        "name": {
-          "translate": "skill.tarkovcraft_core.strength.bonus.weight_effects"
-        },
-        "description_key": "skill.tarkovcraft_core.strength.bonus.weight_effects.description",
-        "icon": "tarkovcraft_core:textures/icons/skill/bonus/weight_effects.png"
-      },
-      "conditions": [
-        {
-          "type": "tarkovcraft_core:skill_level_range",
-          "min": 1
-        }
-      ],
-      "apply": {
+      "name": "weight_effects",
+      "bonus": {
         "type": "tarkovcraft_core:add_attribute_modifier",
         "attribute": "tarkovcraft_core:weight_effect_factor",
         "id": "tarkovcraft_core:skill/weight_effect_factor",

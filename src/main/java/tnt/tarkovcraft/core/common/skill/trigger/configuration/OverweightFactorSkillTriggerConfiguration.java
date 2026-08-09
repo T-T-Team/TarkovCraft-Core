@@ -1,4 +1,4 @@
-package tnt.tarkovcraft.core.common.skill.tracker;
+package tnt.tarkovcraft.core.common.skill.trigger.configuration;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -9,22 +9,22 @@ import net.minecraft.world.entity.LivingEntity;
 import tnt.tarkovcraft.core.common.skill.SkillContext;
 import tnt.tarkovcraft.core.common.weight.WeightSystem;
 
-public record OverweightFactorSkillTracker(float value, float limit, boolean countOverLimit) implements SkillTracker {
+public record OverweightFactorSkillTriggerConfiguration(float value, float limit, boolean countOverLimit) implements SkillTriggerConfiguration {
 
-    public static final MapCodec<OverweightFactorSkillTracker> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+    public static final MapCodec<OverweightFactorSkillTriggerConfiguration> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             ExtraCodecs.POSITIVE_FLOAT.fieldOf("value").forGetter(t -> t.value),
             ExtraCodecs.POSITIVE_FLOAT.optionalFieldOf("limit", 2.5F).forGetter(t -> t.limit),
             Codec.BOOL.optionalFieldOf("exceeded_limit_counting", false).forGetter(t -> t.countOverLimit)
-    ).apply(instance, OverweightFactorSkillTracker::new));
+    ).apply(instance, OverweightFactorSkillTriggerConfiguration::new));
 
     @Override
-    public boolean isTriggerable(SkillContext context) {
+    public boolean canTrigger(SkillContext context) {
         Entity entity = context.entity();
         return entity instanceof LivingEntity livingEntity && WeightSystem.isOverweight(livingEntity);
     }
 
     @Override
-    public float trigger(SkillContext context) {
+    public float getTriggerExperience(SkillContext context) {
         LivingEntity entity = context.asLivingEntity();
         if (entity == null) {
             return 0.0F;
@@ -40,7 +40,7 @@ public record OverweightFactorSkillTracker(float value, float limit, boolean cou
     }
 
     @Override
-    public MapCodec<? extends SkillTracker> codec() {
+    public MapCodec<? extends SkillTriggerConfiguration> codec() {
         return CODEC;
     }
 }

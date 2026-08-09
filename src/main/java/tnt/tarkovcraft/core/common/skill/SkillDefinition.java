@@ -10,25 +10,21 @@ import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryFixedCodec;
-import tnt.tarkovcraft.core.common.attribute.Attribute;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
-import tnt.tarkovcraft.core.common.skill.stat.SkillStatDefinition;
-import tnt.tarkovcraft.core.common.skill.tracker.SkillTrackerDefinition;
+import tnt.tarkovcraft.core.common.skill.bonus.SkillBonusDefinition;
+import tnt.tarkovcraft.core.common.skill.trigger.SkillTriggerDefinition;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
-public record SkillDefinition(boolean enabled, Component name, SkillLevelDefinition levelDefinition, SkillMemoryConfiguration memory, List<Holder<Attribute>> groupLevelingModifiers, List<SkillTrackerDefinition> trackers, List<SkillStatDefinition> stats) {
+public record SkillDefinition(Component displayName, SkillCategory category, SkillConfiguration configuration, List<SkillTriggerDefinition> triggers, List<SkillBonusDefinition> bonuses) {
 
     public static final Codec<SkillDefinition> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.BOOL.optionalFieldOf("enabled", true).forGetter(t -> t.enabled),
-            ComponentSerialization.CODEC.fieldOf("description").forGetter(t -> t.name),
-            SkillLevelDefinition.CODEC.optionalFieldOf("leveling", SkillLevelDefinition.DEFAULT).forGetter(t -> t.levelDefinition),
-            SkillMemoryConfiguration.CODEC.optionalFieldOf("memory", SkillMemoryConfiguration.NO_LOSS).forGetter(t -> t.memory),
-            CoreRegistries.ATTRIBUTE.holderByNameCodec().listOf().optionalFieldOf("group_level_modifiers", Collections.emptyList()).forGetter(t -> t.groupLevelingModifiers),
-            SkillTrackerDefinition.CODEC.listOf().fieldOf("trackers").forGetter(t -> t.trackers),
-            SkillStatDefinition.CODEC.listOf().fieldOf("stats").forGetter(t -> t.stats)
+            ComponentSerialization.CODEC.fieldOf("display_name").forGetter(SkillDefinition::displayName),
+            SkillCategory.CODEC.optionalFieldOf("category", SkillCategory.MISC).forGetter(SkillDefinition::category),
+            SkillConfiguration.CODEC.fieldOf("configuration").forGetter(SkillDefinition::configuration),
+            SkillTriggerDefinition.CODEC.listOf().fieldOf("triggers").forGetter(SkillDefinition::triggers),
+            SkillBonusDefinition.CODEC.listOf().fieldOf("bonuses").forGetter(SkillDefinition::bonuses)
     ).apply(instance, SkillDefinition::new));
     public static final Codec<Holder<SkillDefinition>> CODEC = RegistryFixedCodec.create(CoreRegistries.DatapackKeys.SKILL_DEFINITION);
 
@@ -44,6 +40,6 @@ public record SkillDefinition(boolean enabled, Component name, SkillLevelDefinit
     }
 
     public Component getFormattedName(UnaryOperator<Style> style) {
-        return this.name().copy().withStyle(style);
+        return this.displayName.copy().withStyle(style);
     }
 }

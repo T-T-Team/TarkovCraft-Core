@@ -1,4 +1,4 @@
-package tnt.tarkovcraft.core.common.skill.tracker.condition;
+package tnt.tarkovcraft.core.common.skill.trigger.condition;
 
 import com.mojang.serialization.MapCodec;
 import dev.toma.configuration.Configuration;

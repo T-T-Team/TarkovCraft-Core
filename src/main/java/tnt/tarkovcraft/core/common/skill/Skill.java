@@ -5,9 +5,12 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
+import tnt.tarkovcraft.core.common.config.SkillSystemConfig;
 import tnt.tarkovcraft.core.common.init.CoreAttributes;
-import tnt.tarkovcraft.core.common.skill.tracker.SkillTrackerDefinition;
+import tnt.tarkovcraft.core.common.skill.progression.SkillProgressionStrategy;
+import tnt.tarkovcraft.core.common.skill.trigger.SkillTriggerDefinition;
 
 import java.util.function.IntConsumer;
 
@@ -28,6 +31,8 @@ public final class Skill {
     private float requiredExperience;
     private long lastExperienceUpdate;
 
+    private LevelChangeListener levelChangeListener = LevelChangeListener.NO_OP;
+
     Skill(Holder<SkillDefinition> definition, int level, float experience, float requiredExperience, long lastExperienceUpdate) {
         this.definition = definition;
         this.level = level;
@@ -37,46 +42,57 @@ public final class Skill {
     }
 
     public Skill(Holder<SkillDefinition> definition) {
-        this(definition, 0, 0.0F, definition.value().levelDefinition().getRequiredExperience(0), 0L);
+        SkillProgressionStrategy strategy = definition.value().configuration().progressionStrategy();
+        this(definition, 0, 0.0F, strategy.getRequiredExperience(0), 0L);
+    }
+
+    public void setLevelChangeListener(LevelChangeListener levelChangeListener) {
+        this.levelChangeListener = levelChangeListener;
     }
 
     public float trigger(SkillContext context) {
         float triggeredAmount = 0;
-        for (SkillTrackerDefinition trackerDefinition : this.definition.value().trackers()) {
-            triggeredAmount += trackerDefinition.trigger(context);
+        SkillSystemConfig config = TarkovCraftCore.getConfig().skillSystemConfig;
+        float globalMultiplier = config.globalSkillLevelSpeedMultiplier;
+        float limit = config.singleTriggerSkillLevelLimit <= 0.0F ? Float.MAX_VALUE : config.singleTriggerSkillLevelLimit;
+        for (SkillTriggerDefinition triggerDefinition : this.definition.value().triggers()) {
+            if (triggerDefinition.isTriggerable(context)) {
+                triggeredAmount += triggerDefinition.trigger(context);
+            }
         }
-        return triggeredAmount;
+        return Math.min(triggeredAmount * globalMultiplier, limit);
     }
 
-    public void updateMemory(long time, EntityAttributeData attributeData, IntConsumer levelChangeCallback) {
-        SkillMemoryConfiguration memory = this.definition.value().memory();
+    public void updateMemory(long time, EntityAttributeData attributeData) {
+        SkillMemoryConfiguration memory = this.definition.value().configuration().memory();
         if (SkillSystem.isMemoryEnabled() && memory.isEnabled()) {
             long diff = time - this.lastExperienceUpdate;
             float rateMultiplier = attributeData.getAttribute(CoreAttributes.MEMORY_FORGET_TIME_MULTIPLIER).floatValue();
-            long timeToForget = (long) (memory.getForgetAfter() * rateMultiplier);
+            long timeToForget = (long) (memory.startAfter() * rateMultiplier);
             long times = diff / timeToForget;
             if (times > 0) {
                 long additional = diff % timeToForget;
                 float amountMultiplier = attributeData.getAttribute(CoreAttributes.MEMORY_FORGET_AMOUNT_MULTIPLIER).floatValue();
-                float amount = memory.getForgetAmount() * amountMultiplier * times;
-                this.loseExperience(amount, memory, levelChangeCallback);
+                float amount = memory.experienceLoss() * amountMultiplier * times;
+                this.loseExperience(amount, memory);
                 time -= additional;
             }
         }
         this.setLastExperienceUpdate(time);
     }
 
-    public void loseExperience(float experience, SkillMemoryConfiguration memoryConfig, IntConsumer levelChangeCallback) {
+    public void loseExperience(float experience, SkillMemoryConfiguration memoryConfig) {
         float experienceToLose = experience > this.experience && !memoryConfig.canLoseLevel() ? this.experience : experience;
         float currentLoss = Math.min(experienceToLose, this.experience);
         float overflow = experienceToLose - currentLoss;
         this.experience -= currentLoss;
         if (SkillSystem.isLevelMemoryEnabled() && overflow > 0 && this.level > 0) {
             this.level--;
-            this.requiredExperience = this.definition.value().levelDefinition().getRequiredExperience(this.level);
+            SkillProgressionStrategy progressionStrategy = this.definition.value().configuration().progressionStrategy();
+            this.requiredExperience = progressionStrategy.getRequiredExperience(this.level);
             this.experience = this.requiredExperience;
-            levelChangeCallback.accept(this.level + 1);
-            this.loseExperience(overflow, memoryConfig, levelChangeCallback);
+            this.levelChangeListener.onLevelChanged(this, this.level, this.level + 1);
+            this.loseExperience(overflow, memoryConfig);
         }
     }
 
@@ -84,40 +100,46 @@ public final class Skill {
         this.lastExperienceUpdate = lastExperienceUpdate;
     }
 
-    public void addExperience(float experience, IntConsumer levelChangeCallback) {
-        if (this.isMaxLevel() || !this.definition.value().enabled())
+    public void addExperience(float experience) {
+        if (this.isMaxLevel())
             return;
         if ((this.experience += experience) >= this.requiredExperience) {
             this.level++;
             float overflow = this.experience - this.requiredExperience;
-            SkillLevelDefinition levelDefinition = this.definition.value().levelDefinition();
-            this.requiredExperience = levelDefinition.getRequiredExperience(this.level);
+            SkillProgressionStrategy progressionStrategy = this.definition.value().configuration().progressionStrategy();
+            this.requiredExperience = progressionStrategy.getRequiredExperience(this.level);
             this.experience = 0.0F;
-            levelChangeCallback.accept(this.level - 1);
-            this.addExperience(overflow, levelChangeCallback);
+            this.levelChangeListener.onLevelChanged(this, this.level, this.level - 1);
+            if (this.level < this.getMaxLevel()) {
+                this.addExperience(overflow);
+            }
         }
     }
 
     public void forceSetLevel(int level) {
         this.level = level;
         this.experience = 0;
-        this.requiredExperience = this.definition.value().levelDefinition().getRequiredExperience(this.level);
+        this.requiredExperience = this.getRequiredExperienceForLevel(this.level);
     }
 
     public int getLevel() {
-        return level;
+        return this.level;
     }
 
     public int getMaxLevel() {
-        return this.definition.value().levelDefinition().getMaxLevel();
+        return this.definition.value().configuration().maxLevel();
     }
 
     public float getExperience() {
-        return experience;
+        return this.experience;
     }
 
     public float getRequiredExperience() {
-        return requiredExperience;
+        return this.requiredExperience;
+    }
+
+    public float getRequiredExperienceForLevel(int level) {
+        return this.definition.value().configuration().progressionStrategy().getRequiredExperience(level);
     }
 
     public boolean isMaxLevel() {
@@ -126,5 +148,11 @@ public final class Skill {
 
     public Holder<SkillDefinition> getDefinition() {
         return definition;
+    }
+
+    @FunctionalInterface
+    public interface LevelChangeListener {
+        LevelChangeListener NO_OP = (_, _, _) -> {};
+        void onLevelChanged(Skill skill, int currentLevel, int previousLevel);
     }
 }
