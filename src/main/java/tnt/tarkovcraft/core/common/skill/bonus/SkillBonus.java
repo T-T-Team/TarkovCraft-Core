@@ -1,4 +1,4 @@
-package tnt.tarkovcraft.core.common.skill.stat;
+package tnt.tarkovcraft.core.common.skill.bonus;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -9,10 +9,10 @@ import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 
 import java.util.function.Function;
 
-public interface SkillStat {
+public interface SkillBonus {
 
-    Codec<SkillStat> CODEC = CoreRegistries.SKILL_STAT.byNameCodec()
-            .dispatch(SkillStat::codec, Function.identity());
+    Codec<SkillBonus> CODEC = CoreRegistries.SKILL_STAT.byNameCodec()
+            .dispatch(SkillBonus::codec, Function.identity());
 
     void apply(SkillDefinition definition, Skill skill, Entity entity);
 
@@ -20,5 +20,5 @@ public interface SkillStat {
 
     Object[] getTranslationData(SkillDefinition definition, Skill skill, Entity entity);
 
-    MapCodec<? extends SkillStat> codec();
+    MapCodec<? extends SkillBonus> codec();
 }

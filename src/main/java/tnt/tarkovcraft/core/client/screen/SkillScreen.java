@@ -5,14 +5,15 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import tnt.tarkovcraft.core.client.screen.navigation.CoreNavigators;
 import tnt.tarkovcraft.core.client.screen.widget.ListWidget;
@@ -22,9 +23,8 @@ import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.skill.Skill;
 import tnt.tarkovcraft.core.common.skill.SkillData;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
-import tnt.tarkovcraft.core.common.skill.stat.SkillStatDefinition;
-import tnt.tarkovcraft.core.common.skill.stat.SkillStatDisplayInformation;
-import tnt.tarkovcraft.core.common.skill.tracker.SkillTrackerDefinition;
+import tnt.tarkovcraft.core.common.skill.bonus.SkillBonusDefinition;
+import tnt.tarkovcraft.core.common.skill.trigger.SkillTriggerDefinition;
 import tnt.tarkovcraft.core.util.helper.Helper;
 import tnt.tarkovcraft.core.util.helper.MathHelper;
 import tnt.tarkovcraft.core.util.helper.RenderUtils;
@@ -37,7 +37,7 @@ public class SkillScreen extends CharacterSubScreen {
 
     private double scroll;
 
-    public SkillScreen(Screen parent, UUID userId) {
+    public SkillScreen(UUID userId) {
         super(userId, CoreNavigators.SKILL_ENTRY);
     }
 
@@ -55,7 +55,7 @@ public class SkillScreen extends CharacterSubScreen {
         ListWidget<SkillWidget> skillView = this.addRenderableWidget(new ListWidget<>(0, 25, this.width - 4, this.height - 25, skills, (skill, i) -> this.buildSkillWidget(player, skill, i)));
         skillView.setBackgroundColor(ColorPalette.BG_TRANSPARENT_WEAK);
         skillView.setAdditionalItemSpacing(5);
-        skillView.setScrollListener((x, y) -> this.scroll = y);
+        skillView.setScrollListener((_, y) -> this.scroll = y);
         skillView.setScroll(this.scroll);
 
         ScrollbarWidget scrollbar = this.addRenderableWidget(new ScrollbarWidget(this.width - 4, 25, 4, this.height - 25, skillView));
@@ -74,30 +74,31 @@ public class SkillScreen extends CharacterSubScreen {
     private SkillWidget buildSkillWidget(Player player, Skill skill, int index) {
         SkillWidget widget = new SkillWidget(5, 5 + index * 40, this.width - 15, 35, this.font, skill, player);
         SkillDefinition definition = skill.getDefinition().value();
-        Collection<SkillTrackerDefinition> trackers = definition.trackers();
+        Collection<SkillTriggerDefinition> triggers = definition.triggers();
         List<Component> tooltip = new ArrayList<>();
         tooltip.add(definition.getFormattedName(style -> style.applyFormats(ChatFormatting.BOLD, ChatFormatting.YELLOW)));
         tooltip.add(Component.translatable("tooltip.tarkovcraft_core.skill.skill_info").withStyle(ChatFormatting.GRAY, ChatFormatting.UNDERLINE));
-        trackers.stream().flatMap(def -> def.getInfoComponents().stream()).forEach(tooltip::add);
+        triggers.stream().flatMap(def -> def.getInfoComponents().stream()).forEach(tooltip::add);
         widget.setDescription(tooltip);
         return widget;
     }
 
     public static final class SkillWidget extends AbstractWidget {
 
-        private final Player player;
         private final Font font;
         private final Skill skill;
         private final Identifier skillIcon;
         private List<Component> description;
+        private final List<BonusBadgeInfo> badges;
 
         public SkillWidget(int x, int y, int width, int height, Font font, Skill skill, Player player) {
             super(x, y, width, height, CommonComponents.EMPTY);
             this.font = font;
             this.skill = skill;
-            this.player = player;
             this.setMessage(skill.getDefinition().value().getFormattedName(style -> style.applyFormats(ChatFormatting.BOLD, ChatFormatting.UNDERLINE)));
-            this.skillIcon = SkillDefinition.getIcon(skill.getDefinition());
+            Holder<SkillDefinition> holder = skill.getDefinition();
+            this.skillIcon = SkillDefinition.getIcon(holder);
+            this.badges = this.getBadges(holder, skill, player);
         }
 
         public void setDescription(List<Component> description) {
@@ -109,44 +110,37 @@ public class SkillScreen extends CharacterSubScreen {
             boolean isMaxLevel = this.skill.isMaxLevel();
             // Skill name
             guiGraphics.text(this.font, this.getMessage(), this.getX() + this.height + 3, this.getY() + 1, ColorPalette.WHITE, true);
+
             // Skill icon
             RenderUtils.blitFull(guiGraphics, this.skillIcon, this.getX() + 1, this.getY() + 1, this.getX() + this.height - 1, this.getY() + this.height - 1, -1);
+
             // Experience bar
             guiGraphics.fillGradient(this.getX() + this.height + 2, this.getY() + 13, this.getRight(), this.getBottom() - 11, ARGB.opaque(ColorPalette.TEXT_COLOR_DISABLED), ARGB.scaleRGB(ARGB.opaque(ColorPalette.TEXT_COLOR_DISABLED), 0.6F));
             float experienceProgress = isMaxLevel ? 1.0F : this.skill.getExperience() / this.skill.getRequiredExperience();
             int width = (this.getRight() - 1 - (this.getX() + this.height + 3));
             int expColor = ARGB.opaque(0xE8CE31);
             guiGraphics.fillGradient(this.getX() + this.height + 3, this.getY() + 14, this.getX() + this.height + 3 + Mth.ceil(experienceProgress * width), this.getBottom() - 12, expColor, ARGB.scaleRGB(expColor, 0.8F));
+
             // Experience text
             if (!isMaxLevel) {
                 String expLabel = String.format(Locale.ROOT, "%.1f / %.1f", this.skill.getExperience(), this.skill.getRequiredExperience());
                 guiGraphics.text(this.font, expLabel, this.getRight() - this.font.width(expLabel), this.getBottom() - 9, ARGB.scaleRGB(ColorPalette.TEXT_COLOR, 0.7F), false);
             }
+
             // Level text
             Component levelMessage = isMaxLevel ? Skill.MAX_LEVEL : Component.translatable("label.tarkovcraft_core.skill.level", this.skill.getLevel(), this.skill.getMaxLevel()).withColor(ColorPalette.TEXT_COLOR);
             guiGraphics.text(this.font, levelMessage, this.getX() + this.height + 3, this.getBottom() - 9, ColorPalette.WHITE, false);
-            // Badges + badge hover
-            int index = 0;
-            SkillDefinition definition = this.skill.getDefinition().value();
-            for (SkillStatDefinition statDefinition : definition.stats()) {
-                if (!statDefinition.isAvailable(definition, this.skill, this.player))
-                    continue;
-                SkillStatDisplayInformation displayInfo = statDefinition.display();
-                int left = this.getRight() - 10 - index * 12;
-                int right = left + 10;
-                int top = this.getY();
-                int bottom = top + 10;
-                RenderUtils.blitFull(guiGraphics, displayInfo.icon(), left + 1, top + 1, right - 1, bottom - 1, -1);
-                if (MathHelper.isWithinBounds(mouseX, mouseY, left, top, right - left, bottom - top)) {
-                    Component name = displayInfo.name().copy().withStyle(ChatFormatting.UNDERLINE).withStyle(ChatFormatting.YELLOW);
-                    Component statDescription = displayInfo.getDescription(definition, this.skill, this.player, statDefinition.stat());
-                    List<Component> tooltip = Arrays.asList(name, statDescription);
-                    guiGraphics.setTooltipForNextFrame(this.font, tooltip, Optional.empty(), mouseX, mouseY);
-                }
-                ++index;
+
+            // Bonus badges + hover display
+            for (int i = 0; i < this.badges.size(); i++) {
+                BonusBadgeInfo badge = this.badges.get(i);
+                int leftPos = this.getRight() - 10 - i * 12;
+                badge.extractRenderState(guiGraphics, this.font, leftPos, this.getY(), mouseX, mouseY);
             }
-            //noinspection SuspiciousNameCombination
-            if (MathHelper.isWithinBounds(mouseX, mouseY, this.getX(), this.getY(), this.height, this.height) && Helper.isNotEmpty(this.description)) {
+
+            // Skill info
+            int iconSize = this.height;
+            if (MathHelper.isWithinBounds(mouseX, mouseY, this.getX(), this.getY(), iconSize, iconSize) && Helper.isNotEmpty(this.description)) {
                 guiGraphics.setTooltipForNextFrame(this.font, this.description, Optional.empty(), mouseX, mouseY);
             }
         }
@@ -158,6 +152,37 @@ public class SkillScreen extends CharacterSubScreen {
 
         @Override
         protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
+        }
+
+        private List<BonusBadgeInfo> getBadges(Holder<SkillDefinition> holder, Skill skill, LivingEntity entity) {
+            return holder.value().bonuses().stream()
+                    .filter(bonus -> bonus.isAvailable(holder.value(), skill, entity))
+                    .map(bonus -> new BonusBadgeInfo(holder, bonus, skill, entity))
+                    .toList();
+        }
+
+        private static final class BonusBadgeInfo {
+
+            private final Identifier icon;
+            private final List<Component> tooltip;
+
+            BonusBadgeInfo(Holder<SkillDefinition> holder, SkillBonusDefinition definition, Skill skill, LivingEntity entity) {
+                this.icon = definition.getIcon(holder);
+                Component name = definition.getDisplayName(holder).withStyle(ChatFormatting.YELLOW, ChatFormatting.UNDERLINE);
+                Component description = definition.getContextualDescription(holder, skill, entity).withStyle(ChatFormatting.GRAY);
+                this.tooltip = Arrays.asList(name, description);
+            }
+
+            void extractRenderState(GuiGraphicsExtractor graphics, Font font, int x1, int y1, int mouseX, int mouseY) {
+                int x2 = x1 + 10;
+                int y2 = y1 + 10;
+                RenderUtils.blitFull(graphics, this.icon, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
+
+                // hover info
+                if (MathHelper.isWithinBounds(mouseX, mouseY, x1, y1, x2 - x1, y2 - y1)) {
+                    graphics.setTooltipForNextFrame(font, this.tooltip, Optional.empty(), mouseX, mouseY);
+                }
+            }
         }
     }
 }
