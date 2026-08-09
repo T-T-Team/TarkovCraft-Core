@@ -29,7 +29,7 @@ public final class EntityPoseEventHandler {
     }
 
     @SubscribeEvent
-    private void onEntitySpecificInteract(PlayerInteractEvent.EntityInteractSpecific event) {
+    private void onEntitySpecificInteract(PlayerInteractEvent.EntityInteract event) {
         this.cancelInteraction(event);
     }
 
