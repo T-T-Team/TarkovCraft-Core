@@ -9,9 +9,12 @@ public final class CoreAttributes {
 
     public static final DeferredRegister<Attribute> REGISTRY = DeferredRegister.create(CoreRegistries.Keys.ATTRIBUTE, TarkovCraftCore.MOD_ID);
 
-    public static final Holder<Attribute> PHYSICAL_LEVELING_MULTIPLIER = REGISTRY.register("physical_leveling_multiplier", Attribute::createMultiplier);
-    public static final Holder<Attribute> PRACTICAL_LEVELING_MULTIPLIER = REGISTRY.register("practical_leveling_multiplier", Attribute::createMultiplier);
-    public static final Holder<Attribute> MENTAL_LEVELING_MULTIPLIER = REGISTRY.register("mental_leveling_multiplier", Attribute::createMultiplier);
+    public static final Holder<Attribute> PHYSICAL_SKILL_GROUP_MULTIPLIER = REGISTRY.register("physical_skill_group_multiplier", Attribute::createMultiplier);
+    public static final Holder<Attribute> COMBAT_SKILL_GROUP_MULTIPLIER = REGISTRY.register("combat_skill_group_multiplier", Attribute::createMultiplier);
+    public static final Holder<Attribute> PRACTICAL_SKILL_GROUP_MULTIPLIER = REGISTRY.register("practical_skill_group_multiplier", Attribute::createMultiplier);
+    public static final Holder<Attribute> MENTAL_SKILL_GROUP_MULTIPLIER = REGISTRY.register("mental_skill_group_multiplier", Attribute::createMultiplier);
+    public static final Holder<Attribute> SPECIAL_SKILL_GROUP_MULTIPLIER = REGISTRY.register("special_skill_group_multiplier", Attribute::createMultiplier);
+    public static final Holder<Attribute> MISC_SKILL_GROUP_MULTIPLIER = REGISTRY.register("misc_skill_group_multiplier", Attribute::createMultiplier);
     public static final Holder<Attribute> MEMORY_FORGET_TIME_MULTIPLIER = REGISTRY.register("memory_forget_time_multiplier", Attribute::createMultiplier);
     public static final Holder<Attribute> MEMORY_FORGET_AMOUNT_MULTIPLIER = REGISTRY.register("memory_forget_amount_multiplier", Attribute::createMultiplier);
     public static final Holder<Attribute> WEIGHT_LIMIT = REGISTRY.register("weight_limit", location -> Attribute.create(location, 20000));

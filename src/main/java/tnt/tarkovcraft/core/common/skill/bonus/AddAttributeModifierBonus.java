@@ -1,4 +1,4 @@
-package tnt.tarkovcraft.core.common.skill.stat;
+package tnt.tarkovcraft.core.common.skill.bonus;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -15,15 +15,15 @@ import tnt.tarkovcraft.core.common.skill.Skill;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 import tnt.tarkovcraft.core.util.NumberFormatter;
 
-public record AddAttributeModifierStat(Attribute target, ResourceLocation id, float levelValue, boolean constant, NumberFormatter formatter) implements SkillStat {
+public record AddAttributeModifierBonus(Attribute target, ResourceLocation id, float levelValue, boolean constant, NumberFormatter formatter) implements SkillBonus {
 
-    public static final MapCodec<AddAttributeModifierStat> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+    public static final MapCodec<AddAttributeModifierBonus> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             CoreRegistries.ATTRIBUTE.byNameCodec().fieldOf("attribute").forGetter(t -> t.target),
             ResourceLocation.CODEC.fieldOf("id").forGetter(t -> t.id),
             Codec.FLOAT.fieldOf("per_level_value").forGetter(t -> t.levelValue),
             Codec.BOOL.optionalFieldOf("constant", false).forGetter(t -> t.constant),
             NumberFormatter.CODEC.optionalFieldOf("formatter", NumberFormatter.IDENTITY).forGetter(t -> t.formatter)
-    ).apply(instance, AddAttributeModifierStat::new));
+    ).apply(instance, AddAttributeModifierBonus::new));
 
     @Override
     public void clear(SkillDefinition definition, Skill skill, Entity entity) {
@@ -46,7 +46,7 @@ public record AddAttributeModifierStat(Attribute target, ResourceLocation id, fl
     }
 
     @Override
-    public MapCodec<? extends SkillStat> codec() {
+    public MapCodec<? extends SkillBonus> codec() {
         return CODEC;
     }
 

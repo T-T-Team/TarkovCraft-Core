@@ -1,50 +1,37 @@
 {
   "identifier": "tarkovcraft_core:memory",
-  "description": {
+  "display_name": {
     "translate": "skill.tarkovcraft_core.memory"
   },
-  "group_level_modifiers": [
-    "tarkovcraft_core:mental_leveling_multiplier"
-  ],
-  "leveling": {
+  "category": "mental",
+  "configuration": {
     "max_level": 100,
-    "base_exp": 10.0,
-    "additional_exp": 1.0,
-    "max_exp": 100.0
+    "progression_strategy": {
+      "type": "tarkovcraft_core:incremental",
+      "initial_experience": 10.0,
+      "per_level_experience": 1.0,
+      "max_experience": 100
+    },
+    "memory": {
+      "level_loss": true,
+      "start_after": "4h",
+      "experience_loss": 0.1
+    }
   },
-  "memory": {
-    "enabled": true,
-    "level_loss": true,
-    "forget_after": "4h",
-    "forget_amount": 0.1
-  },
-  "trackers": [
+  "triggers": [
     {
-      "id": "bded2675-ade0-47e2-962a-ba73f7efff08",
-      "event": "tarkovcraft_core:xp_pickup",
-      "tracker": {
+      "trigger": "tarkovcraft_core:xp_pickup",
+      "configuration": {
         "type": "tarkovcraft_core:simple",
         "value": 0.05,
         "limit": 1.0
       }
     }
   ],
-  "stats": [
+  "bonuses": [
     {
-      "display": {
-        "name": {
-          "translate": "skill.tarkovcraft_core.memory.bonus.memory_forget_rate"
-        },
-        "description_key": "skill.tarkovcraft_core.memory.bonus.memory_forget_rate.description",
-        "icon": "tarkovcraft_core:textures/icons/skill/bonus/memory_rate.png"
-      },
-      "conditions": [
-        {
-          "type": "tarkovcraft_core:skill_level_range",
-          "min": 1
-        }
-      ],
-      "apply": {
+      "name": "memory_forget_rate",
+      "bonus": {
         "type": "tarkovcraft_core:add_attribute_modifier",
         "attribute": "tarkovcraft_core:memory_forget_time_multiplier",
         "id": "tarkovcraft_core:skill/memory_forget_rate_multiplier",
@@ -56,20 +43,8 @@
       }
     },
     {
-      "display": {
-        "name": {
-          "translate": "skill.tarkovcraft_core.memory.bonus.memory_forget_amount"
-        },
-        "description_key": "skill.tarkovcraft_core.memory.bonus.memory_forget_amount.description",
-        "icon": "tarkovcraft_core:textures/icons/skill/bonus/memory_amount.png"
-      },
-      "conditions": [
-        {
-          "type": "tarkovcraft_core:skill_level_range",
-          "min": 1
-        }
-      ],
-      "apply": {
+      "name": "memory_forget_amount",
+      "bonus": {
         "type": "tarkovcraft_core:add_attribute_modifier",
         "attribute": "tarkovcraft_core:memory_forget_amount_multiplier",
         "id": "tarkovcraft_core:skill/memory_forget_amount_multiplier",

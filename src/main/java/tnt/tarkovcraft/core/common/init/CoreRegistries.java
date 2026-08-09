@@ -14,16 +14,18 @@ import tnt.tarkovcraft.core.common.attribute.modifier.SetValueAttributeModifier;
 import tnt.tarkovcraft.core.common.data.number.*;
 import tnt.tarkovcraft.core.common.pose.EntityPose;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
-import tnt.tarkovcraft.core.common.skill.stat.AddAttributeModifierStat;
-import tnt.tarkovcraft.core.common.skill.stat.SkillStat;
-import tnt.tarkovcraft.core.common.skill.stat.condition.IsMaxSkillLevelStatCondition;
-import tnt.tarkovcraft.core.common.skill.stat.condition.IsSkillLevelRangeStatCondition;
-import tnt.tarkovcraft.core.common.skill.stat.condition.SkillStatCondition;
-import tnt.tarkovcraft.core.common.skill.tracker.OverweightFactorSkillTracker;
-import tnt.tarkovcraft.core.common.skill.tracker.SimpleSkillTracker;
-import tnt.tarkovcraft.core.common.skill.tracker.SkillTracker;
-import tnt.tarkovcraft.core.common.skill.tracker.SkillTriggerEvent;
-import tnt.tarkovcraft.core.common.skill.tracker.condition.*;
+import tnt.tarkovcraft.core.common.skill.progression.ConstantSkillProgressionStrategy;
+import tnt.tarkovcraft.core.common.skill.progression.IncrementalSkillProgressionStrategy;
+import tnt.tarkovcraft.core.common.skill.progression.SkillProgressionStrategy;
+import tnt.tarkovcraft.core.common.skill.bonus.AddAttributeModifierBonus;
+import tnt.tarkovcraft.core.common.skill.bonus.SkillBonus;
+import tnt.tarkovcraft.core.common.skill.bonus.condition.IsMaxSkillLevelStatCondition;
+import tnt.tarkovcraft.core.common.skill.bonus.condition.SkillStatCondition;
+import tnt.tarkovcraft.core.common.skill.trigger.configuration.OverweightFactorSkillTriggerConfiguration;
+import tnt.tarkovcraft.core.common.skill.trigger.configuration.SimpleSkillTriggerConfiguration;
+import tnt.tarkovcraft.core.common.skill.trigger.configuration.SkillTriggerConfiguration;
+import tnt.tarkovcraft.core.common.skill.trigger.SkillTrigger;
+import tnt.tarkovcraft.core.common.skill.trigger.condition.*;
 import tnt.tarkovcraft.core.common.statistic.DisplayStatistic;
 import tnt.tarkovcraft.core.common.statistic.Statistic;
 
@@ -37,11 +39,12 @@ public final class CoreRegistries {
     public static final Registry<EntityPose.Type<?>> ENTITY_POSE = new RegistryBuilder<>(Keys.ENTITY_POSE).sync(true).create();
 
     // Skill system
-    public static final Registry<SkillTriggerEvent> SKILL_TRIGGER_EVENT = new RegistryBuilder<>(Keys.SKILL_TRIGGER_EVENT).create();
-    public static final Registry<MapCodec<? extends SkillTracker>> SKILL_TRIGGER_TYPE = new RegistryBuilder<>(Keys.SKILL_TRIGGER_TYPE).create();
+    public static final Registry<MapCodec<? extends SkillProgressionStrategy>> SKILL_PROGRESSION_STRATEGY = new RegistryBuilder<>(Keys.SKILL_PROGRESSION_STRATEGY).create();
+    public static final Registry<SkillTrigger> SKILL_TRIGGER_EVENT = new RegistryBuilder<>(Keys.SKILL_TRIGGER_EVENT).create();
+    public static final Registry<MapCodec<? extends SkillTriggerConfiguration>> SKILL_TRIGGER_TYPE = new RegistryBuilder<>(Keys.SKILL_TRIGGER_TYPE).create();
     public static final Registry<MapCodec<? extends SkillTriggerCondition>> SKILL_TRIGGER_CONDITION_TYPE = new RegistryBuilder<>(Keys.SKILL_TRIGGER_CONDITION_TYPE).create();
     public static final Registry<MapCodec<? extends SkillStatCondition>> SKILL_STAT_CONDITION_TYPE = new RegistryBuilder<>(Keys.SKILL_STAT_CONDITION_TYPE).create();
-    public static final Registry<MapCodec<? extends SkillStat>> SKILL_STAT = new RegistryBuilder<>(Keys.SKILL_STAT).create();
+    public static final Registry<MapCodec<? extends SkillBonus>> SKILL_STAT = new RegistryBuilder<>(Keys.SKILL_STAT).create();
 
     public static void registerAttributeModifiers(RegisterEvent.RegisterHelper<MapCodec<? extends AttributeModifier>> helper) {
         registerObject(helper, "set", SetValueAttributeModifier.CODEC);
@@ -56,9 +59,14 @@ public final class CoreRegistries {
         registerObject(helper, "config", ConfigurationNumberProvider.CODEC);
     }
 
-    public static void registerSkillTriggerTypes(RegisterEvent.RegisterHelper<MapCodec<? extends SkillTracker>> helper) {
-        registerObject(helper, "simple", SimpleSkillTracker.CODEC);
-        registerObject(helper, "overweight_factor", OverweightFactorSkillTracker.CODEC);
+    public static void registerSkillProgressionStrategies(RegisterEvent.RegisterHelper<MapCodec<? extends SkillProgressionStrategy>> helper) {
+        registerObject(helper, "constant", ConstantSkillProgressionStrategy.CODEC);
+        registerObject(helper, "incremental", IncrementalSkillProgressionStrategy.CODEC);
+    }
+
+    public static void registerSkillTriggerTypes(RegisterEvent.RegisterHelper<MapCodec<? extends SkillTriggerConfiguration>> helper) {
+        registerObject(helper, "simple", SimpleSkillTriggerConfiguration.CODEC);
+        registerObject(helper, "overweight_factor", OverweightFactorSkillTriggerConfiguration.CODEC);
     }
 
     public static void registerSkillTriggerConditionTypes(RegisterEvent.RegisterHelper<MapCodec<? extends SkillTriggerCondition>> helper) {
@@ -69,12 +77,11 @@ public final class CoreRegistries {
     }
 
     public static void registerSkillStatConditionTypes(RegisterEvent.RegisterHelper<MapCodec<? extends SkillStatCondition>> helper) {
-        registerObject(helper, "is_max_skill_level", IsMaxSkillLevelStatCondition.CODEC);
-        registerObject(helper, "skill_level_range", IsSkillLevelRangeStatCondition.CODEC);
+        registerObject(helper, "is_max_level", IsMaxSkillLevelStatCondition.CODEC);
     }
 
-    public static void registerSkillStats(RegisterEvent.RegisterHelper<MapCodec<? extends SkillStat>> helper) {
-        registerObject(helper, "add_attribute_modifier", AddAttributeModifierStat.CODEC);
+    public static void registerSkillStats(RegisterEvent.RegisterHelper<MapCodec<? extends SkillBonus>> helper) {
+        registerObject(helper, "add_attribute_modifier", AddAttributeModifierBonus.CODEC);
     }
 
     private static <T> void registerObject(RegisterEvent.RegisterHelper<T> helper, String name, T object) {
@@ -87,11 +94,12 @@ public final class CoreRegistries {
         public static final ResourceKey<Registry<MapCodec<? extends AttributeModifier>>> ATTRIBUTE_MODIFIER = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("attribute/attribute_modifier"));
         public static final ResourceKey<Registry<MapCodec<? extends NumberProvider>>> NUMBER_PROVIDER = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("util/number_provider"));
         public static final ResourceKey<Registry<Statistic>> STATISTICS = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("util/statistics"));
-        public static final ResourceKey<Registry<SkillTriggerEvent>> SKILL_TRIGGER_EVENT = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("skill/trigger_event"));
-        public static final ResourceKey<Registry<MapCodec<? extends SkillTracker>>> SKILL_TRIGGER_TYPE = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("skill/trigger_type"));
+        public static final ResourceKey<Registry<MapCodec<? extends SkillProgressionStrategy>>> SKILL_PROGRESSION_STRATEGY = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("skill/progression_strategy"));
+        public static final ResourceKey<Registry<SkillTrigger>> SKILL_TRIGGER_EVENT = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("skill/trigger_event"));
+        public static final ResourceKey<Registry<MapCodec<? extends SkillTriggerConfiguration>>> SKILL_TRIGGER_TYPE = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("skill/trigger_type"));
         public static final ResourceKey<Registry<MapCodec<? extends SkillTriggerCondition>>> SKILL_TRIGGER_CONDITION_TYPE = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("skill/trigger_condition"));
         public static final ResourceKey<Registry<MapCodec<? extends SkillStatCondition>>> SKILL_STAT_CONDITION_TYPE = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("skill/stat_condition"));
-        public static final ResourceKey<Registry<MapCodec<? extends SkillStat>>> SKILL_STAT = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("skill/stat"));
+        public static final ResourceKey<Registry<MapCodec<? extends SkillBonus>>> SKILL_STAT = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("skill/stat"));
         public static final ResourceKey<Registry<EntityPose.Type<?>>> ENTITY_POSE = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("entity_pose"));
     }
 
