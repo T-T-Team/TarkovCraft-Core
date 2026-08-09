@@ -7,7 +7,7 @@ on:
 
 env:
   JAVA_VENDOR: 'microsoft'
-  JAVA_VERSION: '25'
+  JAVA_VERSION: '21'
 
 concurrency:
   group: release-${{ github.ref }}
