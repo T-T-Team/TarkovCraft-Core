@@ -5,10 +5,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import tnt.tarkovcraft.core.common.data.number.NumberProvider;
 import tnt.tarkovcraft.core.common.skill.SkillContext;
 
-public record SimpleSkillTracker(float value) implements SkillTracker {
+import java.util.Optional;
+
+public record SimpleSkillTracker(float value, Optional<Float> limit) implements SkillTracker {
 
     public static final MapCodec<SimpleSkillTracker> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            NumberProvider.POSITIVE_FLOAT.fieldOf("value").forGetter(t -> t.value)
+            NumberProvider.POSITIVE_FLOAT.fieldOf("value").forGetter(t -> t.value),
+            NumberProvider.POSITIVE_FLOAT.optionalFieldOf("limit").forGetter(t -> t.limit)
     ).apply(instance, SimpleSkillTracker::new));
 
     @Override
@@ -18,7 +21,8 @@ public record SimpleSkillTracker(float value) implements SkillTracker {
 
     @Override
     public float trigger(SkillContext context) {
-        return this.value * context.multiplier();
+        float limit = this.limit.orElse(Float.MAX_VALUE);
+        return Math.min(this.value * context.multiplier(), limit);
     }
 
     @Override

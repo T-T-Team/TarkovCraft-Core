@@ -23,7 +23,8 @@
       "event": "tarkovcraft_core:xp_pickup",
       "tracker": {
         "type": "tarkovcraft_core:simple",
-        "value": 0.05
+        "value": 0.05,
+        "limit": 1.0
       }
     }
   ],
