@@ -126,7 +126,15 @@ public final class StatisticTracker implements StatisticReader {
         this.stats.put(stat, Math.clamp(amount, 0L, Long.MAX_VALUE));
     }
 
-    public void resetStatistics() {
+    public void resetCounter(Statistic stat) {
+        this.stats.removeLong(stat);
+    }
+
+    public void resetCounter(Holder<Statistic> stat) {
+        this.resetCounter(stat.value());
+    }
+
+    public void resetAllCounters() {
         this.stats.clear();
     }
 

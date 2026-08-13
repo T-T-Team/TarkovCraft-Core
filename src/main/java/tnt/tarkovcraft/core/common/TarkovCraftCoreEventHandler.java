@@ -27,6 +27,7 @@ import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
 import tnt.tarkovcraft.core.common.attribute.AttributeSystem;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.attribute.WeightChangeAttributeListener;
+import tnt.tarkovcraft.core.common.command.CoreTarkovcraftCommand;
 import tnt.tarkovcraft.core.common.energy.EnergySystem;
 import tnt.tarkovcraft.core.common.init.CoreAttributes;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
@@ -50,7 +51,7 @@ public final class TarkovCraftCoreEventHandler {
     private void registerCommands(RegisterCommandsEvent event) {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
         CommandBuildContext context = event.getBuildContext();
-        TarkovCraftCommand.create(dispatcher, context);
+        CoreTarkovcraftCommand.create(dispatcher, context);
     }
 
     @SubscribeEvent
