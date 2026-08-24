@@ -42,9 +42,12 @@
   "stat.tarkovcraft_core.longest_hit": "Longest hit distance",
   "stat.tarkovcraft_core.longest_kill": "Longest kill distance",
 
+  "entity_interaction.tarkovcraft_core.shared.error.entity_too_far": "Entity is too far",
+
   "screen.tarkovcraft_core.statistics.title": "Statistics",
   "screen.tarkovcraft_core.statistics.overview": "Player statistics overview",
   "screen.tarkovcraft_core.skills.title": "Skills",
+  "screen.tarkovcraft_core.entity_interaction.title": "Select action",
 
   "label.tarkovcraft_core.profile": "%s's profile",
   "label.tarkovcraft_core.message.item_received": "You have received new item",
