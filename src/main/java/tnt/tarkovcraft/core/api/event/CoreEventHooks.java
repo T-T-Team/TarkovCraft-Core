@@ -5,12 +5,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.fml.ModLoader;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
+import tnt.tarkovcraft.core.api.EntityInteraction;
 import tnt.tarkovcraft.core.api.MovementStaminaComponent;
 import tnt.tarkovcraft.core.api.StaminaComponent;
 import tnt.tarkovcraft.core.common.attribute.Attribute;
 import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.weight.WeightProvider;
+import tnt.tarkovcraft.core.util.UserActionResult;
 
 import java.util.Stack;
 import java.util.function.BiConsumer;
@@ -61,5 +63,14 @@ public final class CoreEventHooks {
     public static float recoverStamina(StaminaComponent component, LivingEntity entity, float recovery) {
         StaminaEvent.Recovering event = NeoForge.EVENT_BUS.post(new StaminaEvent.Recovering(component, entity, recovery));
         return Math.max(event.getRecoverAmount(), 0.0F);
+    }
+
+    public static UserActionResult<Void> checkInteractionAvailability(EntityInteraction.Type<?> type, EntityInteraction.Context context, UserActionResult<Void> baseCheckResult) {
+        EntityInteractionEvent.OnAvailabilityCheck event = NeoForge.EVENT_BUS.post(new EntityInteractionEvent.OnAvailabilityCheck(type, context, baseCheckResult));
+        return event.getResult();
+    }
+
+    public static void onInteractionFinished(EntityInteraction interaction, EntityInteraction.Context context, EntityInteraction.InteractionResult interactionResult) {
+        NeoForge.EVENT_BUS.post(new EntityInteractionEvent.OnFinished(interaction.type(), context, interaction, interactionResult));
     }
 }
