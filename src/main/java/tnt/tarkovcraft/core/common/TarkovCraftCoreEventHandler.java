@@ -6,6 +6,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -21,17 +22,16 @@ import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.*;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import tnt.tarkovcraft.core.api.EntityInteraction;
 import tnt.tarkovcraft.core.api.MovementStaminaComponent;
+import tnt.tarkovcraft.core.client.TarkovCraftCoreClient;
 import tnt.tarkovcraft.core.common.attribute.AttributeInstance;
 import tnt.tarkovcraft.core.common.attribute.AttributeSystem;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.attribute.WeightChangeAttributeListener;
 import tnt.tarkovcraft.core.common.command.CoreTarkovcraftCommand;
 import tnt.tarkovcraft.core.common.energy.EnergySystem;
-import tnt.tarkovcraft.core.common.init.CoreAttributes;
-import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
-import tnt.tarkovcraft.core.common.init.CoreSkillTriggerEvents;
-import tnt.tarkovcraft.core.common.init.CoreStatistics;
+import tnt.tarkovcraft.core.common.init.*;
 import tnt.tarkovcraft.core.common.item.LeftClickListener;
 import tnt.tarkovcraft.core.common.skill.SkillSystem;
 import tnt.tarkovcraft.core.common.statistic.CustomStatTrackerProvider;
@@ -163,6 +163,26 @@ public final class TarkovCraftCoreEventHandler {
         if (itemStack.getItem() instanceof LeftClickListener listener) {
             Player player = event.getEntity();
             listener.onLeftClick(player, player.level(), itemStack, event.getPos());
+        }
+    }
+
+    @SubscribeEvent
+    private void onEntityInteract(PlayerInteractEvent.EntityInteractSpecific event) {
+        Entity entity = event.getTarget();
+        Player player = event.getEntity();
+        if (!player.isCrouching() || !(entity instanceof LivingEntity livingEntity)) {
+            return;
+        }
+        EntityInteraction.Context context = new EntityInteraction.Context(player, livingEntity);
+        List<EntityInteraction.Type<?>> availableInteractions = CoreRegistries.ENTITY_INTERACTION.stream()
+                .filter(type -> type.canUseInteraction(context).isSuccess())
+                .toList();
+        if (!availableInteractions.isEmpty()) {
+            event.setCancellationResult(InteractionResult.SUCCESS);
+            event.setCanceled(true);
+            if (player.level().isClientSide()) {
+                TarkovCraftCoreClient.openEntityInteractionScreen(livingEntity, availableInteractions);
+            }
         }
     }
 

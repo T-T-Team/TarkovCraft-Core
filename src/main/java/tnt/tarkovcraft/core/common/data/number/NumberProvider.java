@@ -11,6 +11,10 @@ import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+/**
+ * @deprecated To be essentially replaced with vanilla number providers
+ */
+@Deprecated
 public interface NumberProvider {
 
     Codec<NumberProvider> BASE_CODEC = CoreRegistries.NUMBER_PROVIDER.byNameCodec().dispatch(NumberProvider::codec, Function.identity());

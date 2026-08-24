@@ -7,6 +7,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
+import tnt.tarkovcraft.core.common.interact.EntityInteractionData;
 import tnt.tarkovcraft.core.common.pose.EntityPose;
 import tnt.tarkovcraft.core.common.pose.NoEntityPose;
 import tnt.tarkovcraft.core.common.skill.SkillData;
@@ -46,6 +47,11 @@ public final class CoreDataAttachments {
     public static final Supplier<AttachmentType<EntityPose>> ENTITY_POSE = REGISTRY.register("entity_pose", () -> AttachmentType.builder(NoEntityPose::instance)
             .serialize(EntityPose.Type.CODEC)
             .sync(ByteBufCodecs.fromCodecWithRegistries(EntityPose.Type.CODEC))
+            .build()
+    );
+    public static final Supplier<AttachmentType<EntityInteractionData>> INTERACTION_DATA = REGISTRY.register("interaction_data", () -> AttachmentType.builder(EntityInteractionData::create)
+            .serialize(EntityInteractionData.CODEC)
+            .sync(EntityInteractionData.STREAM_CODEC)
             .build()
     );
 }

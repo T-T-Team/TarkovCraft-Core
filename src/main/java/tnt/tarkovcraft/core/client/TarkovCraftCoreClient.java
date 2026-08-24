@@ -9,6 +9,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.AbstractSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -22,6 +23,7 @@ import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
 import org.lwjgl.glfw.GLFW;
 import tnt.tarkovcraft.core.TarkovCraftCore;
+import tnt.tarkovcraft.core.api.EntityInteraction;
 import tnt.tarkovcraft.core.api.client.SynchronizableScreen;
 import tnt.tarkovcraft.core.api.event.client.RegisterPostShaderProgramsEvent;
 import tnt.tarkovcraft.core.api.event.client.ScreenSynchronizeEvent;
@@ -31,11 +33,14 @@ import tnt.tarkovcraft.core.client.notification.NotificationLayer;
 import tnt.tarkovcraft.core.client.overlay.DebugLayer;
 import tnt.tarkovcraft.core.client.overlay.OnScreenHintLayer;
 import tnt.tarkovcraft.core.client.overlay.StaminaLayer;
+import tnt.tarkovcraft.core.client.screen.EntityInteractScreen;
 import tnt.tarkovcraft.core.client.screen.navigation.CoreNavigators;
 import tnt.tarkovcraft.core.client.shader.BlindnessPostShaderProgram;
 import tnt.tarkovcraft.core.client.shader.PostEffectShaderProgramProcessor;
 import tnt.tarkovcraft.core.common.attribute.AttributeSystem;
 import tnt.tarkovcraft.core.common.init.CoreAttributes;
+
+import java.util.List;
 
 import static tnt.tarkovcraft.core.util.helper.TextHelper.createKeybindName;
 
@@ -82,11 +87,12 @@ public final class TarkovCraftCoreClient {
         }
     }
 
-    private void dispatchParallelRegistryEvents() {
+    public static void openEntityInteractionScreen(LivingEntity entity, List<EntityInteraction.Type<?>> interactions) {
+        Minecraft minecraft = Minecraft.getInstance();
+        minecraft.setScreen(new EntityInteractScreen(entity, interactions));
     }
 
     private void setup(FMLClientSetupEvent event) {
-        this.dispatchParallelRegistryEvents();
         PostEffectShaderProgramProcessor.INSTANCE.init(config.enableCustomShaders);
     }
 

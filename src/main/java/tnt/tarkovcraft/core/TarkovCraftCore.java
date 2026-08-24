@@ -86,6 +86,7 @@ public final class TarkovCraftCore {
         event.register(CoreRegistries.NUMBER_PROVIDER);
         event.register(CoreRegistries.STATISTICS);
         event.register(CoreRegistries.ENTITY_POSE);
+        event.register(CoreRegistries.ENTITY_INTERACTION);
 
         // Skill system
         event.register(CoreRegistries.SKILL_PROGRESSION_STRATEGY);
