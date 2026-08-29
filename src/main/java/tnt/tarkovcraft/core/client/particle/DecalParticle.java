@@ -91,7 +91,7 @@ public abstract class DecalParticle extends SingleQuadParticle {
 
     @Override
     protected Layer getLayer() {
-        return this.fadeOutStart > 0 ? Layer.TRANSLUCENT : Layer.OPAQUE;
+        return this.alpha < 1.0F ? Layer.TRANSLUCENT : Layer.OPAQUE;
     }
 
     protected void updateColor(float lifetimeLeft) {
