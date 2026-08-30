@@ -8,15 +8,16 @@
   },
   "mixins": [
     "AttachmentSyncMixin",
+    "InventoryMixin",
     "LivingEntityMixin",
-    "ServerPlayerMixin",
-    "InventoryMixin"
+    "ServerPlayerMixin"
   ],
   "client": [
-    "client.GameRendererMixin",
     "client.CameraMixin",
+    "client.GameRendererMixin",
+    "client.KeyboardInputMixin",
+    "client.LocalPlayerMixin",
     "client.MinecraftMixin",
-    "client.MouseHandlerMixin",
-    "client.LocalPlayerMixin"
+    "client.MouseHandlerMixin"
   ]
 }
