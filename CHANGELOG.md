@@ -1,2 +1,2 @@
-# Release 2.10.1+26.2
-- Fixed decal transparency render layer for opaque colors
+# Release 2.10.2+26.2
+- Fixed movement inputs not being canceled for movement-cancelling states
