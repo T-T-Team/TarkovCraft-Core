@@ -70,7 +70,7 @@ public abstract class DecalParticle extends TextureSheetParticle {
 
     @Override
     public ParticleRenderType getRenderType() {
-        return this.fadeOutStart > 0.0F ? ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT : ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+        return this.alpha < 1.0F ? ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT : ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
     public final void setFadeOutStartTime(float fadeOutStart) {
