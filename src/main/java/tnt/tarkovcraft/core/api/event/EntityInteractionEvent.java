@@ -66,6 +66,20 @@ public abstract class EntityInteractionEvent extends Event {
         }
     }
 
+    public static final class OnStarted extends EntityInteractionEvent {
+
+        private final EntityInteraction interaction;
+
+        public OnStarted(EntityInteraction.Type<?> interactionType, EntityInteraction.Context interactionContext, EntityInteraction interaction) {
+            super(interactionType, interactionContext);
+            this.interaction = interaction;
+        }
+
+        public EntityInteraction getInteraction() {
+            return interaction;
+        }
+    }
+
     public static final class OnFinished extends EntityInteractionEvent {
 
         private final EntityInteraction interaction;
