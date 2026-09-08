@@ -14,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModLoader;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
@@ -25,9 +26,12 @@ import org.lwjgl.glfw.GLFW;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.api.EntityInteraction;
 import tnt.tarkovcraft.core.api.client.SynchronizableScreen;
+import tnt.tarkovcraft.core.api.event.client.RegisterOnScreenHintEvent;
 import tnt.tarkovcraft.core.api.event.client.RegisterPostShaderProgramsEvent;
 import tnt.tarkovcraft.core.api.event.client.ScreenSynchronizeEvent;
 import tnt.tarkovcraft.core.client.config.TarkovCraftCoreClientConfig;
+import tnt.tarkovcraft.core.client.hint.EntityInteractHint;
+import tnt.tarkovcraft.core.client.hint.OnScreenHintManager;
 import tnt.tarkovcraft.core.client.notification.NotificationChannel;
 import tnt.tarkovcraft.core.client.notification.NotificationLayer;
 import tnt.tarkovcraft.core.client.overlay.DebugLayer;
@@ -55,10 +59,9 @@ public final class TarkovCraftCoreClient {
             GLFW.GLFW_KEY_O,
             SHARED_CATEGORY
     );
+    public static final OnScreenHintManager HINT_MANAGER = new OnScreenHintManager();
 
     private static TarkovCraftCoreClientConfig config;
-
-    private OnScreenHintLayer hintUiLayer;
 
     public TarkovCraftCoreClient(IEventBus modEventBus, ModContainer container) {
         config = Configuration.registerConfig(TarkovCraftCoreClientConfig.class, ConfigFormats.YAML).getConfigInstance();
@@ -72,6 +75,8 @@ public final class TarkovCraftCoreClient {
         NeoForge.EVENT_BUS.addListener(this::clientPostTick);
         NeoForge.EVENT_BUS.addListener(this::clientLoggedOut);
         NeoForge.EVENT_BUS.addListener(this::onPlaySound);
+
+        HINT_MANAGER.registerActionHint(new EntityInteractHint());
     }
 
     public static TarkovCraftCoreClientConfig getConfig() {
@@ -94,6 +99,7 @@ public final class TarkovCraftCoreClient {
 
     private void setup(FMLClientSetupEvent event) {
         PostEffectShaderProgramProcessor.INSTANCE.init(config.enableCustomShaders);
+        ModLoader.postEvent(new RegisterOnScreenHintEvent(HINT_MANAGER));
     }
 
     private void registerKeyBindings(RegisterKeyMappingsEvent event) {
@@ -117,8 +123,7 @@ public final class TarkovCraftCoreClient {
             event.registerAboveAll(DebugLayer.LAYER_ID, new DebugLayer());
         event.registerAboveAll(NotificationLayer.LAYER_ID, new NotificationLayer(NotificationChannel.MAIN));
         event.registerAboveAll(StaminaLayer.LAYER_ID, new StaminaLayer());
-        this.hintUiLayer = new OnScreenHintLayer();
-        event.registerAboveAll(OnScreenHintLayer.LAYER_ID, this.hintUiLayer);
+        event.registerAboveAll(OnScreenHintLayer.LAYER_ID, new OnScreenHintLayer(HINT_MANAGER));
     }
 
     private void clientPostTick(ClientTickEvent.Post event) {
@@ -131,7 +136,7 @@ public final class TarkovCraftCoreClient {
         }
         // on-screen guide tick
         if (minecraft.level != null) {
-            this.hintUiLayer.tick();
+            HINT_MANAGER.tick();
             // shader program tick
             PostEffectShaderProgramProcessor.INSTANCE.tick();
         }
