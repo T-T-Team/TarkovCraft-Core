@@ -32,7 +32,10 @@ import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.attribute.WeightChangeAttributeListener;
 import tnt.tarkovcraft.core.common.command.CoreTarkovcraftCommand;
 import tnt.tarkovcraft.core.common.energy.EnergySystem;
-import tnt.tarkovcraft.core.common.init.*;
+import tnt.tarkovcraft.core.common.init.CoreAttributes;
+import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
+import tnt.tarkovcraft.core.common.init.CoreSkillTriggerEvents;
+import tnt.tarkovcraft.core.common.init.CoreStatistics;
 import tnt.tarkovcraft.core.common.item.LeftClickListener;
 import tnt.tarkovcraft.core.common.skill.SkillSystem;
 import tnt.tarkovcraft.core.common.statistic.CustomStatTrackerProvider;
@@ -175,9 +178,7 @@ public final class TarkovCraftCoreEventHandler {
             return;
         }
         EntityInteraction.Context context = new EntityInteraction.Context(player, livingEntity);
-        List<EntityInteraction.Type<?>> availableInteractions = CoreRegistries.ENTITY_INTERACTION.stream()
-                .filter(type -> type.canUseInteraction(context).isSuccess())
-                .toList();
+        List<EntityInteraction.Type<?>> availableInteractions = EntityInteraction.Type.listAvailableInteractions(context);
         if (!availableInteractions.isEmpty()) {
             event.setCancellationResult(InteractionResult.SUCCESS);
             event.setCanceled(true);

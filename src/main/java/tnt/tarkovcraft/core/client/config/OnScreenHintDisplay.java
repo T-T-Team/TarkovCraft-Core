@@ -1,23 +1,23 @@
 package tnt.tarkovcraft.core.client.config;
 
-import tnt.tarkovcraft.core.client.hint.OnScreenHint;
+import tnt.tarkovcraft.core.client.hint.AbstractOnScreenHint;
 
 import java.util.function.Predicate;
 
-public enum OnScreenHintDisplay implements Predicate<OnScreenHint> {
+public enum OnScreenHintDisplay implements Predicate<AbstractOnScreenHint> {
 
-    NONE(hint -> false),
-    ADVANCED(OnScreenHint::isAdvanced),
-    ALL(hint -> true);
+    NONE(_ -> false),
+    ADVANCED(AbstractOnScreenHint::isAdvancedHint),
+    ALL(_ -> true);
 
-    private final Predicate<OnScreenHint> predicate;
+    private final Predicate<AbstractOnScreenHint> predicate;
 
-    OnScreenHintDisplay(Predicate<OnScreenHint> predicate) {
+    OnScreenHintDisplay(Predicate<AbstractOnScreenHint> predicate) {
         this.predicate = predicate;
     }
 
     @Override
-    public boolean test(OnScreenHint onScreenHint) {
+    public boolean test(AbstractOnScreenHint onScreenHint) {
         return this.predicate.test(onScreenHint);
     }
 }

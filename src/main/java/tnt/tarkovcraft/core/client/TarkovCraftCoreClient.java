@@ -27,6 +27,8 @@ import tnt.tarkovcraft.core.api.client.SynchronizableScreen;
 import tnt.tarkovcraft.core.api.event.client.ClientCoreEventHooks;
 import tnt.tarkovcraft.core.api.event.client.RegisterPostShaderProgramsEvent;
 import tnt.tarkovcraft.core.client.config.TarkovCraftCoreClientConfig;
+import tnt.tarkovcraft.core.client.hint.EntityInteractHint;
+import tnt.tarkovcraft.core.client.hint.OnScreenHintManager;
 import tnt.tarkovcraft.core.client.notification.NotificationChannel;
 import tnt.tarkovcraft.core.client.notification.NotificationLayer;
 import tnt.tarkovcraft.core.client.overlay.DebugLayer;
@@ -54,10 +56,9 @@ public final class TarkovCraftCoreClient {
             InputConstants.KEY_P,
             SHARED_CATEGORY
     );
+    public static final OnScreenHintManager HINT_MANAGER = new OnScreenHintManager();
 
     private static TarkovCraftCoreClientConfig config;
-
-    private OnScreenHintLayer hintUiLayer;
 
     public TarkovCraftCoreClient(IEventBus modEventBus, ModContainer container) {
         config = Configuration.registerSimpleYmlConfig(TarkovCraftCoreClientConfig.class);
@@ -71,6 +72,8 @@ public final class TarkovCraftCoreClient {
         NeoForge.EVENT_BUS.addListener(this::clientPostTick);
         NeoForge.EVENT_BUS.addListener(this::clientLoggedOut);
         NeoForge.EVENT_BUS.addListener(this::onPlaySound);
+
+        HINT_MANAGER.registerActionHint(new EntityInteractHint());
     }
 
     public static TarkovCraftCoreClientConfig getConfig() {
@@ -93,6 +96,7 @@ public final class TarkovCraftCoreClient {
 
     private void setup(FMLClientSetupEvent event) {
         PostEffectShaderProgramProcessor.INSTANCE.init(config.enableCustomShaders);
+        ClientCoreEventHooks.onScreenHintRegister(HINT_MANAGER);
     }
 
     private void registerKeyBindings(RegisterKeyMappingsEvent event) {
@@ -116,8 +120,7 @@ public final class TarkovCraftCoreClient {
             event.registerAboveAll(DebugLayer.LAYER_ID, new DebugLayer());
         event.registerAboveAll(NotificationLayer.LAYER_ID, new NotificationLayer(NotificationChannel.MAIN));
         event.registerAboveAll(StaminaLayer.LAYER_ID, new StaminaLayer());
-        this.hintUiLayer = new OnScreenHintLayer();
-        event.registerAboveAll(OnScreenHintLayer.LAYER_ID, this.hintUiLayer);
+        event.registerAboveAll(OnScreenHintLayer.LAYER_ID, new OnScreenHintLayer(HINT_MANAGER));
     }
 
     private void clientPostTick(ClientTickEvent.Post event) {
@@ -130,7 +133,7 @@ public final class TarkovCraftCoreClient {
         }
         // on-screen guide tick
         if (minecraft.level != null) {
-            this.hintUiLayer.tick();
+            HINT_MANAGER.tick();
             // shader program tick
             PostEffectShaderProgramProcessor.INSTANCE.tick();
         }

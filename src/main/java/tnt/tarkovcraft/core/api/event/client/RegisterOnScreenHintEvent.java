@@ -2,20 +2,32 @@ package tnt.tarkovcraft.core.api.event.client;
 
 import net.neoforged.bus.api.Event;
 import net.neoforged.fml.event.IModBusEvent;
-import tnt.tarkovcraft.core.client.hint.OnScreenHint;
-
-import java.util.Objects;
-import java.util.function.Consumer;
+import tnt.tarkovcraft.core.api.client.hint.OnScreenHint;
+import tnt.tarkovcraft.core.api.client.hint.OnScreenHintRenderer;
+import tnt.tarkovcraft.core.api.client.hint.TextHint;
+import tnt.tarkovcraft.core.client.hint.OnScreenHintManager;
 
 public class RegisterOnScreenHintEvent extends Event implements IModBusEvent {
 
-    private final Consumer<OnScreenHint> consumer;
+    private final OnScreenHintManager manager;
 
-    public RegisterOnScreenHintEvent(Consumer<OnScreenHint> consumer) {
-        this.consumer = consumer;
+    public RegisterOnScreenHintEvent(OnScreenHintManager manager) {
+        this.manager = manager;
     }
 
-    public void register(OnScreenHint hint) {
-        this.consumer.accept(Objects.requireNonNull(hint, "OnScreenHint cannot be null"));
+    public void registerHint(OnScreenHint hint) {
+        this.manager.registerHint(hint);
+    }
+
+    public <T extends OnScreenHint> void registerHint(T hint, OnScreenHintRenderer<? super T> renderer) {
+        this.manager.registerHint(hint, renderer);
+    }
+
+    public <T extends OnScreenHint & TextHint> void registerActionHint(T hint) {
+        this.manager.registerActionHint(hint);
+    }
+
+    public <T extends OnScreenHint & TextHint> void registerActionHint(T hint, OnScreenHintRenderer<? super T> customTextRenderer) {
+        this.manager.registerActionHint(hint, customTextRenderer);
     }
 }
