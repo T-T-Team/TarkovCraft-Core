@@ -15,6 +15,7 @@ import tnt.tarkovcraft.core.api.event.CoreEventHooks;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.util.UserActionResult;
 
+import java.util.List;
 import java.util.Objects;
 
 public interface EntityInteraction {
@@ -85,6 +86,12 @@ public interface EntityInteraction {
         public static <T extends EntityInteraction> Builder<T> singletonBuilder(Identifier identifier, T interactionInstance) {
             return Type.<T>builder(identifier)
                     .withFactory(_ -> interactionInstance);
+        }
+
+        public static List<EntityInteraction.Type<?>> listAvailableInteractions(Context context) {
+            return CoreRegistries.ENTITY_INTERACTION.stream()
+                    .filter(t -> t.canUseInteraction(context).isSuccess())
+                    .toList();
         }
 
         public T instantiate(Context context) {

@@ -67,6 +67,7 @@
   "label.tarkovcraft_core.weight.unit.kg": "%skg",
   "label.tarkovcraft_core.config.validation.not_development_mode": "Game is running in production mode",
   "label.tarkovcraft_core.missing_text": "<< Missing text >>",
+  "label.tarkovcraft_core.action.interact": "Interact",
 
   "duration.unit.t": "%s ticks",
   "duration.unit.t.short": "t",

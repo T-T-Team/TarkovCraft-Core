@@ -7,15 +7,14 @@ import net.neoforged.neoforge.common.NeoForge;
 import tnt.tarkovcraft.core.api.client.LabelContainer;
 import tnt.tarkovcraft.core.api.client.SynchronizableScreen;
 import tnt.tarkovcraft.core.api.shader.PostEffectShaderProgram;
-import tnt.tarkovcraft.core.client.hint.OnScreenHint;
+import tnt.tarkovcraft.core.client.hint.OnScreenHintManager;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 public class ClientCoreEventHooks {
 
-    public static void onScreenHintRegister(Consumer<OnScreenHint> consumer) {
-        ModLoader.postEvent(new RegisterOnScreenHintEvent(consumer));
+    public static void onScreenHintRegister(OnScreenHintManager manager) {
+        ModLoader.postEvent(new RegisterOnScreenHintEvent(manager));
     }
 
     public static List<PostEffectShaderProgram> onPostChainShaderRegister(boolean cosmeticShadersEnabled) {
