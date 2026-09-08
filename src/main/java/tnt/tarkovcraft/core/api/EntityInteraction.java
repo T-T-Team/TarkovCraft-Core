@@ -2,6 +2,7 @@ package tnt.tarkovcraft.core.api;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -13,8 +14,10 @@ import net.minecraft.world.item.ItemStack;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.api.event.CoreEventHooks;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
+import tnt.tarkovcraft.core.common.interact.EntityInteractionData;
 import tnt.tarkovcraft.core.util.UserActionResult;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,8 +28,11 @@ public interface EntityInteraction {
     String LOCALIZATION_PREFIX = "entity_interaction";
     Identifier SHARED_ERROR_IDENTIFIER = TarkovCraftCore.createIdentifier("shared");
     UserActionResult<Void> ENTITY_TOO_FAR = UserActionResult.failure(Type.getErrorMessage(SHARED_ERROR_IDENTIFIER, "entity_too_far"));
+    UserActionResult<Void> ANOTHER_INTERACTION_ACTIVE = UserActionResult.failure(Type.getErrorMessage(SHARED_ERROR_IDENTIFIER, "another_interaction_active"));
     UserActionResult<Void> INTERACTION_CANCELLED = UserActionResult.failure(Type.getErrorMessage(SHARED_ERROR_IDENTIFIER, "cancelled"));
     int MAX_DISTANCE_SQR = 16;
+
+    void onStarted(Context context);
 
     void onCompleted(Context context);
 
@@ -61,7 +67,7 @@ public interface EntityInteraction {
 
         private final Identifier identifier;
         private final MapCodec<T> codec;
-        private final StreamCodec<RegistryFriendlyByteBuf, T> streamCodec;
+        private final StreamCodec<? super ByteBuf, T> streamCodec;
         private final InteractionFactory<T> factory;
         private final InteractionPredicate predicate;
         private final int maxRangeSqr;
@@ -89,9 +95,14 @@ public interface EntityInteraction {
         }
 
         public static List<EntityInteraction.Type<?>> listAvailableInteractions(Context context) {
-            return CoreRegistries.ENTITY_INTERACTION.stream()
-                    .filter(t -> t.canUseInteraction(context).isSuccess())
-                    .toList();
+            LivingEntity target = context.target();
+            EntityInteractionData interactionData = EntityInteractionData.getInteractionData(target);
+            if (interactionData.isInteractionAllowed(context)) {
+                return CoreRegistries.ENTITY_INTERACTION.stream()
+                        .filter(t -> t.canUseInteraction(context).isSuccess())
+                        .toList();
+            }
+            return Collections.emptyList();
         }
 
         public T instantiate(Context context) {
@@ -99,6 +110,10 @@ public interface EntityInteraction {
         }
 
         public UserActionResult<Void> canUseInteraction(Context context) {
+            EntityInteractionData interactionData = EntityInteractionData.getInteractionData(context.target());
+            if (!interactionData.isInteractionAllowed(context)) {
+                return ANOTHER_INTERACTION_ACTIVE;
+            }
             double distance = context.getInteractionDistanceSqr();
             if (distance > this.maxRangeSqr) {
                 return ENTITY_TOO_FAR;
@@ -111,7 +126,7 @@ public interface EntityInteraction {
             return this.codec;
         }
 
-        public StreamCodec<RegistryFriendlyByteBuf, T> streamCodec() {
+        public StreamCodec<? super ByteBuf, T> streamCodec() {
             return this.streamCodec;
         }
 
@@ -152,6 +167,8 @@ public interface EntityInteraction {
 
     @FunctionalInterface
     interface InteractionPredicate {
+        InteractionPredicate ALWAYS_ALLOWED = _ -> UserActionResult.successEmpty();
+
         UserActionResult<Void> checkAvailability(Context context);
     }
 
@@ -180,9 +197,9 @@ public interface EntityInteraction {
 
         private final Identifier identifier;
         private MapCodec<T> codec;
-        private StreamCodec<RegistryFriendlyByteBuf, T> streamCodec;
+        private StreamCodec<? super ByteBuf, T> streamCodec;
         private InteractionFactory<T> factory;
-        private InteractionPredicate predicate;
+        private InteractionPredicate predicate = InteractionPredicate.ALWAYS_ALLOWED;
         private int maxRangeSqr = MAX_DISTANCE_SQR;
         private int duration = 100;
         private Component displayName;
@@ -192,7 +209,7 @@ public interface EntityInteraction {
             this.displayName = Component.translatable(identifier.toLanguageKey(LOCALIZATION_PREFIX));
         }
 
-        public Builder<T> withSerializer(MapCodec<T> codec, StreamCodec<RegistryFriendlyByteBuf, T> streamCodec) {
+        public Builder<T> withSerializer(MapCodec<T> codec, StreamCodec<? super ByteBuf, T> streamCodec) {
             this.codec = codec;
             this.streamCodec = streamCodec;
             return this;
