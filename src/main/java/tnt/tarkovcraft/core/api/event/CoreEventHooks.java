@@ -70,6 +70,10 @@ public final class CoreEventHooks {
         return event.getResult();
     }
 
+    public static void onInteractionStarted(EntityInteraction interaction, EntityInteraction.Context context) {
+        NeoForge.EVENT_BUS.post(new EntityInteractionEvent.OnStarted(interaction.type(), context, interaction));
+    }
+
     public static void onInteractionFinished(EntityInteraction interaction, EntityInteraction.Context context, EntityInteraction.InteractionResult interactionResult) {
         NeoForge.EVENT_BUS.post(new EntityInteractionEvent.OnFinished(interaction.type(), context, interaction, interactionResult));
     }

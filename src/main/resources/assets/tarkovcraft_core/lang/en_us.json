@@ -43,6 +43,7 @@
   "stat.tarkovcraft_core.longest_kill": "Longest kill distance",
 
   "entity_interaction.tarkovcraft_core.shared.error.entity_too_far": "Entity is too far",
+  "entity_interaction.tarkovcraft_core.shared.error.another_interaction_active": "Other interaction is already in progress",
 
   "screen.tarkovcraft_core.statistics.title": "Statistics",
   "screen.tarkovcraft_core.statistics.overview": "Player statistics overview",

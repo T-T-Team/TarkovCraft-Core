@@ -3,32 +3,37 @@ package tnt.tarkovcraft.core.common.interact;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.LivingEntity;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
+import org.jspecify.annotations.Nullable;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.api.EntityInteraction;
 import tnt.tarkovcraft.core.api.event.CoreEventHooks;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.util.UserActionResult;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
+import java.util.UUID;
 
 public final class EntityInteractionData {
 
     public static final Marker MARKER = MarkerManager.getMarker("EntityInteraction");
     public static final long INTERACTION_TTL = 1000L;
-    private @Nullable InteractionTracker activeInteraction;
+
     public static final MapCodec<EntityInteractionData> CODEC = InteractionTracker.CODEC.optionalFieldOf("active_interaction")
             .xmap(EntityInteractionData::new, t -> Optional.ofNullable(t.activeInteraction));
     public static final StreamCodec<RegistryFriendlyByteBuf, EntityInteractionData> STREAM_CODEC = StreamCodec.composite(
             InteractionTracker.STREAM_CODEC.apply(ByteBufCodecs::optional), t -> Optional.ofNullable(t.activeInteraction),
             EntityInteractionData::new
     );
+
+    private @Nullable InteractionTracker activeInteraction;
 
     private EntityInteractionData(Optional<InteractionTracker> activeInteraction) {
         this.activeInteraction = activeInteraction.orElse(null);
@@ -50,8 +55,20 @@ public final class EntityInteractionData {
         return this.activeInteraction != null && this.activeInteraction.interaction().type() == interaction;
     }
 
-    public EntityInteraction getActiveInteraction() {
+    public @Nullable EntityInteraction getActiveInteraction() {
         return this.activeInteraction == null ? null : this.activeInteraction.interaction();
+    }
+
+    public @Nullable UUID getInteractionSource() {
+        return this.activeInteraction == null ? null : this.activeInteraction.interactionSource();
+    }
+
+    public boolean isInteractionAllowed(EntityInteraction.Context context) {
+        if (this.activeInteraction == null)
+            return true;
+        UUID source = context.player().getUUID();
+        UUID activeSource = this.activeInteraction.interactionSource();
+        return Util.NIL_UUID.equals(activeSource) || source.equals(activeSource);
     }
 
     public boolean isInteractionReady(long gameTime) {
@@ -77,7 +94,9 @@ public final class EntityInteractionData {
             return false;
         }
         EntityInteraction instance = interaction.instantiate(context);
-        this.activeInteraction = InteractionTracker.create(initiationTime, instance);
+        this.activeInteraction = InteractionTracker.create(initiationTime, instance, context);
+        instance.onStarted(context);
+        CoreEventHooks.onInteractionStarted(instance, context);
         TarkovCraftCore.LOGGER.debug(MARKER, "Interaction {} started by player {} for {} with duration of {} ticks. Target timestamp: {}", this.activeInteraction, context.player(), context.target(), this.activeInteraction.interactionDuration, this.activeInteraction.targetTimestamp());
         return true;
     }
@@ -132,23 +151,26 @@ public final class EntityInteractionData {
         entity.syncData(CoreDataAttachments.INTERACTION_DATA);
     }
 
-    private record InteractionTracker(EntityInteraction interaction, int interactionDuration, long interactionStartedAt) {
+    private record InteractionTracker(UUID interactionSource, EntityInteraction interaction, int interactionDuration, long interactionStartedAt) {
 
         static final Codec<InteractionTracker> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                UUIDUtil.CODEC.optionalFieldOf("interaction_source", Util.NIL_UUID).forGetter(InteractionTracker::interactionSource),
                 EntityInteraction.CODEC.fieldOf("interaction").forGetter(InteractionTracker::interaction),
                 Codec.INT.optionalFieldOf("duration", 0).forGetter(InteractionTracker::interactionDuration),
-                Codec.LONG.optionalFieldOf("initiatedAt", 0L).forGetter(InteractionTracker::interactionStartedAt)
+                Codec.LONG.optionalFieldOf("initiated_at", 0L).forGetter(InteractionTracker::interactionStartedAt)
         ).apply(instance, InteractionTracker::new));
         static final StreamCodec<RegistryFriendlyByteBuf, InteractionTracker> STREAM_CODEC = StreamCodec.composite(
+                UUIDUtil.STREAM_CODEC, InteractionTracker::interactionSource,
                 EntityInteraction.STREAM_CODEC, InteractionTracker::interaction,
                 ByteBufCodecs.INT, InteractionTracker::interactionDuration,
                 ByteBufCodecs.LONG, InteractionTracker::interactionStartedAt,
                 InteractionTracker::new
         );
 
-        static InteractionTracker create(long initiationTime, EntityInteraction interaction) {
+        static InteractionTracker create(long initiationTime, EntityInteraction interaction, EntityInteraction.Context context) {
+            UUID source = context.player().getUUID();
             int duration = interaction.type().duration();
-            return new InteractionTracker(interaction, duration, initiationTime);
+            return new InteractionTracker(source, interaction, duration, initiationTime);
         }
 
         private boolean isFinished(long currentTime) {
