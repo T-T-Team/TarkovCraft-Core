@@ -46,6 +46,7 @@ import tnt.tarkovcraft.core.common.init.CoreSkillTriggerEvents;
 import tnt.tarkovcraft.core.common.init.CoreStatistics;
 import tnt.tarkovcraft.core.common.item.LeftClickListener;
 import tnt.tarkovcraft.core.common.skill.SkillSystem;
+import tnt.tarkovcraft.core.common.sleep.SleepBonusManager;
 import tnt.tarkovcraft.core.common.statistic.CustomStatTrackerProvider;
 import tnt.tarkovcraft.core.common.statistic.Statistic;
 import tnt.tarkovcraft.core.common.statistic.StatisticTracker;
@@ -213,7 +214,7 @@ public final class TarkovCraftCoreEventHandler {
         long sleptDuration = Math.max(event.getNewTime() - daytime, 0L);
         if (sleptDuration > 0L) {
             Component length = Duration.ticks((int) sleptDuration).format(DurationFormats.SHORT_NAME);
-            TarkovCraftCore.LOGGER.debug("Calculated modified sleep duration - {} ticks ({})", sleptDuration, length.getString());
+            TarkovCraftCore.LOGGER.debug(SleepBonusManager.MARKER, "Calculated modified sleep duration - {} ticks ({})", sleptDuration, length.getString());
             TarkovCraftCore.triggerSleepBonus(server, sleptDuration);
         }
     }
