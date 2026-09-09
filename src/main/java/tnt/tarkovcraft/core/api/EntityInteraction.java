@@ -2,24 +2,22 @@ package tnt.tarkovcraft.core.api;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.api.event.CoreEventHooks;
+import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
 import tnt.tarkovcraft.core.common.init.CoreRegistries;
-import tnt.tarkovcraft.core.common.interact.EntityInteractionData;
 import tnt.tarkovcraft.core.util.UserActionResult;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public interface EntityInteraction {
 
@@ -40,26 +38,22 @@ public interface EntityInteraction {
 
     Type<?> type();
 
-    default Component getDisplayName() {
-        return this.type().displayName();
-    }
-
     record Context(Player player, LivingEntity target, ItemStack itemStack) {
 
         public Context(Player player, LivingEntity target) {
             this(player, target, player.getMainHandItem());
         }
 
-        public boolean isSelfInteraction() {
-            return this.player == this.target;
+        public Context {
+            Objects.requireNonNull(player, "Player cannot be null");
+            Objects.requireNonNull(target, "Target cannot be null");
+            if (player == target) {
+                throw new IllegalArgumentException("Player and target cannot be the same entity");
+            }
         }
 
         public double getInteractionDistanceSqr() {
-            return this.isSelfInteraction() ? 0.0D : this.player.distanceToSqr(this.target);
-        }
-
-        public static Context self(Player player) {
-            return new Context(player, player, player.getMainHandItem());
+            return this.player.distanceToSqr(this.target);
         }
     }
 
@@ -67,7 +61,7 @@ public interface EntityInteraction {
 
         private final Identifier identifier;
         private final MapCodec<T> codec;
-        private final StreamCodec<? super ByteBuf, T> streamCodec;
+        private final StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec;
         private final InteractionFactory<T> factory;
         private final InteractionPredicate predicate;
         private final int maxRangeSqr;
@@ -96,8 +90,8 @@ public interface EntityInteraction {
 
         public static List<EntityInteraction.Type<?>> listAvailableInteractions(Context context) {
             LivingEntity target = context.target();
-            EntityInteractionData interactionData = EntityInteractionData.getInteractionData(target);
-            if (interactionData.isInteractionAllowed(context)) {
+            Optional<UUID> interactionSource = target.getExistingData(CoreDataAttachments.INTERACTION_SOURCE);
+            if (canInteract(interactionSource, context)) {
                 return CoreRegistries.ENTITY_INTERACTION.stream()
                         .filter(t -> t.canUseInteraction(context).isSuccess())
                         .toList();
@@ -110,8 +104,8 @@ public interface EntityInteraction {
         }
 
         public UserActionResult<Void> canUseInteraction(Context context) {
-            EntityInteractionData interactionData = EntityInteractionData.getInteractionData(context.target());
-            if (!interactionData.isInteractionAllowed(context)) {
+            Optional<UUID> interactionSource = context.target.getExistingData(CoreDataAttachments.INTERACTION_SOURCE);
+            if (!canInteract(interactionSource, context)) {
                 return ANOTHER_INTERACTION_ACTIVE;
             }
             double distance = context.getInteractionDistanceSqr();
@@ -126,7 +120,7 @@ public interface EntityInteraction {
             return this.codec;
         }
 
-        public StreamCodec<? super ByteBuf, T> streamCodec() {
+        public StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec() {
             return this.streamCodec;
         }
 
@@ -157,6 +151,10 @@ public interface EntityInteraction {
         @Override
         public String toString() {
             return this.identifier.toString();
+        }
+
+        private static boolean canInteract(Optional<UUID> interactionSource, Context context) {
+            return interactionSource.isEmpty() || interactionSource.get().equals(context.player.getUUID()) || interactionSource.get().equals(Util.NIL_UUID);
         }
     }
 
@@ -197,7 +195,7 @@ public interface EntityInteraction {
 
         private final Identifier identifier;
         private MapCodec<T> codec;
-        private StreamCodec<? super ByteBuf, T> streamCodec;
+        private StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec;
         private InteractionFactory<T> factory;
         private InteractionPredicate predicate = InteractionPredicate.ALWAYS_ALLOWED;
         private int maxRangeSqr = MAX_DISTANCE_SQR;
@@ -209,7 +207,7 @@ public interface EntityInteraction {
             this.displayName = Component.translatable(identifier.toLanguageKey(LOCALIZATION_PREFIX));
         }
 
-        public Builder<T> withSerializer(MapCodec<T> codec, StreamCodec<? super ByteBuf, T> streamCodec) {
+        public Builder<T> withSerializer(MapCodec<T> codec, StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec) {
             this.codec = codec;
             this.streamCodec = streamCodec;
             return this;

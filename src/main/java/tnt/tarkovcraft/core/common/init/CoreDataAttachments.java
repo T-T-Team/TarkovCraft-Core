@@ -1,7 +1,9 @@
 package tnt.tarkovcraft.core.common.init;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.util.Util;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -14,6 +16,7 @@ import tnt.tarkovcraft.core.common.skill.SkillData;
 import tnt.tarkovcraft.core.common.statistic.StatisticTracker;
 import tnt.tarkovcraft.core.common.util.OwnerAttachmentSyncHandler;
 
+import java.util.UUID;
 import java.util.function.Supplier;
 
 public final class CoreDataAttachments {
@@ -52,6 +55,11 @@ public final class CoreDataAttachments {
     public static final Supplier<AttachmentType<EntityInteractionData>> INTERACTION_DATA = REGISTRY.register("interaction_data", () -> AttachmentType.builder(EntityInteractionData::create)
             .serialize(EntityInteractionData.CODEC)
             .sync(EntityInteractionData.STREAM_CODEC)
+            .build()
+    );
+    public static final Supplier<AttachmentType<UUID>> INTERACTION_SOURCE = REGISTRY.register("interaction_source", () -> AttachmentType.builder(() -> Util.NIL_UUID)
+            .serialize(UUIDUtil.CODEC.fieldOf("id"))
+            .sync(UUIDUtil.STREAM_CODEC)
             .build()
     );
 }

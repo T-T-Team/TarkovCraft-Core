@@ -24,10 +24,6 @@ public abstract class EntityInteractionEvent extends Event {
         return interactionType;
     }
 
-    public final boolean isSelfInteraction() {
-        return this.interactionContext.isSelfInteraction();
-    }
-
     public final Player getPlayer() {
         return this.interactionContext.player();
     }
