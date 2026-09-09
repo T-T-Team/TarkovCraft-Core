@@ -51,6 +51,7 @@ import tnt.tarkovcraft.core.common.init.CoreSkillTriggerEvents;
 import tnt.tarkovcraft.core.common.init.CoreStatistics;
 import tnt.tarkovcraft.core.common.item.LeftClickListener;
 import tnt.tarkovcraft.core.common.skill.SkillSystem;
+import tnt.tarkovcraft.core.common.sleep.SleepBonusManager;
 import tnt.tarkovcraft.core.common.statistic.CustomStatTrackerProvider;
 import tnt.tarkovcraft.core.common.statistic.Statistic;
 import tnt.tarkovcraft.core.common.statistic.StatisticTracker;
@@ -226,12 +227,10 @@ public final class TarkovCraftCoreEventHandler {
             case ClockAdjustment.Relative relative -> Math.max(0, relative.ticks());
             case ClockAdjustment.Marker marker -> this.resolveMarkerTimeDiff(marker, clockManager, currentGameTime, clockHolder);
         };
-        float sleepBonusMultiplier = 1.0F; // TODO configurable
-        long actualSleptDuration = Mth.ceilLong(sleptDuration * sleepBonusMultiplier);
-        if (actualSleptDuration > 0L) {
-            Component length = Duration.ticks((int) actualSleptDuration).format(DurationFormats.SHORT_NAME);
-            TarkovCraftCore.LOGGER.debug("Calculated modified sleep duration - {} ticks ({})", actualSleptDuration, length.getString());
-            TarkovCraftCore.triggerSleepBonus(server, actualSleptDuration);
+        if (sleptDuration > 0L) {
+            Component length = Duration.ticks((int) sleptDuration).format(DurationFormats.SHORT_NAME);
+            TarkovCraftCore.LOGGER.debug(SleepBonusManager.MARKER, "Calculated modified sleep duration - {} ticks ({})", sleptDuration, length.getString());
+            TarkovCraftCore.triggerSleepBonus(server, sleptDuration);
         }
     }
 

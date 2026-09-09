@@ -8,7 +8,7 @@ import tnt.tarkovcraft.core.api.SleepFunction;
 public record SleepBonus(int requiredSleepDuration, SleepFunction function) {
 
     public static final Codec<SleepBonus> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ExtraCodecs.POSITIVE_INT.fieldOf("required_duration").forGetter(SleepBonus::requiredSleepDuration),
+            ExtraCodecs.POSITIVE_INT.optionalFieldOf("required_duration", 1).forGetter(SleepBonus::requiredSleepDuration),
             SleepFunction.CODEC.fieldOf("function").forGetter(SleepBonus::function)
     ).apply(instance, SleepBonus::new));
 }
