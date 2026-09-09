@@ -5,7 +5,9 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -14,14 +16,19 @@ import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.dimension.DimensionType;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.*;
+import net.neoforged.neoforge.event.level.SleepFinishedTimeEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.api.EntityInteraction;
 import tnt.tarkovcraft.core.api.MovementStaminaComponent;
 import tnt.tarkovcraft.core.client.TarkovCraftCoreClient;
@@ -30,6 +37,8 @@ import tnt.tarkovcraft.core.common.attribute.AttributeSystem;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.attribute.WeightChangeAttributeListener;
 import tnt.tarkovcraft.core.common.command.CoreTarkovcraftCommand;
+import tnt.tarkovcraft.core.common.data.duration.Duration;
+import tnt.tarkovcraft.core.common.data.duration.DurationFormats;
 import tnt.tarkovcraft.core.common.energy.EnergySystem;
 import tnt.tarkovcraft.core.common.init.CoreAttributes;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
@@ -194,5 +203,18 @@ public final class TarkovCraftCoreEventHandler {
             return;
         ServerPlayer serverPlayer = (ServerPlayer) player;
         PacketDistributor.sendToPlayer(serverPlayer, new S2C_ResetShaders());
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    private void onSleepFinished(SleepFinishedTimeEvent event) {
+        LevelAccessor level = event.getLevel();
+        MinecraftServer server = level.getServer();
+        long daytime = level.dayTime();
+        long sleptDuration = Math.max(event.getNewTime() - daytime, 0L);
+        if (sleptDuration > 0L) {
+            Component length = Duration.ticks((int) sleptDuration).format(DurationFormats.SHORT_NAME);
+            TarkovCraftCore.LOGGER.debug("Calculated modified sleep duration - {} ticks ({})", sleptDuration, length.getString());
+            TarkovCraftCore.triggerSleepBonus(server, sleptDuration);
+        }
     }
 }
