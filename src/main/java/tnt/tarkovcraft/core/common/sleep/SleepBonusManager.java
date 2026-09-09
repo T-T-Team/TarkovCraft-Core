@@ -27,12 +27,23 @@ public final class SleepBonusManager extends SimpleJsonResourceReloadListener<Sl
     }
 
     public void trigger(MinecraftServer server, long sleepDuration) {
+        List<SleepBonus> bonuses = this.getAvailableBonusesForSleepDuration(sleepDuration);
+        TarkovCraftCore.LOGGER.debug(MARKER, "Triggering {} sleep bonuses for {} ticks", bonuses.size(), sleepDuration);
+        if (bonuses.isEmpty()) {
+            return;
+        }
         PlayerList playerList = server.getPlayerList();
         playerList.getPlayers().forEach(player -> {
             if (player.isSleeping() && player.isSleepingLongEnough()) {
-                this.bonuses.forEach(bonus -> bonus.function().apply(player, sleepDuration));
+                bonuses.forEach(bonus -> bonus.function().apply(player, sleepDuration));
             }
         });
+    }
+
+    public List<SleepBonus> getAvailableBonusesForSleepDuration(long duration) {
+        return this.bonuses.stream()
+                .filter(bonus -> duration >= bonus.requiredSleepDuration())
+                .toList();
     }
 
     @Override
