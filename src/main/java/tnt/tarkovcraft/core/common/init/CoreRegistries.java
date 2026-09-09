@@ -8,6 +8,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.api.EntityInteraction;
+import tnt.tarkovcraft.core.api.SleepFunction;
 import tnt.tarkovcraft.core.common.attribute.Attribute;
 import tnt.tarkovcraft.core.common.attribute.modifier.AddValueModifier;
 import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
@@ -28,6 +29,8 @@ import tnt.tarkovcraft.core.common.skill.trigger.condition.*;
 import tnt.tarkovcraft.core.common.skill.trigger.configuration.OverweightFactorSkillTriggerConfiguration;
 import tnt.tarkovcraft.core.common.skill.trigger.configuration.SimpleSkillTriggerConfiguration;
 import tnt.tarkovcraft.core.common.skill.trigger.configuration.SkillTriggerConfiguration;
+import tnt.tarkovcraft.core.common.sleep.AddHealthSleepFunction;
+import tnt.tarkovcraft.core.common.sleep.AddMobEffectSleepFunction;
 import tnt.tarkovcraft.core.common.statistic.DisplayStatistic;
 import tnt.tarkovcraft.core.common.statistic.Statistic;
 
@@ -40,6 +43,7 @@ public final class CoreRegistries {
     public static final Registry<Statistic> STATISTICS = new RegistryBuilder<>(Keys.STATISTICS).sync(true).create();
     public static final Registry<EntityPose.Type<?>> ENTITY_POSE = new RegistryBuilder<>(Keys.ENTITY_POSE).sync(true).create();
     public static final Registry<EntityInteraction.Type<?>> ENTITY_INTERACTION = new RegistryBuilder<>(Keys.ENTITY_INTERACTION).sync(true).create();
+    public static final Registry<MapCodec<? extends SleepFunction>> SLEEP_BONUS_FUNCTION = new RegistryBuilder<>(Keys.SLEEP_BONUS_FUNCTION).create();
 
     // Skill system
     public static final Registry<MapCodec<? extends SkillProgressionStrategy>> SKILL_PROGRESSION_STRATEGY = new RegistryBuilder<>(Keys.SKILL_PROGRESSION_STRATEGY).create();
@@ -87,6 +91,11 @@ public final class CoreRegistries {
         registerObject(helper, "add_attribute_modifier", AddAttributeModifierBonus.CODEC);
     }
 
+    public static void registerSleepBonusFunctions(RegisterEvent.RegisterHelper<MapCodec<? extends SleepFunction>> helper) {
+        registerObject(helper, "health", AddHealthSleepFunction.CODEC);
+        registerObject(helper, "effect", AddMobEffectSleepFunction.CODEC);
+    }
+
     private static <T> void registerObject(RegisterEvent.RegisterHelper<T> helper, String name, T object) {
         helper.register(Identifier.fromNamespaceAndPath(TarkovCraftCore.MOD_ID, name), object);
     }
@@ -105,6 +114,7 @@ public final class CoreRegistries {
         public static final ResourceKey<Registry<MapCodec<? extends SkillBonus>>> SKILL_STAT = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("skill/stat"));
         public static final ResourceKey<Registry<EntityPose.Type<?>>> ENTITY_POSE = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("entity_pose"));
         public static final ResourceKey<Registry<EntityInteraction.Type<?>>> ENTITY_INTERACTION = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("entity_interaction"));
+        public static final ResourceKey<Registry<MapCodec<? extends SleepFunction>>> SLEEP_BONUS_FUNCTION = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("sleep_bonus_function"));
     }
 
     public static final class DatapackKeys {

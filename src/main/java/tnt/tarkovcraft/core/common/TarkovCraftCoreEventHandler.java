@@ -5,8 +5,13 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.clock.ClockTimeMarker;
+import net.minecraft.world.clock.ServerClockManager;
+import net.minecraft.world.clock.WorldClock;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityTypes;
@@ -14,15 +19,21 @@ import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.dimension.DimensionType;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.common.util.ClockAdjustment;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.*;
+import net.neoforged.neoforge.event.level.SleepFinishedTimeEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.api.EntityInteraction;
 import tnt.tarkovcraft.core.api.MovementStaminaComponent;
 import tnt.tarkovcraft.core.client.TarkovCraftCoreClient;
@@ -31,6 +42,8 @@ import tnt.tarkovcraft.core.common.attribute.AttributeSystem;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.attribute.WeightChangeAttributeListener;
 import tnt.tarkovcraft.core.common.command.CoreTarkovcraftCommand;
+import tnt.tarkovcraft.core.common.data.duration.Duration;
+import tnt.tarkovcraft.core.common.data.duration.DurationFormats;
 import tnt.tarkovcraft.core.common.energy.EnergySystem;
 import tnt.tarkovcraft.core.common.init.CoreAttributes;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
@@ -195,5 +208,39 @@ public final class TarkovCraftCoreEventHandler {
             return;
         ServerPlayer serverPlayer = (ServerPlayer) player;
         PacketDistributor.sendToPlayer(serverPlayer, new S2C_ResetShaders());
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    private void onSleepFinished(SleepFinishedTimeEvent event) {
+        if (event.isCanceled())
+            return;
+        LevelAccessor level = event.getLevel();
+        DimensionType dimensionType = level.dimensionType();
+        MinecraftServer server = level.getServer();
+        Holder<WorldClock> clockHolder = dimensionType.defaultClock().orElseThrow(); // check in method where this method is fired already has isPresent condition
+        ServerClockManager clockManager = server.clockManager();
+        long currentGameTime = clockManager.getTotalTicks(clockHolder);
+        ClockAdjustment adjustment = event.getAdjustment();
+        long sleptDuration = switch (adjustment) {
+            case ClockAdjustment.Absolute absolute -> Math.max(0, absolute.ticks() - currentGameTime);
+            case ClockAdjustment.Relative relative -> Math.max(0, relative.ticks());
+            case ClockAdjustment.Marker marker -> this.resolveMarkerTimeDiff(marker, clockManager, currentGameTime, clockHolder);
+        };
+        float sleepBonusMultiplier = 1.0F; // TODO configurable
+        long actualSleptDuration = Mth.ceilLong(sleptDuration * sleepBonusMultiplier);
+        if (actualSleptDuration > 0L) {
+            Component length = Duration.ticks((int) actualSleptDuration).format(DurationFormats.SHORT_NAME);
+            TarkovCraftCore.LOGGER.debug("Calculated modified sleep duration - {} ticks ({})", actualSleptDuration, length.getString());
+            TarkovCraftCore.triggerSleepBonus(server, actualSleptDuration);
+        }
+    }
+
+    private long resolveMarkerTimeDiff(ClockAdjustment.Marker adjustmentMarker, ServerClockManager clockManager, long gameTime, Holder<WorldClock> clock) {
+        ServerClockManager.ClockInstance instance = clockManager.getInstance(clock);
+        ClockTimeMarker timeMarker = instance.timeMarkers.get(adjustmentMarker.marker());
+        if (timeMarker != null) {
+            return Math.max(0, timeMarker.resolveTimeToMoveTo(gameTime) - gameTime);
+        }
+        return 0L;
     }
 }
