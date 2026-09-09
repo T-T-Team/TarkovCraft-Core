@@ -2,11 +2,13 @@ package tnt.tarkovcraft.core;
 
 import dev.toma.configuration.Configuration;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.MinecraftServer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
@@ -20,6 +22,7 @@ import tnt.tarkovcraft.core.common.init.*;
 import tnt.tarkovcraft.core.common.pose.EntityPoseEventHandler;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 import tnt.tarkovcraft.core.common.skill.SkillSystem;
+import tnt.tarkovcraft.core.common.sleep.SleepBonusManager;
 import tnt.tarkovcraft.core.common.statistic.DisplayStatistic;
 import tnt.tarkovcraft.core.common.weight.WeightSystem;
 import tnt.tarkovcraft.core.network.TarkovCraftCoreNetwork;
@@ -28,9 +31,10 @@ import tnt.tarkovcraft.core.network.TarkovCraftCoreNetwork;
 public final class TarkovCraftCore {
 
     public static final String MOD_ID = "tarkovcraft_core";
-    public static final String GLOBAL_CATEGORY_KEY = "category.tarkovcraft";
     public static final Logger LOGGER = LogManager.getLogger("TarkovCraftCore");
     public static final Marker MARKER = MarkerManager.getMarker("Core");
+
+    private static final SleepBonusManager SLEEP_BONUS_MANAGER = new SleepBonusManager();
 
     private static TarkovCraftCoreConfig config;
 
@@ -50,6 +54,7 @@ public final class TarkovCraftCore {
         NeoForge.EVENT_BUS.register(new TarkovCraftCoreEventHandler());
         NeoForge.EVENT_BUS.register(new EntityPoseEventHandler());
         NeoForge.EVENT_BUS.addListener(SkillSystem::onServerStarted);
+        NeoForge.EVENT_BUS.addListener(this::registerServerReloadListeners);
 
         // Deferred registries
         CoreAttributes.REGISTRY.register(modEventBus);
@@ -58,6 +63,10 @@ public final class TarkovCraftCore {
         CoreSkillTriggerEvents.REGISTRY.register(modEventBus);
         CoreStatistics.REGISTRY.register(modEventBus);
         CoreEntityPoses.REGISTRY.register(modEventBus);
+    }
+
+    public static void triggerSleepBonus(MinecraftServer server, long sleptDuration) {
+        SLEEP_BONUS_MANAGER.trigger(server, sleptDuration);
     }
 
     public static TarkovCraftCoreConfig getConfig() {
@@ -76,6 +85,7 @@ public final class TarkovCraftCore {
         event.register(CoreRegistries.Keys.SKILL_TRIGGER_CONDITION_TYPE, CoreRegistries::registerSkillTriggerConditionTypes);
         event.register(CoreRegistries.Keys.SKILL_STAT_CONDITION_TYPE, CoreRegistries::registerSkillStatConditionTypes);
         event.register(CoreRegistries.Keys.SKILL_STAT, CoreRegistries::registerSkillStats);
+        event.register(CoreRegistries.Keys.SLEEP_BONUS_FUNCTION, CoreRegistries::registerSleepBonusFunctions);
     }
 
     private void registerCustomRegistries(NewRegistryEvent event) {
@@ -86,6 +96,7 @@ public final class TarkovCraftCore {
         event.register(CoreRegistries.STATISTICS);
         event.register(CoreRegistries.ENTITY_POSE);
         event.register(CoreRegistries.ENTITY_INTERACTION);
+        event.register(CoreRegistries.SLEEP_BONUS_FUNCTION);
 
         // Skill system
         event.register(CoreRegistries.SKILL_PROGRESSION_STRATEGY);
@@ -99,6 +110,10 @@ public final class TarkovCraftCore {
     private void registerCustomDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
         event.dataPackRegistry(CoreRegistries.DatapackKeys.SKILL_DEFINITION, SkillDefinition.DIRECT_CODEC, SkillDefinition.DIRECT_CODEC);
         event.dataPackRegistry(CoreRegistries.DatapackKeys.DISPLAY_STATISTIC, DisplayStatistic.CODEC, DisplayStatistic.CODEC);
+    }
+
+    private void registerServerReloadListeners(AddServerReloadListenersEvent event) {
+        event.addListener(SleepBonusManager.IDENTIFIER, SLEEP_BONUS_MANAGER);
     }
 
     private void setup(FMLCommonSetupEvent event) {
