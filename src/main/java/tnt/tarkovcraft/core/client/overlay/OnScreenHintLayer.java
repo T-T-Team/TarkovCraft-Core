@@ -19,6 +19,7 @@ public final class OnScreenHintLayer implements GuiLayer {
         this.hintManager = hintManager;
     }
 
+    @Override
     public void render(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
         OnScreenHintDisplay displayMode = TarkovCraftCoreClient.getConfig().hintDisplayMode;
         if (displayMode == OnScreenHintDisplay.NONE)
