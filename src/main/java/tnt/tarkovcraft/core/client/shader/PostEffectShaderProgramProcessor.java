@@ -1,8 +1,8 @@
 package tnt.tarkovcraft.core.client.shader;
 
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.resource.CrossFrameResourcePool;
+import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BindGroupLayouts;
@@ -29,7 +29,6 @@ public final class PostEffectShaderProgramProcessor {
     private final Set<Identifier> dynamicPipelines = new HashSet<>();
     private GpuBufferSlice activeDynamicUniformBuffer;
 
-
     private PostEffectShaderProgramProcessor() {
     }
 
@@ -52,7 +51,8 @@ public final class PostEffectShaderProgramProcessor {
         this.registeredPrograms.forEach(program -> program.tickProgram(client, entity));
     }
 
-    public void render(Minecraft client, CrossFrameResourcePool resourcePool, DeltaTracker deltaTracker) {
+    public void render(Minecraft client, CrossFrameResourcePool resourcePool) {
+        DeltaTracker deltaTracker = client.getDeltaTracker();
         for (PostEffectShaderProgram program : this.registeredPrograms) {
             if (program.active()) {
                 this.processSingleShader(program, client, resourcePool, deltaTracker);

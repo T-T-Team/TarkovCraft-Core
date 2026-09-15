@@ -1,7 +1,7 @@
 package tnt.tarkovcraft.core.client.shader;
 
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
 import net.minecraft.resources.Identifier;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;

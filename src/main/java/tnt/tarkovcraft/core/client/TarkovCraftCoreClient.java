@@ -52,7 +52,7 @@ public final class TarkovCraftCoreClient {
     public static final KeyMapping KEY_CHARACTER = new KeyMapping(
             createKeybindName(TarkovCraftCore.MOD_ID, "character"),
             KeyConflictContext.IN_GAME,
-            InputConstants.Type.KEYSYM,
+            InputConstants.Type.KEYBOARD,
             InputConstants.KEY_P,
             SHARED_CATEGORY
     );

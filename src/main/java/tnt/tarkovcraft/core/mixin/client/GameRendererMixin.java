@@ -25,9 +25,9 @@ public abstract class GameRendererMixin {
 
     @Inject(
             method = "render",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;doEntityOutline()V", shift = At.Shift.AFTER)
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;blitEntityOutline()V", shift = At.Shift.AFTER)
     )
-    private void tarkovCraftCore$render(DeltaTracker deltaTracker, boolean renderLevel, CallbackInfo ci) {
-        PostEffectShaderProgramProcessor.INSTANCE.render(this.minecraft, this.resourcePool, deltaTracker);
+    private void tarkovCraftCore$render(CallbackInfo ci) {
+        PostEffectShaderProgramProcessor.INSTANCE.render(this.minecraft, this.resourcePool);
     }
 }

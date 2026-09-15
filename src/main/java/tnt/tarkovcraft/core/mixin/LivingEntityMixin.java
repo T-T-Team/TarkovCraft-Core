@@ -1,11 +1,13 @@
 package tnt.tarkovcraft.core.mixin;
 
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Attackable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.common.extensions.ILivingEntityExtension;
@@ -67,14 +69,14 @@ public abstract class LivingEntityMixin extends Entity implements Attackable, IL
     }
 
     @Inject(
-            method = "swing(Lnet/minecraft/world/InteractionHand;Z)V",
+            method = "swing",
             at = @At("HEAD"),
             cancellable = true
     )
-    private void tarkovCraftCore$swing(CallbackInfo ci) {
+    private void tarkovCraftCore$swing(InteractionHand hand, SwingAnimation animation, boolean sendToSwingingEntity, CallbackInfoReturnable<Boolean> cir) {
         LivingEntity livingEntity = (LivingEntity) (Object) this;
         if (EntityPoseManager.isTagged(livingEntity, CoreEntityPoseFlags.NO_INTERACTION)) {
-            ci.cancel();
+            cir.setReturnValue(false);
         }
     }
 

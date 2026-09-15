@@ -7,7 +7,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.clock.ClockTimeMarker;
 import net.minecraft.world.clock.ServerClockManager;
@@ -52,7 +51,7 @@ import tnt.tarkovcraft.core.common.init.CoreStatistics;
 import tnt.tarkovcraft.core.common.item.LeftClickListener;
 import tnt.tarkovcraft.core.common.skill.SkillSystem;
 import tnt.tarkovcraft.core.common.sleep.SleepBonusManager;
-import tnt.tarkovcraft.core.common.statistic.CustomStatTrackerProvider;
+import tnt.tarkovcraft.core.common.statistic.StatTrackerExtension;
 import tnt.tarkovcraft.core.common.statistic.Statistic;
 import tnt.tarkovcraft.core.common.statistic.StatisticTracker;
 import tnt.tarkovcraft.core.common.weight.EntityWeightContainerListener;
@@ -122,8 +121,8 @@ public final class TarkovCraftCoreEventHandler {
             StatisticTracker.increment(killer, CoreStatistics.KILLS);
             long distance = (long) (entity.distanceTo(killer) * 100);
             StatisticTracker.replace(killer, CoreStatistics.LONGEST_KILL, distance, Math::max);
-            if (entity instanceof CustomStatTrackerProvider tracker) {
-                Holder<Statistic> counter = tracker.getKillCounter(killer);
+            if (entity instanceof StatTrackerExtension extension) {
+                Holder<Statistic> counter = extension.tarkovcraftCore$getKillCounter(killer);
                 if (counter != null) {
                     StatisticTracker.increment(killer, counter);
                 }
@@ -131,8 +130,8 @@ public final class TarkovCraftCoreEventHandler {
         }
         if (entity.hasData(CoreDataAttachments.STATISTICS)) {
             StatisticTracker.increment(entity, CoreStatistics.DEATHS);
-            if (killer instanceof CustomStatTrackerProvider tracker) {
-                Holder<Statistic> counter = tracker.getDeathCounter(entity);
+            if (killer instanceof StatTrackerExtension tracker) {
+                Holder<Statistic> counter = tracker.tarkovcraftCore$getDeathCounter(entity);
                 if (counter != null) {
                     StatisticTracker.increment(entity, counter);
                 }
@@ -220,12 +219,13 @@ public final class TarkovCraftCoreEventHandler {
         MinecraftServer server = level.getServer();
         Holder<WorldClock> clockHolder = dimensionType.defaultClock().orElseThrow(); // check in method where this method is fired already has isPresent condition
         ServerClockManager clockManager = server.clockManager();
-        long currentGameTime = clockManager.getTotalTicks(clockHolder);
+        ServerClockManager.ServerClockInstance instance = clockManager.getInstance(clockHolder);
+        long currentTick = instance.totalTicks();
         ClockAdjustment adjustment = event.getAdjustment();
         long sleptDuration = switch (adjustment) {
-            case ClockAdjustment.Absolute absolute -> Math.max(0, absolute.ticks() - currentGameTime);
+            case ClockAdjustment.Absolute absolute -> Math.max(0, absolute.ticks() - currentTick);
             case ClockAdjustment.Relative relative -> Math.max(0, relative.ticks());
-            case ClockAdjustment.Marker marker -> this.resolveMarkerTimeDiff(marker, clockManager, currentGameTime, clockHolder);
+            case ClockAdjustment.Marker marker -> this.resolveMarkerTimeDiff(marker, instance, currentTick);
         };
         if (sleptDuration > 0L) {
             Component length = Duration.ticks((int) sleptDuration).format(DurationFormats.SHORT_NAME);
@@ -234,8 +234,7 @@ public final class TarkovCraftCoreEventHandler {
         }
     }
 
-    private long resolveMarkerTimeDiff(ClockAdjustment.Marker adjustmentMarker, ServerClockManager clockManager, long gameTime, Holder<WorldClock> clock) {
-        ServerClockManager.ClockInstance instance = clockManager.getInstance(clock);
+    private long resolveMarkerTimeDiff(ClockAdjustment.Marker adjustmentMarker, ServerClockManager.ServerClockInstance instance, long gameTime) {
         ClockTimeMarker timeMarker = instance.timeMarkers.get(adjustmentMarker.marker());
         if (timeMarker != null) {
             return Math.max(0, timeMarker.resolveTimeToMoveTo(gameTime) - gameTime);

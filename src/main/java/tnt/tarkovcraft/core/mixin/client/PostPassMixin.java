@@ -1,8 +1,8 @@
 package tnt.tarkovcraft.core.mixin.client;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
-import com.mojang.blaze3d.systems.RenderPass;
+import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
+import com.mojang.renderpearl.api.commands.RenderPass;
 import net.minecraft.client.renderer.PostPass;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,12 +15,12 @@ public abstract class PostPassMixin {
 
     @Inject(
             method = "lambda$addToFrame$1",
-            at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;bindDefaultUniforms(Lcom/mojang/blaze3d/systems/RenderPass;)V")
+            at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;bindDefaultUniforms(Lcom/mojang/renderpearl/api/commands/RenderPass;)V")
     )
-    private void tarkovCraftCore$lambda$addToFrame$5(CallbackInfo ci, @Local RenderPass pass) {
+    private void tarkovCraftCore$lambda$addToFrame$5(CallbackInfo ci, @Local(name = "renderPass") RenderPass renderPass) {
         GpuBufferSlice slice = PostEffectShaderProgramProcessor.INSTANCE.getActiveDynamicUniformBuffer();
         if (slice != null) {
-            pass.setUniform("DynamicTransforms", slice);
+            renderPass.setUniform("DynamicTransforms", slice);
         }
     }
 }

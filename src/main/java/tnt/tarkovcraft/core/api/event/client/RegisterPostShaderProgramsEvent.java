@@ -1,9 +1,6 @@
 package tnt.tarkovcraft.core.api.event.client;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.Event;
 import net.neoforged.fml.event.IModBusEvent;
 import org.jetbrains.annotations.ApiStatus;

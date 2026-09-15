@@ -3,6 +3,7 @@ package tnt.tarkovcraft.core.util.helper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -45,7 +46,7 @@ public final class EntityHelper {
         if (level.isClientSide())
             return;
         ItemStack stack = entity.getItemBySlot(slot);
-        entity.drop(stack, true, false);
+        entity.drop(stack, false, Prediction.SERVER_ONLY);
         entity.setItemSlot(slot, ItemStack.EMPTY);
     }
 
