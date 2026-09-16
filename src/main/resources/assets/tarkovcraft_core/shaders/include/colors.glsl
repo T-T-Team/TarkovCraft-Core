@@ -1,4 +1,5 @@
-#version 330
+#ifndef TARKOVCRAFT_CORE_COLORS_GLSL
+#define TARKOVCRAFT_CORE_COLORS_GLSL
 
 vec3 rgb2hsv(vec3 rgb) {
     float maxc = max(rgb.r, max(rgb.g, rgb.b));
@@ -41,3 +42,5 @@ vec3 hsv2rgb(vec3 hsv) {
     if (i == 4) return vec3(t, p, v);
     return vec3(v, p, q);
 }
+
+#endif
