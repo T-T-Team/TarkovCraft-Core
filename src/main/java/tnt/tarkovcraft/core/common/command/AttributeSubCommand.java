@@ -32,7 +32,6 @@ public final class AttributeSubCommand {
 
     public static ArgumentBuilder<CommandSourceStack, ?> node(CommandBuildContext context) {
         return Commands.literal("attribute")
-                .requires(CoreTarkovcraftCommand.gameMasterOnly())
                 .then(
                         Commands.argument("attributeId", ResourceArgument.resource(context, CoreRegistries.Keys.ATTRIBUTE))
                                 .executes(ctx -> getAttributeInfo(ctx, null, false))
