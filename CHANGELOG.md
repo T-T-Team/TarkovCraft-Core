@@ -1,3 +1,5 @@
-# Release 2.10.2+1.21.1
-- Fixed decal transparency render layer for opaque colors
-- Fixed movement inputs not being canceled for movement-cancelling states
+# Release 2.11.2+1.21.1
+- New hint API
+- Sleep bonus API
+- Interaction logic and event extension
+- Fixed interaction concurrency - two players no longer can interact with single entity
