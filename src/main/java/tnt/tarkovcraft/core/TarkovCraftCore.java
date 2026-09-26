@@ -9,7 +9,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
-import net.neoforged.neoforge.registries.DataPackRegistryEvent;
+import net.neoforged.neoforge.registries.NewDatapackRegistryEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
@@ -107,9 +107,9 @@ public final class TarkovCraftCore {
         event.register(CoreRegistries.SKILL_STAT);
     }
 
-    private void registerCustomDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(CoreRegistries.DatapackKeys.SKILL_DEFINITION, SkillDefinition.DIRECT_CODEC, SkillDefinition.DIRECT_CODEC);
-        event.dataPackRegistry(CoreRegistries.DatapackKeys.DISPLAY_STATISTIC, DisplayStatistic.CODEC, DisplayStatistic.CODEC);
+    private void registerCustomDatapackRegistries(NewDatapackRegistryEvent event) {
+        event.worldRegistry(CoreRegistries.DatapackKeys.SKILL_DEFINITION, SkillDefinition.DIRECT_CODEC, SkillDefinition.DIRECT_CODEC);
+        event.worldRegistry(CoreRegistries.DatapackKeys.DISPLAY_STATISTIC, DisplayStatistic.CODEC, DisplayStatistic.CODEC);
     }
 
     private void registerServerReloadListeners(AddServerReloadListenersEvent event) {
