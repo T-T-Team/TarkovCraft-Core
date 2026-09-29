@@ -17,12 +17,12 @@ public record DurationIntProvider(Duration value) implements IntProvider {
 
     @Override
     public int minInclusive() {
-        return 0;
+        return this.value.tickValue();
     }
 
     @Override
     public int maxInclusive() {
-        return Integer.MAX_VALUE;
+        return this.value.tickValue();
     }
 
     @Override

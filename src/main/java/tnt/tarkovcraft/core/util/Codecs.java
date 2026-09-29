@@ -7,6 +7,10 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.util.valueproviders.IntProviders;
+import tnt.tarkovcraft.core.common.data.duration.Duration;
+import tnt.tarkovcraft.core.common.valueprovider.DurationIntProvider;
 
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -36,6 +40,7 @@ public final class Codecs {
     public static final Codec<Integer> RGB_COLOR = Codec.withAlternative(ExtraCodecs.RGB_COLOR_CODEC, HEX_RGB_COLOR_CODEC);
     public static final Codec<Integer> NON_NEGATIVE_INT = Codec.intRange(0, Integer.MAX_VALUE);
     public static final Codec<Float> NON_NEGATIVE_FLOAT = Codec.floatRange(0.0F, Float.MAX_VALUE);
+    public static final Codec<IntProvider> DURATION_INT_PROVIDER = Codec.withAlternative(IntProviders.NON_NEGATIVE_CODEC, Duration.STRING_CODEC, DurationIntProvider::new);
 
     public static <T> Codec<List<T>> list(Codec<T> elementCodec, int minCount, int maxCount) {
         return Codec.withAlternative(elementCodec.listOf(minCount, maxCount), elementCodec, Collections::singletonList);

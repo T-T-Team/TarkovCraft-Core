@@ -4,12 +4,13 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.*;
+import tnt.tarkovcraft.core.util.Codecs;
 
 public record SkillMemoryConfiguration(boolean canLoseLevel, IntProvider startAfter, FloatProvider experienceLoss) {
 
     public static final Codec<SkillMemoryConfiguration> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.optionalFieldOf("level_loss", false).forGetter(SkillMemoryConfiguration::canLoseLevel),
-            IntProviders.NON_NEGATIVE_CODEC.fieldOf("start_after").forGetter(t -> t.startAfter),
+            Codecs.DURATION_INT_PROVIDER.fieldOf("start_after").forGetter(t -> t.startAfter),
             FloatProviders.CODEC.fieldOf("experience_loss").forGetter(t -> t.experienceLoss)
     ).apply(instance, SkillMemoryConfiguration::new));
     public static final SkillMemoryConfiguration NO_LOSS = new SkillMemoryConfiguration(false, ConstantInt.ZERO, ConstantFloat.ZERO);

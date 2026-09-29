@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.toma.configuration.config.ConfigValueLocation;
+import dev.toma.configuration.config.validate.NumberRange;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.FloatProvider;
 
@@ -25,12 +26,12 @@ public final class ConfigFloatProvider extends AbstractConfigNumberProvider impl
 
     @Override
     public float min() {
-        return -Float.MAX_VALUE;
+        return this.resolveRangeValue(NumberRange::min, this::fallbackValueAsFloat);
     }
 
     @Override
     public float max() {
-        return Float.MAX_VALUE;
+        return this.resolveRangeValue(NumberRange::max, this::fallbackValueAsFloat);
     }
 
     @Override

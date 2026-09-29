@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.toma.configuration.config.ConfigValueLocation;
+import dev.toma.configuration.config.validate.NumberRange;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
 
@@ -25,12 +26,12 @@ public final class ConfigIntProvider extends AbstractConfigNumberProvider implem
 
     @Override
     public int minInclusive() {
-        return Integer.MIN_VALUE; // TODO work with the @Range attribute
+        return this.resolveRangeValue(NumberRange::min, this::fallbackValueAsInt);
     }
 
     @Override
     public int maxInclusive() {
-        return Integer.MAX_VALUE; // TODO work with the @Range attribute
+        return this.resolveRangeValue(NumberRange::max, this::fallbackValueAsInt);
     }
 
     @Override
