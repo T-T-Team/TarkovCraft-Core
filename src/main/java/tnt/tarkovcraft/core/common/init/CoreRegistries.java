@@ -4,6 +4,8 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.valueproviders.FloatProvider;
+import net.minecraft.util.valueproviders.IntProvider;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 import tnt.tarkovcraft.core.TarkovCraftCore;
@@ -14,7 +16,6 @@ import tnt.tarkovcraft.core.common.attribute.modifier.AddValueModifier;
 import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
 import tnt.tarkovcraft.core.common.attribute.modifier.MultiplyValueAttributeModifier;
 import tnt.tarkovcraft.core.common.attribute.modifier.SetValueAttributeModifier;
-import tnt.tarkovcraft.core.common.data.number.*;
 import tnt.tarkovcraft.core.common.pose.EntityPose;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 import tnt.tarkovcraft.core.common.skill.bonus.AddAttributeModifierBonus;
@@ -33,13 +34,15 @@ import tnt.tarkovcraft.core.common.sleep.AddHealthSleepFunction;
 import tnt.tarkovcraft.core.common.sleep.AddMobEffectSleepFunction;
 import tnt.tarkovcraft.core.common.statistic.DisplayStatistic;
 import tnt.tarkovcraft.core.common.statistic.Statistic;
+import tnt.tarkovcraft.core.common.valueprovider.ConfigFloatProvider;
+import tnt.tarkovcraft.core.common.valueprovider.ConfigIntProvider;
+import tnt.tarkovcraft.core.common.valueprovider.DurationIntProvider;
 
 public final class CoreRegistries {
 
     // Global utilities
     public static final Registry<Attribute> ATTRIBUTE = new RegistryBuilder<>(Keys.ATTRIBUTE).create();
     public static final Registry<MapCodec<? extends AttributeModifier>> ATTRIBUTE_MODIFIER = new RegistryBuilder<>(Keys.ATTRIBUTE_MODIFIER).create();
-    public static final Registry<MapCodec<? extends NumberProvider>> NUMBER_PROVIDER = new RegistryBuilder<>(Keys.NUMBER_PROVIDER).create();
     public static final Registry<Statistic> STATISTICS = new RegistryBuilder<>(Keys.STATISTICS).sync(true).create();
     public static final Registry<EntityPose.Type<?>> ENTITY_POSE = new RegistryBuilder<>(Keys.ENTITY_POSE).sync(true).create();
     public static final Registry<EntityInteraction.Type<?>> ENTITY_INTERACTION = new RegistryBuilder<>(Keys.ENTITY_INTERACTION).sync(true).create();
@@ -57,13 +60,6 @@ public final class CoreRegistries {
         registerObject(helper, "set", SetValueAttributeModifier.CODEC);
         registerObject(helper, "add", AddValueModifier.CODEC);
         registerObject(helper, "multiply", MultiplyValueAttributeModifier.CODEC);
-    }
-
-    public static void registerNumberProviders(RegisterEvent.RegisterHelper<MapCodec<? extends NumberProvider>> helper) {
-        registerObject(helper, "constant", ConstantNumberProvider.CODEC);
-        registerObject(helper, "ranged", RangedNumberProvider.CODEC);
-        registerObject(helper, "duration", DurationNumberProvider.CODEC);
-        registerObject(helper, "config", ConfigurationNumberProvider.CODEC);
     }
 
     public static void registerSkillProgressionStrategies(RegisterEvent.RegisterHelper<MapCodec<? extends SkillProgressionStrategy>> helper) {
@@ -96,6 +92,15 @@ public final class CoreRegistries {
         registerObject(helper, "effect", AddMobEffectSleepFunction.CODEC);
     }
 
+    public static void registerIntProviders(RegisterEvent.RegisterHelper<MapCodec<? extends IntProvider>> helper) {
+        registerObject(helper, "config", ConfigIntProvider.CODEC);
+        registerObject(helper, "duration", DurationIntProvider.CODEC);
+    }
+
+    public static void registerFloatProviders(RegisterEvent.RegisterHelper<MapCodec<? extends FloatProvider>> helper) {
+        registerObject(helper, "config", ConfigFloatProvider.CODEC);
+    }
+
     private static <T> void registerObject(RegisterEvent.RegisterHelper<T> helper, String name, T object) {
         helper.register(Identifier.fromNamespaceAndPath(TarkovCraftCore.MOD_ID, name), object);
     }
@@ -104,7 +109,6 @@ public final class CoreRegistries {
 
         public static final ResourceKey<Registry<Attribute>> ATTRIBUTE = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("attribute/attribute"));
         public static final ResourceKey<Registry<MapCodec<? extends AttributeModifier>>> ATTRIBUTE_MODIFIER = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("attribute/attribute_modifier"));
-        public static final ResourceKey<Registry<MapCodec<? extends NumberProvider>>> NUMBER_PROVIDER = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("util/number_provider"));
         public static final ResourceKey<Registry<Statistic>> STATISTICS = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("util/statistics"));
         public static final ResourceKey<Registry<MapCodec<? extends SkillProgressionStrategy>>> SKILL_PROGRESSION_STRATEGY = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("skill/progression_strategy"));
         public static final ResourceKey<Registry<SkillTrigger>> SKILL_TRIGGER_EVENT = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("skill/trigger_event"));

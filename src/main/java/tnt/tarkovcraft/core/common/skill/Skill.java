@@ -5,14 +5,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.RandomSource;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.config.SkillSystemConfig;
 import tnt.tarkovcraft.core.common.init.CoreAttributes;
 import tnt.tarkovcraft.core.common.skill.progression.SkillProgressionStrategy;
 import tnt.tarkovcraft.core.common.skill.trigger.SkillTriggerDefinition;
-
-import java.util.function.IntConsumer;
 
 public final class Skill {
 
@@ -63,17 +62,17 @@ public final class Skill {
         return Math.min(triggeredAmount * globalMultiplier, limit);
     }
 
-    public void updateMemory(long time, EntityAttributeData attributeData) {
+    public void updateMemory(long time, EntityAttributeData attributeData, RandomSource random) {
         SkillMemoryConfiguration memory = this.definition.value().configuration().memory();
-        if (SkillSystem.isMemoryEnabled() && memory.isEnabled()) {
+        if (SkillSystem.isMemoryEnabled() && memory.isEnabled(random)) {
             long diff = time - this.lastExperienceUpdate;
             float rateMultiplier = attributeData.getAttribute(CoreAttributes.MEMORY_FORGET_TIME_MULTIPLIER).floatValue();
-            long timeToForget = (long) (memory.startAfter() * rateMultiplier);
+            long timeToForget = (long) (memory.getStartAfter(random) * rateMultiplier);
             long times = diff / timeToForget;
             if (times > 0) {
                 long additional = diff % timeToForget;
                 float amountMultiplier = attributeData.getAttribute(CoreAttributes.MEMORY_FORGET_AMOUNT_MULTIPLIER).floatValue();
-                float amount = memory.experienceLoss() * amountMultiplier * times;
+                float amount = memory.getExperienceLoss(random) * amountMultiplier * times;
                 this.loseExperience(amount, memory);
                 time -= additional;
             }

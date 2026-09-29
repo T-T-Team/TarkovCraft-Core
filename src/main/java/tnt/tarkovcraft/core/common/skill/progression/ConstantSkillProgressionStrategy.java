@@ -1,11 +1,11 @@
 package tnt.tarkovcraft.core.common.skill.progression;
 
 import com.mojang.serialization.MapCodec;
-import tnt.tarkovcraft.core.common.data.number.NumberProvider;
+import net.minecraft.util.ExtraCodecs;
 
 public record ConstantSkillProgressionStrategy(float experience) implements SkillProgressionStrategy {
 
-    public static final MapCodec<ConstantSkillProgressionStrategy> CODEC = NumberProvider.POSITIVE_FLOAT
+    public static final MapCodec<ConstantSkillProgressionStrategy> CODEC = ExtraCodecs.POSITIVE_FLOAT
             .xmap(ConstantSkillProgressionStrategy::new, ConstantSkillProgressionStrategy::experience)
             .fieldOf("experience");
     public static final ConstantSkillProgressionStrategy DEFAULT = new ConstantSkillProgressionStrategy(20.0F);

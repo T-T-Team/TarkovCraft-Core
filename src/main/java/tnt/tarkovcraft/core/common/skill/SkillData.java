@@ -69,7 +69,7 @@ public final class SkillData {
             float experience = triggerAmount * this.getGroupLevelMultiplier(attributes, definition.category());
             long gameTime = triggerSource.level().getGameTime();
             // TODO change memory handling
-            instance.updateMemory(gameTime, attributes);
+            instance.updateMemory(gameTime, attributes, triggerSource.getRandom());
             this.addExperience(instance, experience);
             return true;
         }

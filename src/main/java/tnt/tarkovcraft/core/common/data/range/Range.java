@@ -12,9 +12,9 @@ import java.util.function.IntFunction;
 
 public interface Range {
 
-    boolean isWithinRange(Mode mode, double input);
+    boolean isWithinRange(Mode mode, float input);
 
-    double getRandomInRange(RandomSource random);
+    float getRandomInRange(RandomSource random);
 
     enum Mode implements StringRepresentable {
 
@@ -35,7 +35,7 @@ public interface Range {
             this.rangeCheck = rangeCheck;
         }
 
-        public boolean compare(double input, double from, double to) {
+        public boolean compare(float input, float from, float to) {
             return this.rangeCheck.check(input, from, to);
         }
 
@@ -46,7 +46,7 @@ public interface Range {
 
         @FunctionalInterface
         private interface RangeCheck {
-            boolean check(double in, double from, double to);
+            boolean check(float in, float from, float to);
         }
     }
 }

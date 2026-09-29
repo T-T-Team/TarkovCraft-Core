@@ -6,9 +6,9 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import tnt.tarkovcraft.core.common.data.number.NumberProvider;
 import tnt.tarkovcraft.core.common.skill.Skill;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 import tnt.tarkovcraft.core.common.skill.bonus.condition.SkillStatCondition;
@@ -20,8 +20,8 @@ public record SkillBonusDefinition(String name, int minLevel, int maxLevel, List
 
     public static final Codec<SkillBonusDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("name").forGetter(SkillBonusDefinition::name),
-            NumberProvider.NON_NEGATIVE_INT.optionalFieldOf("min_level", 1).forGetter(SkillBonusDefinition::minLevel),
-            NumberProvider.POSITIVE_INT.optionalFieldOf("max_level", Integer.MAX_VALUE).forGetter(SkillBonusDefinition::maxLevel),
+            ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("min_level", 1).forGetter(SkillBonusDefinition::minLevel),
+            ExtraCodecs.POSITIVE_INT.optionalFieldOf("max_level", Integer.MAX_VALUE).forGetter(SkillBonusDefinition::maxLevel),
             SkillStatCondition.CODEC.listOf().optionalFieldOf("conditions", Collections.emptyList()).forGetter(SkillBonusDefinition::conditions),
             SkillBonus.CODEC.fieldOf("bonus").forGetter(SkillBonusDefinition::bonus)
     ).apply(instance, SkillBonusDefinition::new));

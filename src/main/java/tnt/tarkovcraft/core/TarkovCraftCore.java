@@ -1,6 +1,7 @@
 package tnt.tarkovcraft.core;
 
 import dev.toma.configuration.Configuration;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.neoforged.bus.api.IEventBus;
@@ -79,20 +80,21 @@ public final class TarkovCraftCore {
 
     private void registerData(RegisterEvent event) {
         event.register(CoreRegistries.Keys.ATTRIBUTE_MODIFIER, CoreRegistries::registerAttributeModifiers);
-        event.register(CoreRegistries.Keys.NUMBER_PROVIDER, CoreRegistries::registerNumberProviders);
         event.register(CoreRegistries.Keys.SKILL_PROGRESSION_STRATEGY, CoreRegistries::registerSkillProgressionStrategies);
         event.register(CoreRegistries.Keys.SKILL_TRIGGER_TYPE, CoreRegistries::registerSkillTriggerTypes);
         event.register(CoreRegistries.Keys.SKILL_TRIGGER_CONDITION_TYPE, CoreRegistries::registerSkillTriggerConditionTypes);
         event.register(CoreRegistries.Keys.SKILL_STAT_CONDITION_TYPE, CoreRegistries::registerSkillStatConditionTypes);
         event.register(CoreRegistries.Keys.SKILL_STAT, CoreRegistries::registerSkillStats);
         event.register(CoreRegistries.Keys.SLEEP_BONUS_FUNCTION, CoreRegistries::registerSleepBonusFunctions);
+
+        event.register(Registries.INT_PROVIDER_TYPE, CoreRegistries::registerIntProviders);
+        event.register(Registries.FLOAT_PROVIDER_TYPE, CoreRegistries::registerFloatProviders);
     }
 
     private void registerCustomRegistries(NewRegistryEvent event) {
         // Utils
         event.register(CoreRegistries.ATTRIBUTE);
         event.register(CoreRegistries.ATTRIBUTE_MODIFIER);
-        event.register(CoreRegistries.NUMBER_PROVIDER);
         event.register(CoreRegistries.STATISTICS);
         event.register(CoreRegistries.ENTITY_POSE);
         event.register(CoreRegistries.ENTITY_INTERACTION);
