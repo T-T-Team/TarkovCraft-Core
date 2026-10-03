@@ -2,7 +2,6 @@ package tnt.tarkovcraft.core.common.skill.bonus;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
@@ -35,22 +34,28 @@ public record SkillBonusDefinition(String name, int minLevel, int maxLevel, List
                 .allMatch(c -> c.canApply(definition, skill, entity));
     }
 
-    public String getBaseLanguageKey(Holder<SkillDefinition> holder) {
-        Identifier id = holder.getKey().identifier();
-        return id.toLanguageKey("skill", "bonus." + this.name);
+    public void apply(SkillDefinition definition, Skill skill, Entity entity) {
+        this.bonus.apply(definition, skill, entity);
     }
 
-    public MutableComponent getDisplayName(Holder<SkillDefinition> holder) {
-        return Component.translatable(this.getBaseLanguageKey(holder));
+    public void clear(SkillDefinition definition, Skill skill, Entity entity) {
+        this.bonus.clear(definition, skill, entity);
     }
 
-    public MutableComponent getContextualDescription(Holder<SkillDefinition> holder, Skill skill, LivingEntity entity) {
-        Object[] params = this.bonus.getTranslationData(holder.value(), skill, entity);
-        return Component.translatable(this.getBaseLanguageKey(holder) + ".description", params);
+    public String getBaseLanguageKey(Identifier skillId) {
+        return skillId.toLanguageKey("skill", "bonus." + this.name);
     }
 
-    public Identifier getIcon(Holder<SkillDefinition> holder) {
-        Identifier id = holder.getKey().identifier();
-        return id.withPath("textures/icons/skill/bonus/" + this.name + ".png");
+    public MutableComponent getDisplayName(Identifier skillId) {
+        return Component.translatable(this.getBaseLanguageKey(skillId));
+    }
+
+    public MutableComponent getContextualDescription(Skill skill, LivingEntity entity) {
+        Object[] params = this.bonus.getTranslationData(skill.getDefinition(), skill, entity);
+        return Component.translatable(this.getBaseLanguageKey(skill.getIdentifier()) + ".description", params);
+    }
+
+    public Identifier getIcon(Identifier identifier) {
+        return identifier.withPath("textures/icons/skill/bonus/" + this.name + ".png");
     }
 }

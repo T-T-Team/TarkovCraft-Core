@@ -3,28 +3,51 @@ package tnt.tarkovcraft.core.common.skill;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.resources.FileToIdConverter;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.Entity;
-import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import org.jetbrains.annotations.ApiStatus;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.config.SkillSystemConfig;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
-import tnt.tarkovcraft.core.common.init.CoreRegistries;
-import tnt.tarkovcraft.core.common.skill.trigger.SkillTriggerDefinition;
 import tnt.tarkovcraft.core.common.skill.trigger.SkillTrigger;
+import tnt.tarkovcraft.core.server.packs.resources.IdResource;
+import tnt.tarkovcraft.core.server.packs.resources.SimpleJsonResourceStackReloadListener;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
-public final class SkillSystem {
+public final class SkillSystem extends SimpleJsonResourceStackReloadListener<SkillDefinition> {
 
     public static final Marker MARKER = MarkerManager.getMarker("SkillSystem");
-    private static final Multimap<SkillTrigger, SkillDefinition> TRIGGER_CACHE = ArrayListMultimap.create();
+    public static final Identifier IDENTIFIER = TarkovCraftCore.createIdentifier("skill_system");
+    private static final SkillSystem INSTANCE = new SkillSystem();
+    private static final Multimap<SkillTrigger, Identifier> TRIGGER_CACHE = ArrayListMultimap.create();
+
+    private final Map<Identifier, IdResource<SkillDefinition>> byId = new HashMap<>();
+
+    private SkillSystem() {
+        super(SkillDefinition.CODEC, FileToIdConverter.json("tarkovcraft/skill"));
+    }
+
+    public static void register(AddServerReloadListenersEvent event) {
+        event.addListener(IDENTIFIER, INSTANCE);
+    }
+
+    public static Optional<IdResource<SkillDefinition>> getDefinition(Identifier identifier) {
+        return Optional.ofNullable(INSTANCE.byId.get(identifier));
+    }
+
+    public static Collection<Identifier> listAvailableSkills() {
+        return INSTANCE.byId.keySet();
+    }
 
     public static boolean isSkillSystemEnabled() {
         return TarkovCraftCore.getConfig().skillSystemConfig.skillSystemEnabled;
@@ -48,10 +71,10 @@ public final class SkillSystem {
         if (!isSkillSystemEnabled())
             return false;
         SkillData data = entity.getData(CoreDataAttachments.SKILL);
-        Collection<SkillDefinition> definitions = TRIGGER_CACHE.get(event);
+        var skills = TRIGGER_CACHE.get(event);
         boolean anyTrigger = false;
-        for (SkillDefinition definition : definitions) {
-            if (data.trigger(event, definition, multiplier, entity)) {
+        for (var skill : skills) {
+            if (data.trigger(event, skill, multiplier, entity)) {
                 anyTrigger = true;
             }
         }
@@ -104,18 +127,43 @@ public final class SkillSystem {
         triggerAndSynchronize(event, entity, 1.0F);
     }
 
-    @ApiStatus.Internal
-    public static void onServerStarted(ServerStartedEvent event) {
+    @Override
+    protected void apply(Map<Identifier, SkillDefinition> preparations, ResourceManager manager, ProfilerFiller profiler) {
+        this.byId.clear();
+        for (var entry : preparations.entrySet()) {
+            Identifier id = entry.getKey();
+            SkillDefinition definition = entry.getValue();
+            if (!definition.enabled()) {
+                TarkovCraftCore.LOGGER.debug(MARKER, "Skill {} is disabled, skipping loading", id);
+                continue;
+            }
+            this.byId.put(id, new IdResource<>(id, definition));
+        }
+        reloadCache();
+    }
+
+    @Override
+    protected void validateResultItem(Identifier id, SkillDefinition item) {
+        SkillDefinition.validate(item);
+    }
+
+    @Override
+    protected SkillDefinition mergeResources(Identifier id, SkillDefinition item, SkillDefinition overridingItem) {
+        return SkillDefinition.merge(item, overridingItem);
+    }
+
+    /*public void synchronizeFromServer(Map<Identifier, SkillDefinition> definitionMap) {
+        this.byId.clear();
+        this.byId.putAll(definitionMap);
+    }*/
+
+    private static void reloadCache() {
         TRIGGER_CACHE.clear();
-        MinecraftServer server = event.getServer();
-        RegistryAccess access = server.registryAccess();
-        Registry<SkillDefinition> registry = access.lookupOrThrow(CoreRegistries.DatapackKeys.SKILL_DEFINITION);
-        registry.listElements().map(Holder.Reference::value)
-                .forEach(definition -> {
-                    for (SkillTriggerDefinition triggerDefinition : definition.triggers()) {
-                        SkillTrigger triggerEvent = triggerDefinition.trigger();
-                        TRIGGER_CACHE.put(triggerEvent, definition);
-                    }
-                });
+        for (var resource : INSTANCE.byId.values()) {
+            for (var triggerHolder : resource.element().triggers()) {
+                SkillTrigger trigger = triggerHolder.trigger();
+                TRIGGER_CACHE.put(trigger, resource.identifier());
+            }
+        }
     }
 }

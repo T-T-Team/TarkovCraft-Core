@@ -21,7 +21,6 @@ import tnt.tarkovcraft.core.common.TarkovCraftCoreEventHandler;
 import tnt.tarkovcraft.core.common.config.TarkovCraftCoreConfig;
 import tnt.tarkovcraft.core.common.init.*;
 import tnt.tarkovcraft.core.common.pose.EntityPoseEventHandler;
-import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 import tnt.tarkovcraft.core.common.skill.SkillSystem;
 import tnt.tarkovcraft.core.common.sleep.SleepBonusManager;
 import tnt.tarkovcraft.core.common.statistic.DisplayStatistic;
@@ -54,7 +53,6 @@ public final class TarkovCraftCore {
         // Neoforge event listeners
         NeoForge.EVENT_BUS.register(new TarkovCraftCoreEventHandler());
         NeoForge.EVENT_BUS.register(new EntityPoseEventHandler());
-        NeoForge.EVENT_BUS.addListener(SkillSystem::onServerStarted);
         NeoForge.EVENT_BUS.addListener(this::registerServerReloadListeners);
 
         // Deferred registries
@@ -110,11 +108,11 @@ public final class TarkovCraftCore {
     }
 
     private void registerCustomDatapackRegistries(NewDatapackRegistryEvent event) {
-        event.worldRegistry(CoreRegistries.DatapackKeys.SKILL_DEFINITION, SkillDefinition.DIRECT_CODEC, SkillDefinition.DIRECT_CODEC);
         event.worldRegistry(CoreRegistries.DatapackKeys.DISPLAY_STATISTIC, DisplayStatistic.CODEC, DisplayStatistic.CODEC);
     }
 
     private void registerServerReloadListeners(AddServerReloadListenersEvent event) {
+        SkillSystem.register(event);
         event.addListener(SleepBonusManager.IDENTIFIER, SLEEP_BONUS_MANAGER);
     }
 

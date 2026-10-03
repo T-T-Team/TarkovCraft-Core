@@ -1,0 +1,62 @@
+{
+  "display_name": {
+    "translate": "skill.tarkovcraft_core.memory"
+  },
+  "category": "mental",
+  "configuration": {
+    "max_level": 100,
+    "progression_strategy": {
+      "type": "tarkovcraft_core:incremental",
+      "initial_experience": 10.0,
+      "per_level_experience": 1.0,
+      "max_experience": 100
+    },
+    "memory": {
+      "level_loss": true,
+      "start_after": "4h",
+      "experience_loss": 0.1
+    }
+  },
+  "triggers": {
+    "values": [
+      {
+        "trigger": "tarkovcraft_core:xp_pickup",
+        "configuration": {
+          "type": "tarkovcraft_core:simple",
+          "value": 0.05,
+          "limit": 1.0
+        }
+      }
+    ]
+  },
+  "bonuses": {
+    "values": [
+      {
+        "name": "memory_forget_rate",
+        "bonus": {
+          "type": "tarkovcraft_core:add_attribute_modifier",
+          "attribute": "tarkovcraft_core:memory_forget_time_multiplier",
+          "id": "tarkovcraft_core:skill/memory_forget_rate_multiplier",
+          "per_level_value": 0.01,
+          "formatter": {
+            "format": "%.0f%%",
+            "multiplier": 100
+          }
+        }
+      },
+      {
+        "name": "memory_forget_amount",
+        "bonus": {
+          "type": "tarkovcraft_core:add_attribute_modifier",
+          "attribute": "tarkovcraft_core:memory_forget_amount_multiplier",
+          "id": "tarkovcraft_core:skill/memory_forget_amount_multiplier",
+          "per_level_value": -0.01,
+          "formatter": {
+            "format": "%.0f%%",
+            "multiplier": -100
+          }
+        }
+      }
+    ]
+  }
+}

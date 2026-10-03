@@ -1,0 +1,74 @@
+{
+  "display_name": {
+    "translate": "skill.tarkovcraft_core.strength"
+  },
+  "category": "physical",
+  "configuration": {
+    "max_level": 100,
+    "progression_strategy": {
+      "type": "tarkovcraft_core:incremental",
+      "initial_experience": 10.0,
+      "per_level_experience": 5.0,
+      "max_experience": 150.0
+    },
+    "memory": {
+      "level_loss": true,
+      "start_after": "1d",
+      "experience_loss": 5.0
+    }
+  },
+  "triggers": {
+    "values": [
+      {
+        "trigger": "tarkovcraft_core:player_tick",
+        "conditions": [
+          {
+            "type": "tarkovcraft_core:sprinting"
+          },
+          {
+            "type": "tarkovcraft_core:overweight"
+          }
+        ],
+        "configuration": {
+          "type": "tarkovcraft_core:overweight_factor",
+          "value": 0.007
+        }
+      }
+    ]
+  },
+  "bonuses": {
+    "values": [
+      {
+        "name": "weight_limit",
+        "bonus": {
+          "type": "tarkovcraft_core:add_attribute_modifier",
+          "attribute": "tarkovcraft_core:weight_limit",
+          "id": "tarkovcraft_core:skill/weight_limit",
+          "per_level_value": 300,
+          "formatter": {
+            "format": "%.1f%s",
+            "multiplier": 0.001,
+            "arguments": [
+              {
+                "translate": "weight.unit.kg.short"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "weight_effects",
+        "bonus": {
+          "type": "tarkovcraft_core:add_attribute_modifier",
+          "attribute": "tarkovcraft_core:weight_effect_factor",
+          "id": "tarkovcraft_core:skill/weight_effect_factor",
+          "per_level_value": -0.0025,
+          "formatter": {
+            "format": "%.2f%%",
+            "multiplier": -100
+          }
+        }
+      }
+    ]
+  }
+}

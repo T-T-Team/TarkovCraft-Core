@@ -3,20 +3,23 @@ package tnt.tarkovcraft.core.common.skill;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
 import tnt.tarkovcraft.core.TarkovCraftCore;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.config.SkillSystemConfig;
 import tnt.tarkovcraft.core.common.init.CoreAttributes;
 import tnt.tarkovcraft.core.common.skill.progression.SkillProgressionStrategy;
 import tnt.tarkovcraft.core.common.skill.trigger.SkillTriggerDefinition;
+import tnt.tarkovcraft.core.server.packs.resources.IdResource;
+import tnt.tarkovcraft.core.util.Cached;
 
 public final class Skill {
 
     public static final Codec<Skill> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            SkillDefinition.CODEC.fieldOf("skill").forGetter(t -> t.definition),
+            Identifier.CODEC.fieldOf("id").forGetter(t -> t.identifier),
             Codec.INT.fieldOf("level").forGetter(t -> t.level),
             Codec.FLOAT.fieldOf("exp").forGetter(t -> t.experience),
             Codec.FLOAT.fieldOf("requiredExp").forGetter(t -> t.requiredExperience),
@@ -24,25 +27,29 @@ public final class Skill {
     ).apply(instance, Skill::new));
     public static final Component MAX_LEVEL = Component.translatable("label.tarkovcraft_core.skill.max_level").withStyle(ChatFormatting.GOLD);
 
-    private final Holder<SkillDefinition> definition;
+    private final Identifier identifier;
     private int level;
     private float experience;
     private float requiredExperience;
     private long lastExperienceUpdate;
 
     private LevelChangeListener levelChangeListener = LevelChangeListener.NO_OP;
+    private final Cached<SkillDefinition> definition;
 
-    Skill(Holder<SkillDefinition> definition, int level, float experience, float requiredExperience, long lastExperienceUpdate) {
-        this.definition = definition;
+    Skill(Identifier identifier, int level, float experience, float requiredExperience, long lastExperienceUpdate) {
+        this.identifier = identifier;
         this.level = level;
         this.experience = experience;
         this.requiredExperience = requiredExperience;
         this.lastExperienceUpdate = lastExperienceUpdate;
+        this.definition = Cached.create(this::loadDefinition);
     }
 
-    public Skill(Holder<SkillDefinition> definition) {
-        SkillProgressionStrategy strategy = definition.value().configuration().progressionStrategy();
-        this(definition, 0, 0.0F, strategy.getRequiredExperience(0), 0L);
+    public static Skill fromDefinition(Identifier identifier, SkillDefinition definition) {
+        SkillProgressionStrategy strategy = definition.configuration().progressionStrategy();
+        int baseSkillLevel = 0;
+        float requiredExperience = strategy.getRequiredExperience(baseSkillLevel);
+        return new Skill(identifier, baseSkillLevel, 0.0F, requiredExperience, 0L);
     }
 
     public void setLevelChangeListener(LevelChangeListener levelChangeListener) {
@@ -54,7 +61,7 @@ public final class Skill {
         SkillSystemConfig config = TarkovCraftCore.getConfig().skillSystemConfig;
         float globalMultiplier = config.globalSkillLevelSpeedMultiplier;
         float limit = config.singleTriggerSkillLevelLimit <= 0.0F ? Float.MAX_VALUE : config.singleTriggerSkillLevelLimit;
-        for (SkillTriggerDefinition triggerDefinition : this.definition.value().triggers()) {
+        for (SkillTriggerDefinition triggerDefinition : this.getDefinition().triggers()) {
             if (triggerDefinition.isTriggerable(context)) {
                 triggeredAmount += triggerDefinition.trigger(context);
             }
@@ -63,7 +70,7 @@ public final class Skill {
     }
 
     public void updateMemory(long time, EntityAttributeData attributeData, RandomSource random) {
-        SkillMemoryConfiguration memory = this.definition.value().configuration().memory();
+        SkillMemoryConfiguration memory = this.getDefinition().configuration().memory();
         if (SkillSystem.isMemoryEnabled() && memory.isEnabled(random)) {
             long diff = time - this.lastExperienceUpdate;
             float rateMultiplier = attributeData.getAttribute(CoreAttributes.MEMORY_FORGET_TIME_MULTIPLIER).floatValue();
@@ -87,7 +94,7 @@ public final class Skill {
         this.experience -= currentLoss;
         if (SkillSystem.isLevelMemoryEnabled() && overflow > 0 && this.level > 0) {
             this.level--;
-            SkillProgressionStrategy progressionStrategy = this.definition.value().configuration().progressionStrategy();
+            SkillProgressionStrategy progressionStrategy = this.getDefinition().configuration().progressionStrategy();
             this.requiredExperience = progressionStrategy.getRequiredExperience(this.level);
             this.experience = this.requiredExperience;
             this.levelChangeListener.onLevelChanged(this, this.level, this.level + 1);
@@ -105,7 +112,7 @@ public final class Skill {
         if ((this.experience += experience) >= this.requiredExperience) {
             this.level++;
             float overflow = this.experience - this.requiredExperience;
-            SkillProgressionStrategy progressionStrategy = this.definition.value().configuration().progressionStrategy();
+            SkillProgressionStrategy progressionStrategy = this.getDefinition().configuration().progressionStrategy();
             this.requiredExperience = progressionStrategy.getRequiredExperience(this.level);
             this.experience = 0.0F;
             this.levelChangeListener.onLevelChanged(this, this.level, this.level - 1);
@@ -115,10 +122,22 @@ public final class Skill {
         }
     }
 
-    public void forceSetLevel(int level) {
+    public void forceSetLevel(int level, Entity entity) {
         this.level = level;
         this.experience = 0;
         this.requiredExperience = this.getRequiredExperienceForLevel(this.level);
+        this.clearBonuses(entity);
+        this.applyBonuses(entity);
+    }
+
+    public void applyBonuses(Entity entity) {
+        SkillDefinition definition = this.getDefinition();
+        definition.applyBonuses(this, entity);
+    }
+
+    public void clearBonuses(Entity entity) {
+        SkillDefinition definition = this.getDefinition();
+        definition.clearBonuses(this, entity);
     }
 
     public int getLevel() {
@@ -126,7 +145,7 @@ public final class Skill {
     }
 
     public int getMaxLevel() {
-        return this.definition.value().configuration().maxLevel();
+        return this.getDefinition().configuration().maxLevel();
     }
 
     public float getExperience() {
@@ -138,15 +157,25 @@ public final class Skill {
     }
 
     public float getRequiredExperienceForLevel(int level) {
-        return this.definition.value().configuration().progressionStrategy().getRequiredExperience(level);
+        return this.getDefinition().configuration().progressionStrategy().getRequiredExperience(level);
     }
 
     public boolean isMaxLevel() {
         return this.level >= this.getMaxLevel();
     }
 
-    public Holder<SkillDefinition> getDefinition() {
-        return definition;
+    public Identifier getIdentifier() {
+        return this.identifier;
+    }
+
+    public SkillDefinition getDefinition() {
+        return this.definition.get();
+    }
+
+    private SkillDefinition loadDefinition() {
+        return SkillSystem.getDefinition(this.identifier)
+                .map(IdResource::element)
+                .orElseThrow();
     }
 
     @FunctionalInterface

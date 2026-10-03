@@ -1,13 +1,13 @@
 package tnt.tarkovcraft.core.common.skill;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.storage.ValueInput;
@@ -18,38 +18,34 @@ import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 import tnt.tarkovcraft.core.api.AttachmentSyncCallbackListener;
 import tnt.tarkovcraft.core.api.client.SynchronizableScreen;
 import tnt.tarkovcraft.core.client.TarkovCraftCoreClient;
-import tnt.tarkovcraft.core.client.util.ClientUtils;
 import tnt.tarkovcraft.core.common.Notification;
 import tnt.tarkovcraft.core.common.attribute.Attribute;
 import tnt.tarkovcraft.core.common.attribute.EntityAttributeData;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
-import tnt.tarkovcraft.core.common.skill.bonus.SkillBonus;
-import tnt.tarkovcraft.core.common.skill.bonus.SkillBonusDefinition;
 import tnt.tarkovcraft.core.common.skill.trigger.SkillTrigger;
 import tnt.tarkovcraft.core.common.util.OwnerAttachmentSyncHandler;
+import tnt.tarkovcraft.core.server.packs.resources.IdResource;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public final class SkillData {
 
-    public static final MapCodec<SkillData> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Skill.CODEC.listOf().fieldOf("skills").xmap(SkillData::asSkillMap, map -> new ArrayList<>(map.values())).forGetter(t -> t.skillMap)
-    ).apply(instance, SkillData::new));
+    public static final Codec<SkillData> CODEC = Codec.unboundedMap(Identifier.CODEC, Skill.CODEC)
+            .xmap(SkillData::new, t -> t.skillMap);
+    public static final MapCodec<SkillData> MAP_CODEC = CODEC.fieldOf("skills");
 
     private Entity holder;
-    private final Map<SkillDefinition, Skill> skillMap;
+    private final Map<Identifier, Skill> skillMap;
 
     public SkillData(IAttachmentHolder holder) {
         this.skillMap = new HashMap<>();
         this.setHolder(holder);
     }
 
-    private SkillData(Map<SkillDefinition, Skill> map) {
+    private SkillData(Map<Identifier, Skill> map) {
         this.skillMap = new HashMap<>(map);
         this.skillMap.values().forEach(skill -> skill.setLevelChangeListener(this::onLevelChange));
     }
@@ -60,12 +56,20 @@ public final class SkillData {
         this.holder = entity;
     }
 
-    public boolean trigger(SkillTrigger event, SkillDefinition definition, float multiplier, Entity triggerSource) {
-        Skill instance = this.getSkill(definition);
-        SkillContext context = new SkillContext(event, definition, instance, multiplier, triggerSource);
+    public List<Skill> listAllSkills() {
+        Collection<Identifier> ids = SkillSystem.listAvailableSkills();
+        return ids.stream()
+                .map(this::getSkill)
+                .toList();
+    }
+
+    public boolean trigger(SkillTrigger event, Identifier skillId, float multiplier, Entity triggerSource) {
+        Skill instance = this.getSkill(skillId);
+        SkillContext context = new SkillContext(event, instance, multiplier, triggerSource);
         float triggerAmount = instance.trigger(context);
         if (triggerAmount > 0) {
             EntityAttributeData attributes = triggerSource.getData(CoreDataAttachments.ENTITY_ATTRIBUTES);
+            SkillDefinition definition = instance.getDefinition();
             float experience = triggerAmount * this.getGroupLevelMultiplier(attributes, definition.category());
             long gameTime = triggerSource.level().getGameTime();
             // TODO change memory handling
@@ -76,8 +80,8 @@ public final class SkillData {
         return false;
     }
 
-    public void addExperience(SkillDefinition definition, float experience) {
-        Skill instance = this.getSkill(definition);
+    public void addExperience(Identifier skill, float experience) {
+        Skill instance = this.getSkill(skill);
         this.addExperience(instance, experience);
     }
 
@@ -85,56 +89,28 @@ public final class SkillData {
         instance.addExperience(experience);
     }
 
-    public Skill getSkill(SkillDefinition skill) {
-        return this.skillMap.computeIfAbsent(skill, this::createInstance);
+    public Skill getSkill(Identifier identifier) {
+        return this.skillMap.computeIfAbsent(identifier, this::createInstance);
     }
 
-    public void reloadStats() {
-        for (Map.Entry<SkillDefinition, Skill> entry : this.skillMap.entrySet()) {
-            SkillDefinition definition = entry.getKey();
-            Skill instance = entry.getValue();
-            List<SkillBonusDefinition> bonuses = definition.bonuses();
-            bonuses.forEach(bonusDef -> bonusDef.bonus().clear(definition, instance, this.holder));
-            applyStats(definition, instance);
-        }
-    }
-
-    private void applyStats() {
-        for (Map.Entry<SkillDefinition, Skill> entry : this.skillMap.entrySet()) {
-            SkillDefinition definition = entry.getKey();
-            Skill instance = entry.getValue();
-            this.applyStats(definition, instance);
-        }
-    }
-
-    private void applyStats(SkillDefinition definition, Skill skill) {
-        for (SkillBonusDefinition bonus : definition.bonuses()) {
-            if (bonus.isAvailable(definition, skill, this.holder)) {
-                SkillBonus stat = bonus.bonus();
-                stat.apply(definition, skill, this.holder);
+    private void applyBonuses() {
+        for (Skill skill : this.skillMap.values()) {
+            if (this.holder != null) {
+                skill.applyBonuses(this.holder);
             }
         }
     }
 
-    private Skill createInstance(SkillDefinition definition) {
-        Skill instance = definition.instance(this.getRegistryAccess());
-        instance.setLevelChangeListener(this::onLevelChange);
+    private Skill createInstance(Identifier identifier) {
+        var resourceOptional = SkillSystem.getDefinition(identifier);
+        var definition = resourceOptional.map(IdResource::element)
+                        .orElseThrow();
+        Skill skill = definition.instance(identifier);
+        skill.setLevelChangeListener(this::onLevelChange);
         if (this.holder != null) {
-            this.applyStats(definition, instance);
+            skill.applyBonuses(this.holder);
         }
-        return instance;
-    }
-
-    private static Map<SkillDefinition, Skill> asSkillMap(List<Skill> list) {
-        return list.stream().collect(Collectors.toMap(skill -> skill.getDefinition().value(), Function.identity()));
-    }
-
-    private RegistryAccess getRegistryAccess() {
-        if (this.holder == null || this.holder.level().isClientSide()) {
-            return ClientUtils.getClientRegistryAccess();
-        } else {
-            return this.holder.registryAccess();
-        }
+        return skill;
     }
 
     private float getGroupLevelMultiplier(EntityAttributeData data, SkillCategory category) {
@@ -146,13 +122,12 @@ public final class SkillData {
     private void onLevelChange(Skill skill, int currentLevel, int previousLevel) {
         if (this.holder instanceof ServerPlayer player) {
             if (previousLevel < skill.getLevel()) {
-                Holder<SkillDefinition> definitionHolder = skill.getDefinition();
-                SkillDefinition definition = definitionHolder.value();
+                SkillDefinition definition = skill.getDefinition();
                 Notification notification = Notification.success(Component.translatable("label.tarkovcraft_core.skill.level_up", definition.displayName(), skill.getLevel()));
-                notification.setIcon(SkillDefinition.getIcon(definitionHolder));
+                notification.setIcon(SkillDefinition.getIcon(skill.getIdentifier()));
                 notification.send(player);
             }
-            this.applyStats();
+            this.applyBonuses();
 
             SkillSystem.synchronize(player);
         }
@@ -162,7 +137,7 @@ public final class SkillData {
 
         @Override
         public SkillData read(IAttachmentHolder holder, ValueInput input) {
-            SkillData attachment = input.read(MAP_CODEC)
+            SkillData attachment = input.read("skills", CODEC)
                     .orElseThrow(() -> new IllegalStateException("Failed to deserialize data attachment"));
             attachment.setHolder(holder);
             return attachment;
@@ -170,22 +145,22 @@ public final class SkillData {
 
         @Override
         public boolean write(SkillData attachment, ValueOutput output) {
-            output.store(MAP_CODEC, attachment);
+            output.store("skills", CODEC, attachment);
             return true;
         }
     }
 
     public static final class SyncHandler extends OwnerAttachmentSyncHandler<SkillData> implements AttachmentSyncCallbackListener<SkillData> {
 
-        public static final StreamCodec<RegistryFriendlyByteBuf, SkillData> CODEC = ByteBufCodecs.fromCodecWithRegistries(MAP_CODEC.codec());
+        private static final StreamCodec<RegistryFriendlyByteBuf, SkillData> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC);
 
         public SyncHandler() {
-            super(CODEC);
+            super(STREAM_CODEC);
         }
 
         @Override
         public void write(RegistryFriendlyByteBuf buf, SkillData attachment, boolean initialSync) {
-            attachment.applyStats();
+            attachment.applyBonuses();
             super.write(buf, attachment, initialSync);
         }
 

@@ -32,7 +32,7 @@ public final class CoreTarkovcraftCommand {
                         )
                         .then(
                                 // tarkovcraft skill ...
-                                SkillSubCommand.node(context)
+                                SkillSubCommand.node()
                                         .requires(gameMasterOnly())
                         )
                         .then(

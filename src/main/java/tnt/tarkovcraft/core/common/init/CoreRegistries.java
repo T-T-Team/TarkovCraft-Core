@@ -17,7 +17,6 @@ import tnt.tarkovcraft.core.common.attribute.modifier.AttributeModifier;
 import tnt.tarkovcraft.core.common.attribute.modifier.MultiplyValueAttributeModifier;
 import tnt.tarkovcraft.core.common.attribute.modifier.SetValueAttributeModifier;
 import tnt.tarkovcraft.core.common.pose.EntityPose;
-import tnt.tarkovcraft.core.common.skill.SkillDefinition;
 import tnt.tarkovcraft.core.common.skill.bonus.AddAttributeModifierBonus;
 import tnt.tarkovcraft.core.common.skill.bonus.SkillBonus;
 import tnt.tarkovcraft.core.common.skill.bonus.condition.IsMaxSkillLevelStatCondition;
@@ -123,7 +122,7 @@ public final class CoreRegistries {
 
     public static final class DatapackKeys {
 
-        public static final ResourceKey<Registry<SkillDefinition>> SKILL_DEFINITION = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("skill"));
+        @Deprecated
         public static final ResourceKey<Registry<DisplayStatistic>> DISPLAY_STATISTIC = ResourceKey.createRegistryKey(TarkovCraftCore.createIdentifier("statistic"));
     }
 }

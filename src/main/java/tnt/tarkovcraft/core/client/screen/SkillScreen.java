@@ -6,8 +6,6 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -19,7 +17,6 @@ import tnt.tarkovcraft.core.client.screen.navigation.CoreNavigators;
 import tnt.tarkovcraft.core.client.screen.widget.ListWidget;
 import tnt.tarkovcraft.core.client.screen.widget.ScrollbarWidget;
 import tnt.tarkovcraft.core.common.init.CoreDataAttachments;
-import tnt.tarkovcraft.core.common.init.CoreRegistries;
 import tnt.tarkovcraft.core.common.skill.Skill;
 import tnt.tarkovcraft.core.common.skill.SkillData;
 import tnt.tarkovcraft.core.common.skill.SkillDefinition;
@@ -32,8 +29,6 @@ import tnt.tarkovcraft.core.util.helper.RenderUtils;
 import java.util.*;
 
 public class SkillScreen extends CharacterSubScreen {
-
-    private SkillData skillData;
 
     private double scroll;
 
@@ -48,9 +43,8 @@ public class SkillScreen extends CharacterSubScreen {
         Player player = this.minecraft.level.getPlayerByUUID(this.characterProfileId);
         if (player == null)
             return;
-        this.skillData = player.getData(CoreDataAttachments.SKILL);
-        Registry<SkillDefinition> registry = this.minecraft.getConnection().registryAccess().lookupOrThrow(CoreRegistries.DatapackKeys.SKILL_DEFINITION);
-        List<Skill> skills = registry.listElements().map(reference -> this.skillData.getSkill(reference.value())).toList();
+        SkillData skillData = player.getData(CoreDataAttachments.SKILL);
+        List<Skill> skills = skillData.listAllSkills();
 
         ListWidget<SkillWidget> skillView = this.addRenderableWidget(new ListWidget<>(0, 25, this.width - 4, this.height - 25, skills, (skill, i) -> this.buildSkillWidget(player, skill, i)));
         skillView.setBackgroundColor(ColorPalette.BG_TRANSPARENT_WEAK);
@@ -73,7 +67,7 @@ public class SkillScreen extends CharacterSubScreen {
 
     private SkillWidget buildSkillWidget(Player player, Skill skill, int index) {
         SkillWidget widget = new SkillWidget(5, 5 + index * 40, this.width - 15, 35, this.font, skill, player);
-        SkillDefinition definition = skill.getDefinition().value();
+        SkillDefinition definition = skill.getDefinition();
         Collection<SkillTriggerDefinition> triggers = definition.triggers();
         List<Component> tooltip = new ArrayList<>();
         tooltip.add(definition.getFormattedName(style -> style.applyFormats(ChatFormatting.BOLD, ChatFormatting.YELLOW)));
@@ -95,10 +89,9 @@ public class SkillScreen extends CharacterSubScreen {
             super(x, y, width, height, CommonComponents.EMPTY);
             this.font = font;
             this.skill = skill;
-            this.setMessage(skill.getDefinition().value().getFormattedName(style -> style.applyFormats(ChatFormatting.BOLD, ChatFormatting.UNDERLINE)));
-            Holder<SkillDefinition> holder = skill.getDefinition();
-            this.skillIcon = SkillDefinition.getIcon(holder);
-            this.badges = this.getBadges(holder, skill, player);
+            this.setMessage(skill.getDefinition().getFormattedName(style -> style.applyFormats(ChatFormatting.BOLD, ChatFormatting.UNDERLINE)));
+            this.skillIcon = SkillDefinition.getIcon(skill.getIdentifier());
+            this.badges = this.getBadges(skill, player);
         }
 
         public void setDescription(List<Component> description) {
@@ -154,10 +147,11 @@ public class SkillScreen extends CharacterSubScreen {
         protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
         }
 
-        private List<BonusBadgeInfo> getBadges(Holder<SkillDefinition> holder, Skill skill, LivingEntity entity) {
-            return holder.value().bonuses().stream()
-                    .filter(bonus -> bonus.isAvailable(holder.value(), skill, entity))
-                    .map(bonus -> new BonusBadgeInfo(holder, bonus, skill, entity))
+        private List<BonusBadgeInfo> getBadges(Skill skill, LivingEntity entity) {
+            SkillDefinition definition = skill.getDefinition();
+            return definition.bonuses().stream()
+                    .filter(bonus -> bonus.isAvailable(definition, skill, entity))
+                    .map(bonus -> new BonusBadgeInfo(bonus, skill, entity))
                     .toList();
         }
 
@@ -166,10 +160,11 @@ public class SkillScreen extends CharacterSubScreen {
             private final Identifier icon;
             private final List<Component> tooltip;
 
-            BonusBadgeInfo(Holder<SkillDefinition> holder, SkillBonusDefinition definition, Skill skill, LivingEntity entity) {
-                this.icon = definition.getIcon(holder);
-                Component name = definition.getDisplayName(holder).withStyle(ChatFormatting.YELLOW, ChatFormatting.UNDERLINE);
-                Component description = definition.getContextualDescription(holder, skill, entity).withStyle(ChatFormatting.GRAY);
+            BonusBadgeInfo(SkillBonusDefinition definition, Skill skill, LivingEntity entity) {
+                Identifier skillIdentifier = skill.getIdentifier();
+                this.icon = definition.getIcon(skillIdentifier);
+                Component name = definition.getDisplayName(skillIdentifier).withStyle(ChatFormatting.YELLOW, ChatFormatting.UNDERLINE);
+                Component description = definition.getContextualDescription(skill, entity).withStyle(ChatFormatting.GRAY);
                 this.tooltip = Arrays.asList(name, description);
             }
 
